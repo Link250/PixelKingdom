@@ -1,0 +1,6 @@
+-Tingle adden = NPC mit überteuerten preisen, verkauft schatzkarten, aus den funden kann man HalfLife 3 machen, pinke farbe für häuser
+
+BiomeMaps, zusammenhängende Biome, gleiche kanten für gute übergänge
+
+Dynamische Lichtquelle (beim tragen einer Torch)
+
