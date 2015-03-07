@@ -10,7 +10,7 @@ import Maps.Map;
 public class GiantItemBag extends ItemBag {
 
 	public GiantItemBag(){
-		super(40);
+		super(30);
 		ID = 403;
 		name = "GiantItemBag";
 		gfx = new SpriteSheet("/Items/NormalItemBag.png");
