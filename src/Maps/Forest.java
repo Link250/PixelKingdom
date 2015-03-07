@@ -14,7 +14,7 @@ public class Forest extends Biome {
 		short[][][] newMap = new Plains().generate();
 		Random r = new Random(System.nanoTime());
 		
-		MapGenerator.genCavesArea(0,600,1024,400,newMap);
+//		MapGenerator.genCavesArea(0,600,1024,400,newMap); //too much Caves
 
 		for(int y = 0; y < height/2; y ++){
 			for(int x = 32; x < width-32; x ++){
