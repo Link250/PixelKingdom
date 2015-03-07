@@ -4,6 +4,6 @@ BiomeMaps, zusammenhängende Biome, gleiche Kanten für gute Übergänge
 
 Dynamische Lichtquelle (beim tragen einer Torch)
 
-CUDA Berechnung
+CUDA Berechnung -vielleicht
 
 Daniel mit wichtigen Dingen vertraut machen
