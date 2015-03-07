@@ -6,4 +6,4 @@ Dynamische Lichtquelle (beim tragen einer Torch)
 
 CUDA Berechnung
 
-Daniel erklären
+Daniel erklären un soo
