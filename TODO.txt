@@ -7,3 +7,16 @@ Dynamische Lichtquelle (beim tragen einer Torch)
 CUDA Berechnung -vielleicht
 
 Daniel mit wichtigen Dingen vertraut machen
+
+Biome:
+-"Astro"Biome
+	-> Meteoriten, Iridium, weniger Gravitation
+
+Antimaterie !!!
+Anti-Iridium Schwert
++ Iridium Schwert
+	-> Energie Angriffe
+
+Tick auf Update Basis
+	-> Block update wird rekusiv weitergeleitet und in Liste eingetragen
+	
