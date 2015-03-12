@@ -18,5 +18,7 @@ Anti-Iridium Schwert
 	-> Energie Angriffe
 
 Tick auf Update Basis
-	-> Block update wird rekusiv weitergeleitet und in Liste eingetragen
+	-> Block update wird rekusiv weitergeleitet und in Liste eingetragen, weiterleitung geschieht nach und nach per tick
+	-> licht auch damit verknüpft und kann auch blockupdates verursachen -> ...blöcke die auf licht reagieren
+	-> update classe, die alle blockupdates und ihre daten in arrays speichert, mit funktionen für schnellen in/out-put der update daten
 	
