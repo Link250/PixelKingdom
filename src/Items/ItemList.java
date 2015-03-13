@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 import ItemList.*;
+import Main.Loader;
 import Pixels.Material;
 import Pixels.PixelList;
 
@@ -12,19 +13,22 @@ public class ItemList {
 	static ArrayList<Item> itemlist = new ArrayList<Item>();
 	
 	public ItemList(){
-		MatStack m = null;
-		for(Material mat : PixelList.MatList){
-			if(mat.ID!=0){m = new MatStack();m.setMat(mat.ID);itemlist.add(m);}
+		Loader list = new Loader("ItemList");
+		list.loadPackage();list.createClasses();
+		for(Class<?> item : list.classes){
+			if(item.toString().endsWith("MatStack")){
+				MatStack m = null;
+				for(Material mat : PixelList.MatList){
+					if(mat.ID!=0){m = new MatStack();m.setMat(mat.ID);itemlist.add(m);}
+				}
+			}else{
+				try {
+					itemlist.add((Item) item.getConstructor().newInstance());
+				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e){
+					e.printStackTrace();
+				}
+			}
 		}
-		itemlist.add(new DevPickaxe());
-		itemlist.add(new StonePickaxe());
-		itemlist.add(new IronPickaxe());
-		itemlist.add(new NormalItemBag());
-		itemlist.add(new SmallToolBag());
-		itemlist.add(new NormalMaterialBag());
-		itemlist.add(new SmallBeltBag());
-		itemlist.add(new GiantItemBag());
-		itemlist.add(new Lighter());
 		for(Item i : itemlist){
 			System.out.println("Initialized Item "+i.name+"("+i.ID+")");
 		}
@@ -52,13 +56,9 @@ public class ItemList {
 					if(t.getClass() == MatStack.class) ((MatStack)t).setMat(ID);
 					System.out.println("new Instance of "+t.name+"("+t.ID+") created.");
 					return (Item) t;
-				} catch (InstantiationException e) { e.printStackTrace();
-				} catch (IllegalAccessException e) { e.printStackTrace();
-				} catch (IllegalArgumentException e) { e.printStackTrace();
-				} catch (InvocationTargetException e) { e.printStackTrace();
-				} catch (NoSuchMethodException e) { e.printStackTrace();
-				} catch (SecurityException e) { e.printStackTrace();
-				} catch (ClassNotFoundException e) { e.printStackTrace();};
+				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | ClassNotFoundException e){
+					e.printStackTrace();
+				}
 			}
 		}
 		return null;
