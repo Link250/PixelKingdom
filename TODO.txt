@@ -22,5 +22,9 @@ Tick auf Update Basis
 	-> licht auch damit verknüpft und kann auch blockupdates verursachen -> ...blöcke die auf licht reagieren
 	-> update class, die alle blockupdates und ihre daten in arrays speichert, mit funktionen für schnellen in/out-put der update daten
 	
+Loader class auch für andere Ladevorgänge verwenden
+	->Materials, Recipes, etc
+	+ folge: einfacheres adden von content ins spiel, auch in die jar (...modding)
+	
 Fehlende HD Texturen ergänzen:
 	- Bags
