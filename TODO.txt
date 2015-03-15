@@ -25,6 +25,13 @@ Tick auf Update Basis
 Loader class auch für andere Ladevorgänge verwenden
 	->Materials, Recipes, etc
 	+ folge: einfacheres adden von content ins spiel, auch in die jar (...modding)
-	
+
+Pflanzen
+	-> bestehen wie bäume aus einzelnen pixeln, wachsen random weiter
+	-> droppen material für bags
+	-> Weizen, oder anderes essen etc.
+	kann mit speziellen Werkzeugen abgebaut werden
+		-> Sense, die wie Pickaxe funktioniert aber nur Pflanzenblöcke abbaut
+
 Fehlende HD Texturen ergänzen:
 	- Bags
