@@ -1,7 +1,5 @@
 package Pixels;
 
-import Maps.Map;
-
 public class Iron extends Material{
 
 	public Iron(){
@@ -10,9 +8,4 @@ public class Iron extends Material{
 		usePickaxe = 2;
 		tick = false;
 	}
-	
-	public void tick(int numTick, Map map) {
-		
-	}
-
 }

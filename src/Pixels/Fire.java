@@ -15,21 +15,22 @@ public class Fire extends Material{
 		adl = 1;
 	}
 	
-	public void tick(int numTick, Map map) {
+	public boolean tick(int numTick, Map map) {
 		map.setlighter(x, y, (byte) (Math.random()*32+16));
 		if(Math.random()*500<1){
 			spread(map);
 		}
-		if(map.getID(x, y, 2)==1){map.setID(x, y, 0, l);return;}
+		if(map.getID(x, y, 2)==1){map.setID(x, y, 0, l);return true;}
 		if(numTick%60==30){
 			ad = map.getAD(x, y, l);
 			byte n = ad.getbyte(0);
 			if(n>0){
 				ad.setbyte(0, (byte) (n-1));
 			}else{
-				map.setID(x, y, 0, l);return;
+				map.setID(x, y, 0, l);return true;
 			}
 		}
+		return true;
 	}
 	
 	public void render(Map map, Screen screen, int layer) {

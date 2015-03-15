@@ -55,7 +55,7 @@ public abstract class Material {
 	}
 
 
-	public abstract void tick(int numTick, Map map);
+	public boolean tick(int numTick, Map map){return false;}
 
 	
 	public void render(Map map, Screen screen, int layer) {

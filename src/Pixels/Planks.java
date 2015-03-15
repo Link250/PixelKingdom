@@ -1,7 +1,5 @@
 package Pixels;
 
-import Maps.Map;
-
 public class Planks extends Material{
 
 	public Planks(){
@@ -12,8 +10,4 @@ public class Planks extends Material{
 		burnable = 15;
 	}
 	
-	public void tick(int numTick, Map map) {
-		
-	}
-
 }

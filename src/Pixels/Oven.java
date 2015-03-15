@@ -18,7 +18,7 @@ public class Oven extends Material{
 		adl = 2;
 	}
 	
-	public void tick(int numTick, Map map) {
+	public boolean tick(int numTick, Map map) {
 		AdditionalData ad, ado;
 		ad = map.getAD(x, y, l);
 		map.setlighter(x, y, (byte) (ad.getshort(0)/(maxHeat/16)));
@@ -53,6 +53,7 @@ public class Oven extends Material{
 				}
 			}
 		}
+		return true;
 	}
 	
 	public void render(Map map, Screen screen, int layer) {

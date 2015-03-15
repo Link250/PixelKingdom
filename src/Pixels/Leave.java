@@ -1,7 +1,5 @@
 package Pixels;
 
-import Maps.Map;
-
 public class Leave extends Material{
 
 	public Leave(){
@@ -11,9 +9,4 @@ public class Leave extends Material{
 		burnable = 10;
 		tick = false;
 	}
-	
-	public void tick(int numTick, Map map) {
-		
-	}
-
 }

@@ -11,25 +11,26 @@ public class Sand extends Material{
 		tick = true;
 	}
 	
-	public void tick(int numTick, Map map) {
+	public boolean tick(int numTick, Map map) {
 		if(map.getID(x,y+1,l)==0){
 			map.movePixel(x, y, l, x, y+1, l);
 			y++;
-			return;
+			return true;
 		}
 		if(map.tickrev){
 			if(map.getID(x+1,y,l)==0 & map.getID(x+1,y+1,l)==0){
 				map.movePixel(x, y, l, x+1, y+1, l);
 				y++;x++;
-				return;
+				return true;
 			}
 		}else{
 			if(map.getID(x-1,y,l)==0 & map.getID(x-1,y+1,l)==0){
 				map.movePixel(x, y, l, x-1, y+1, l);
 				y++;x--;
-				return;
+				return true;
 			}
 		}
+		return false;
 	}
 
 }

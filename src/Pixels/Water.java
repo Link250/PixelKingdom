@@ -9,7 +9,8 @@ public class Water extends Liquid{
 		name = "Water";
 	}
 	
-	public void tick(int numTick, Map map) {
-		flow(map);
+	public boolean tick(int numTick, Map map) {
+		if(flow(map)) return true;
+		else return false;
 	}
 }

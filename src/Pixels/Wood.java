@@ -1,7 +1,5 @@
 package Pixels;
 
-import Maps.Map;
-
 public class Wood extends Material{
 
 	public Wood(){
@@ -12,8 +10,4 @@ public class Wood extends Material{
 		tick = false;
 	}
 	
-	public void tick(int numTick, Map map) {
-		
-	}
-
 }

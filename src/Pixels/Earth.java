@@ -1,7 +1,5 @@
 package Pixels;
 
-import Maps.Map;
-
 public class Earth extends Material{
 
 	public Earth(){
@@ -11,8 +9,4 @@ public class Earth extends Material{
 		tick = false;
 	}
 	
-	public void tick(int numTick, Map map) {
-		
-	}
-
 }

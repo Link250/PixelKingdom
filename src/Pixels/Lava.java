@@ -9,7 +9,7 @@ public class Lava extends Liquid{
 		name = "Lava";
 	}
 	
-	public void tick(int numTick, Map map) {
+	public boolean tick(int numTick, Map map) {
 		map.setlighter(x, y, (byte) (Math.random()*4+60));
 		if(numTick%3==0)flow(map);
 		
@@ -31,6 +31,7 @@ public class Lava extends Liquid{
 				map.setID(x, y, 1, 1);
 			}
 		}
+		return true;
 	}
 	
 	public void setMat(int ID, Map map){

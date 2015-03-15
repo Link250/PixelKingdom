@@ -14,8 +14,6 @@ public abstract class Ore extends Material{
 		usePickaxe = 1;
 		tick = false;
 	}
-	
-	public void tick(int numTick, Map map){}
 
 	public void heatUp(short heat, short heatup, Map map){
 		AdditionalData ad = map.getAD(x, y, l);
