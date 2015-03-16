@@ -31,7 +31,7 @@ Pflanzen
 	-> droppen material für bags
 	-> Weizen, oder anderes essen etc.
 	kann mit speziellen Werkzeugen abgebaut werden
-		-> Sense, die wie Pickaxe funktioniert aber nur Pflanzenblöcke abbaut
+		-> Sense, die wie Pickaxe funktioniert aber nur Pflanzenblöcke abbaut (Pflanzenblöcke trotzdem mit anderen Tools abbaubar, dafür dann keine/weniger/seltenere Drops)
 
 Fehlende HD Texturen ergänzen:
 	- Bags
