@@ -22,7 +22,7 @@ public class SinglePlayer {
 	private InputHandler input;
 	private Map map;
 	private Player player;
-	private boolean debuginfo = false;
+	public static boolean debuginfo = false;
 	private String files;
 	public File plr;
 	private BufferedImage back = null;
@@ -67,7 +67,10 @@ public class SinglePlayer {
 		screen.yOffset= player.y-Game.HEIGHT/3/2;
 
 		if(debuginfo){
-			if(tickCount%60==0)System.out.println("FPS:"+Game.fps);
+			if(tickCount%60==0){
+				System.out.println("FPS:"+Game.fps+" BlockUpdates:"+map.updatecount);
+				map.updatecount=0;
+			}
 		}
 	}
 	

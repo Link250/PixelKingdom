@@ -19,6 +19,7 @@ public class Chunk{
 	private short[] back;
 	public byte[] light;
 	private AdditionalData[][] AD;
+	private boolean[][][] updating = new boolean[width][height][4];
 	private byte[] rawfile;
 	
 	public Chunk(String path, int x, int y, Map map){
@@ -35,6 +36,7 @@ public class Chunk{
 		default : return 0;
 		}
 	}
+	
 	public void setID(int x, int y, short ID, int layer){
 		switch (layer){
 		case 1 :front[x + y*width] = ID;break;
@@ -42,9 +44,30 @@ public class Chunk{
 		case 3 :back[x + y*width] = ID;break;
 		}
 	}
+	
+	public boolean isUpdating(int x, int y, int l){
+		return updating[x][y][l];
+	}
+	
+	public boolean setUpdating(int x, int y, int l){
+		if(updating[x][y][l]==false){
+			updating[x][y][l]=true;
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	public boolean getUpdate(int x, int y, int l){
+		boolean u = updating[x][y][l];
+		updating[x][y][l]=false;
+		return u;
+	}
+	
 	public AdditionalData getAD(int x, int y, int layer){
 		return(AD[x + y*width][layer-1]);
 	}
+	
 	public void setAD(int x, int y, int layer, AdditionalData ad){
 		AD[x + y*width][layer-1] = ad;
 	}

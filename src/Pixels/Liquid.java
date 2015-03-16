@@ -11,12 +11,9 @@ public abstract class Liquid extends Material{
 	}
 	
 	public boolean flow(Map map) {
-		if(map.lticked(x, y))return false;
-		else map.ltick(x, y);
 		if(map.getID(x,y+1,1)==0 & map.getID(x,y+1,2)==0){
 			map.movePixel(x, y, 2, x, y+1, 2);
 			y++;
-			map.ltick(x, y);
 			return true;
 		}
 		if(map.tickrev){
