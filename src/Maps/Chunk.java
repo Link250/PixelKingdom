@@ -134,6 +134,7 @@ public class Chunk{
 				}
 			}
 		}
+		for(int i=0; i<light.length; i++)if(back[i]==0)light[i]=64;
 		System.out.println("Chunk loaded at X:"+this.x+" Y:"+this.y);
 	}
 	

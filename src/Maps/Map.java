@@ -17,7 +17,6 @@ public class Map {
 	public boolean tickrev;
 	private UpdateManager updates = new UpdateManager();
 	public int updatecount = 0;
-//	private ArrayList<int[]> updateold = new ArrayList<int[]>();
 
 	private Chunk[][] chunks = new Chunk[width][height];
 	
@@ -28,72 +27,26 @@ public class Map {
 	
 	public void tick(int tickCount){
 		Material m;
-		int X,Y,c,l;
+		int x,y,l;
 		int ID;
-		byte light,tempL;
 		int size = updates.startUpdate();
 		for(int i = 0; i < size; i++){
 			int[] co = updates.activate(i);
-			X=co[0];Y=co[1];l=co[2];
-			ID = getID(X, Y, l);
-			if(ID!=0 & getUpdate(X,Y,l)){
-				if(l==2) m = PixelList.GetLiquid(ID);
-				else m = PixelList.GetMat(ID);
-				m.SetPos(X, Y, l);
-				if(m.tick(tickCount, this))updateBlock(X, Y, l);
+			x=co[0];y=co[1];l=co[2];
+			if(l>0){
+				ID = getID(x, y, l);
+				if(ID!=0 & getUpdate(x,y,l)){
+					if(l==2) m = PixelList.GetLiquid(ID);
+					else m = PixelList.GetMat(ID);
+					m.SetPos(x, y, l);
+					if(m.tick(tickCount, this))updateBlock(x, y, l);
+				}
+			}else{
+				if(getUpdate(x,y,l))updateLight(x, y);
 			}
 			updatecount++;
-//			if(SinglePlayer.debuginfo)updateold.add(co);
 		}
-		for(int y = 0; y <screen.height/3; y++){
-			for(int x = 0; x <screen.width/3; x++){
-//				if(System.currentTimeMillis()%1000==0)System.out.println(updates.length());
-				if(tickCount%2==0){
-					X = x+screen.xOffset;
-					Y = y+screen.yOffset;
-					tickrev = false;
-				}else{
-					X = screen.width/3-x+screen.xOffset;
-					Y = screen.height/3-y+screen.yOffset;
-					tickrev = true;
-				}
 
-				setlight(X,Y,(byte) 0);
-
-/*				ID = getID(X,Y,3);
-				if(ID!=0){
-					m = PixelList.GetMat(ID);
-					if(m.tick){m.SetPos(X, Y, 3);m.tick(tickCount, this);}
-				}
-
-				ID = getID(X,Y,2);
-				if(ID!=0){
-					m = PixelList.GetLiquid(ID);
-					if(m.tick){m.SetPos(X, Y, 2);m.tick(tickCount, this);}
-				}
-
-*/				ID = getID(X,Y,1);/*
-				if(ID!=0){
-					m = PixelList.GetMat(ID);
-					if(m.tick){m.SetPos(X, Y, 1);m.tick(tickCount, this);}
-				}
-				*/
-				if(getID(X,Y,3)==0){
-					light = (byte) 64;
-				}else{
-					light = getlight(X,Y);
-					if(ID==0)c=1;
-					else c=2;
-					if(x<width/3-1	&& (tempL = getlight(X+1,Y))>light)light = (byte) (tempL-c);
-					if(x>0			&& (tempL = getlight(X-1,Y))>light)light = (byte) (tempL-c);
-					if(y<height/3-1	&& (tempL = getlight(X,Y+1))>light)light = (byte) (tempL-c);
-					if(y>0			&& (tempL = getlight(X,Y-1))>light)light = (byte) (tempL-c);
-					if(light<0)light = 0;
-				}
-				
-				setlight(X,Y,light);
-			}
-		}
 	}
 	
 	public boolean isUpdating(int x, int y, int l){
@@ -118,6 +71,42 @@ public class Map {
 			x %= 1024;y %= 1024;
 			return chunks[cx][cy].getUpdate(x, y, l);
 		}else return false;
+	}
+	
+	public void updateBlock(int x, int y, int l){
+		for(int X = -1; X < 2; X++){
+			for(int Y = -1; Y < 2; Y++){
+				for(int L = 0; L < 4; L++){
+					if(setUpdating(x+X, y+Y, L))updates.addUpdate(x+X, y+Y, L);
+				}
+			}
+		}
+	}
+	
+	public boolean updateLight(int x, int y){
+		byte light,tempL,c,startL;
+		if(getID(x,y,LAYER_BACK)==0){
+			light = (byte) 64;
+			startL=light;
+		}else{
+			startL = getlight(x,y);
+			light=0;
+			if(getID(x,y,1)==0)c=1;
+			else c=2;
+			if((tempL = getlight(x+1,y))>light)light = (byte) (tempL-c);
+			if((tempL = getlight(x-1,y))>light)light = (byte) (tempL-c);
+			if((tempL = getlight(x,y+1))>light)light = (byte) (tempL-c);
+			if((tempL = getlight(x,y-1))>light)light = (byte) (tempL-c);
+			if(light<0)light = 0;
+		}
+		setlight(x,y,light);
+		if(light>0 && light!=startL){
+			if(setUpdating(x+1,y,0))updates.addUpdate(x+1, y, 0);
+			if(setUpdating(x-1,y,0))updates.addUpdate(x-1, y, 0);
+			if(setUpdating(x,y+1,0))updates.addUpdate(x, y+1, 0);
+			if(setUpdating(x,y-1,0))updates.addUpdate(x, y-1, 0);
+		}
+		return true;
 	}
 	
 	public void render(){
@@ -147,13 +136,6 @@ public class Map {
 				}
 			}
 		}
-//		if(SinglePlayer.debuginfo){
-//			while(updateold.size()>0){
-//				int[] co = updateold.remove(0);
-//				X=co[0];Y=co[1];
-//				screen.renderGUIScaled((X), (Y), 0xffff0000);
-//			}
-//		}
 	}
 	
 	public int getID(int x, int y, int layer){
@@ -178,16 +160,6 @@ public class Map {
 			else PixelList.GetMat(ID).createAD(x, y, layer, this);
 			x %= 1024;y %= 1024;
 			chunks[cx][cy].setID(x, y, (short) ID, layer);
-		}
-	}
-	
-	public void updateBlock(int x, int y, int l){
-		for(int X = -1; X < 2; X++){
-			for(int Y = -1; Y < 2; Y++){
-				for(int L = 1; L < 4; L++){
-					if(setUpdating(x+X, y+Y, L))updates.addUpdate(x+X, y+Y, L);
-				}
-			}
 		}
 	}
 	
@@ -222,9 +194,7 @@ public class Map {
 		if(chunks[cx][cy]!=null){
 			return chunks[cx][cy].light[x+y*width];
 		}else{
-			Chunk c = new Chunk(path, cx, cy, this);c.load();
-			chunks[cx][cy]=c;
-			return getlight(x, y);
+			return 0;
 		}
 	}
 	public void setlight(int x, int y, byte b){

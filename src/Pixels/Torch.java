@@ -18,7 +18,7 @@ public class Torch extends Material{
 
 	public boolean tick(int numTick, Map map) {
 		map.setlighter(x, y, (byte)64);
-		return false;
+		return true;
 	}
 	
 	public void render(Map map, Screen screen, int layer) {
