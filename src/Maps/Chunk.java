@@ -9,6 +9,8 @@ import java.util.ArrayList;
 
 import Main.ConvertData;
 import Pixels.AdditionalData;
+import Pixels.Material;
+import Pixels.PixelList;
 
 public class Chunk{
 	public String path;
@@ -21,11 +23,13 @@ public class Chunk{
 	private AdditionalData[][] AD;
 	private boolean[][][] updating = new boolean[width][height][4];
 	private byte[] rawfile;
+	private Map map;
 	
 	public Chunk(String path, int x, int y, Map map){
 		this.path = path;
 		this.x = x;
 		this.y = y;
+		this.map = map;
 	}
 	
 	public int getID(int x, int y, int layer){
@@ -70,6 +74,28 @@ public class Chunk{
 	
 	public void setAD(int x, int y, int layer, AdditionalData ad){
 		AD[x + y*width][layer-1] = ad;
+	}
+	
+	public void refreshUpdates(){
+		Material m;
+		int ID,X,Y;
+		for(int l=3; l>=0; l--){
+			for(int i=0; i<width*height; i++){
+				X=x*1024+i%1024;
+				Y=y*1024+i/1024;
+				if(l>0){
+					ID = getID(i%1024, i/1024, l);
+					if(ID!=0){
+						if(l==2) m = PixelList.GetLiquid(ID);
+						else m = PixelList.GetMat(ID);
+						m.SetPos(X, Y, l);
+						if(m.tick(0, map))map.updateBlock(X, Y, l);
+					}
+				}else{
+					map.updateLight(X, Y);
+				}
+			}
+		}
 	}
 
 	public void load(){
@@ -134,8 +160,8 @@ public class Chunk{
 				}
 			}
 		}
-		for(int i=0; i<light.length; i++)if(back[i]==0)light[i]=64;
 		System.out.println("Chunk loaded at X:"+this.x+" Y:"+this.y);
+//		refreshUpdates();
 	}
 	
 	public void create(){
