@@ -15,7 +15,7 @@ public class Map {
 	public int width = 1024;
 	public int height = 1024;
 	public boolean tickrev;
-	private UpdateManager updates = new UpdateManager();
+	protected UpdateManager updates = new UpdateManager();
 	public int updatecount = 0;
 
 	private Chunk[][] chunks = new Chunk[width][height];
@@ -39,10 +39,10 @@ public class Map {
 					if(l==2) m = PixelList.GetLiquid(ID);
 					else m = PixelList.GetMat(ID);
 					m.SetPos(x, y, l);
-					if(m.tick(tickCount, this))updateBlock(x, y, l);
+					if(m.tick(tickCount, this))addBlockUpdate(x, y, l);
 				}
 			}else{
-				if(getUpdate(x,y,l))updateLight(x, y);
+				if(getUpdate(x,y,l))if(updateLight(x, y))addLightUpdate(x,y);
 			}
 			updatecount++;
 		}
@@ -73,7 +73,7 @@ public class Map {
 		}else return false;
 	}
 	
-	public void updateBlock(int x, int y, int l){
+	public void addBlockUpdate(int x, int y, int l){
 		for(int X = -1; X < 2; X++){
 			for(int Y = -1; Y < 2; Y++){
 				for(int L = 0; L < 4; L++){
@@ -83,13 +83,19 @@ public class Map {
 		}
 	}
 	
+	public void addLightUpdate(int x, int y){
+		if(setUpdating(x+1,y,0))updates.addUpdate(x+1, y, 0);
+		if(setUpdating(x-1,y,0))updates.addUpdate(x-1, y, 0);
+		if(setUpdating(x,y+1,0))updates.addUpdate(x, y+1, 0);
+		if(setUpdating(x,y-1,0))updates.addUpdate(x, y-1, 0);
+	}
+	
 	public boolean updateLight(int x, int y){
 		byte light,tempL,c,startL;
+		startL=getlight(x,y);
 		if(getID(x,y,LAYER_BACK)==0){
 			light = (byte) 64;
-			startL=light;
 		}else{
-			startL = getlight(x,y);
 			light=0;
 			if(getID(x,y,1)==0)c=1;
 			else c=2;
@@ -100,13 +106,8 @@ public class Map {
 			if(light<0)light = 0;
 		}
 		setlight(x,y,light);
-		if(light>0 && light!=startL){
-			if(setUpdating(x+1,y,0))updates.addUpdate(x+1, y, 0);
-			if(setUpdating(x-1,y,0))updates.addUpdate(x-1, y, 0);
-			if(setUpdating(x,y+1,0))updates.addUpdate(x, y+1, 0);
-			if(setUpdating(x,y-1,0))updates.addUpdate(x, y-1, 0);
-		}
-		return true;
+		if(light!=startL)return true;
+		else return false;
 	}
 	
 	public void render(){
@@ -121,10 +122,14 @@ public class Map {
 					X=x+screen.xOffset;Y=y+screen.yOffset;
 					
 					light = (byte) ((64-getlight(X,Y)));
+					ID = getID(X,Y,l);
+					if(ID==-1){
+						loadChunk(X,Y);
+						ID = getID(X,Y,l);
+					}
 					if(light == 64){
 						screen.renderShadow(X, Y, 0xff000000);
 					}else{
-						ID = getID(X,Y,l);
 						if(ID!=0){
 							if(l!=2)m = PixelList.GetMat(ID);
 							else m = PixelList.GetLiquid(ID);
@@ -138,15 +143,20 @@ public class Map {
 		}
 	}
 	
+	public void loadChunk(int x, int y){
+		int cx = x/1024,cy = y/1024;
+		Chunk c = new Chunk(path, cx, cy, this);c.load();
+		chunks[cx][cy]=c;
+		chunks[cx][cy].refreshUpdates();
+	}
+	
 	public int getID(int x, int y, int layer){
 		int cx = x/1024,cy = y/1024;
 		x %= 1024;y %= 1024;
 		if(chunks[cx][cy]!=null){
 			return chunks[cx][cy].getID(x, y, layer);
 		}else{
-			Chunk c = new Chunk(path, cx, cy, this);c.load();
-			chunks[cx][cy]=c;
-			return getID(x, y, layer);
+			return -1;
 		}
 	}
 	public void setID(int x, int y, int ID, int layer){
@@ -155,7 +165,7 @@ public class Map {
 	public void setID(int x, int y, int ID, int layer, AdditionalData ad){
 		int cx = x/1024,cy = y/1024;
 		if(chunks[cx][cy]!=null){
-			updateBlock(x, y, layer);
+			addBlockUpdate(x, y, layer);
 			if(ad!=null)setAD(x,y,layer,ad);
 			else PixelList.GetMat(ID).createAD(x, y, layer, this);
 			x %= 1024;y %= 1024;
@@ -175,9 +185,10 @@ public class Map {
 		if(chunks[cx][cy]!=null){
 			return chunks[cx][cy].getAD(x, y, layer);
 		}else{
-			Chunk c = new Chunk(path, cx, cy, this);c.load();
-			chunks[cx][cy]=c;
-			return getAD(x, y, layer);
+			return null;
+//			Chunk c = new Chunk(path, cx, cy, this);c.load();
+//			chunks[cx][cy]=c;
+//			return getAD(x, y, layer);
 		}
 	}
 	public void setAD(int x, int y, int layer, AdditionalData ad){

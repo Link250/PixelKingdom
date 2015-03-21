@@ -78,21 +78,25 @@ public class Chunk{
 	
 	public void refreshUpdates(){
 		Material m;
-		int ID,X,Y;
-		for(int l=3; l>=0; l--){
-			for(int i=0; i<width*height; i++){
-				X=x*1024+i%1024;
-				Y=y*1024+i/1024;
-				if(l>0){
-					ID = getID(i%1024, i/1024, l);
-					if(ID!=0){
-						if(l==2) m = PixelList.GetLiquid(ID);
-						else m = PixelList.GetMat(ID);
-						m.SetPos(X, Y, l);
-						if(m.tick(0, map))map.updateBlock(X, Y, l);
+		int ID;
+		for(int l=1; l<6; l++){
+			for(int Y=y*1024; Y<y*1024+height; Y++){
+				for(int X=x*1024; X<x*1024+width; X++){
+					if(l<4){
+						ID = getID(X%1024, Y%1024, l);
+						if(ID!=0){
+							if(l==2) m = PixelList.GetLiquid(ID);
+							else m = PixelList.GetMat(ID);
+							m.SetPos(X, Y, l);
+							if(m.tick(0, map))if(map.setUpdating(X, Y, l))map.updates.addUpdate(X, Y, l);
+						}
+					}else{
+						if(l==4){
+							map.updateLight(X, Y);
+						}else{
+							map.updateLight(1023-X+x*2048, 1023-Y+y*2048);
+						}
 					}
-				}else{
-					map.updateLight(X, Y);
 				}
 			}
 		}

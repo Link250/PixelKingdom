@@ -355,6 +355,7 @@ public class Player extends Mob{
 
 	public void create(){
 		this.x = 524800;
+		map.loadChunk(x,524500);
 		int h;for(h = 524500; PixelList.GetMat(this.x, h, map,1).ID==0 && h < 525000; h++){}
 		this.y = h-yOffset;
 		equipment.create();
