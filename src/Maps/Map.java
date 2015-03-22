@@ -9,7 +9,7 @@ import Pixels.PixelList;
 
 public class Map {
 
-	public static final int LAYER_LIGHT = 0, LAYER_FRONT = 1, LAYER_LIQUID = 2, LAYER_BACK=3;
+	public static final int LAYER_LIGHT = 0, LAYER_FRONT = 1, LAYER_LIQUID = 2, LAYER_BACK=3, MAX_LIGHT=64;
 	public String path;
 	public Screen screen;
 	public int width = 1024;
@@ -94,7 +94,7 @@ public class Map {
 		byte light,tempL,c,startL;
 		startL=getlight(x,y);
 		if(getID(x,y,LAYER_BACK)==0){
-			light = (byte) 64;
+			light = (byte) MAX_LIGHT;
 		}else{
 			light=0;
 			if(getID(x,y,1)==0)c=1;
@@ -121,13 +121,13 @@ public class Map {
 				for(int x = 0; x <screen.width/3; x++){
 					X=x+screen.xOffset;Y=y+screen.yOffset;
 					
-					light = (byte) ((64-getlight(X,Y)));
+					light = (byte) ((MAX_LIGHT-getlight(X,Y)));
 					ID = getID(X,Y,l);
 					if(ID==-1){
 						loadChunk(X,Y);
 						ID = getID(X,Y,l);
 					}
-					if(light == 64){
+					if(light == MAX_LIGHT){
 						screen.renderShadow(X, Y, 0xff000000);
 					}else{
 						if(ID!=0){
@@ -136,7 +136,7 @@ public class Map {
 							m.SetPos(X, Y, l-1);
 							m.render(this,screen,l);
 						}
-						if(l==1)screen.renderShadow(X, Y, ((64-getlight(X,Y))<<26));
+						if(l==1)screen.renderShadow(X, Y, ((MAX_LIGHT-getlight(X,Y))<<26));
 					}
 				}
 			}

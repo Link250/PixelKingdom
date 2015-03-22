@@ -17,10 +17,11 @@ Anti-Iridium Schwert
 + Iridium Schwert
 	-> Energie Angriffe
 
-Tick auf Update Basis
-	-> Block update wird rekusiv weitergeleitet und in Liste eingetragen, weiterleitung geschieht nach und nach per tick
-	-> licht auch damit verknüpft und kann auch blockupdates verursachen -> ...blöcke die auf licht reagieren
-	-> update class, die alle blockupdates und ihre daten in arrays speichert, mit funktionen für schnellen in/out-put der update daten
+Eimer
+	- kann vorerst nur Wasser nehmen (wegen den ADs der Lava)
+	- kann sich auffüllen und eine bestimmte anzahl an Pixeln speichern (wird dann angezeigt als Zahl wie bei MatStacks)
+	- rechtsklick aufsammelt, mit pickaxe algorythmen
+	- linksklick platzieren, mit MatStack algorythmen 
 	
 Loader class auch für andere Ladevorgänge verwenden
 	->Materials, Recipes, etc

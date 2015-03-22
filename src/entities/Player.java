@@ -153,6 +153,7 @@ public class Player extends Mob{
 	
 	public void tick(int numTick) {
 		
+//		map.setlight(x, y, (byte) (64));map.addBlockUpdate(x, y,0); // just for testing lightsystem
 		if(game.input.space.isPressed() && canJump){
 			speedY-= jumpspeed;
 			canJump = false;

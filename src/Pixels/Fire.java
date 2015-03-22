@@ -40,16 +40,14 @@ public class Fire extends Material{
 	public void spread(Map map){
 		byte burntime;
 		int Xt,Yt;
-		for(int X=-2; X<=2; X++){
-			for(int Y=-2; Y<=2; Y++){
+		for(int Y=-2; Y<=2; Y++){
+			for(int X=-2; X<=2; X++){
 				for(int L=1; L<=3; L++){
-					if(map.tickrev){Xt = x+X;Yt = y+Y;}
-						else{Xt = x-X;Yt = y-Y;}
+					Xt = x+X;Yt = y+Y;
 					burntime = PixelList.GetMat(Xt, Yt, map, L).burnable;
 					if((int)(Math.random()*100+1)<=burntime){
 						map.setID(Xt, Yt, 32, L);
-						Fire newFire = (Fire)PixelList.GetMat(Xt, Yt, map, L);
-						newFire.setTime(burntime,map);
+						((Fire)PixelList.GetMat(Xt, Yt, map, L)).setTime(burntime,map);
 					}
 				}
 			}
