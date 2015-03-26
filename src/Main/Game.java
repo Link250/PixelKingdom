@@ -22,6 +22,7 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
+import GUI.Button;
 import Items.ItemList;
 import Maps.BiomeList;
 import Maps.MapSelection;
@@ -67,11 +68,12 @@ public class Game extends Canvas implements Runnable{
 	public Screen screen;
 	private BufferedImage back = null;
 	public InputHandler input;
-	public SinglePlayer SinglePlayer;
 	public static PxlFont font;
 	public static PxlFont sfont;
 	public static PxlFont mfont;
-	private Button SP, OP, QT;
+	private Button SP, MP, OP, QT;
+	public SinglePlayer SinglePlayer;
+	public ServerList ServerList;
 	public MapSelection MapSelect;
 	public OptionScreen OptionScreen;
 	
@@ -106,8 +108,10 @@ public class Game extends Canvas implements Runnable{
 		sfont = new PxlFont(new SpriteSheet("/8x8Font.png"), " !\"# %&´()* ,-./0123456789:; = ? ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{ }~",8*Game.SCALE,8*Game.SCALE);
 		font = new PxlFont(new SpriteSheet("/Font.png"), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 1234567890!\",;%&/()=?ß+-.",15*Game.SCALE,20*Game.SCALE);
 		screen = new Screen(WIDTH, HEIGHT, csheetf, csheetm, csheetb);
-		SP = new Button(WIDTH/Game.SCALE/2-50,140,100,20,screen,input);
+		SP = new Button(WIDTH/Game.SCALE/2-50,110,100,20,screen,input);
 		SP.gfxData(new SpriteSheet("/Buttons/SP.png"), true);
+		MP = new Button(WIDTH/Game.SCALE/2-50,140,100,20,screen,input);
+		MP.gfxData(new SpriteSheet("/Buttons/MP.png"), true);
 		OP = new Button(WIDTH/Game.SCALE/2-50,170,100,20,screen,input);
 		OP.gfxData(new SpriteSheet("/Buttons/OP.png"), true);
 		QT = new Button(WIDTH/Game.SCALE/2-50,200,100,20,screen,input);
@@ -200,10 +204,15 @@ public class Game extends Canvas implements Runnable{
 					MapSelect = new MapSelection(this);
 					menu = 1;
 				}
+				MP.tick();
+				if(MP.isclicked){
+					ServerList = new ServerList(this);
+					menu = 2;
+				}
 				OP.tick();
 				if(OP.isclicked){
 					OptionScreen = new OptionScreen(this);
-					menu = 2;
+					menu = 3;
 				}
 				QT.tick();
 				if(QT.isclicked){
@@ -214,6 +223,9 @@ public class Game extends Canvas implements Runnable{
 				MapSelect.tick();
 				break;
 			case 2 :
+				ServerList.tick();
+				break;
+			case 3 :
 				OptionScreen.tick();
 				break;
 			}
@@ -245,6 +257,7 @@ public class Game extends Canvas implements Runnable{
 			switch (menu){
 			case 0 :
 				SP.render();
+				MP.render();
 				OP.render();
 				QT.render();
 				break;
@@ -252,6 +265,9 @@ public class Game extends Canvas implements Runnable{
 				MapSelect.render();
 				break;
 			case 2 :
+				ServerList.render();
+				break;
+			case 3 :
 				OptionScreen.render();
 				break;
 			}

@@ -1,9 +1,9 @@
 package Main;
 
+import GUI.Button;
 import ItemList.MatStack;
 import Main.PArea;
 import gfx.SpriteSheet;
-import Main.Button;
 import Main.Game;
 
 public class OptionScreen {

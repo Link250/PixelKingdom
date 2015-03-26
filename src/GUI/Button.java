@@ -1,5 +1,6 @@
-package Main;
+package GUI;
 
+import Main.Game;
 import Main.InputHandler;
 import gfx.Screen;
 import gfx.SpriteSheet;

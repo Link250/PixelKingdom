@@ -6,7 +6,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 
-import Main.Button;
+import GUI.Button;
 import Main.Game;
 import Main.SinglePlayer;
 
@@ -14,7 +14,7 @@ public class MapSelection {
 	 
 	private static final String FILE_DIR = Game.GAME_PATH+"maps";
 	
-	java.util.List<Button> ButtonList;
+	ArrayList<Button> ButtonList;
 	private Game game;
 	private String[] list;
 	private String[] files;

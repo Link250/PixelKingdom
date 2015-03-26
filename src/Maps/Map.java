@@ -14,7 +14,6 @@ public class Map {
 	public Screen screen;
 	public int width = 1024;
 	public int height = 1024;
-	public boolean tickrev;
 	protected UpdateManager updates = new UpdateManager();
 	public int updatecount = 0;
 
