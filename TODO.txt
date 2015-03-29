@@ -6,7 +6,19 @@ Dynamische Lichtquelle (beim tragen einer Torch)
 
 CUDA Berechnung -vielleicht
 
-Daniel mit wichtigen Dingen vertraut machen
+Multiblock ADs
+
+Kampf
+	Equipmentslot Waffe
+	Toggle Key Waffen
+	Schwungwaffen
+	Kettenschwert
+	Schusswaffe
+	Waffe mit Mousetracking
+	
+Interagieren mit Taste
+
+Kiste
 
 Biome:
 -"Astro"Biome
@@ -36,3 +48,5 @@ Pflanzen
 
 Fehlende HD Texturen ergänzen:
 	- Bags
+	
+Sounds
