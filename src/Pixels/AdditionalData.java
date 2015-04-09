@@ -47,10 +47,10 @@ public class AdditionalData{
 	}
 	public void setint(int index, int n){
 		byte[] temp = ConvertData.I2B(n);
-		data[index*2+0]= temp[0];
-		data[index*2+1]= temp[1];
-		data[index*2+2]= temp[2];
-		data[index*2+3]= temp[3];
+		data[index*4+0]= temp[0];
+		data[index*4+1]= temp[1];
+		data[index*4+2]= temp[2];
+		data[index*4+3]= temp[3];
 	}
 	
 	public void save(ArrayList<Byte> file) {

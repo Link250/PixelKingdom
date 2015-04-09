@@ -41,6 +41,8 @@ public class SinglePlayer {
 			create();
 			save();
 		}
+		screen.xOffset= player.x-Game.WIDTH/3/2;
+		screen.yOffset= player.y-Game.HEIGHT/3/2;
 	}
 	
 	public void tick(int tickCount){

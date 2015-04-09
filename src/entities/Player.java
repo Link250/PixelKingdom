@@ -12,7 +12,6 @@ import Items.Recipe.component;
 import Main.ConvertData;
 import Main.Game;
 import Maps.Map;
-import Pixels.PixelList;
 
 public class Player extends Mob{
 	
@@ -357,7 +356,7 @@ public class Player extends Mob{
 	public void create(){
 		this.x = 524800;
 		map.loadChunk(x,524500);
-		int h;for(h = 524500; PixelList.GetMat(this.x, h, map,1).ID==0 && h < 525000; h++){}
+		int h=524500;//for(h = 524500; PixelList.GetMat(this.x, h, map,1).ID==0 && h < 525000; h++){}
 		this.y = h-yOffset;
 		equipment.create();
 		Pickaxe newpick = (Pickaxe) ItemList.NewItem(301);

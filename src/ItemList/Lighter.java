@@ -33,7 +33,7 @@ public class Lighter extends Tool{
 			if(!input.mousel.isPressed()){L=3;}
 			byte burntime = PixelList.GetMat(X, Y, map, L).burnable;
 			if(burntime>0 && Math.sqrt(Math.pow(input.mouse.xMap-plr.x, 2)+Math.pow(input.mouse.yMap-plr.y, 2))<20){
-				map.setID(X, Y, 32, L);
+				map.setID(X, Y, L, 32);
 				((Fire)PixelList.GetMat(X, Y, map, L)).setTime(burntime, map);
 				stack--;
 			}

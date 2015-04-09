@@ -16,18 +16,18 @@ public class Lava extends Liquid{
 		AdditionalData ad = map.getAD(x, y, l);
 		if(ad!=null){
 			if(ad.getshort(1)==0){
-				map.setID(x, y, 0, 2);
-				map.setID(x, y, ad.getshort(0), 1);
+				map.setID(x, y, 2, 0);
+				map.setID(x, y, 1, ad.getshort(0));
 			}else{
 				ad.setshort(1, (short)(ad.getshort(1)-1));
 			}
 		}
 		if(map.getID(x+1, y, l)==1|map.getID(x-1, y, l)==1|map.getID(x, y+1, l)==1|map.getID(x, y-1, l)==1){
 			if(ad!=null){
-				map.setID(x, y, 0, 2);
-				map.setID(x, y, ad.getshort(0), 1);
+				map.setID(x, y, 2, 0);
+				map.setID(x, y, 1, ad.getshort(0));
 			}else{
-				map.setID(x, y, 0, 2);
+				map.setID(x, y, 2, 0);
 				map.setID(x, y, 1, 1);
 			}
 		}

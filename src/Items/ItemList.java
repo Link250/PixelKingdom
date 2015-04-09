@@ -5,7 +5,6 @@ import java.util.ArrayList;
 
 import ItemList.*;
 import Main.Loader;
-import Pixels.Material;
 import Pixels.PixelList;
 
 public class ItemList {
@@ -18,8 +17,8 @@ public class ItemList {
 		for(Class<?> item : list.classes){
 			if(item.toString().endsWith("MatStack")){
 				MatStack m = null;
-				for(Material mat : PixelList.MatList){
-					if(mat.ID!=0){m = new MatStack();m.setMat(mat.ID);itemlist.add(m);}
+				for(int i = 1; i < PixelList.matList.length; i++){
+					if(PixelList.matList[i]!=null){m = new MatStack();m.setMat(i);itemlist.add(m);}
 				}
 			}else{
 				try {

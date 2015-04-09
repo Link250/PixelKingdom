@@ -35,7 +35,7 @@ public class MatStack extends Item{
 			for(int y = -buildsize+1; y < buildsize; y++){
 				for(int x = -buildsize+1; x < buildsize; x++){
 					if(stack>0 && map.getID(input.mouse.xMap+x, input.mouse.yMap+y,l)==0){
-						map.setID(input.mouse.xMap+x,input.mouse.yMap+y,ID,l);
+						map.setID(input.mouse.xMap+x,input.mouse.yMap+y,l,ID);
 						stack--;
 					}
 					if(stack==0){

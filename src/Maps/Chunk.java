@@ -22,7 +22,6 @@ public class Chunk{
 	public byte[] light;
 	private AdditionalData[][] AD;
 	private boolean[][][] updating = new boolean[width][height][4];
-	private byte[] rawfile;
 	private Map map;
 	
 	public Chunk(String path, int x, int y, Map map){
@@ -75,7 +74,7 @@ public class Chunk{
 	public void setAD(int x, int y, int layer, AdditionalData ad){
 		AD[x + y*width][layer-1] = ad;
 	}
-	
+		
 	public void refreshUpdates(){
 		Material m;
 		int ID;
@@ -102,10 +101,7 @@ public class Chunk{
 		}
 	}
 
-	public void load(){
-		File file = new File(path + File.separator + "c-"+x+"-"+y+".pmap");
-		FileInputStream fileInputStream = null;
-		rawfile = new byte[(int) file.length()];
+	public void load(byte[] rawfile){
 		ArrayList<Byte> filedata = new ArrayList<Byte>();
 		front = new short[width*height];
 		mid = new short[width*height];
@@ -113,16 +109,22 @@ public class Chunk{
 		light = new byte[width*height];
 		AD = new AdditionalData[width*height][3];
 		
-		try {
-			fileInputStream = new FileInputStream(file);
-			fileInputStream.read(rawfile);
-			fileInputStream.close();
-		} catch (FileNotFoundException e) {
-			create();
-			return;
-		} catch (IOException e) {
-			e.printStackTrace();
+		if(rawfile==null) {
+			File file = new File(path + File.separator + "c-"+x+"-"+y+".pmap");
+			FileInputStream fileInputStream = null;
+			rawfile = new byte[(int) file.length()];
+			try {
+				fileInputStream = new FileInputStream(file);
+				fileInputStream.read(rawfile);
+				fileInputStream.close();
+			} catch (FileNotFoundException e) {
+				create();
+				return;
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
+		
 		for(int i = 0; i < rawfile.length; i++){
 			filedata.add(rawfile[i]);
 		}
@@ -195,6 +197,16 @@ public class Chunk{
 	}
 	
 	public void save(){
+		try {
+			FileOutputStream fos = new FileOutputStream(path + File.separator + "c-"+x+"-"+y+".pmap");
+			fos.write(compress());
+			fos.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public byte[] compress() {
 		ArrayList<Byte> rawFile = new ArrayList<Byte>();
 		ArrayList<short[]> layers = new ArrayList<short[]>();
 		layers.add(front);
@@ -222,13 +234,7 @@ public class Chunk{
 
 		byte[] newFile = new byte[rawFile.size()];
 		for(int i = 0; i < newFile.length; i++){newFile[i]=rawFile.get(i);}
-
-		try {
-			FileOutputStream fos = new FileOutputStream(path + File.separator + "c-"+x+"-"+y+".pmap");
-			fos.write(newFile);
-			fos.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		
+		return newFile;
 	}
 }

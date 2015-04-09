@@ -27,6 +27,8 @@ import Items.ItemList;
 import Maps.BiomeList;
 import Maps.MapSelection;
 import Main.InputHandler;
+import Multiplayer.Client;
+import Multiplayer.Server;
 import Pixels.PixelList;
 
 public class Game extends Canvas implements Runnable{
@@ -38,9 +40,10 @@ public class Game extends Canvas implements Runnable{
 	public static final int SCALE = 3;
 	public static final String NAME = "Pixel Kingdom";
 	public static final String GAME_PATH = System.getenv("APPDATA") + "\\PixelKingdom\\";
+	public static final int PORT = 7777;
 	static int ticks = 0;
 	static int frames = 0;
-	static int fps = 0;
+	public static int fps = 0;
 	
 	private JFrame frame;
 	
@@ -73,6 +76,8 @@ public class Game extends Canvas implements Runnable{
 	public static PxlFont mfont;
 	private Button SP, MP, OP, QT;
 	public SinglePlayer SinglePlayer;
+	public Client client;
+	public Server server;
 	public ServerList ServerList;
 	public MapSelection MapSelect;
 	public OptionScreen OptionScreen;
@@ -135,6 +140,7 @@ public class Game extends Canvas implements Runnable{
 		screen.yOffset=0;
 		Mouse.Item = null;
 		Mouse.mousetype=0;
+		if(client!=null)client.reset();
 		for(int y = 0; y < screen.height/3; y++){
 			for(int x = 0; x < screen.width/3; x++){
 				screen.shadow[x + y * screen.width/3] = 0;
@@ -145,7 +151,9 @@ public class Game extends Canvas implements Runnable{
 	
 	public synchronized void start() {
 		running = true;
-		new Thread(this).start();
+		Thread t = new Thread(this);
+		t.setName("Main Game");
+		t.start();
 	}
 
 	public synchronized void stop() {
@@ -195,6 +203,7 @@ public class Game extends Canvas implements Runnable{
 	public void tick(){
 		tickCount++;
 		if(reset)reset();
+		if(server!=null)server.tick(tickCount);
 		switch (gamemode){
 		case 0 : 
 			switch (menu){
@@ -232,6 +241,11 @@ public class Game extends Canvas implements Runnable{
 			break;
 		case 1 :
 			SinglePlayer.tick(tickCount);
+			break;
+		case 2 :
+			try {
+				client.tick(tickCount);
+			} catch (IOException e) {Game.reset=true;}
 			break;
 		default : break;
 		}
@@ -274,6 +288,9 @@ public class Game extends Canvas implements Runnable{
 			break;
 		case 1 :
 			SinglePlayer.render(g);
+			break;
+		case 2 :
+			client.render(g);
 			break;
 		default : break;
 		}		

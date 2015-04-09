@@ -12,6 +12,8 @@ import java.util.List;
 import GUI.Button;
 import gfx.SpriteSheet;
 import Main.Game;
+import Multiplayer.Client;
+import Multiplayer.Server;
 
 public class ServerList {
 	
@@ -21,7 +23,7 @@ public class ServerList {
 	private ArrayList<String> adress;
 	private ArrayList<String> name;
 	private Game game;
-	private Button  back,add,del,join,scrollUP,scrollDOWN;
+	private Button  back,add,del,join,scrollUP,scrollDOWN,start;
 	private int selected = 0;
 	
 	public ServerList(Game game) {
@@ -30,6 +32,8 @@ public class ServerList {
 		back.gfxData(new SpriteSheet("/Buttons/back.png"), true);
 		add = new Button(game.screen.width/Game.SCALE-30, 10, 20, 20, game.screen, game.input);
 		add.gfxData(new SpriteSheet("/Buttons/new.png"), true);
+		start = new Button(game.screen.width/Game.SCALE-30, game.screen.height/Game.SCALE-30, 20, 20, game.screen, game.input);
+		start.gfxData(new SpriteSheet("/Buttons/new.png"), true);
 		del = new Button(game.screen.width/Game.SCALE/2-80, 100, 20, 20, game.screen, game.input);
 		del.gfxData(new SpriteSheet("/Buttons/delete.png"), true);
 		join = new Button(game.screen.width/Game.SCALE/2+60, 100, 20, 20, game.screen, game.input);
@@ -94,7 +98,7 @@ public class ServerList {
 		}
 		if(add.isclicked){
 	        name.add("Server"+name.size());
-	        adress.add("123.456.78."+adress.size());
+	        adress.add("46.5.116.45");
 			LoadServers(true);
 		}
 		if(del.isclicked&ButtonList.size()!=0){
@@ -102,9 +106,20 @@ public class ServerList {
 			adress.remove(selected);
 			LoadServers(true);
 		}
+		if(start.isclicked && game.server==null){
+			game.server=new Server(game,Game.GAME_PATH+"maps\\Map1");
+			Thread t = new Thread(game.server);
+			t.setName("Server");
+			t.start();
+		}
+		if(join.isclicked){
+			game.client = new Client(game, adress.get(selected));
+			Game.gamemode = 2;
+		}
 		back.tick();
 		add.tick();
 		del.tick();
+		if(game.server==null)start.tick();
 		if(ButtonList.size()!=0)join.tick();
 		if(selected > 0)scrollUP.tick();
 		if(scrollUP.isclicked && selected > 0)selected--;
@@ -122,6 +137,8 @@ public class ServerList {
 		}
 		back.render();
 		add.render();
+		if(game.server==null)start.render();
+		else Game.font.render(game.screen.width/Game.SCALE/2-65, game.screen.height/Game.SCALE-20, "ServerRunning", 0, 0xff000000, game.screen);
 		if(ButtonList.size()!=0)del.render();
 		if(ButtonList.size()!=0)join.render();
 		if(selected > 0)scrollUP.render();

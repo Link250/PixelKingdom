@@ -3,25 +3,44 @@ package Maps;
 import gfx.Screen;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+
+import Main.ConvertData;
+import Main.Game;
+import Multiplayer.Client;
+import Multiplayer.MapManager;
+import Multiplayer.Request;
+import Multiplayer.Server;
 import Pixels.AdditionalData;
 import Pixels.Material;
 import Pixels.PixelList;
 
 public class Map {
 
-	public static final int LAYER_LIGHT = 0, LAYER_FRONT = 1, LAYER_LIQUID = 2, LAYER_BACK=3, MAX_LIGHT=64;
+	public static final int LAYER_LIGHT = 0, LAYER_FRONT = 1, LAYER_LIQUID = 2, LAYER_BACK=3,
+			MAX_LIGHT=64,
+			GT_SP=0,GT_CLIENT=1,GT_SERVER=2;
 	public String path;
 	public Screen screen;
 	public int width = 1024;
 	public int height = 1024;
 	protected UpdateManager updates = new UpdateManager();
 	public int updatecount = 0;
+	private ArrayList<MapManager.chunkLoader> cloaders = new ArrayList<MapManager.chunkLoader>();
+	private int gametype = 0;
+	private MapManager mapManager;
 
 	private Chunk[][] chunks = new Chunk[width][height];
 	
 	public Map(String path, Screen screen){
 		this.path = path;
 		this.screen = screen;
+	}
+	
+	public void setGametype(int gt){
+		gametype = gt;
+		if(gt==GT_CLIENT&mapManager==null)mapManager = new MapManager(this);
 	}
 	
 	public void tick(int tickCount){
@@ -45,7 +64,6 @@ public class Map {
 			}
 			updatecount++;
 		}
-
 	}
 	
 	public boolean isUpdating(int x, int y, int l){
@@ -124,84 +142,128 @@ public class Map {
 					ID = getID(X,Y,l);
 					if(ID==-1){
 						loadChunk(X,Y);
-						ID = getID(X,Y,l);
-					}
-					if(light == MAX_LIGHT){
-						screen.renderShadow(X, Y, 0xff000000);
-					}else{
-						if(ID!=0){
-							if(l!=2)m = PixelList.GetMat(ID);
-							else m = PixelList.GetLiquid(ID);
-							m.SetPos(X, Y, l-1);
-							m.render(this,screen,l);
+//						try{ID = cloaders.get(0).chunk.getID(X%1024, Y%1024, l);}catch(NullPointerException|IndexOutOfBoundsException e) {}
+//						light = 0;
+					}else {
+						if(light == MAX_LIGHT){
+							screen.renderShadow(X, Y, 0xff000000);
+						}else{
+							if(ID!=0){
+								if(l!=2)m = PixelList.GetMat(ID);
+								else m = PixelList.GetLiquid(ID);
+								m.SetPos(X, Y, l-1);
+								m.render(this,screen,l);
+							}
+							if(l==1)screen.renderShadow(X, Y, ((MAX_LIGHT-getlight(X,Y))<<26));
 						}
-						if(l==1)screen.renderShadow(X, Y, ((MAX_LIGHT-getlight(X,Y))<<26));
 					}
 				}
 			}
 		}
 	}
 	
-	public void loadChunk(int x, int y){
+	public boolean loadChunk(int x, int y){
 		int cx = x/1024,cy = y/1024;
-		Chunk c = new Chunk(path, cx, cy, this);c.load();
-		chunks[cx][cy]=c;
-		chunks[cx][cy].refreshUpdates();
+		for(int i = 0; i < cloaders.size(); i++) {
+			if(cloaders.get(i).finished) {
+				try{
+					MapManager.chunkLoader cl = cloaders.remove(i);
+					if(!cl.canceled) {
+						chunks[cl.chunk.x][cl.chunk.y]=cl.chunk;
+						chunks[cl.chunk.x][cl.chunk.y].refreshUpdates();
+						return true;
+					}
+				}catch(IndexOutOfBoundsException e) {}
+				return false;
+			}
+			if(cx==cloaders.get(i).chunk.x & cy==cloaders.get(i).chunk.y)return false;
+		}
+		if(chunks[cx][cy]==null) {
+			MapManager.chunkLoader l = new MapManager.chunkLoader(new Chunk(path, cx, cy, this));
+			cloaders.add(l);
+			Thread t = new Thread(l);
+			t.setName("ChunkLoader"+cx+"_"+cy);
+			t.start();
+			return false;
+		}else {
+			return true;
+		}
+	}
+	
+	public void cancelChunkLoading() {
+		for(int i = 0; i < cloaders.size(); i++)cloaders.get(i).canceled=true;
 	}
 	
 	public int getID(int x, int y, int layer){
 		int cx = x/1024,cy = y/1024;
-		x %= 1024;y %= 1024;
 		if(chunks[cx][cy]!=null){
+			x %= 1024;y %= 1024;
 			return chunks[cx][cy].getID(x, y, layer);
 		}else{
 			return -1;
 		}
 	}
-	public void setID(int x, int y, int ID, int layer){
-		setID(x,y,ID,layer,null);
+	public void setID(int x, int y, int l, int ID){
+		setID(x,y,l,ID,null,false);
 	}
-	public void setID(int x, int y, int ID, int layer, AdditionalData ad){
+	public void setID(int x, int y, int l, int ID, AdditionalData ad, boolean skipcheck){
 		int cx = x/1024,cy = y/1024;
 		if(chunks[cx][cy]!=null){
-			addBlockUpdate(x, y, layer);
-			if(ad!=null)setAD(x,y,layer,ad);
-			else PixelList.GetMat(ID).createAD(x, y, layer, this);
-			x %= 1024;y %= 1024;
-			chunks[cx][cy].setID(x, y, (short) ID, layer);
+			addBlockUpdate(x, y, l);
+			if(ad!=null)setAD(x,y,l,ad);
+			else PixelList.GetMat(ID).createAD(x, y, l, this);
+			chunks[cx][cy].setID(x%1024, y%1024, (short) ID, l);
+		}
+		if(!skipcheck) {
+			switch(gametype) {
+			case GT_CLIENT:
+				try {
+					Client.send2Server(Request.MAP_DATA);
+					Client.send2Server(ConvertData.I2B(x));
+					Client.send2Server(ConvertData.I2B(y));
+					Client.send2Server(ConvertData.I2B(l));
+					Client.send2Server(ConvertData.I2B(ID));
+				} catch (IOException e1) {e1.printStackTrace();}
+//				System.out.println("sent map data");
+				//send to server
+				return;
+			case GT_SERVER:
+				try {
+					Server.sendMapData(x, y, l, ID);
+				} catch (IOException e) {Game.reset=true;}
+				return;
+			default:return;
+			}
 		}
 	}
 	
 	public void movePixel(int xs, int ys, int ls, int xf, int yf, int lf){
-		if(getAD(xs,ys,ls)!=null)setID(xf,yf,getID(xs,ys,ls),lf,new AdditionalData(getAD(xs,ys,ls)));
-		else setID(xf,yf,getID(xs,ys,ls),lf,null);
-		setID(xs,ys,0,ls);
+		if(getAD(xs,ys,ls)!=null)setID(xf,yf,lf,getID(xs,ys,ls),new AdditionalData(getAD(xs,ys,ls)),false);
+		else setID(xf,yf,lf,getID(xs,ys,ls),null,false);
+		setID(xs,ys,ls,0);
 	}
 	
 	public AdditionalData getAD(int x, int y, int layer){
 		int cx = x/1024,cy = y/1024;
-		x %= 1024;y %= 1024;
 		if(chunks[cx][cy]!=null){
+			x %= 1024;y %= 1024;
 			return chunks[cx][cy].getAD(x, y, layer);
 		}else{
 			return null;
-//			Chunk c = new Chunk(path, cx, cy, this);c.load();
-//			chunks[cx][cy]=c;
-//			return getAD(x, y, layer);
 		}
 	}
 	public void setAD(int x, int y, int layer, AdditionalData ad){
 		int cx = x/1024,cy = y/1024;
-		x %= 1024;y %= 1024;
 		if(chunks[cx][cy]!=null){
+			x %= 1024;y %= 1024;
 			chunks[cx][cy].setAD(x, y, layer, ad);
 		}
 	}
 
 	public byte getlight(int x, int y){
 		int cx = x/1024,cy = y/1024;
-		x %= 1024;y %= 1024;
 		if(chunks[cx][cy]!=null){
+			x %= 1024;y %= 1024;
 			return chunks[cx][cy].light[x+y*width];
 		}else{
 			return 0;
@@ -209,8 +271,8 @@ public class Map {
 	}
 	public void setlight(int x, int y, byte b){
 		int cx = x/1024,cy = y/1024;
-		x %= 1024;y %= 1024;
 		if(chunks[cx][cy]!=null){
+			x %= 1024;y %= 1024;
 			chunks[cx][cy].light[x+y*width]=b;
 		}
 	}
@@ -230,6 +292,10 @@ public class Map {
 				if(chunks[x][y]!=null)chunks[x][y].save();
 			}
 		}
+	}
+	
+	public byte[] compressedChunk(int x, int y) {
+		return chunks[x][y].compress();
 	}
 	
 	public static void newMap(String path,String name){

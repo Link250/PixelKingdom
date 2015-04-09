@@ -20,14 +20,14 @@ public class Fire extends Material{
 		if(Math.random()*500<1){
 			spread(map);
 		}
-		if(map.getID(x, y, 2)==1){map.setID(x, y, 0, l);return true;}
+		if(map.getID(x, y, 2)==1){map.setID(x, y, l, 0);return true;}
 		if(numTick%60==30){
 			ad = map.getAD(x, y, l);
 			byte n = ad.getbyte(0);
 			if(n>0){
 				ad.setbyte(0, (byte) (n-1));
 			}else{
-				map.setID(x, y, 0, l);return true;
+				map.setID(x, y, l, 0);return true;
 			}
 		}
 		return true;
@@ -46,7 +46,7 @@ public class Fire extends Material{
 					Xt = x+X;Yt = y+Y;
 					burntime = PixelList.GetMat(Xt, Yt, map, L).burnable;
 					if((int)(Math.random()*100+1)<=burntime){
-						map.setID(Xt, Yt, 32, L);
+						map.setID(Xt, Yt, L, 32);
 						((Fire)PixelList.GetMat(Xt, Yt, map, L)).setTime(burntime,map);
 					}
 				}

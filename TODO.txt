@@ -49,4 +49,14 @@ Pflanzen
 Fehlende HD Texturen ergänzen:
 	- Bags
 	
+Geladene Items als Arrays, nicht als Liste laden -bessere performance ?
+
+maximaler Chunk bereich von 3*3 mit offsets für weniger ram und gleich bleibende performance
+
+Multiplayer
+	-nur die grafische darstellung wird vom spieler übernommen
+	-alles mit Updates macht der Server
+	-maps werden komprimiert
+	-kollektive updates (eine ID mit mehreren koordinaten, zb bei großen wasser/feuer mengen)
+
 Sounds

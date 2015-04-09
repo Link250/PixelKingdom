@@ -22,7 +22,7 @@ public abstract class Ore extends Material{
 			ad = map.getAD(x, y, l);
 		}
 		if(ad.getshort(0)>=melt){
-			map.setID(x, y, 0, l);
+			map.setID(x, y, l, 0);
 			map.setID(x, y, 2, 2);
 			((Lava)PixelList.GetMat(x, y, map, 2)).setMat(ingot, map);
 		}else{
