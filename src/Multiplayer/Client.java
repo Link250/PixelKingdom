@@ -23,7 +23,7 @@ import Maps.Map;
 
 public class Client {
 
-	private String IP = "46.5.116.45";
+	private String IP = "91.89.152.87";
 	private static OutputStream out;
 	private InputStream in;
 	private Socket serverConnection = null;

@@ -21,9 +21,11 @@ public class PixelList {
 		addMaterial(new Torch());
 		addMaterial(new Ore_Coal());
 		addMaterial(new Ore_Iron());
+		addMaterial(new Ore_Gold());
 		addMaterial(new Oven());
 		addMaterial(new Fire());
 		addMaterial(new Iron());
+		addMaterial(new Gold());
 		addLiquid(new Water());
 		addLiquid(new Lava());
 	}

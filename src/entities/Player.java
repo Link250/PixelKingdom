@@ -1,6 +1,7 @@
 package entities;
 
 
+import java.awt.Point;
 import java.util.ArrayList;
 
 import gfx.Mouse;
@@ -37,6 +38,7 @@ public class Player extends Mob{
 	public BeltBagInv beltbaginv1;
 	public ItemBagInv itembaginv1, itembaginv2;
 	public RecipeList recipelist = new RecipeList();
+	private Point hotBar = new Point(0,0);
 	private boolean openInv = false;
 	private boolean openEquip = false;
 	private boolean openCraft = false;
@@ -207,16 +209,18 @@ public class Player extends Mob{
 		
 		/*		HOTBAR		*/
 		if(game.input.mousem.click() || game.input.H.click()){
-			if(openHotBar == 0){
+			if(openHotBar == 0) {
+				hotBar.x = game.input.mouse.x;
+				hotBar.y = game.input.mouse.y;
 				openHotBar++;
-			}
-			else openHotBar=0;
+			}else
+				openHotBar=0;
 		}
 		if(openHotBar != 0){
 			if(equipment.beltbag1 != null){
 				if(openHotBar < 20+equipment.beltbag1.inventory.length)openHotBar +=2;
-				if(Math.sqrt(Math.pow((game.input.mouse.x-game.input.mousem.x)/Game.SCALE, 2)+Math.pow((game.input.mouse.y-game.input.mousem.y)/Game.SCALE, 2)) >= 20+equipment.beltbag1.inventory.length){
-					selected = (byte)(equipment.beltbag1.inventory.length/2-Math.atan2(game.input.mouse.x-game.input.mousem.x, game.input.mouse.y-game.input.mousem.y)/(Math.PI*2/equipment.beltbag1.inventory.length));
+				if(Math.sqrt(Math.pow((game.input.mouse.x-hotBar.x)/Game.SCALE, 2)+Math.pow((game.input.mouse.y-hotBar.y)/Game.SCALE, 2)) >= 20+equipment.beltbag1.inventory.length){
+					selected = (byte)(equipment.beltbag1.inventory.length/2-Math.atan2(game.input.mouse.x-hotBar.x, game.input.mouse.y-hotBar.y)/(Math.PI*2/equipment.beltbag1.inventory.length));
 				}
 			}
 		}
@@ -319,19 +323,19 @@ public class Player extends Mob{
 			if(equipment.beltbag1 != null){
 				for(int i = 0; i < equipment.beltbag1.inventory.length; i ++){
 					game.screen.renderGUITile(
-							game.input.mousem.x/Game.SCALE+game.screen.xOffset+(int)(openHotBar*Math.sin((i+0.5)*Math.PI*2/equipment.beltbag1.inventory.length))-6
-							,game.input.mousem.y/Game.SCALE+game.screen.yOffset+(int)(-openHotBar*Math.cos((i+0.5)*Math.PI*2/equipment.beltbag1.inventory.length))-6
+							hotBar.x/Game.SCALE+game.screen.xOffset+(int)(openHotBar*Math.sin((i+0.5)*Math.PI*2/equipment.beltbag1.inventory.length))-6
+							,hotBar.y/Game.SCALE+game.screen.yOffset+(int)(-openHotBar*Math.cos((i+0.5)*Math.PI*2/equipment.beltbag1.inventory.length))-6
 							, 0, 0, itemBackground, 0);
 					if(i == selected){
 						game.screen.renderGUITile(
-								game.input.mousem.x/Game.SCALE+game.screen.xOffset+(int)(openHotBar*Math.sin((selected+0.5)*Math.PI*2/equipment.beltbag1.inventory.length))-6
-								,game.input.mousem.y/Game.SCALE+game.screen.yOffset+(int)(-openHotBar*Math.cos((selected+0.5)*Math.PI*2/equipment.beltbag1.inventory.length))-6
+								hotBar.x/Game.SCALE+game.screen.xOffset+(int)(openHotBar*Math.sin((selected+0.5)*Math.PI*2/equipment.beltbag1.inventory.length))-6
+								,hotBar.y/Game.SCALE+game.screen.yOffset+(int)(-openHotBar*Math.cos((selected+0.5)*Math.PI*2/equipment.beltbag1.inventory.length))-6
 								, 0, 0, itemBackgrounds, 0);
 					}
 					try{
 						equipment.beltbag1.inventory[i].render(game.screen
-								,game.input.mousem.x/Game.SCALE+game.screen.xOffset+(int)(openHotBar*Math.sin((i+0.5)*Math.PI*2/equipment.beltbag1.inventory.length))-5
-								,game.input.mousem.y/Game.SCALE+game.screen.yOffset+(int)(-openHotBar*Math.cos((i+0.5)*Math.PI*2/equipment.beltbag1.inventory.length))-5
+								,hotBar.x/Game.SCALE+game.screen.xOffset+(int)(openHotBar*Math.sin((i+0.5)*Math.PI*2/equipment.beltbag1.inventory.length))-5
+								,hotBar.y/Game.SCALE+game.screen.yOffset+(int)(-openHotBar*Math.cos((i+0.5)*Math.PI*2/equipment.beltbag1.inventory.length))-5
 								,true);
 					}catch(NullPointerException e){}
 				}
@@ -362,14 +366,19 @@ public class Player extends Mob{
 		Pickaxe newpick = (Pickaxe) ItemList.NewItem(301);
 		equipment.beltbag1.inventory[0] = newpick;
 		if(Game.devmode){
-			newpick = (Pickaxe) ItemList.NewItem(333);equipment.beltbag1.inventory[1] = newpick;
 			Item newitem = ItemList.NewItem(64); newitem.addStack(999);
-			equipment.beltbag1.inventory[2] = newitem;
+			equipment.materialbag1.inventory[0] = newitem;
 			newitem = ItemList.NewItem(16); newitem.addStack(999);
-			equipment.beltbag1.inventory[3] = newitem;
+			equipment.materialbag1.inventory[1] = newitem;
 			newitem = ItemList.NewItem(17); newitem.addStack(999);
-			equipment.beltbag1.inventory[4] = newitem;
-			equipment.beltbag1.inventory[5] = ItemList.NewItem(400);
+			equipment.materialbag1.inventory[2] = newitem;
+			newitem = ItemList.NewItem(18); newitem.addStack(999);
+			equipment.materialbag1.inventory[3] = newitem;
+			
+			newpick = (Pickaxe) ItemList.NewItem(333);
+			equipment.beltbag1.inventory[1] = newpick;
+			equipment.beltbag1.inventory[2] = ItemList.NewItem(400);
+			equipment.beltbag1.inventory[3] = ItemList.NewItem(332);
 			equipment.itembag2 = (ItemBag) ItemList.NewItem(403);
 		}
 	}

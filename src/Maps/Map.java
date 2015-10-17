@@ -91,10 +91,12 @@ public class Map {
 	}
 	
 	public void addBlockUpdate(int x, int y, int l){
-		for(int X = -1; X < 2; X++){
-			for(int Y = -1; Y < 2; Y++){
-				for(int L = 0; L < 4; L++){
-					if(setUpdating(x+X, y+Y, L))updates.addUpdate(x+X, y+Y, L);
+		int Sx;if(Math.random()<0.5)Sx=1;else Sx=-1;
+		int Sy;if(Math.random()<0.5)Sy=1;else Sy=-1;
+		for(int X = 0; X <= 2; X++){
+			for(int Y = 0; Y <= 2; Y++){
+				for(int L = 0; L <= 3; L++){
+					if(setUpdating(x+Sx*X-Sx, y+Sy*Y-Sy, L))updates.addUpdate(x+Sx*X-Sx, y+Sy*Y-Sy, L);
 				}
 			}
 		}
