@@ -21,11 +21,11 @@ import entities.MPlayer;
 			int i = 0,n;
 			try {i = in.read();} catch (IOException e) {e.printStackTrace();}
 			switch(i) {
-			case 1:
+			case Request.PLAYER.NEW:
 				plrs.add(new MPlayer(game.client.map, game, in.read()));
 				System.out.println("new player");
 				break;
-			case 2:
+			case Request.PLAYER.DELETE:
 				n = in.read();
 				for(int j = 0; j < plrs.size(); j++) {
 					if(plrs.get(j).number==n) {
@@ -35,7 +35,7 @@ import entities.MPlayer;
 					}
 				}
 				break;
-			case 3:
+			case Request.PLAYER.REFRESH:
 				n = 0;
 				try {n = in.read();} catch (IOException e) {}
 				for(int j = 0; j < plrs.size(); j++) {

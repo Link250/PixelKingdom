@@ -67,7 +67,7 @@ public class Client {
 		for(MPlayer p : players)p.tick(tickCount);
 		if(tickCount%4==0) player.Gravity();
 		
-		if(tickCount%2==0) {
+		if(tickCount%45==0) {
 			byte[] data = new byte[8];
 			ArrayList<Byte> temp = new ArrayList<Byte>();
 			ConvertData.I2B(temp, player.x); ConvertData.I2B(temp, player.y);

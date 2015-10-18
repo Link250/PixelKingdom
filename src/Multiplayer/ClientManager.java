@@ -53,12 +53,18 @@ public class ClientManager implements Runnable {
 		}
 	}
 	
-	public void sendToClient(byte[] b) throws IOException{
+	public void sendToClient(byte[] b, String reason) throws IOException{
 		clientOut.write(b);
+		clientOut.flush();
+		System.out.println("sent b array for "+reason);
 	}
 
-	public void sendToClient(int i) throws IOException{
+	public void sendToClient(int i, String reason) throws IOException{
+//		byte[] b = {(byte) (i>>24),(byte) (i>>16),(byte) (i>>8),(byte) i};
+//		sendToClient(b);
 		clientOut.write(i);
+		clientOut.flush();
+		System.out.println("sent int for "+reason);
 	}
 	
 	public void closeConnection() {

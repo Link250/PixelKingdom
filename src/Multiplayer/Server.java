@@ -42,55 +42,54 @@ public class Server implements Runnable{
 		while(!map.loadChunk(x*1024, y*1024)) {try {Thread.sleep(1);} catch (InterruptedException e) {}}
 		System.out.println("sending chunk");
 		byte[] mapd = map.compressedChunk(x, y);
-		c.sendToClient(Request.CHUNK_DATA);
-		c.sendToClient(ConvertData.I2B(mapd.length));
-		c.sendToClient(mapd);
+		c.sendToClient(Request.CHUNK_DATA,"chunk");
+		c.sendToClient(ConvertData.I2B(mapd.length),"chunk");
+		c.sendToClient(mapd,"chunk");
 	}
 	
 	public void receivePlayerData(ClientManager c, InputStream cIn) throws IOException {
-		byte[] data = new byte[8];
+		byte[] data = new byte[11];
 		ArrayList<Byte> temp = new ArrayList<Byte>();
 		try {for(int i = 0; i < 8; i ++)temp.add((byte) cIn.read());} catch (IOException e) {}
-		for(int i = 0; i < temp.size(); i++)data[i]=temp.get(i);
+		for(int i = 0; i < temp.size(); i++)data[i+3]=temp.get(i);
 		c.player.x = ConvertData.B2I(temp);
 		c.player.y = ConvertData.B2I(temp);
-		 
+		data[0]=Request.PLAYER_DATA;
+		data[1]=Request.PLAYER.REFRESH;
+		data[2]=(byte) c.id;
+		
 		for(ClientManager cm : clients) {
 			if(cm!=c) {
-				cm.sendToClient(Request.PLAYER_DATA);
-				cm.sendToClient(3);
-				cm.sendToClient(c.id);
-				cm.sendToClient(data);
+				cm.sendToClient(data,"player refresh");
 			}
 		}
 	}
 	
 	public void receiveMapData(ClientManager c, InputStream cIn) throws IOException {
-		byte[] data = new byte[16];
+		byte[] data = new byte[17]; data[0]=Request.MAP_DATA;
 		ArrayList<Byte> temp = new ArrayList<Byte>();
 		try {for(int i = 0; i < 16; i ++)temp.add((byte) cIn.read());} catch (IOException e) {}
-		for(int i = 0; i < temp.size(); i++)data[i]=temp.get(i);
+		for(int i = 0; i < temp.size(); i++)data[i+1]=temp.get(i);
 		map.setID(ConvertData.B2I(temp), ConvertData.B2I(temp), ConvertData.B2I(temp), ConvertData.B2I(temp), null, true);
 //		System.out.println("got map data");
 		
 		for(ClientManager cm : clients) {
 			if(cm!=c) {
-				cm.sendToClient(Request.MAP_DATA);
-				cm.sendToClient(data);
+				cm.sendToClient(data,"map data plr");
 			}
 		}
 	}
 	public static void sendMapData(int x, int y, int l, int ID) throws IOException {
-		byte[] data = new byte[16];
+		byte[] data = new byte[17];
 		ArrayList<Byte> temp = new ArrayList<Byte>();
 		ConvertData.I2B(temp, x);
 		ConvertData.I2B(temp, y);
 		ConvertData.I2B(temp, l);
 		ConvertData.I2B(temp, ID);
-		for(int i = 0; i < temp.size(); i++)data[i]=temp.get(i);
+		data[0]=Request.MAP_DATA;
+		for(int i = 0; i < temp.size(); i++)data[i+1]=temp.get(i);
 		for(ClientManager cm : clients) {
-				cm.sendToClient(Request.MAP_DATA);
-				cm.sendToClient(data);
+				cm.sendToClient(data, "MapData");
 		}
 	}
 	
@@ -104,9 +103,8 @@ public class Server implements Runnable{
 			if(cm.id==c) {
 				for(ClientManager cmt : clients) {
 					if(cmt.id!=c) {
-						cm.sendToClient(Request.PLAYER_DATA);
-						cm.sendToClient(1);
-						cm.sendToClient(cmt.id);
+						byte[] data = {Request.PLAYER_DATA,Request.PLAYER.NEW,(byte) cmt.id};
+						cm.sendToClient(data, "send old players");
 					}
 				}
 			}
@@ -116,11 +114,11 @@ public class Server implements Runnable{
 	public void closeConnection(int id){
 		ClientManager c = getClient(id);
 		try {
-			c.sendToClient(Request.CLOSE_CONNECTION);
+			c.sendToClient(Request.CLOSE_CONNECTION, "close plr");
 			c.closeConnection();
 			clients.remove(c);
 			sendClients(Request.PLAYER_DATA);
-			sendClients(2);
+			sendClients(Request.PLAYER.DELETE);
 			sendClients(id);
 			System.out.println("Client "+id+" disconnected");
 		} catch (IOException e) {
@@ -130,12 +128,12 @@ public class Server implements Runnable{
 	
 	public void sendClients(int i) throws IOException{
 		for(ClientManager c : clients){
-			c.sendToClient(i);
+			c.sendToClient(i,"mass sent i");
 		}
 	}
 	public void sendClients(byte[] b) throws IOException{
 		for(ClientManager c : clients){
-			c.sendToClient(b);
+			c.sendToClient(b,"mass sent b");
 		}
 	}
 	
