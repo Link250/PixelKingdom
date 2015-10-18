@@ -221,10 +221,10 @@ public class Map {
 			case GT_CLIENT:
 				try {
 					Client.send2Server(Request.MAP_DATA);
-					Client.send2Server(ConvertData.I2B(x));
-					Client.send2Server(ConvertData.I2B(y));
-					Client.send2Server(ConvertData.I2B(l));
-					Client.send2Server(ConvertData.I2B(ID));
+					Client.send2Server(x);
+					Client.send2Server(y);
+					Client.send2Server(l);
+					Client.send2Server(ID);
 				} catch (IOException e1) {e1.printStackTrace();}
 //				System.out.println("sent map data");
 				//send to server

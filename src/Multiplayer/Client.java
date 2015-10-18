@@ -103,10 +103,23 @@ public class Client {
 	}
 	
 	public static void send2Server(int i) throws IOException{
-		out.write(i);
+		byte[] b = {(byte) (i>>24),(byte) (i>>16),(byte) (i>>8),(byte) i};
+		out.write(b);
 		out.flush();
 	}
-
+	
+	public static void send2Server(short i) throws IOException{
+		byte[] b = {(byte) (i>>8),(byte) i};
+		out.write(b);
+		out.flush();
+	}
+	
+	public static void send2Server(byte i) throws IOException{
+		byte[] b = {i};
+		out.write(b);
+		out.flush();
+	}
+	
 	public static void send2Server(byte[] b) throws IOException{
 		out.write(b);
 		out.flush();
