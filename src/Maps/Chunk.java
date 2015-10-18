@@ -5,7 +5,12 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+
+import org.tukaani.xz.LZMA2Options;
+import org.tukaani.xz.XZInputStream;
+import org.tukaani.xz.XZOutputStream;
 
 import Main.ConvertData;
 import Pixels.AdditionalData;
@@ -101,6 +106,7 @@ public class Chunk{
 		}
 	}
 
+	@SuppressWarnings("unused")
 	public void load(byte[] rawfile){
 		ArrayList<Byte> filedata = new ArrayList<Byte>();
 		front = new short[width*height];
@@ -111,20 +117,45 @@ public class Chunk{
 		
 		if(rawfile==null) {
 			File file = new File(path + File.separator + "c-"+x+"-"+y+".pmap");
-			FileInputStream fileInputStream = null;
-			rawfile = new byte[(int) file.length()];
-			try {
-				fileInputStream = new FileInputStream(file);
-				fileInputStream.read(rawfile);
-				fileInputStream.close();
-			} catch (FileNotFoundException e) {
-				create();
-				return;
-			} catch (IOException e) {
-				e.printStackTrace();
+			InputStream fIS = null;
+			if(true) {
+				rawfile = new byte[(int) file.length()];
+				try {
+					fIS = new FileInputStream(file);
+					fIS.read(rawfile);
+					fIS.close();
+				} catch (FileNotFoundException e) {
+					create();
+					return;
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				for(int i = 0; i < rawfile.length; i++){
+					filedata.add(rawfile[i]);
+				}
+			}else {
+				try {
+					fIS = new FileInputStream(file);
+					fIS = new XZInputStream(fIS);
+					ArrayList<byte[]> bytes = new ArrayList<byte[]>();
+					int s = 0;
+					byte[] b = new byte[8192];
+					while((s = fIS.read(b)) == 8192)
+						{bytes.add(b);b = new byte[8192];}bytes.add(b);
+					fIS.close();
+					s = (bytes.size()-1)*8192 + s;
+					int j = 0;
+					try {
+						for(byte[] btemp : bytes) {
+							for(int i = 0; i < btemp.length && filedata.size() < s; i++) {
+								filedata.add(btemp[i]);
+							}
+						}
+					}catch(ArrayIndexOutOfBoundsException e) {}
+				}catch (FileNotFoundException e) {System.out.println("no file found");create();return;} catch (IOException e) {e.printStackTrace();}
 			}
 		}
-		
+		else
 		for(int i = 0; i < rawfile.length; i++){
 			filedata.add(rawfile[i]);
 		}
@@ -201,6 +232,10 @@ public class Chunk{
 			FileOutputStream fos = new FileOutputStream(path + File.separator + "c-"+x+"-"+y+".pmap");
 			fos.write(compress());
 			fos.close();
+			
+//			XZOutputStream out = new XZOutputStream(fos, new LZMA2Options());
+//			out.write(compress());
+//			out.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

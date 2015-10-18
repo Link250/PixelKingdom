@@ -7,6 +7,7 @@ public class Lava extends Liquid{
 	public Lava(){
 		ID = 2;
 		name = "Lava";
+		viscosity = 10;
 	}
 	
 	public boolean tick(int numTick, Map map) {

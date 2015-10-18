@@ -7,6 +7,7 @@ public class Water extends Liquid{
 	public Water(){
 		ID = 1;
 		name = "Water";
+		viscosity = 1000;
 	}
 	
 	public boolean tick(int numTick, Map map) {
