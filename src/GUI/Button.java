@@ -70,12 +70,12 @@ public class Button {
 			for(int i = 0; i < height; i++){
 				for(int j = 0; j < width; j++){
 					if(mouseover){
-						if(i==0 || i==height-1 || j==0 || j==width-1)screen.renderPixelScaled(x+j, y+i, 0xffC0C0C0);
-						else screen.renderPixelScaled(x+j, y+i, 0xff606060);
+						if(i==0 || i==height-1 || j==0 || j==width-1)screen.drawPixelScaled(x+j, y+i, 0xffC0C0C0);
+						else screen.drawPixelScaled(x+j, y+i, 0xff606060);
 					}
 					else{
-						if(i==0 || i==height-1 || j==0 || j==width-1)screen.renderPixelScaled(x+j, y+i, 0xffC0C0C0);
-						else screen.renderPixelScaled(x+j, y+i, 0xffA0A0A0);
+						if(i==0 || i==height-1 || j==0 || j==width-1)screen.drawPixelScaled(x+j, y+i, 0xffC0C0C0);
+						else screen.drawPixelScaled(x+j, y+i, 0xffA0A0A0);
 					}
 				}
 			}
@@ -85,9 +85,9 @@ public class Button {
 			gfx.tileHeight=height*Game.SCALE;
 //debug			System.out.println(gfx.tileWidth);
 			if(mouseover){
-				screen.renderGUITile(x, y, 1, mirrorXY, gfx, 0);
+				screen.drawGUITile(x, y, 1, mirrorXY, gfx, 0);
 			}else{
-				screen.renderGUITile(x, y, 0, mirrorXY, gfx, 0);
+				screen.drawGUITile(x, y, 0, mirrorXY, gfx, 0);
 			}
 		}
 		if(uselimit){

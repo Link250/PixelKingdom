@@ -53,7 +53,7 @@ public class MaterialBagInv extends GameField {
 		Game.sfont.render(game.screen.xOffset+field.x+2, game.screen.yOffset+field.y+1, "Materials", 0, 0xff000000, game.screen);
 		for(int x = 0; x < width; x++){
 			for(int y = 0; y < bag.inventory.length/width; y++){
-				game.screen.renderGUITile(game.screen.xOffset+field.x+x*12, game.screen.yOffset+field.y+y*12+11, 0, 0, Background, 0xff000000);
+				game.screen.drawGUITile(game.screen.xOffset+field.x+x*12, game.screen.yOffset+field.y+y*12+11, 0, 0, Background, 0xff000000);
 				if(bag.inventory[x+y*width]!=null) bag.inventory[x+y*width].render(game.screen, game.screen.xOffset+field.x+x*12+1, game.screen.yOffset+field.y+y*12+12,true);
 			}
 		}

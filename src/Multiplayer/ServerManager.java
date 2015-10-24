@@ -36,8 +36,10 @@ public class ServerManager implements Runnable {
 		} catch (IOException | InterruptedException e) {running = false;}
 	}
 	
-	public static void request(int rnumber, byte[] data) throws IOException{
-		Client.send2Server(rnumber);
-		Client.send2Server(data);
+	public static void request(byte rNumber, byte[] data) throws IOException{
+		byte[] b = new byte[data.length+1];
+		b[0]=rNumber;
+		for(int i = 0; i < data.length; i++)b[i+1]=data[i];
+		Client.send2Server(b);
 	}
 }

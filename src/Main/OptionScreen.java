@@ -69,30 +69,30 @@ public class OptionScreen {
 		for(int c = -2; c < 258; c+=2){
 			for(int i = 0; i < 6; i++){
 				if(i==0|i==5|c<0|c>255){
-					game.screen.renderPixelScaled(Game.WIDTH/Game.SCALE/2+c/2, 50+i, 0xff404040);
-					game.screen.renderPixelScaled(Game.WIDTH/Game.SCALE/2+c/2, 57+i, 0xff404040);
-					game.screen.renderPixelScaled(Game.WIDTH/Game.SCALE/2+c/2, 64+i, 0xff404040);
+					game.screen.drawPixelScaled(Game.WIDTH/Game.SCALE/2+c/2, 50+i, 0xff404040);
+					game.screen.drawPixelScaled(Game.WIDTH/Game.SCALE/2+c/2, 57+i, 0xff404040);
+					game.screen.drawPixelScaled(Game.WIDTH/Game.SCALE/2+c/2, 64+i, 0xff404040);
 				}else{
-					game.screen.renderPixelScaled(Game.WIDTH/Game.SCALE/2+c/2, 50+i, 0xff000000|(c<<16));
-					game.screen.renderPixelScaled(Game.WIDTH/Game.SCALE/2+c/2, 57+i, 0xff000000|(c<<8));
-					game.screen.renderPixelScaled(Game.WIDTH/Game.SCALE/2+c/2, 64+i, 0xff000000|c);
+					game.screen.drawPixelScaled(Game.WIDTH/Game.SCALE/2+c/2, 50+i, 0xff000000|(c<<16));
+					game.screen.drawPixelScaled(Game.WIDTH/Game.SCALE/2+c/2, 57+i, 0xff000000|(c<<8));
+					game.screen.drawPixelScaled(Game.WIDTH/Game.SCALE/2+c/2, 64+i, 0xff000000|c);
 				}
 			}
 		}
 		for(int i = 0; i < 6; i++){
 			int c = (Game.configs.PlrCol&0x00ff0000)>>16;
-			game.screen.renderPixelScaled(Game.WIDTH/Game.SCALE/2+c/2, 50+i, 0xff000000 + ((255-c)<<16) + ((255-c)<<8) + (255-c));
+			game.screen.drawPixelScaled(Game.WIDTH/Game.SCALE/2+c/2, 50+i, 0xff000000 + ((255-c)<<16) + ((255-c)<<8) + (255-c));
 			c = (Game.configs.PlrCol&0x0000ff00)>>8;
-			game.screen.renderPixelScaled(Game.WIDTH/Game.SCALE/2+c/2, 57+i, 0xff000000 + ((255-c)<<16) + ((255-c)<<8) + (255-c));
+			game.screen.drawPixelScaled(Game.WIDTH/Game.SCALE/2+c/2, 57+i, 0xff000000 + ((255-c)<<16) + ((255-c)<<8) + (255-c));
 			c = Game.configs.PlrCol&0x000000ff;
-			game.screen.renderPixelScaled(Game.WIDTH/Game.SCALE/2+c/2, 64+i, 0xff000000 + ((255-c)<<16) + ((255-c)<<8) + (255-c));
+			game.screen.drawPixelScaled(Game.WIDTH/Game.SCALE/2+c/2, 64+i, 0xff000000 + ((255-c)<<16) + ((255-c)<<8) + (255-c));
 		}
 		for(int x = 0; x < 12; x++){
 			for(int y = 0; y < 12; y++){
 				if(x == 0 | x == 11 | y == 0 | y == 11){
-					game.screen.renderPixelScaled(x+Game.WIDTH/Game.SCALE/2+132, y+54, 0xff404040);
+					game.screen.drawPixelScaled(x+Game.WIDTH/Game.SCALE/2+132, y+54, 0xff404040);
 				}else{
-					game.screen.renderPixelScaled(x+Game.WIDTH/Game.SCALE/2+132, y+54, Game.configs.PlrCol);
+					game.screen.drawPixelScaled(x+Game.WIDTH/Game.SCALE/2+132, y+54, Game.configs.PlrCol);
 				}
 			}
 		}
@@ -105,13 +105,13 @@ public class OptionScreen {
 		case 3:Stacktype.TextData("Binary", false, 0, 0);break;
 		}
 		Stacktype.render();
-		game.screen.renderTile(Game.WIDTH/Game.SCALE/2+80, 83, 0, 0, itemback, 0);
+		game.screen.drawTile(Game.WIDTH/Game.SCALE/2+80, 83, 0, 0, itemback, 0);
 		mate.render(game.screen, Game.WIDTH/Game.SCALE/2+81, 84, true);
-		game.screen.renderTile(Game.WIDTH/Game.SCALE/2+100, 83, 0, 0, itemback, 0);
+		game.screen.drawTile(Game.WIDTH/Game.SCALE/2+100, 83, 0, 0, itemback, 0);
 		matm.render(game.screen, Game.WIDTH/Game.SCALE/2+101, 84, true);
-		game.screen.renderTile(Game.WIDTH/Game.SCALE/2+120, 83, 0, 0, itemback, 0);
+		game.screen.drawTile(Game.WIDTH/Game.SCALE/2+120, 83, 0, 0, itemback, 0);
 		matf.render(game.screen, Game.WIDTH/Game.SCALE/2+121, 84, true);
-		game.screen.renderTile(Game.WIDTH/Game.SCALE/2+140, 83, 0, 0, itemback, 0);
+		game.screen.drawTile(Game.WIDTH/Game.SCALE/2+140, 83, 0, 0, itemback, 0);
 		mat.render(game.screen, Game.WIDTH/Game.SCALE/2+141, 84, true);
 		
 	}

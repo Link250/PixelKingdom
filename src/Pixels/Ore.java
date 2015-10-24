@@ -31,11 +31,11 @@ public abstract class Ore extends Material{
 	}
 	
 	public void render(Map map, Screen screen, int layer) {
-		screen.renderMaterial(x, y, ID, layer);
+		screen.drawMaterial(x, y, ID, layer);
 		AdditionalData ad = map.getAD(x, y, l+1);
 		if(melt>0 && ad!=null){
 			int r = (int) (ad.getshort(0)/(((double)melt)/250));if(r>255)r=255;
-			screen.renderPixelScaled(x, y, 0x00ff0000 | (r<<24));
+			screen.drawPixelScaled(x, y, 0x00ff0000 | (r<<24));
 		}
 	}
 }

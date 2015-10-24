@@ -22,6 +22,6 @@ public class Torch extends Material{
 	}
 	
 	public void render(Map map, Screen screen, int layer) {
-		screen.renderTile(x-1, y-1, 0, 0, sprite, 0);
+		screen.drawTile(x-1, y-1, 0, 0, sprite, 0);
 	}
 }

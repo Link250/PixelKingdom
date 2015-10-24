@@ -19,7 +19,7 @@ public abstract class ToolBag extends Bag {
 	}
 
 	public static void show(Screen screen, int x, int y){
-		screen.renderTile(x, y, 0, 0, typegfx, 0);
+		screen.drawTile(x, y, 0, 0, typegfx, 0);
 	}
 
 	public abstract void useItem(InputHandler input, Player plr, Map map, Screen screen);

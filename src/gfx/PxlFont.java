@@ -46,10 +46,10 @@ public class PxlFont {
 			int charIndex = chars.indexOf(msg.charAt(i));
 			if(charIndex >= 0){
 				if(x < limit || limit == 0){
-					screen.renderGUITile(x-sizel[charIndex], y, charIndex, 0x00, sheet, color);
+					screen.drawGUITile(x-sizel[charIndex], y, charIndex, 0x00, sheet, color);
 					x += size[charIndex];
 				}else{if(x < limit+10){
-					screen.renderGUITile(x, y, chars.length()-1, 0x00, sheet, color);
+					screen.drawGUITile(x, y, chars.length()-1, 0x00, sheet, color);
 				}}
 			}
 		}

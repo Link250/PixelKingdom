@@ -34,7 +34,7 @@ public class Fire extends Material{
 	}
 	
 	public void render(Map map, Screen screen, int layer) {
-		screen.renderPixelScaled(x, y, 0xffff0000 | (((int)(Math.random()*256))<<8));
+		screen.drawPixelScaled(x, y, 0xffff0000 | (((int)(Math.random()*256))<<8));
 	}
 	
 	public void spread(Map map){

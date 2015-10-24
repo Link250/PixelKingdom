@@ -45,6 +45,9 @@ public class ClientManager implements Runnable {
 				case Request.MAP_DATA:
 					server.receiveMapData(this, clientIn);
 					break;
+				default:
+					System.err.println("Non existing request received with ID "+in);
+					break;
 				}
 			}
 		} catch (IOException e) {
@@ -53,18 +56,31 @@ public class ClientManager implements Runnable {
 		}
 	}
 	
-	public void sendToClient(byte[] b, String reason) throws IOException{
-		clientOut.write(b);
-		clientOut.flush();
-		System.out.println("sent b array for "+reason);
-	}
-
-	public void sendToClient(int i, String reason) throws IOException{
-//		byte[] b = {(byte) (i>>24),(byte) (i>>16),(byte) (i>>8),(byte) i};
-//		sendToClient(b);
+	public void send2Client(int i) throws IOException{
 		clientOut.write(i);
 		clientOut.flush();
-		System.out.println("sent int for "+reason);
+	}
+	
+	public void send2Client(byte[] b) throws IOException{
+		clientOut.write(b);
+		clientOut.flush();
+	}
+	
+	public void sendRequest2Client(byte[] b, byte request) throws IOException{
+		byte[] d = new byte[b.length+1];
+		d[0]=request;
+		for(int i = 0; i < b.length; i++)d[i+1]=b[i];
+		clientOut.write(d);
+		clientOut.flush();
+	}
+	
+	public void sendRequest2Client(byte[] b, byte request, byte sub) throws IOException{
+		byte[] d = new byte[b.length+2];
+		d[0]=request;
+		d[1]=sub;
+		for(int i = 0; i < b.length; i++)d[i+2]=b[i];
+		clientOut.write(d);
+		clientOut.flush();
 	}
 	
 	public void closeConnection() {

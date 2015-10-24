@@ -116,24 +116,24 @@ public class Crafting extends GameField {
 		if(select_type == 0){
 			y += 11;
 			for(SpriteSheet gfx : gfxs){
-				game.screen.renderGUITile(x, y, 0, 0, Background, 0);
-				game.screen.renderGUITile(x+1, y+1, 0, 0, gfx, 0);
+				game.screen.drawGUITile(x, y, 0, 0, Background, 0);
+				game.screen.drawGUITile(x+1, y+1, 0, 0, gfx, 0);
 				x += 13;
 			}	
 		}else{
-			for(int X = 0; X < field.width; X++){for(int Y = 0; Y < 12; Y++){game.screen.renderPixelScaled(x+X, y+Y+24, 0x30808080);}}
+			for(int X = 0; X < field.width; X++){for(int Y = 0; Y < 12; Y++){game.screen.drawPixelScaled(x+X, y+Y+24, 0x30808080);}}
 			y += 11;
-			game.screen.renderGUITile(x, y, 0, 0, Background, 0);
-			game.screen.renderGUITile(x+1, y+1, 0, 0, BackButton, 0); x+= 26;
-			game.screen.renderGUITile(x, y, 0, 0, Background, 0);
-			game.screen.renderGUITile(x+1, y+1, 0, 0, gfxs.get(select_type-1), 0); x+= 26;
-			game.screen.renderGUITile(x, y, 0, 0, Background, 0);
-			game.screen.renderGUITile(x+1, y+1, 0, 0, Search, 0);
+			game.screen.drawGUITile(x, y, 0, 0, Background, 0);
+			game.screen.drawGUITile(x+1, y+1, 0, 0, BackButton, 0); x+= 26;
+			game.screen.drawGUITile(x, y, 0, 0, Background, 0);
+			game.screen.drawGUITile(x+1, y+1, 0, 0, gfxs.get(select_type-1), 0); x+= 26;
+			game.screen.drawGUITile(x, y, 0, 0, Background, 0);
+			game.screen.drawGUITile(x+1, y+1, 0, 0, Search, 0);
 			if(recipelist.size()!=0){
-				game.screen.renderGUITile(x-26, y+38, 0, 0, Craft, 0);
+				game.screen.drawGUITile(x-26, y+38, 0, 0, Craft, 0);
 				x -= 26; y += 13;
 				for(int i = -2; i <= 2; i ++){
-					if(i == 0)game.screen.renderGUITile(x+i*13, y, 0, 0, Background, 0);
+					if(i == 0)game.screen.drawGUITile(x+i*13, y, 0, 0, Background, 0);
 					try{
 						ItemList.GetItem(recipelist.get(i+select_recipe).products.get(0).ID).render(game.screen, x+i*13+1, y+1);
 					}catch(IndexOutOfBoundsException e){}
@@ -142,8 +142,8 @@ public class Crafting extends GameField {
 				n = recipelist.get(select_recipe).educts.size();
 				if(n<3)if(n>1)y+=5;else y+=11;
 				
-				if(select_educt>0)game.screen.renderGUITile(x+11, y, 0, 0x01, scroll, 0);
-				if(select_educt<recipelist.get(select_recipe).educts.size()-3)game.screen.renderGUITile(x+11, y+2*11+5, 0, 0x00, scroll, 0);
+				if(select_educt>0)game.screen.drawGUITile(x+11, y, 0, 0x01, scroll, 0);
+				if(select_educt<recipelist.get(select_recipe).educts.size()-3)game.screen.drawGUITile(x+11, y+2*11+5, 0, 0x00, scroll, 0);
 				
 				for(int i = 0; i < 3; i ++){
 					try{
@@ -155,8 +155,8 @@ public class Crafting extends GameField {
 				n = recipelist.get(select_recipe).products.size();
 				if(n<3)if(n>1)y+=5;else y+=11;
 				
-				if(select_product>0)game.screen.renderTile(x-4, y, 0, 0x01, scroll, 0);
-				if(select_product<recipelist.get(select_recipe).products.size()-3)game.screen.renderTile(x-4, y+2*11+5, 0, 0x00, scroll, 0);
+				if(select_product>0)game.screen.drawTile(x-4, y, 0, 0x01, scroll, 0);
+				if(select_product<recipelist.get(select_recipe).products.size()-3)game.screen.drawTile(x-4, y+2*11+5, 0, 0x00, scroll, 0);
 				
 				for(int i = 0; i < 3; i ++){
 					try{

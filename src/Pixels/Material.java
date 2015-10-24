@@ -59,6 +59,6 @@ public abstract class Material {
 
 	
 	public void render(Map map, Screen screen, int layer) {
-		screen.renderMaterial(x, y, ID, layer);
+		screen.drawMaterial(x, y, ID, layer);
 	}
 }

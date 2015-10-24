@@ -55,7 +55,7 @@ public abstract class Item {
 	}
 
 	public void render(Screen screen, int x, int y, boolean showstack){
-		screen.renderGUITile(x, y, 0, 0x00, gfx, col);
+		screen.drawGUITile(x, y, 0, 0x00, gfx, col);
 		if(showstack & stackMax != 1){
 			switch(Game.configs.stacktype){
 			case 1:
@@ -69,7 +69,7 @@ public abstract class Item {
 				x-=1;y+=8;
 				int r=255,g=0;
 				for(int i = 1; i <= 8; i++){
-					if(stack >= 128*i){screen.renderGUIScaled(x, y, 0xff000000 + (r<<16) + (g<<8));screen.renderGUIScaled(x+11, y, 0xff000000 + (r<<16) + (g<<8));}y--;
+					if(stack >= 128*i){screen.drawGUIScaled(x, y, 0xff000000 + (r<<16) + (g<<8));screen.drawGUIScaled(x+11, y, 0xff000000 + (r<<16) + (g<<8));}y--;
 					if(g < 255) g+= 64;
 					if(g > 255) g = 255;
 					if(g == 255) r-= 64;
@@ -82,12 +82,12 @@ public abstract class Item {
 				for(int i = 10; i >= 0; i--){
 					if(n-Math.pow(2, i) >= 0){
 						if(i == 10){
-							screen.renderGUIScaled(x+(10-i), y, 0xffffffff);
+							screen.drawGUIScaled(x+(10-i), y, 0xffffffff);
 						}else{
 							if(i%2==0){
-								screen.renderGUIScaled(x+(10-i), y, 0xffffff00);
+								screen.drawGUIScaled(x+(10-i), y, 0xffffff00);
 							}else{
-								screen.renderGUIScaled(x+(10-i), y, 0xffff00ff);
+								screen.drawGUIScaled(x+(10-i), y, 0xffff00ff);
 							}
 						}
 						n -= Math.pow(2, i);
@@ -99,15 +99,15 @@ public abstract class Item {
 	}
 	
 	public void render(Screen screen, int x, int y){
-		screen.renderGUITile(x, y, 0, 0x00, gfx, col);
+		screen.drawGUITile(x, y, 0, 0x00, gfx, col);
 	}
 
 	public void render(Screen screen, int x, int y, byte alpha){
-		screen.renderGUITile(x, y, 0, alpha, gfx, col);
+		screen.drawGUITile(x, y, 0, alpha, gfx, col);
 	}
 
 	public void render(Screen screen, int x, int y, int mirror){
-		screen.renderTile(x, y, 0, mirror, gfxs, col);
+		screen.drawTile(x, y, 0, mirror, gfxs, col);
 	}
 
 	public int getAnim(){

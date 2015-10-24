@@ -289,7 +289,7 @@ public class Player extends Mob{
 	}
 	
 	public void render() {
-		game.screen.renderTile(x-xOffset, y-yOffset, anim, movingDir*16, sheet, Color);
+		game.screen.drawTile(x-xOffset, y-yOffset, anim, movingDir*16, sheet, Color);
 		
 		if((anim == 10 || anim == 11) & equipment.beltbag1 != null){
 			try{
@@ -322,12 +322,12 @@ public class Player extends Mob{
 		if(openHotBar != 0){
 			if(equipment.beltbag1 != null){
 				for(int i = 0; i < equipment.beltbag1.inventory.length; i ++){
-					game.screen.renderGUITile(
+					game.screen.drawGUITile(
 							hotBar.x/Game.SCALE+game.screen.xOffset+(int)(openHotBar*Math.sin((i+0.5)*Math.PI*2/equipment.beltbag1.inventory.length))-6
 							,hotBar.y/Game.SCALE+game.screen.yOffset+(int)(-openHotBar*Math.cos((i+0.5)*Math.PI*2/equipment.beltbag1.inventory.length))-6
 							, 0, 0, itemBackground, 0);
 					if(i == selected){
-						game.screen.renderGUITile(
+						game.screen.drawGUITile(
 								hotBar.x/Game.SCALE+game.screen.xOffset+(int)(openHotBar*Math.sin((selected+0.5)*Math.PI*2/equipment.beltbag1.inventory.length))-6
 								,hotBar.y/Game.SCALE+game.screen.yOffset+(int)(-openHotBar*Math.cos((selected+0.5)*Math.PI*2/equipment.beltbag1.inventory.length))-6
 								, 0, 0, itemBackgrounds, 0);

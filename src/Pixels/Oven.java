@@ -57,8 +57,8 @@ public class Oven extends Material{
 	}
 	
 	public void render(Map map, Screen screen, int layer) {
-		screen.renderMaterial(x, y, ID, layer);
+		screen.drawMaterial(x, y, ID, layer);
 		int r = (int) (map.getAD(x, y, l+1).getshort(0)/(((double)maxHeat)/127));if(r>255)r=255;
-		screen.renderPixelScaled(x, y, 0x00ff0000 | (r<<24));
+		screen.drawPixelScaled(x, y, 0x00ff0000 | (r<<24));
 	}
 }

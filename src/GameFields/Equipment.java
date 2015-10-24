@@ -57,7 +57,7 @@ public class Equipment extends GameField {
 	
 	public void render() {
 		renderfield();
-		game.screen.renderGUITile(game.screen.xOffset+field.x, game.screen.yOffset+field.y, 0, 0, Background, 0xff000000);
+		game.screen.drawGUITile(game.screen.xOffset+field.x, game.screen.yOffset+field.y, 0, 0, Background, 0xff000000);
 		Game.sfont.render(game.screen.xOffset+field.x+2, game.screen.yOffset+field.y+1, "Equipment", 0, 0xff000000, game.screen);
 		
 		int x = game.screen.xOffset+field.x, y = game.screen.yOffset+field.y;

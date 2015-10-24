@@ -56,11 +56,11 @@ public abstract class GameField {
 		for(int x = 0; x < field.width; x++){
 			for(int y = 0; y < field.height; y++){
 				if(y < fieldTop.height){
-					if(x == 0 | y == 0 | x == fieldTop.width-1 | y == fieldTop.height-1)game.screen.renderGUIScaled(game.screen.xOffset+field.x+x, game.screen.yOffset+field.y+y, 0xff404040);
-					else game.screen.renderGUIScaled(game.screen.xOffset+field.x+x, game.screen.yOffset+field.y+y, 0xff808080);
+					if(x == 0 | y == 0 | x == fieldTop.width-1 | y == fieldTop.height-1)game.screen.drawGUIScaled(game.screen.xOffset+field.x+x, game.screen.yOffset+field.y+y, 0xff404040);
+					else game.screen.drawGUIScaled(game.screen.xOffset+field.x+x, game.screen.yOffset+field.y+y, 0xff808080);
 				}else{
-					if(x == 0 | y == 0 | x == field.width-1 | y == field.height-1)game.screen.renderGUIScaled(game.screen.xOffset+field.x+x, game.screen.yOffset+field.y+y, 0x80404040);
-					else game.screen.renderGUIScaled(game.screen.xOffset+field.x+x, game.screen.yOffset+field.y+y, 0x40808080);
+					if(x == 0 | y == 0 | x == field.width-1 | y == field.height-1)game.screen.drawGUIScaled(game.screen.xOffset+field.x+x, game.screen.yOffset+field.y+y, 0x80404040);
+					else game.screen.drawGUIScaled(game.screen.xOffset+field.x+x, game.screen.yOffset+field.y+y, 0x40808080);
 				}
 			}
 		}

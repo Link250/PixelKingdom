@@ -16,7 +16,7 @@ public class Mouse {
 			for(int y = -mousesize; y <= mousesize; y++){
 				for(int x = -mousesize; x <= mousesize; x++){
 					if(Math.sqrt(x*x+y*y) < mousesize){
-						game.screen.renderGUIScaled(game.input.mouse.x/Game.SCALE+game.screen.xOffset+x, game.input.mouse.y/Game.SCALE+game.screen.yOffset+y, 0xa0ff0000);
+						game.screen.drawGUIScaled(game.input.mouse.x/Game.SCALE+game.screen.xOffset+x, game.input.mouse.y/Game.SCALE+game.screen.yOffset+y, 0xa0ff0000);
 					}
 				}
 			}
@@ -25,15 +25,15 @@ public class Mouse {
 			for(int y = -mousesize; y <= mousesize; y++){
 				for(int x = -mousesize; x <= mousesize; x++){
 					if(x == mousesize || y == mousesize || x == -mousesize || y == -mousesize){
-						game.screen.renderGUIScaled(game.input.mouse.x/Game.SCALE+game.screen.xOffset+x, game.input.mouse.y/Game.SCALE+game.screen.yOffset+y, 0xa0ff0000);
+						game.screen.drawGUIScaled(game.input.mouse.x/Game.SCALE+game.screen.xOffset+x, game.input.mouse.y/Game.SCALE+game.screen.yOffset+y, 0xa0ff0000);
 					}
 				}
 			}
 			for(int y = (int)(-mousesize*1.5); y <= (int)(mousesize*1.5); y++){
-				if(Math.abs(y) > mousesize)game.screen.renderGUIScaled(game.input.mouse.x/Game.SCALE+game.screen.xOffset, game.input.mouse.y/Game.SCALE+game.screen.yOffset+y, 0xa0ff0000);
+				if(Math.abs(y) > mousesize)game.screen.drawGUIScaled(game.input.mouse.x/Game.SCALE+game.screen.xOffset, game.input.mouse.y/Game.SCALE+game.screen.yOffset+y, 0xa0ff0000);
 			}
 			for(int x = (int)(-mousesize*1.5); x <= (int)(mousesize*1.5); x++){
-				if(Math.abs(x) > mousesize)game.screen.renderGUIScaled(game.input.mouse.x/Game.SCALE+game.screen.xOffset+x, game.input.mouse.y/Game.SCALE+game.screen.yOffset, 0xa0ff0000);
+				if(Math.abs(x) > mousesize)game.screen.drawGUIScaled(game.input.mouse.x/Game.SCALE+game.screen.xOffset+x, game.input.mouse.y/Game.SCALE+game.screen.yOffset, 0xa0ff0000);
 			}
 			break;
 		case 3:
@@ -42,7 +42,7 @@ public class Mouse {
 			Game.sfont.render(game.input.mouse.x/Game.SCALE+game.screen.xOffset+5, game.input.mouse.y/Game.SCALE+game.screen.yOffset, Item.getName(), 0, 0xff000000, game.screen);
 			break;
 		default:
-			game.screen.renderGUITile(game.input.mouse.x/Game.SCALE+game.screen.xOffset, game.input.mouse.y/Game.SCALE+game.screen.yOffset, 0, 0x00, mouseN, 0);
+			game.screen.drawGUITile(game.input.mouse.x/Game.SCALE+game.screen.xOffset, game.input.mouse.y/Game.SCALE+game.screen.yOffset, 0, 0x00, mouseN, 0);
 		}
 	}
 }

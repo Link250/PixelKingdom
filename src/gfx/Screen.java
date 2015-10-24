@@ -30,44 +30,56 @@ public class Screen {
 
 	}
 	
-	public void renderShadow(int xPos, int yPos, int color){
+	/**
+	 * Draws a Pixel into the Shadow Layer
+	 * 
+	 * @param xPos 		<u>Map</u> X Position of the Pixel
+	 * @param yPos 		<u>Map</u> Y Position of the Pixel
+	 * @param color 	Color of the Shadow Pixel.
+	 * 		<sub>		normally this is only a black Color with an Alpha Value,
+	 * 					but the Shadow <i>could</i> be colored, too
+	 */
+	public void drawShadow(int xPos, int yPos, int color){
 		xPos -= xOffset;
 		yPos -= yOffset;
 		shadow[xPos + yPos * width/3] = color;
 	}
 	
+	/**
+	 * Resets the Pixel on <b>(X,Y)</b> of the Main and GUI Layers
+	 */
 	public void resetPixel(int xPos, int yPos){
 		pixels[xPos + yPos * width] = 0;
 		GUI[xPos + yPos * width] = 0;
 	}
 
-	public void renderPixelScaled(int xPos, int yPos, int color){
+	public void drawPixelScaled(int xPos, int yPos, int color){
 		xPos -= xOffset;
 		yPos -= yOffset;
 		xPos*=3;yPos*=3;
-		renderPixelArea(xPos,yPos,color,3,3,false);
+		drawPixelArea(xPos,yPos,color,3,3,false);
 	}
 
-	public void renderPixel(int xPos, int yPos, int color){
+	public void drawPixel(int xPos, int yPos, int color){
 		xPos -= xOffset;
 		yPos -= yOffset;
-		renderPixelArea(xPos,yPos,color,1,1,false);
+		drawPixelArea(xPos,yPos,color,1,1,false);
 	}
 
-	public void renderGUIScaled(int xPos, int yPos, int color){
+	public void drawGUIScaled(int xPos, int yPos, int color){
 		xPos -= xOffset;
 		yPos -= yOffset;
 		xPos*=3;yPos*=3;
-		renderPixelArea(xPos,yPos,color,3,3,true);
+		drawPixelArea(xPos,yPos,color,3,3,true);
 	}
 
-	public void renderGUI(int xPos, int yPos, int color){
+	public void drawGUI(int xPos, int yPos, int color){
 		xPos -= xOffset;
 		yPos -= yOffset;
-		renderPixelArea(xPos,yPos,color,1,1,true);
+		drawPixelArea(xPos,yPos,color,1,1,true);
 	}
 
-	public void renderPixelArea(int xPos, int yPos, int color, int xSize, int ySize, boolean gui){
+	public void drawPixelArea(int xPos, int yPos, int color, int xSize, int ySize, boolean gui){
 		double a = color>>>24;
 		if(a != 255){
 			int r = color>>>16&0x00ff, g = color>>>8&0x0000ff, b = color&0x000000ff;
@@ -108,19 +120,19 @@ public class Screen {
 		}
 	}
 	
-	public void renderMaterial(int xPos, int yPos, int tile, int layer){
+	public void drawMaterial(int xPos, int yPos, int tile, int layer){
 		int col = csheets[layer-1].pixels[tile];
-		renderPixelScaled(xPos, yPos, col);
+		drawPixelScaled(xPos, yPos, col);
 	}
 
-	public void renderGUITile(int xPos, int yPos, int tile, int mirrorXY, SpriteSheet sheet, int color){
-		renderTile(xPos,yPos,tile,mirrorXY,sheet,color,true);
+	public void drawGUITile(int xPos, int yPos, int tile, int mirrorXY, SpriteSheet sheet, int color){
+		drawTile(xPos,yPos,tile,mirrorXY,sheet,color,true);
 	}
-	public void renderTile(int xPos, int yPos, int tile, int mirrorXY, SpriteSheet sheet, int color){
-		renderTile(xPos,yPos,tile,mirrorXY,sheet,color,false);
+	public void drawTile(int xPos, int yPos, int tile, int mirrorXY, SpriteSheet sheet, int color){
+		drawTile(xPos,yPos,tile,mirrorXY,sheet,color,false);
 	}
 
-	public void renderTile(int xPos, int yPos, int tile, int mirrorXY, SpriteSheet sheet, int color, boolean GUI){
+	public void drawTile(int xPos, int yPos, int tile, int mirrorXY, SpriteSheet sheet, int color, boolean GUI){
 		xPos -= xOffset;
 		yPos -= yOffset;
 		xPos*=3;yPos*=3;
@@ -139,9 +151,9 @@ public class Screen {
 						sheetc = sheet.pixels[(xTile*sheet.tileWidth+xsheet) + (yTile*sheet.tileHeight+ysheet)*sheet.width];
 						if(sheetc>>24 != 0){
 							if((sheetc & 0xffffff)== 0xff00ff){
-								renderPixelArea(xPos+x, yPos+y, color, 1, 1, GUI);
+								drawPixelArea(xPos+x, yPos+y, color, 1, 1, GUI);
 							}else{
-								renderPixelArea(xPos+x, yPos+y, sheetc, 1, 1, GUI);
+								drawPixelArea(xPos+x, yPos+y, sheetc, 1, 1, GUI);
 							}
 						}
 					}

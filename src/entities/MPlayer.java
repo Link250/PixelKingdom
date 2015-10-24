@@ -24,6 +24,6 @@ public class MPlayer extends Mob {
 	}
 	
 	public void render() {
-		game.screen.renderTile(x-xOffset, y-yOffset, 0, movingDir*16, sheet, 0xffff00ff);
+		game.screen.drawTile(x-xOffset, y-yOffset, 0, movingDir*16, sheet, 0xffff00ff);
 	}
 }

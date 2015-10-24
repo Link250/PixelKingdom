@@ -6,7 +6,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import Main.ConvertData;
 import Main.Game;
 import Multiplayer.Client;
 import Multiplayer.MapManager;
@@ -148,7 +147,7 @@ public class Map {
 //						light = 0;
 					}else {
 						if(light == MAX_LIGHT){
-							screen.renderShadow(X, Y, 0xff000000);
+							screen.drawShadow(X, Y, 0xff000000);
 						}else{
 							if(ID!=0){
 								if(l!=2)m = PixelList.GetMat(ID);
@@ -156,7 +155,7 @@ public class Map {
 								m.SetPos(X, Y, l-1);
 								m.render(this,screen,l);
 							}
-							if(l==1)screen.renderShadow(X, Y, ((MAX_LIGHT-getlight(X,Y))<<26));
+							if(l==1)screen.drawShadow(X, Y, ((MAX_LIGHT-getlight(X,Y))<<26));
 						}
 					}
 				}
