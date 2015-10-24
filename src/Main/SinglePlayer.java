@@ -20,7 +20,7 @@ import gfx.SpriteSheet;
 public class SinglePlayer {
 	private Screen screen;
 	private InputHandler input;
-	private Map map;
+	protected Map map;
 	private Player player;
 	public static boolean debuginfo = false;
 	private String files;

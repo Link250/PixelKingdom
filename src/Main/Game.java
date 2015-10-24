@@ -99,6 +99,13 @@ public class Game extends Canvas implements Runnable{
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 		
+		frame.addWindowListener(new java.awt.event.WindowAdapter(){
+			@Override
+			public void windowClosing(java.awt.event.WindowEvent windowEvent){
+				if(gamemode == 1)SinglePlayer.map.save();
+			}
+		});
+		
 		Toolkit toolkit = Toolkit.getDefaultToolkit();
 		Cursor cursor = toolkit.createCustomCursor(toolkit.getImage(""), new Point(0,0), ""); 
 		setCursor(cursor);
