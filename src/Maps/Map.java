@@ -68,6 +68,7 @@ public class Map {
 	}
 	
 	public void sendMapUpdates(int tickCount) {
+//		if(mapChanges.size()!=0)System.out.println(mapChanges.size());
 		while(!mapChanges.isEmpty()) {
 			byte[][] temp = mapChanges.remove(0);
 			switch(gametype) {
@@ -80,7 +81,7 @@ public class Map {
 					Client.send2Server(ConvertData.B2S(temp[3][0], temp[3][1]));
 				} catch (IOException e1) {e1.printStackTrace();}
 				//send to server
-				return;
+				break;
 			case GT_SERVER:
 				try {
 					Server.sendMapData(
@@ -89,8 +90,8 @@ public class Map {
 							temp[2][0],
 							ConvertData.B2S(temp[3][0], temp[3][1]));
 				} catch (IOException e) {Game.reset=true;}
-				return;
-			default:return;
+				break;
+			default:break;
 			}
 		}
 	}
