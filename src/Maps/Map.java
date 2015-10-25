@@ -249,21 +249,21 @@ public class Map {
 		if(!skipcheck) {
 			switch(gametype) {
 			case GT_CLIENT:
-//				try {
-//					Client.send2Server(Request.MAP_DATA);
-//					Client.send2Server(x);
-//					Client.send2Server(y);
-//					Client.send2Server((byte)l);
-//					Client.send2Server((short)ID);
-//				} catch (IOException e1) {e1.printStackTrace();}
-				mapChanges.add(new byte[][] {ConvertData.I2B(x),ConvertData.I2B(y),{(byte) l},ConvertData.S2B((short)ID)});
+				try {
+					Client.send2Server(Request.MAP_DATA);
+					Client.send2Server(x);
+					Client.send2Server(y);
+					Client.send2Server((byte)l);
+					Client.send2Server((short)ID);
+				} catch (IOException e1) {e1.printStackTrace();}
+//				mapChanges.add(new byte[][] {ConvertData.I2B(x),ConvertData.I2B(y),{(byte) l},ConvertData.S2B((short)ID)});
 				//send to server
 				return;
 			case GT_SERVER:
-//				try {
-//					Server.sendMapData(x, y, l, ID);
-//				} catch (IOException e) {Game.reset=true;}
-				mapChanges.add(new byte[][] {ConvertData.I2B(x),ConvertData.I2B(y),{(byte) l},ConvertData.S2B((short)ID)});
+				try {
+					Server.sendMapData(x, y, l, ID);
+				} catch (IOException e) {Game.reset=true;}
+//				mapChanges.add(new byte[][] {ConvertData.I2B(x),ConvertData.I2B(y),{(byte) l},ConvertData.S2B((short)ID)});
 				return;
 			default:return;
 			}

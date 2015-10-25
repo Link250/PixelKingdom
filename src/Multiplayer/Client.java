@@ -64,7 +64,7 @@ public class Client {
 	
 	public void tick(int tickCount) throws IOException{
 		player.tick(tickCount);
-		map.sendMapUpdates(tickCount);
+//		map.sendMapUpdates(tickCount);
 		for(MPlayer p : players)p.tick(tickCount);
 		if(tickCount%4==0) player.Gravity();
 		

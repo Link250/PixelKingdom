@@ -34,7 +34,7 @@ public class Server implements Runnable{
 	
 	public void tick(int tickCount){
 		map.tick(tickCount);
-		map.sendMapUpdates(tickCount);
+//		map.sendMapUpdates(tickCount);
 	}
 	
 	public void sendChunk(ClientManager c, InputStream cIn) throws IOException {
