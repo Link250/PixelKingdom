@@ -18,8 +18,8 @@ public class MapManager implements InputReceiver{
 		Client.server.requests.add(this);
 	}
 	
-	public boolean useInput(InputStream in) throws IOException { //is used when the Server sends Map data from an other Player
-		map.setID(IOConverter.receiveInt(in), IOConverter.receiveInt(in), IOConverter.receiveInt(in), IOConverter.receiveInt(in), null, true);
+	public boolean useInput(InputStream in) throws IOException { //is used when the Server sends Map data
+		map.setID(IOConverter.receiveInt(in), IOConverter.receiveInt(in), in.read(), IOConverter.receiveShort(in), null, true);
 		return false;
 	}
 

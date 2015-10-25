@@ -64,6 +64,7 @@ public class Client {
 	
 	public void tick(int tickCount) throws IOException{
 		player.tick(tickCount);
+		map.sendMapUpdates(tickCount);
 		for(MPlayer p : players)p.tick(tickCount);
 		if(tickCount%4==0) player.Gravity();
 		
@@ -76,7 +77,7 @@ public class Client {
 		}
 		
 		if(input.Esc.isPressed()){
-			send2Server(1);
+			send2Server(Request.CLOSE_CONNECTION);
 			Game.reset = true;
 		}
 		if(tickCount%60==0){

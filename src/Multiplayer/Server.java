@@ -34,6 +34,7 @@ public class Server implements Runnable{
 	
 	public void tick(int tickCount){
 		map.tick(tickCount);
+		map.sendMapUpdates(tickCount);
 	}
 	
 	public void sendChunk(ClientManager c, InputStream cIn) throws IOException {
@@ -64,26 +65,27 @@ public class Server implements Runnable{
 	}
 	
 	public void receiveMapData(ClientManager c, InputStream cIn) throws IOException {
-		byte[] data = new byte[16];
-		ArrayList<Byte> temp = new ArrayList<Byte>();
-		try {for(int i = 0; i < 16; i ++)temp.add((byte) cIn.read());} catch (IOException e) {}
-		for(int i = 0; i < temp.size(); i++)data[i]=temp.get(i);
-		map.setID(ConvertData.B2I(temp), ConvertData.B2I(temp), ConvertData.B2I(temp), ConvertData.B2I(temp), null, true);
+//		byte[] data = new byte[11];
+//		ArrayList<Byte> temp = new ArrayList<Byte>();
+//		try {for(int i = 0; i < 11; i ++)temp.add((byte) cIn.read());} catch (IOException e) {}
+//		for(int i = 0; i < temp.size(); i++)data[i]=temp.get(i);
+//		map.setID(ConvertData.B2I(temp), ConvertData.B2I(temp), temp.remove(0), ConvertData.B2S(temp), null, false);
+		map.setID(IOConverter.receiveInt(cIn), IOConverter.receiveInt(cIn), cIn.read(), IOConverter.receiveShort(cIn), null, false);
 //		System.out.println("got map data");
 		
-		for(ClientManager cm : clients) {
-			if(cm!=c) {
-				cm.sendRequest2Client(data,Request.MAP_DATA);
-			}
-		}
+//		for(ClientManager cm : clients) {
+//			if(cm!=c) {
+//				cm.sendRequest2Client(data,Request.MAP_DATA);
+//			}
+//		}
 	}
 	public static void sendMapData(int x, int y, int l, int ID) throws IOException {
-		byte[] data = new byte[16];
+		byte[] data = new byte[11];
 		ArrayList<Byte> temp = new ArrayList<Byte>();
 		ConvertData.I2B(temp, x);
 		ConvertData.I2B(temp, y);
-		ConvertData.I2B(temp, l);
-		ConvertData.I2B(temp, ID);
+		temp.add((byte) l);
+		ConvertData.S2B(temp, (short) ID);
 		for(int i = 0; i < temp.size(); i++)data[i]=temp.get(i);
 		for(ClientManager cm : clients) {
 			cm.sendRequest2Client(data, Request.MAP_DATA);

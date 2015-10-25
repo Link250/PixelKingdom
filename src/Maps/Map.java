@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import Main.ConvertData;
 import Main.Game;
 import Multiplayer.Client;
 import Multiplayer.MapManager;
@@ -27,6 +28,7 @@ public class Map {
 	protected UpdateManager updates = new UpdateManager();
 	public int updatecount = 0;
 	private ArrayList<MapManager.chunkLoader> cloaders = new ArrayList<MapManager.chunkLoader>();
+	private ArrayList<byte[][]> mapChanges = new ArrayList<byte[][]>();
 	private int gametype = 0;
 	private MapManager mapManager;
 
@@ -62,6 +64,34 @@ public class Map {
 				if(getUpdate(x,y,l))if(updateLight(x, y))addLightUpdate(x,y);
 			}
 			updatecount++;
+		}
+	}
+	
+	public void sendMapUpdates(int tickCount) {
+		while(!mapChanges.isEmpty()) {
+			byte[][] temp = mapChanges.remove(0);
+			switch(gametype) {
+			case GT_CLIENT:
+				try {
+					Client.send2Server(Request.MAP_DATA);
+					Client.send2Server(ConvertData.B2I(temp[0][0], temp[0][1], temp[0][2], temp[0][2]));
+					Client.send2Server(ConvertData.B2I(temp[1][0], temp[1][1], temp[1][2], temp[1][2]));
+					Client.send2Server(temp[2][0]);
+					Client.send2Server(ConvertData.B2S(temp[3][0], temp[3][1]));
+				} catch (IOException e1) {e1.printStackTrace();}
+				//send to server
+				return;
+			case GT_SERVER:
+				try {
+					Server.sendMapData(
+							ConvertData.B2I(temp[0][0], temp[0][1], temp[0][2], temp[0][2]),
+							ConvertData.B2I(temp[1][0], temp[1][1], temp[1][2], temp[1][2]),
+							temp[2][0],
+							ConvertData.B2S(temp[3][0], temp[3][1]));
+				} catch (IOException e) {Game.reset=true;}
+				return;
+			default:return;
+			}
 		}
 	}
 	
@@ -218,20 +248,21 @@ public class Map {
 		if(!skipcheck) {
 			switch(gametype) {
 			case GT_CLIENT:
-				try {
-					Client.send2Server(Request.MAP_DATA);
-					Client.send2Server(x);
-					Client.send2Server(y);
-					Client.send2Server(l);
-					Client.send2Server(ID);
-				} catch (IOException e1) {e1.printStackTrace();}
-//				System.out.println("sent map data");
+//				try {
+//					Client.send2Server(Request.MAP_DATA);
+//					Client.send2Server(x);
+//					Client.send2Server(y);
+//					Client.send2Server((byte)l);
+//					Client.send2Server((short)ID);
+//				} catch (IOException e1) {e1.printStackTrace();}
+				mapChanges.add(new byte[][] {ConvertData.I2B(x),ConvertData.I2B(y),{(byte) l},ConvertData.S2B((short)ID)});
 				//send to server
 				return;
 			case GT_SERVER:
-				try {
-					Server.sendMapData(x, y, l, ID);
-				} catch (IOException e) {Game.reset=true;}
+//				try {
+//					Server.sendMapData(x, y, l, ID);
+//				} catch (IOException e) {Game.reset=true;}
+				mapChanges.add(new byte[][] {ConvertData.I2B(x),ConvertData.I2B(y),{(byte) l},ConvertData.S2B((short)ID)});
 				return;
 			default:return;
 			}
