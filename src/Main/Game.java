@@ -18,6 +18,7 @@ import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.io.IOException;
+import java.util.Calendar;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
@@ -28,6 +29,7 @@ import Maps.BiomeList;
 import Maps.MapSelection;
 import Main.InputHandler;
 import Multiplayer.Client;
+import Multiplayer.Request;
 import Multiplayer.Server;
 import Pixels.PixelList;
 
@@ -41,6 +43,7 @@ public class Game extends Canvas implements Runnable{
 	public static final String NAME = "Pixel Kingdom";
 	public static final String GAME_PATH = System.getenv("APPDATA") + "\\PixelKingdom\\";
 	public static final int PORT = 7777;
+	public static final double nsPerTick = 1000000000D/60D;
 	static int ticks = 0;
 	static int frames = 0;
 	public static int fps = 0;
@@ -169,7 +172,6 @@ public class Game extends Canvas implements Runnable{
 
 	public void run() {
 		long lastTime = System.nanoTime();
-		double nsPerTick = 1000000000D/60D;
 				
 		long lastTimer = System.currentTimeMillis();
 		double delta = 0;
@@ -203,14 +205,13 @@ public class Game extends Canvas implements Runnable{
 			}
 		}
 		configs.save();
-		System.out.println("Game shut down by User "+System.getProperty("user.name")+". ~Thanks 4 playing");
+		Game.logInfo("Game shut down by User "+System.getProperty("user.name")+". ~Thanks 4 playing");
 		System.exit(0);
 	}
 	
 	public void tick(){
 		tickCount++;
 		if(reset)reset();
-		if(server!=null)server.tick(tickCount);
 		switch (gamemode){
 		case 0 : 
 			switch (menu){
@@ -319,15 +320,48 @@ public class Game extends Canvas implements Runnable{
 		bs.show();
 	}
 	
+	public static void logError(Object text) {
+		log(text,1);
+	}
+	public static void logWarning(Object text) {
+		log(text,2);
+	}
+	public static void logInfo(Object text) {
+		log(text,3);
+	}
+	
+	private static void log(Object text, int type) {
+		Calendar time = Calendar.getInstance();
+		int h=time.get(Calendar.HOUR_OF_DAY),
+			m=time.get(Calendar.MINUTE),
+			s=time.get(Calendar.SECOND);
+		String header = "[";
+		if(h<10)header+="0";
+		header+=h+":";
+		if(m<10)header+="0";
+		header+=m+":";
+		if(s<10)header+="0";
+		header+=s+"]"+"["+Thread.currentThread().getName()+"]";
+		switch(type) {
+		case 1:header+="[ERROR]";break;
+		case 2:header+="[WARNING]";break;
+		case 3:header+="[INFO]";break;
+		}
+		if(type==1)
+			System.err.println(header+": "+text);
+		else
+			System.out.println(header+": "+text);
+	}
+	
 	public static void main(String[] args){
-		System.out.println("Current Java Version running : "+System.getProperty("java.version"));
-		System.out.println("Current Operating System : "+System.getProperty("os.name"));
-		for(String s : args){if(s.contains("-devmode")){Game.devmode = true;System.out.println("Developer Mode activated !");}}
+		Game.logInfo("Current Java Version running : "+System.getProperty("java.version"));
+		Game.logInfo("Current Operating System : "+System.getProperty("os.name"));
+		for(String s : args){if(s.contains("-devmode")){Game.devmode = true;Game.logInfo("Developer Mode activated !");}}
 		Game.configs = new Configs();
 		Game.WIDTH = 320*3;//configs.resX;
 		Game.HEIGHT = WIDTH/12*9;//configs.resY;
 		for(String s : args){
-			System.out.println(s);
+			Game.logInfo(s);
 		}
 		new Game().start();
 	}

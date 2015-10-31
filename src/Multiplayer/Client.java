@@ -46,11 +46,14 @@ public class Client {
 		map = new Map(null, screen);
 		try {
 			serverConnection = new Socket(IP, Game.PORT);
-			System.out.println("connected so Server");
+			Game.logInfo("connected so Server");
 			in = serverConnection.getInputStream();
 			out = serverConnection.getOutputStream();
 		} catch (IOException e) {e.printStackTrace();}
 		server = new ServerManager(this,in);
+		try {
+			ServerManager.request(Request.PLAYER_COLOR,ConvertData.I2B(Game.configs.PlrCol));
+		} catch (IOException e) {e.printStackTrace();}
 		Thread t = new Thread(server);
 		t.setName("ServerConnection");
 		t.start();
@@ -64,15 +67,16 @@ public class Client {
 	
 	public void tick(int tickCount) throws IOException{
 		player.tick(tickCount);
-//		map.sendMapUpdates(tickCount);
+		map.sendMapUpdates(tickCount);
 		for(MPlayer p : players)p.tick(tickCount);
 		if(tickCount%4==0) player.Gravity();
 		
-		if(tickCount%45==0) {
-			byte[] data = new byte[8];
+		if(tickCount%3==0) {
+			byte[] data = new byte[10];
 			ArrayList<Byte> temp = new ArrayList<Byte>();
 			ConvertData.I2B(temp, player.x); ConvertData.I2B(temp, player.y);
 			for(int i = 0; i < temp.size(); i++)data[i]=temp.get(i);
+			data[8]=player.getAnim();data[9]=player.getDir();
 			ServerManager.request(Request.PLAYER_DATA, data);
 		}
 		
@@ -123,6 +127,31 @@ public class Client {
 	
 	public static void send2Server(byte[] b) throws IOException{
 		out.write(b);
+		out.flush();
+	}
+	
+	public static void send2Server(byte[][] b, int l) throws IOException{
+		byte[] d = new byte[l]; l=0;
+		for (int x = 0; x < b.length; x++) {
+			for (int y = 0; y < b[x].length; y++) {
+				d[l]=b[x][y];l++;
+			}
+		}
+		out.write(d);
+		out.flush();
+	}
+	
+	public static void send2Server(byte[][] b) throws IOException{
+		int n = 0;
+		for (int i = 0; i < b.length; i++)
+			n += b[i].length;
+		byte[] d = new byte[n]; n=0;
+		for (int x = 0; x < b.length; x++) {
+			for (int y = 0; y < b[x].length; y++) {
+				d[n]=b[x][y];n++;
+			}
+		}
+		out.write(d);
 		out.flush();
 	}
 	

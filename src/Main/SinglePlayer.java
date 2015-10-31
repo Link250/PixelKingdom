@@ -70,7 +70,7 @@ public class SinglePlayer {
 
 		if(debuginfo){
 			if(tickCount%60==0){
-				System.out.println("FPS:"+Game.fps+" BlockUpdates:"+map.updatecount);
+				Game.logInfo("FPS:"+Game.fps+" BlockUpdates:"+map.updatecount);
 				map.updatecount=0;
 			}
 		}
@@ -98,7 +98,7 @@ public class SinglePlayer {
 			plr.createNewFile();
 		} catch (IOException e) {e.printStackTrace();}
 		player.create();
-		System.out.println("Player Created");
+		Game.logInfo("Player Created");
 	}
 	public void save(){
 		ArrayList<Byte> savedata = new ArrayList<Byte>();
@@ -124,6 +124,6 @@ public class SinglePlayer {
 		ArrayList<Byte> data = new ArrayList<Byte>();
 		for(byte dat : temp){data.add(dat);}
 		player.load(data);
-		System.out.println("Player Loaded");
+		Game.logInfo("Player Loaded");
 	}
 }

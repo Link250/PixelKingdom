@@ -29,7 +29,7 @@ public class MatStack extends Item{
 	public void useItem(InputHandler input, Player plr, Map map, Screen screen) {
 		input.mouse.refresh();
 		anim = 12;
-		int l = 1;if(!input.mousel.isPressed())l+=2;
+		int l = Map.LAYER_FRONT;if(!input.mousel.isPressed())l = Map.LAYER_BACK;
 		if((input.mousel.isPressed() | input.mouser.isPressed()) && !plr.iscrouching
 		&& Math.sqrt(Math.pow(plr.x-(input.mouse.xMap),2)+Math.pow(plr.y-(input.mouse.yMap), 2)) <= 25){
 			for(int y = -buildsize+1; y < buildsize; y++){

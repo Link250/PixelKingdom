@@ -13,16 +13,17 @@ import org.tukaani.xz.XZInputStream;
 import org.tukaani.xz.XZOutputStream;
 
 import Main.ConvertData;
+import Main.Game;
 import Pixels.AdditionalData;
 import Pixels.Material;
 import Pixels.PixelList;
 
 public class Chunk{
 	public String path;
-	public final int width = 1024, height = 1024;
+	public static final int width = 1024, height = 1024;
 	public int x,y;
 	private short[] front;
-	private short[] mid;
+	private short[] liquid;
 	private short[] back;
 	public byte[] light;
 	private AdditionalData[][] AD;
@@ -38,18 +39,18 @@ public class Chunk{
 	
 	public int getID(int x, int y, int layer){
 		switch (layer){
-		case 1 :return(front[x + y*width]);
-		case 2 :return(mid[x + y*width]);
-		case 3 :return(back[x + y*width]);
+		case Map.LAYER_FRONT :return(front[x + y*width]);
+		case Map.LAYER_LIQUID :return(liquid[x + y*width]);
+		case Map.LAYER_BACK :return(back[x + y*width]);
 		default : return 0;
 		}
 	}
 	
 	public void setID(int x, int y, short ID, int layer){
 		switch (layer){
-		case 1 :front[x + y*width] = ID;break;
-		case 2 :mid[x + y*width] = ID;break;
-		case 3 :back[x + y*width] = ID;break;
+		case Map.LAYER_FRONT :front[x + y*width] = ID;break;
+		case Map.LAYER_LIQUID :liquid[x + y*width] = ID;break;
+		case Map.LAYER_BACK :back[x + y*width] = ID;break;
 		}
 	}
 	
@@ -58,7 +59,7 @@ public class Chunk{
 	}
 	
 	public boolean setUpdating(int x, int y, int l){
-		if(updating[x][y][l]==false){
+		if(!updating[x][y][l]){
 			updating[x][y][l]=true;
 			return true;
 		}else{
@@ -67,37 +68,38 @@ public class Chunk{
 	}
 	
 	public boolean getUpdate(int x, int y, int l){
-		boolean u = updating[x][y][l];
-		updating[x][y][l]=false;
-		return u;
+		if(updating[x][y][l]) {
+			updating[x][y][l]=false;
+			return true;
+		}
+		return false;
 	}
 	
 	public AdditionalData getAD(int x, int y, int layer){
-		return(AD[x + y*width][layer-1]);
+		return(AD[x + y*width][layer]);
 	}
 	
 	public void setAD(int x, int y, int layer, AdditionalData ad){
-		AD[x + y*width][layer-1] = ad;
+		AD[x + y*width][layer] = ad;
 	}
 		
 	public void refreshUpdates(){
 		Material m;
 		int ID;
-		for(int l=1; l<6; l++){
+		for(int l : Map.LAYER_ALL){
 			for(int Y=y*1024; Y<y*1024+height; Y++){
 				for(int X=x*1024; X<x*1024+width; X++){
-					if(l<4){
+					if(l<Map.LAYER_LIGHT){
 						ID = getID(X%1024, Y%1024, l);
 						if(ID!=0){
-							if(l==2) m = PixelList.GetLiquid(ID);
+							if(l==Map.LAYER_LIQUID) m = PixelList.GetLiquid(ID);
 							else m = PixelList.GetMat(ID);
-							m.SetPos(X, Y, l);
-							if(m.tick(0, map))if(map.setUpdating(X, Y, l))map.updates.addUpdate(X, Y, l);
+							if(m.tick(X, Y, l, 0, map))if(map.setUpdating(X, Y, l))map.updates.addUpdate(X, Y, l);
 						}
 					}else{
-						if(l==4){
+						if(l==Map.LAYER_LIGHT){
 							map.updateLight(X, Y);
-						}else{
+							//inverted directions for Light Updates
 							map.updateLight(1023-X+x*2048, 1023-Y+y*2048);
 						}
 					}
@@ -110,7 +112,7 @@ public class Chunk{
 	public void load(byte[] rawfile){
 		ArrayList<Byte> filedata = new ArrayList<Byte>();
 		front = new short[width*height];
-		mid = new short[width*height];
+		liquid = new short[width*height];
 		back = new short[width*height];
 		light = new byte[width*height];
 		AD = new AdditionalData[width*height][3];
@@ -152,7 +154,7 @@ public class Chunk{
 							}
 						}
 					}catch(ArrayIndexOutOfBoundsException e) {}
-				}catch (FileNotFoundException e) {System.out.println("no file found");create();return;} catch (IOException e) {e.printStackTrace();}
+				}catch (FileNotFoundException e) {Game.logWarning("no file found");create();return;} catch (IOException e) {e.printStackTrace();}
 			}
 		}
 		else
@@ -168,7 +170,7 @@ public class Chunk{
 				id = ConvertData.B2S(filedata);
 //				System.out.print(id+" ");
 			}catch(IndexOutOfBoundsException e){
-				System.out.println((int)(x/(1024*1024))+" "+x%(1024*1024));
+				Game.logWarning((int)(x/(1024*1024))+" "+x%(1024*1024));
 				break;
 			}
 			if(id < 0){
@@ -177,7 +179,7 @@ public class Chunk{
 					l = (int)(x/(1024*1024));
 					switch(l){
 					case 0 :	front[x%(1024*1024)]=ID;	break;
-					case 1 :	mid[x%(1024*1024)]=ID;		break;
+					case 1 :	liquid[x%(1024*1024)]=ID;	break;
 					case 2 :	back[x%(1024*1024)]=ID;		break;
 					}
 					x++;
@@ -190,14 +192,14 @@ public class Chunk{
 					l = (int)(x/(1024*1024));
 					switch(l){
 					case 0 :	front[x%(1024*1024)]=id;	break;
-					case 1 :	mid[x%(1024*1024)]=id;		break;
+					case 1 :	liquid[x%(1024*1024)]=id;	break;
 					case 2 :	back[x%(1024*1024)]=id;		break;
 					}
 					x++;
 				}
 			}
 		}
-		System.out.println("Chunk loaded at X:"+this.x+" Y:"+this.y);
+		Game.logInfo("Chunk loaded at X:"+this.x+" Y:"+this.y);
 //		refreshUpdates();
 	}
 	
@@ -220,11 +222,11 @@ public class Chunk{
 		for(int x = 0; x < 1024; x++){
 			for(int y = 0; y < 1024; y++){
 				front[y*1024+x] = newMap[0][x][y];
-				mid[y*1024+x] = newMap[1][x][y];
+				liquid[y*1024+x] = newMap[1][x][y];
 				back[y*1024+x] = newMap[2][x][y];
 			}
 		}
-		System.out.println("New Chunk created at X:"+x+" Y:"+y);
+		Game.logInfo("New Chunk created at X:"+x+" Y:"+y);
 	}
 	
 	public void save(){
@@ -245,7 +247,7 @@ public class Chunk{
 		ArrayList<Byte> rawFile = new ArrayList<Byte>();
 		ArrayList<short[]> layers = new ArrayList<short[]>();
 		layers.add(front);
-		layers.add(mid);
+		layers.add(liquid);
 		layers.add(back);
 		for(int l = 0; l < layers.size(); l++){
 			for(int i = 0; i < layers.get(l).length; i++){
@@ -261,7 +263,7 @@ public class Chunk{
 					try{
 						ad.save(rawFile);
 					}catch(NullPointerException e){
-						System.out.println("Error with "+ID);
+						Game.logError("Error with "+ID);
 					}
 				}
 			}

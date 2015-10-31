@@ -38,13 +38,13 @@ public abstract class Pickaxe extends Tool{
 			r = size;
 			int pX = 0, pY = 0;
 			Material m = null;
-			int l = 1;
+			int l = Map.LAYER_FRONT;
 			if(input.mousel.isPressed()){
 				for(int x = -size; x <= size; x++){
 					for(int y = -size; y <= size; y++){
 						int X = input.mouse.x/Game.SCALE+screen.xOffset+x, Y = input.mouse.y/Game.SCALE+screen.yOffset+y;
 						if(Math.sqrt(x*x+y*y) < r & Math.sqrt((plr.x-X)*(plr.x-X)+(plr.y-Y)*(plr.y-Y)) <= range){
-							m = PixelList.GetMat(map.getID(X,Y,1));
+							m = PixelList.GetMat(map.getID(X,Y,Map.LAYER_FRONT));
 							if(m.ID!=0 && m.usePickaxe() <= strength && m.usePickaxe()>0){
 								r = Math.sqrt(x*x+y*y);
 								pX = X;pY = Y;
@@ -57,15 +57,17 @@ public abstract class Pickaxe extends Tool{
 					for(int y = -size; y <= size; y++){
 						int X = input.mouse.x/Game.SCALE+screen.xOffset+x, Y = input.mouse.y/Game.SCALE+screen.yOffset+y;
 						if(Math.sqrt(x*x+y*y) < r & Math.sqrt((plr.x-X)*(plr.x-X)+(plr.y-Y)*(plr.y-Y)) <= range){
-							m = PixelList.GetMat(map.getID(X,Y,3));
-							if(m.ID!=0 && m.usePickaxe() <= strength && m.usePickaxe()>0 && (map.getID(X-1,Y,3)==0 | map.getID(X+1,Y,3)==0 | map.getID(X,Y-1,3)==0 | map.getID(X,Y+1,3)==0)){
+							m = PixelList.GetMat(map.getID(X,Y,Map.LAYER_BACK));
+							if(m.ID!=0 && m.usePickaxe() <= strength && m.usePickaxe()>0
+									&& (map.getID(X-1,Y,Map.LAYER_BACK)==0 | map.getID(X+1,Y,Map.LAYER_BACK)==0
+									  | map.getID(X,Y-1,Map.LAYER_BACK)==0 | map.getID(X,Y+1,Map.LAYER_BACK)==0)){
 								r = Math.sqrt(x*x+y*y);
 								pX = X;pY = Y;
 							}
 						}
 					}
 				}
-				l+=2;
+				l=Map.LAYER_BACK;
 			}
 			m = PixelList.GetMat(map.getID(pX,pY,l));
 			if(m.ID!=0){

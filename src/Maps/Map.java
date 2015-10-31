@@ -4,13 +4,12 @@ import gfx.Screen;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
-import Main.ConvertData;
 import Main.Game;
 import Multiplayer.Client;
 import Multiplayer.MapManager;
-import Multiplayer.Request;
 import Multiplayer.Server;
 import Pixels.AdditionalData;
 import Pixels.Material;
@@ -18,19 +17,22 @@ import Pixels.PixelList;
 
 public class Map {
 
-	public static final int LAYER_LIGHT = 0, LAYER_FRONT = 1, LAYER_LIQUID = 2, LAYER_BACK=3,
+	public static final int LAYER_BACK=0, LAYER_LIQUID = 1, LAYER_FRONT = 2, LAYER_LIGHT = 3,
 			MAX_LIGHT=64,
 			GT_SP=0,GT_CLIENT=1,GT_SERVER=2;
+	public static final int[] LAYER_ALL = {LAYER_BACK,LAYER_LIQUID,LAYER_FRONT,LAYER_LIGHT},
+			LAYER_ALL_PIXEL = {LAYER_BACK,LAYER_LIQUID,LAYER_FRONT},
+			LAYER_ALL_MATERIAL = {LAYER_BACK,LAYER_FRONT};
 	public String path;
 	public Screen screen;
 	public int width = 1024;
 	public int height = 1024;
 	protected UpdateManager updates = new UpdateManager();
 	public int updatecount = 0;
-	private ArrayList<MapManager.chunkLoader> cloaders = new ArrayList<MapManager.chunkLoader>();
-	private ArrayList<byte[][]> mapChanges = new ArrayList<byte[][]>();
+	private ArrayList<MapManager.chunkLoader> cloaders = new ArrayList<>();
 	private int gametype = 0;
 	private MapManager mapManager;
+	private MapUpdater mapUpdater = new MapUpdater();
 
 	private Chunk[][] chunks = new Chunk[width][height];
 	
@@ -52,13 +54,12 @@ public class Map {
 		for(int i = 0; i < size; i++){
 			int[] co = updates.activate(i);
 			x=co[0];y=co[1];l=co[2];
-			if(l>0){
+			if(l!=Map.LAYER_LIGHT){
 				ID = getID(x, y, l);
 				if(ID!=0 & getUpdate(x,y,l)){
-					if(l==2) m = PixelList.GetLiquid(ID);
+					if(l==Map.LAYER_LIQUID) m = PixelList.GetLiquid(ID);
 					else m = PixelList.GetMat(ID);
-					m.SetPos(x, y, l);
-					if(m.tick(tickCount, this))addBlockUpdate(x, y, l);
+					if(m.tick(x, y, l, tickCount, this))addBlockUpdate(x, y, l);
 				}
 			}else{
 				if(getUpdate(x,y,l))if(updateLight(x, y))addLightUpdate(x,y);
@@ -68,32 +69,24 @@ public class Map {
 	}
 	
 	public void sendMapUpdates(int tickCount) {
-//		if(mapChanges.size()!=0)System.out.println(mapChanges.size());
-		while(!mapChanges.isEmpty()) {
-			byte[][] temp = mapChanges.remove(0);
-			switch(gametype) {
-			case GT_CLIENT:
-				try {
-					Client.send2Server(Request.MAP_DATA);
-					Client.send2Server(ConvertData.B2I(temp[0][0], temp[0][1], temp[0][2], temp[0][2]));
-					Client.send2Server(ConvertData.B2I(temp[1][0], temp[1][1], temp[1][2], temp[1][2]));
-					Client.send2Server(temp[2][0]);
-					Client.send2Server(ConvertData.B2S(temp[3][0], temp[3][1]));
-				} catch (IOException e1) {e1.printStackTrace();}
-				//send to server
-				break;
-			case GT_SERVER:
-				try {
-					Server.sendMapData(
-							ConvertData.B2I(temp[0][0], temp[0][1], temp[0][2], temp[0][2]),
-							ConvertData.B2I(temp[1][0], temp[1][1], temp[1][2], temp[1][2]),
-							temp[2][0],
-							ConvertData.B2S(temp[3][0], temp[3][1]));
-				} catch (IOException e) {Game.reset=true;}
-				break;
-			default:break;
-			}
+		if(mapUpdater.hasUpdates())
+		switch(gametype) {
+		case GT_CLIENT:
+			try {
+				Client.send2Server(mapUpdater.compUpdates());
+			} catch (IOException e) {e.printStackTrace();}
+			//send to server
+			break;
+		case GT_SERVER:
+			try {
+				Server.sendMapData(mapUpdater.compUpdates());
+			} catch (IOException e) {Game.reset=true;}
+			break;
 		}
+	}
+	
+	public void receiveMapUpdates(InputStream in) {
+		mapUpdater.decompUpdates(in, this, gametype==GT_CLIENT);
 	}
 	
 	public boolean isUpdating(int x, int y, int l){
@@ -125,7 +118,7 @@ public class Map {
 		int Sy;if(Math.random()<0.5)Sy=1;else Sy=-1;
 		for(int X = 0; X <= 2; X++){
 			for(int Y = 0; Y <= 2; Y++){
-				for(int L = 0; L <= 3; L++){
+				for(int L = Map.LAYER_BACK; L <= Map.LAYER_LIGHT; L++){
 					if(setUpdating(x+Sx*X-Sx, y+Sy*Y-Sy, L))updates.addUpdate(x+Sx*X-Sx, y+Sy*Y-Sy, L);
 				}
 			}
@@ -133,10 +126,10 @@ public class Map {
 	}
 	
 	public void addLightUpdate(int x, int y){
-		if(setUpdating(x+1,y,0))updates.addUpdate(x+1, y, 0);
-		if(setUpdating(x-1,y,0))updates.addUpdate(x-1, y, 0);
-		if(setUpdating(x,y+1,0))updates.addUpdate(x, y+1, 0);
-		if(setUpdating(x,y-1,0))updates.addUpdate(x, y-1, 0);
+		if(setUpdating(x+1,y,Map.LAYER_LIGHT))updates.addUpdate(x+1, y, Map.LAYER_LIGHT);
+		if(setUpdating(x-1,y,Map.LAYER_LIGHT))updates.addUpdate(x-1, y, Map.LAYER_LIGHT);
+		if(setUpdating(x,y+1,Map.LAYER_LIGHT))updates.addUpdate(x, y+1, Map.LAYER_LIGHT);
+		if(setUpdating(x,y-1,Map.LAYER_LIGHT))updates.addUpdate(x, y-1, Map.LAYER_LIGHT);
 	}
 	
 	public boolean updateLight(int x, int y){
@@ -146,7 +139,7 @@ public class Map {
 			light = (byte) MAX_LIGHT;
 		}else{
 			light=0;
-			if(getID(x,y,1)==0)c=1;
+			if(getID(x,y,Map.LAYER_FRONT)==0)c=1;
 			else c=2;
 			if((tempL = getlight(x+1,y))>light)light = (byte) (tempL-c);
 			if((tempL = getlight(x-1,y))>light)light = (byte) (tempL-c);
@@ -165,7 +158,7 @@ public class Map {
 		int X,Y;
 		short light;
 
-		for(int l = 3; l >0; l--){
+		for(int l = Map.LAYER_BACK; l <= Map.LAYER_LIGHT; l++){
 			for(int y = 0; y <screen.height/3; y++){
 				for(int x = 0; x <screen.width/3; x++){
 					X=x+screen.xOffset;Y=y+screen.yOffset;
@@ -181,12 +174,11 @@ public class Map {
 							screen.drawShadow(X, Y, 0xff000000);
 						}else{
 							if(ID!=0){
-								if(l!=2)m = PixelList.GetMat(ID);
+								if(l!=Map.LAYER_LIQUID)m = PixelList.GetMat(ID);
 								else m = PixelList.GetLiquid(ID);
-								m.SetPos(X, Y, l-1);
-								m.render(this,screen,l);
+								m.render(X, Y, l, this,screen);
 							}
-							if(l==1)screen.drawShadow(X, Y, ((MAX_LIGHT-getlight(X,Y))<<26));
+							if(l==Map.LAYER_LIGHT)screen.drawShadow(X, Y, ((MAX_LIGHT-getlight(X,Y))<<26));
 						}
 					}
 				}
@@ -238,7 +230,7 @@ public class Map {
 	public void setID(int x, int y, int l, int ID){
 		setID(x,y,l,ID,null,false);
 	}
-	public void setID(int x, int y, int l, int ID, AdditionalData ad, boolean skipcheck){
+	public void setID(int x, int y, int l, int ID, AdditionalData ad, boolean skipUpdate){
 		int cx = x/1024,cy = y/1024;
 		if(chunks[cx][cy]!=null){
 			addBlockUpdate(x, y, l);
@@ -246,27 +238,8 @@ public class Map {
 			else PixelList.GetMat(ID).createAD(x, y, l, this);
 			chunks[cx][cy].setID(x%1024, y%1024, (short) ID, l);
 		}
-		if(!skipcheck) {
-			switch(gametype) {
-			case GT_CLIENT:
-				try {
-					Client.send2Server(Request.MAP_DATA);
-					Client.send2Server(x);
-					Client.send2Server(y);
-					Client.send2Server((byte)l);
-					Client.send2Server((short)ID);
-				} catch (IOException e1) {e1.printStackTrace();}
-//				mapChanges.add(new byte[][] {ConvertData.I2B(x),ConvertData.I2B(y),{(byte) l},ConvertData.S2B((short)ID)});
-				//send to server
-				return;
-			case GT_SERVER:
-				try {
-					Server.sendMapData(x, y, l, ID);
-				} catch (IOException e) {Game.reset=true;}
-//				mapChanges.add(new byte[][] {ConvertData.I2B(x),ConvertData.I2B(y),{(byte) l},ConvertData.S2B((short)ID)});
-				return;
-			default:return;
-			}
+		if(!skipUpdate && (gametype == GT_CLIENT || gametype== GT_SERVER)) {
+			mapUpdater.addUpdate(new int[] {x,y,l,ID});
 		}
 	}
 	
@@ -315,7 +288,7 @@ public class Map {
 	}
 
 	public boolean isSolid(int x, int y){
-		if(getID(x, y, 1)!=0 & PixelList.GetMat(getID(x, y, 1)).solid)return true;
+		if(getID(x, y, Map.LAYER_FRONT)!=0 && PixelList.GetMat(getID(x, y, Map.LAYER_FRONT)).solid)return true;
 		else return false;
 	}
 

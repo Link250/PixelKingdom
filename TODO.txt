@@ -59,4 +59,8 @@ Multiplayer
 	-maps werden komprimiert
 	-kollektive updates (eine ID mit mehreren koordinaten, zb bei großen wasser/feuer mengen)
 
+Neues AD System
+	-jeder Pixel, der ADs besitzen kann, hat eine eignene Klasse davon in der PixelKlasse
+	-> bessere verwaltung der Daten
+
 Sounds

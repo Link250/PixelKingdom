@@ -10,8 +10,9 @@ public class Water extends Liquid{
 		viscosity = 1000;
 	}
 	
-	public boolean tick(int numTick, Map map) {
-		if(flow(map)) return true;
+	@Override
+	public boolean tick(int x, int y, int l, int numTick, Map map) {
+		if(flow(x, y, l, map)) return true;
 		else return false;
 	}
 }

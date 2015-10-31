@@ -56,7 +56,7 @@ public class Configs {
 			FileInputStream fileInputStream = new FileInputStream(file);
 			fileInputStream.read(opt);
 			fileInputStream.close();
-			System.out.println("Config File loaded");
+			Game.logInfo("Config File loaded");
 		} catch (FileNotFoundException e) {e.printStackTrace();} catch (IOException e) {e.printStackTrace();}
 		
 		try{
@@ -70,8 +70,7 @@ public class Configs {
 			resY = ConvertData.B2I(opt[i],opt[i+1],opt[i+2],opt[i+3]);i+=4;
 			stacktype = opt[i];
 		}catch(ArrayIndexOutOfBoundsException e){
-			e.printStackTrace();
-			System.out.println("New Config File created ");
+			Game.logInfo("New Config File created ");
 			create();
 			load();
 		}

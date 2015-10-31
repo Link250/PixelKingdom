@@ -26,35 +26,80 @@ public class Server implements Runnable{
 	public void run() {
 		Thread t = new Thread(new ClientAccepter(this));
 		t.setName("ClientAccepter");t.start();
-		System.out.println("Client accepter started !");
-		while(running){try{
-			Thread.sleep(10);
-		}catch(InterruptedException e){}}
+		Game.logInfo("Client accepter started !");
+		long lastTime = System.nanoTime();
+		
+		long lastTimer = System.currentTimeMillis();
+		double delta = 0;
+		int ticks = 0;
+				
+		while(running){
+			long now = System.nanoTime();
+			delta += (now - lastTime) / Game.nsPerTick;
+			lastTime = now;
+			
+			while(delta >= 1){
+				ticks ++;
+				tick(ticks);
+				delta -= 1;
+			}
+			
+			if(System.currentTimeMillis() - lastTimer >= 1000){
+				if(Game.devmode)
+					Game.logInfo("Ticks:"+ticks+" BlockUpdates:"+map.updatecount);
+				map.updatecount=0;
+				lastTimer += 1000;
+				ticks = 0;
+			}
+		}
 	}
 	
-	public void tick(int tickCount){
-		map.tick(tickCount);
-//		map.sendMapUpdates(tickCount);
+	public void tick(int ticks){
+		map.tick(ticks);
+		map.sendMapUpdates(ticks);
+		if(Game.devmode&&game.input.X.click()) {
+			int X = game.input.mouse.x/Game.SCALE+game.screen.xOffset, Y = game.input.mouse.y/Game.SCALE+game.screen.yOffset;
+			Game.logInfo(X+" "+Y+" id{"+map.getID(X, Y, 1)		+","+map.getID(X, Y, 2)		+","+map.getID(X, Y, 3)		+"}");
+			Game.logInfo(X+" "+Y+" up{"+map.isUpdating(X, Y, 0)	+","+map.isUpdating(X, Y, 0)+","+map.isUpdating(X, Y, 0)+"}");
+			map.addBlockUpdate(X, Y, 1);
+		}
 	}
 	
 	public void sendChunk(ClientManager c, InputStream cIn) throws IOException {
 		int x = IOConverter.receiveInt(cIn);
 		int y = IOConverter.receiveInt(cIn);
 		while(!map.loadChunk(x*1024, y*1024)) {try {Thread.sleep(1);} catch (InterruptedException e) {}}
-		System.out.println("sending chunk");
+		Game.logInfo("sending chunk");
 		byte[] mapd = map.compressedChunk(x, y);
 		c.send2Client(new byte[]{Request.CHUNK_DATA});
 		c.send2Client(ConvertData.I2B(mapd.length));
 		c.send2Client(mapd);
 	}
 	
-	public void receivePlayerData(ClientManager c, InputStream cIn) throws IOException {
-		byte[] data = new byte[9];
+	public void receivePlayerColor(ClientManager c, InputStream cIn) throws IOException {
+		byte[] data = new byte[5];
 		ArrayList<Byte> temp = new ArrayList<Byte>();
-		try {for(int i = 0; i < 8; i ++)temp.add((byte) cIn.read());} catch (IOException e) {}
+		try {for(int i = 0; i < 4; i ++)temp.add((byte) cIn.read());} catch (IOException e) {}
+		for(int i = 0; i < temp.size(); i++)data[i+1]=temp.get(i);
+		c.player.setColor(ConvertData.B2I(temp));
+		data[0]=(byte) c.id;
+		
+		for(ClientManager cm : clients) {
+			if(cm!=c) {
+				cm.sendRequest2Client(data,Request.PLAYER_DATA,Request.PLAYER.COLOR);
+			}
+		}
+	}
+	
+	public void receivePlayerData(ClientManager c, InputStream cIn) throws IOException {
+		byte[] data = new byte[11];
+		ArrayList<Byte> temp = new ArrayList<Byte>();
+		try {for(int i = 0; i < 10; i ++)temp.add((byte) cIn.read());} catch (IOException e) {}
 		for(int i = 0; i < temp.size(); i++)data[i+1]=temp.get(i);
 		c.player.x = ConvertData.B2I(temp);
 		c.player.y = ConvertData.B2I(temp);
+		c.player.anim = temp.remove(0);
+		c.player.setDir(temp.remove(0));
 		data[0]=(byte) c.id;
 		
 		for(ClientManager cm : clients) {
@@ -65,20 +110,15 @@ public class Server implements Runnable{
 	}
 	
 	public void receiveMapData(ClientManager c, InputStream cIn) throws IOException {
-//		byte[] data = new byte[11];
-//		ArrayList<Byte> temp = new ArrayList<Byte>();
-//		try {for(int i = 0; i < 11; i ++)temp.add((byte) cIn.read());} catch (IOException e) {}
-//		for(int i = 0; i < temp.size(); i++)data[i]=temp.get(i);
-//		map.setID(ConvertData.B2I(temp), ConvertData.B2I(temp), temp.remove(0), ConvertData.B2S(temp), null, false);
-		map.setID(IOConverter.receiveInt(cIn), IOConverter.receiveInt(cIn), cIn.read(), IOConverter.receiveShort(cIn), null, false);
-//		System.out.println("got map data");
-		
-//		for(ClientManager cm : clients) {
-//			if(cm!=c) {
-//				cm.sendRequest2Client(data,Request.MAP_DATA);
-//			}
-//		}
+		map.receiveMapUpdates(cIn);
 	}
+	
+	public static void sendMapData(byte[][] b) throws IOException {
+		for(ClientManager cm : clients) {
+			cm.send2Client(b);
+		}
+	}
+
 	public static void sendMapData(int x, int y, int l, int ID) throws IOException {
 		byte[] data = new byte[11];
 		ArrayList<Byte> temp = new ArrayList<Byte>();
@@ -96,13 +136,19 @@ public class Server implements Runnable{
 		sendClients(Request.PLAYER_DATA);
 		sendClients(Request.PLAYER.NEW);
 		sendClients(c);
-		System.out.println("new connection");
+		Game.logInfo("new connection");
 		clients.add(new ClientManager(s, this, c));
 		for(ClientManager cm : clients) {
 			if(cm.id==c) {
 				for(ClientManager cmt : clients) {
 					if(cmt.id!=c) {
 						cm.send2Client(new byte[]{Request.PLAYER_DATA,Request.PLAYER.NEW,(byte) cmt.id});
+						byte[] temp = new byte[7];
+						temp[0]=Request.PLAYER_DATA;
+						temp[1]=Request.PLAYER.COLOR;
+						temp[2]=(byte) cmt.id;
+						ConvertData.I2B(temp, 3, cmt.player.color);
+						cm.send2Client(temp);
 					}
 				}
 			}
@@ -118,9 +164,9 @@ public class Server implements Runnable{
 			sendClients(Request.PLAYER_DATA);
 			sendClients(Request.PLAYER.DELETE);
 			sendClients(id);
-			System.out.println("Client "+id+" disconnected");
+			Game.logInfo("Client "+id+" disconnected");
 		} catch (IOException e) {
-			System.out.println("Client "+id+" disconnected by error");
+			Game.logError("Client "+id+" disconnected by error");
 		}
 	}
 	
@@ -130,6 +176,11 @@ public class Server implements Runnable{
 		}
 	}
 	public void sendClients(byte[] b) throws IOException{
+		for(ClientManager c : clients){
+			c.send2Client(b);
+		}
+	}
+	public void sendClients(byte[][] b) throws IOException{
 		for(ClientManager c : clients){
 			c.send2Client(b);
 		}

@@ -54,14 +54,11 @@ public class PixelList {
 	public static Material GetMat(int x, int y, Map map, int layer){
 		int ID = map.getID(x, y, layer);
 		Material m;
-		if(layer == 2){
+		if(layer == Map.LAYER_LIQUID){
 			m = GetLiquid(ID);
 		}else{
 			m = GetMat(ID);
 		}
-		m.x = x;
-		m.y = y;
-		m.l = layer;
 		return m;
 	}
 

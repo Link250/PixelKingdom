@@ -26,7 +26,7 @@ public class ClientAccepter implements Runnable {
 				Thread t = new Thread(Server.clients.get(Server.clients.size()-1));
 				t.setName("Client"+c);c++;
 				t.start();
-				System.out.println("Client "+clientSocket.getInetAddress().getHostAddress()+" connected");
+				Game.logInfo("Client "+clientSocket.getInetAddress().getHostAddress()+" connected");
 			}serverSocket.close();
 		} catch (IOException e) {e.printStackTrace();}
 	}

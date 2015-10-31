@@ -4,6 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
 import ItemList.*;
+import Main.Game;
 import Main.Loader;
 import Pixels.PixelList;
 
@@ -29,7 +30,7 @@ public class ItemList {
 			}
 		}
 		for(Item i : itemlist){
-			System.out.println("Initialized Item "+i.name+"("+i.ID+")");
+			Game.logInfo("Initialized Item "+i.name+"("+i.ID+")");
 		}
 	}
 	
@@ -53,7 +54,7 @@ public class ItemList {
 				try {
 					Item t = (Item) Class.forName(i.getClass().getName()).getConstructor().newInstance();
 					if(t.getClass() == MatStack.class) ((MatStack)t).setMat(ID);
-					System.out.println("new Instance of "+t.name+"("+t.ID+") created.");
+					Game.logInfo("new Instance of "+t.name+"("+t.ID+") created.");
 					return (Item) t;
 				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | ClassNotFoundException e){
 					e.printStackTrace();

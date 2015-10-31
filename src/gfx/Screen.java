@@ -1,5 +1,7 @@
 package gfx;
 
+import Maps.Map;
+
 public class Screen {
 
 	public static final int MAP_WIDTH = 64;
@@ -17,12 +19,12 @@ public class Screen {
 	
 	public ColorSheet[] csheets = new ColorSheet[3];
 	
-	public Screen(int width, int height, ColorSheet f, ColorSheet m, ColorSheet b){
+	public Screen(int width, int height, ColorSheet f, ColorSheet l, ColorSheet b){
 		this.width = width;
 		this.height = height;
-		csheets[0] = f;
-		csheets[1] = m;
-		csheets[2] = b;
+		csheets[Map.LAYER_BACK] = b;
+		csheets[Map.LAYER_LIQUID] = l;
+		csheets[Map.LAYER_FRONT] = f;
 	
 		pixels = new int[width*height];
 		shadow = new int[width*height/9];
@@ -121,7 +123,7 @@ public class Screen {
 	}
 	
 	public void drawMaterial(int xPos, int yPos, int tile, int layer){
-		int col = csheets[layer-1].pixels[tile];
+		int col = csheets[layer].pixels[tile];
 		drawPixelScaled(xPos, yPos, col);
 	}
 

@@ -23,15 +23,24 @@ import entities.MPlayer;
 			switch(i) {
 			case Request.PLAYER.NEW:
 				plrs.add(new MPlayer(game.client.map, game, in.read()));
-				System.out.println("new player");
+				Game.logInfo("new player");
 				break;
 			case Request.PLAYER.DELETE:
 				n = in.read();
 				for(int j = 0; j < plrs.size(); j++) {
 					if(plrs.get(j).number==n) {
 						plrs.remove(j);
-						System.out.println("player left");
+						Game.logInfo("player left");
 						break;
+					}
+				}
+				break;
+			case Request.PLAYER.COLOR:
+				n = 0;
+				try {n = in.read();} catch (IOException e) {}
+				for(int j = 0; j < plrs.size(); j++) {
+					if(plrs.get(j).number==n) {
+						plrs.get(j).color = IOConverter.receiveInt(in);
 					}
 				}
 				break;
@@ -42,6 +51,8 @@ import entities.MPlayer;
 					if(plrs.get(j).number==n) {
 						plrs.get(j).x = IOConverter.receiveInt(in);
 						plrs.get(j).y = IOConverter.receiveInt(in);
+						plrs.get(j).anim = in.read();
+						plrs.get(j).setDir(in.read());
 					}
 				}
 				break;

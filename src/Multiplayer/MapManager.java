@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 
 import Main.ConvertData;
+import Main.Game;
 import Main.IOConverter;
 import Maps.Chunk;
 import Maps.Map;
@@ -19,7 +20,8 @@ public class MapManager implements InputReceiver{
 	}
 	
 	public boolean useInput(InputStream in) throws IOException { //is used when the Server sends Map data
-		map.setID(IOConverter.receiveInt(in), IOConverter.receiveInt(in), in.read(), IOConverter.receiveShort(in), null, true);
+		map.receiveMapUpdates(in);
+//		map.setID(IOConverter.receiveInt(in), IOConverter.receiveInt(in), in.read(), IOConverter.receiveShort(in), null, true);
 		return false;
 	}
 
@@ -52,7 +54,7 @@ public class MapManager implements InputReceiver{
 		}
 		
 		public boolean useInput(InputStream in) throws IOException {
-			System.out.println("used receiving map data");
+			Game.logInfo("used receiving map data");
 			int l = IOConverter.receiveInt(in);
 			byte[] data = new byte[l];
 			for(int i = 0; i < l; i++) {

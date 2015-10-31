@@ -61,6 +61,13 @@ public class Player extends Mob{
 		try{equipment.beltbag1.inventory[selected].setMouse();}catch(NullPointerException e){}
 	}
 	
+	public byte getAnim() {
+		return (byte) anim;
+	}
+	public byte getDir() {
+		return (byte) movingDir;
+	}
+	
 	public void Gravity(){
 		if(gravity != 0 && isinair){
 			if(speedX < -1) speedX = -1;

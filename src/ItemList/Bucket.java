@@ -30,9 +30,9 @@ public class Bucket extends Item {
 			for(int y = -buildsize+1; y < buildsize; y++){
 				for(int x = -buildsize+1; x < buildsize; x++){
 					if((input.mousel.isPressed())){
-						map.setID(X+x, Y+y, 2, 1);
+						if(map.getID(X+x, Y+y, Map.LAYER_LIQUID)!=1)map.setID(X+x, Y+y, Map.LAYER_LIQUID, 1);
 					}else {
-						map.setID(X+x, Y+y, 2, 0);
+						if(map.getID(X+x, Y+y, Map.LAYER_LIQUID)!=0)map.setID(X+x, Y+y, Map.LAYER_LIQUID, 0);
 					}
 				}
 			}

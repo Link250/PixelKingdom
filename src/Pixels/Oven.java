@@ -18,7 +18,7 @@ public class Oven extends Material{
 		adl = 2;
 	}
 	
-	public boolean tick(int numTick, Map map) {
+	public boolean tick(int x, int y, int l, int numTick, Map map) {
 		AdditionalData ad, ado;
 		ad = map.getAD(x, y, l);
 		map.setlighter(x, y, (byte) (ad.getshort(0)/(maxHeat/16)));
@@ -26,7 +26,7 @@ public class Oven extends Material{
 		Ore ore;
 		for(int X=-1; X<=1; X++){
 			for(int Y=-1; Y<=1; Y++){
-				for(int L=1; L<=3; L++){
+				for(int L : Map.LAYER_ALL_PIXEL){
 					id = map.getID(x+X, y+Y, L);
 					if(id==32){
 						if(ad.getshort(0)<maxHeat)ad.setshort(0, (short) (ad.getshort(0)+heatup));
@@ -43,8 +43,7 @@ public class Oven extends Material{
 							ore = (Ore) PixelList.GetMat(id);
 							ado = map.getAD(x+X, y+Y, L);
 							if(ore.melt>0){
-								ore.SetPos(x+X, y+Y, L);
-								ore.heatUp(ad.getshort(0),(short) 1,map);
+								ore.heatUp(x+X, y+Y, L, ad.getshort(0),(short) 1,map);
 							}
 						}catch(ClassCastException e){}
 					}
@@ -56,9 +55,9 @@ public class Oven extends Material{
 		return true;
 	}
 	
-	public void render(Map map, Screen screen, int layer) {
-		screen.drawMaterial(x, y, ID, layer);
-		int r = (int) (map.getAD(x, y, l+1).getshort(0)/(((double)maxHeat)/127));if(r>255)r=255;
+	public void render(int x, int y, int l, Map map, Screen screen) {
+		screen.drawMaterial(x, y, ID, l);
+		int r = (int) (map.getAD(x, y, l).getshort(0)/(((double)maxHeat)/127));if(r>255)r=255;
 		screen.drawPixelScaled(x, y, 0x00ff0000 | (r<<24));
 	}
 }

@@ -3,6 +3,7 @@ package Items;
 import java.util.ArrayList;
 
 import Items.Recipe.component;
+import Main.Game;
 
 public class RecipeList {
 
@@ -30,7 +31,7 @@ public class RecipeList {
 			for(component c : r.educts){s += "["+ItemList.GetItem(c.ID).name+" x "+c.n+"] ";}
 			s += "can be crafted to ";
 			for(component c : r.products){s += "["+c.n+" x "+ItemList.GetItem(c.ID).name+"] ";}
-			System.out.println(s);
+			Game.logInfo(s);
 		}
 	}
 	

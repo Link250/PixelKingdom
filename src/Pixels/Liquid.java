@@ -12,29 +12,29 @@ public abstract class Liquid extends Material{
 		tick = true;
 	}
 	
-	public boolean flow(Map map) {
-		if(map.getID(x,y+1,1)==0 & map.getID(x,y+1,2)==0){
-			map.movePixel(x, y, 2, x, y+1, 2);
+	public boolean flow(int x, int y, int l, Map map) {
+		if(map.getID(x,y+1,Map.LAYER_FRONT)==0 && map.getID(x,y+1,Map.LAYER_LIQUID)==0){
+			map.movePixel(x, y, Map.LAYER_LIQUID, x, y+1, Map.LAYER_LIQUID);
 			y++;
 			return true;
 		}
 		if(Math.random()<0.5){
-			if(flowtoside(-1, map))return true;
-			if(flowtoside(1, map))return true;
+			if(flowtoside(x, y, l, -1, map))return true;
+			if(flowtoside(x, y, l, 1, map))return true;
 		}else{
-			if(flowtoside(1, map))return true;
-			if(flowtoside(-1, map))return true;
+			if(flowtoside(x, y, l, 1, map))return true;
+			if(flowtoside(x, y, l, -1, map))return true;
 		}
 		return false;
 	}
 	
-	private boolean flowtoside(int side, Map map){
-		if(map.getID(x+side,y,1)==0 & map.getID(x+side,y,2)==0){
+	private boolean flowtoside(int x, int y, int l, int side, Map map){
+		if(map.getID(x+side,y,Map.LAYER_FRONT)==0 && map.getID(x+side,y,Map.LAYER_LIQUID)==0){
 			int i = 0;
-			if(side<0)for(i = side; i > viscosity*side && map.getID(x+i,y+1,2)!=0; i+=side){}
-			if(side>0)for(i = side; i < viscosity*side && map.getID(x+i,y+1,2)!=0; i+=side){}
-			if(map.getID(x+i,y+1,1)==0 & map.getID(x+i,y+1,2)==0){
-				map.movePixel(x, y, 2, x+i, y+1, 2);
+			if(side<0)for(i = side; i > viscosity*side && map.getID(x+i,y+1,Map.LAYER_LIQUID)!=0; i+=side){}
+			if(side>0)for(i = side; i < viscosity*side && map.getID(x+i,y+1,Map.LAYER_LIQUID)!=0; i+=side){}
+			if(map.getID(x+i,y+1,Map.LAYER_FRONT)==0 && map.getID(x+i,y+1,Map.LAYER_LIQUID)==0){
+				map.movePixel(x, y, Map.LAYER_LIQUID, x+i, y+1, Map.LAYER_LIQUID);
 				return true;
 			}
 		}return false;

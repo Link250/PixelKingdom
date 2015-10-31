@@ -16,12 +16,12 @@ public class Torch extends Material{
 		solid = false;
 	}
 
-	public boolean tick(int numTick, Map map) {
+	public boolean tick(int x, int y, int l, int numTick, Map map) {
 		map.setlighter(x, y, (byte)64);
 		return true;
 	}
 	
-	public void render(Map map, Screen screen, int layer) {
+	public void render(int x, int y, int l, Map map, Screen screen) {
 		screen.drawTile(x-1, y-1, 0, 0, sprite, 0);
 	}
 }

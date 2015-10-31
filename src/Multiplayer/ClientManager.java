@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
+import Main.Game;
 import entities.MPlayer;
 
 public class ClientManager implements Runnable {
@@ -32,6 +33,7 @@ public class ClientManager implements Runnable {
 			while (running){
 				in = clientIn.read();
 				switch(in) {
+				case Request.END_OF_STREAM:
 				case Request.CLOSE_CONNECTION:
 					running = false;
 					server.closeConnection(id);
@@ -42,11 +44,14 @@ public class ClientManager implements Runnable {
 				case Request.PLAYER_DATA:
 					server.receivePlayerData(this, clientIn);
 					break;
+				case Request.PLAYER_COLOR:
+					server.receivePlayerColor(this, clientIn);
+					break;
 				case Request.MAP_DATA:
 					server.receiveMapData(this, clientIn);
 					break;
 				default:
-					System.err.println("Non existing request received with ID "+in);
+					Game.logError("Non existing request received with ID "+in);
 					break;
 				}
 			}
@@ -63,6 +68,31 @@ public class ClientManager implements Runnable {
 	
 	public void send2Client(byte[] b) throws IOException{
 		clientOut.write(b);
+		clientOut.flush();
+	}
+	
+	public void send2Client(byte[][] b, int l) throws IOException{
+		byte[] d = new byte[l];l=0;
+		for (int x = 0; x < b.length; x++) {
+			for (int y = 0; y < b[x].length; y++) {
+				d[l]=b[x][y];l++;
+			}
+		}
+		clientOut.write(d);
+		clientOut.flush();
+	}
+	
+	public void send2Client(byte[][] b) throws IOException{
+		int n = 0;
+		for (int i = 0; i < b.length; i++)
+			n += b[i].length;
+		byte[] d = new byte[n]; n=0;
+		for (int x = 0; x < b.length; x++) {
+			for (int y = 0; y < b[x].length; y++) {
+				d[n]=b[x][y];n++;
+			}
+		}
+		clientOut.write(d);
 		clientOut.flush();
 	}
 	

@@ -14,7 +14,7 @@ public class UpdateManager {
 		count = 0;
 	}
 	
-	public boolean addUpdate(int x, int y, int l){
+	public synchronized boolean addUpdate(int x, int y, int l){
 		count++;
 		int[] u = {x,y,l};
 		if(nextdata.size()<count){
@@ -25,7 +25,7 @@ public class UpdateManager {
 		return true;
 	}
 	
-	public int startUpdate(){
+	public synchronized int startUpdate(){
 		for(int i = 0; i < count; i++){
 			if(data.size()<(i+1)) data.add(nextdata.get(i));
 			else data.set(i, nextdata.get(i));

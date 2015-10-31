@@ -20,6 +20,13 @@ public class ConvertData {
 		return (short) ((file.remove(0)<< 8)&0xff00|(file.remove(0)<< 0)&0x00ff);
 	}
 
+	public static void I2B(byte[] b, int i, int n){
+		b[i+0] = (byte) ((n&0xff000000)>>24);
+		b[i+1] = (byte) ((n&0x00ff0000)>>16);
+		b[i+2] = (byte) ((n&0x0000ff00)>>8);
+		b[i+3] = (byte) ((n&0x000000ff)>>0);
+	}
+
 	public static byte[] I2B(int n){
 		byte[] b = new byte[4];
 		b[0] = (byte) ((n&0xff000000)>>24);

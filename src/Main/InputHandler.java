@@ -7,7 +7,6 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.util.ArrayList;
 
 public class InputHandler implements KeyListener, MouseListener, MouseMotionListener, MouseWheelListener{
 	
@@ -99,8 +98,6 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
 			return false;
 		}
 	}
-		
-	public java.util.List<Key> keys = new ArrayList<Key>();
 	
 	public Key up = new Key();
 	public Key down = new Key();
@@ -174,6 +171,7 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
 		if(keyCode == KeyEvent.VK_F12){F12.toggle(isPressed);}
 		if(keyCode == KeyEvent.VK_H){H.toggle(isPressed);mousem.x=Game.WIDTH/2*Game.SCALE;mousem.y=Game.HEIGHT/2*Game.SCALE;}
 		if(keyCode == KeyEvent.VK_B){B.toggle(isPressed);}
+		if(keyCode == KeyEvent.VK_X){X.toggle(isPressed);}
 	}
 
 	public void mouseClicked(MouseEvent e) {
