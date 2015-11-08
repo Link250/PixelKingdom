@@ -38,9 +38,9 @@ import entities.MPlayer;
 			case Request.PLAYER.COLOR:
 				n = 0;
 				try {n = in.read();} catch (IOException e) {}
-				for(int j = 0; j < plrs.size(); j++) {
-					if(plrs.get(j).number==n) {
-						plrs.get(j).color = IOConverter.receiveInt(in);
+				for (MPlayer mPlayer : plrs) {
+					if(mPlayer.number==n) {
+						mPlayer.color = IOConverter.receiveInt(in);
 					}
 				}
 				break;

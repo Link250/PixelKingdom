@@ -366,7 +366,6 @@ public class Player extends Mob{
 
 	public void create(){
 		this.x = 524800;
-		map.loadChunk(x,524500);
 		int h=524500;//for(h = 524500; PixelList.GetMat(this.x, h, map,1).ID==0 && h < 525000; h++){}
 		this.y = h-yOffset;
 		equipment.create();
@@ -382,9 +381,9 @@ public class Player extends Mob{
 			newitem = ItemList.NewItem(18); newitem.addStack(999);
 			equipment.materialbag1.inventory[3] = newitem;
 			
-			newpick = (Pickaxe) ItemList.NewItem(333);
-			equipment.beltbag1.inventory[1] = newpick;
-			equipment.beltbag1.inventory[2] = ItemList.NewItem(400);
+			equipment.beltbag1.inventory[1] = ItemList.NewItem(333);
+			newitem = ItemList.NewItem(400);newitem.addStack(999);
+			equipment.beltbag1.inventory[2] = newitem;
 			equipment.beltbag1.inventory[3] = ItemList.NewItem(332);
 			equipment.itembag2 = (ItemBag) ItemList.NewItem(403);
 		}

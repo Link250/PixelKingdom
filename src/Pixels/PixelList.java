@@ -1,6 +1,8 @@
 package Pixels;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+
 import Maps.Map;
 
 public class PixelList {
@@ -8,13 +10,15 @@ public class PixelList {
 	public static Material[] matList = new Material[256];
 	public static Liquid[] liqList = new Liquid[256];
 	
+	private static HashMap<String, Short> idList = new HashMap<>();
+	
 	public PixelList(){
 		addMaterial(new Air());
 		addMaterial(new Stone());
 		addMaterial(new Earth());
 		addMaterial(new Grass());
 		addMaterial(new Wood());
-		addMaterial(new Leave());
+		addMaterial(new Leaf());
 		addMaterial(new Planks());
 		addMaterial(new Loam());
 		addMaterial(new Sand());
@@ -28,10 +32,33 @@ public class PixelList {
 		addMaterial(new Gold());
 		addLiquid(new Water());
 		addLiquid(new Lava());
+		
+		for (Material material : matList) {
+			if(material!=null) {
+				idList.put(material.name, (short) material.ID);
+			}
+		}
+		for (Liquid liquid : liqList) {
+			if(liquid!=null) {
+				idList.put(liquid.name, (short) liquid.ID);
+			}
+		}
 	}
 	
 	public void addMaterial(Material m){matList[m.ID]=m;}
 	public void addLiquid(Liquid l){liqList[l.ID]=l;}
+
+	public static short getPixelID(String pixelName){
+		return idList.get(pixelName);
+	}
+	
+	public static Material GetPixel(int ID, int l){
+		return GetPixel((short)ID, l);
+	}
+	
+	public static Material GetPixel(short ID, int l){
+		return l==Map.LAYER_LIQUID ? GetLiquid(ID) : GetMat(ID);
+	}
 
 	public static Material GetMat(int ID){
 		return GetMat((short)ID);
@@ -43,10 +70,10 @@ public class PixelList {
 	}
 
 	public static Material GetLiquid(int ID){
-		return GetLiquid((byte)ID);
+		return GetLiquid((short)ID);
 	}
 
-	public static Material GetLiquid(byte ID){
+	public static Material GetLiquid(short ID){
 		if(ID>0)return liqList[ID];
 		else return matList[0];
 	}

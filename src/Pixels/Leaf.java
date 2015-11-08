@@ -1,10 +1,10 @@
 package Pixels;
 
-public class Leave extends Material{
+public class Leaf extends Material{
 
-	public Leave(){
+	public Leaf(){
 		ID = 5;
-		name = "Leave";
+		name = "Leaf";
 		usePickaxe = 1;
 		burnable = 10;
 		tick = false;

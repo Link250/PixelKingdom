@@ -1,5 +1,7 @@
 package Pixels;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import Main.ConvertData;
@@ -14,6 +16,17 @@ public class AdditionalData{
 				data[i] = ad.getbyte(i);
 			}
 		}
+	}
+	public AdditionalData(InputStream in, int length){
+		data = new byte[length];
+		try {
+			for (int i = 0; i < data.length; i++) {
+				data[i] = (byte) in.read();
+			}
+		} catch (IOException e) {e.printStackTrace();}
+	}
+	public AdditionalData(byte[] data){
+		this.data = data;
 	}
 	public AdditionalData(int length){
 		data = new byte[length];
@@ -31,26 +44,26 @@ public class AdditionalData{
 		return data[i];
 	}
 	public short getshort(int i){
-		return ConvertData.B2S(data[i*2], data[i*2+1]);
+		return ConvertData.B2S(data, i*2);
 	}
 	public int getint(int i){
-		return ConvertData.B2I(data[i*4], data[i*4+1], data[i*4+2], data[i*4+3]);
+		return ConvertData.B2I(data, i*4);
 	}
-	
+	public byte[] getData() {
+		return this.data;
+	}
+
 	public void setbyte(int index, byte n){
 		data[index]=n;
 	}
 	public void setshort(int index, short n){
-		byte[] temp = ConvertData.S2B(n);
-		data[index*2+0]= temp[0];
-		data[index*2+1]= temp[1];
+		ConvertData.S2B(data, index*2, n);
 	}
 	public void setint(int index, int n){
-		byte[] temp = ConvertData.I2B(n);
-		data[index*4+0]= temp[0];
-		data[index*4+1]= temp[1];
-		data[index*4+2]= temp[2];
-		data[index*4+3]= temp[3];
+		ConvertData.I2B(data, index*4, n);
+	}
+	public void setData(byte[] data) {
+		this.data=data;
 	}
 	
 	public void save(ArrayList<Byte> file) {
@@ -61,11 +74,12 @@ public class AdditionalData{
 		}
 	}
 
-	public void load(ArrayList<Byte> file) {
+	public AdditionalData load(ArrayList<Byte> file) {
 		data = new byte[file.remove(0)];
 		for(int i = 0; i < data.length; i++){
 			data[i] = file.remove(0);
 		}
+		return this;
 	}
-
+	
 }

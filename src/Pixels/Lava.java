@@ -8,6 +8,7 @@ public class Lava extends Liquid{
 		ID = 2;
 		name = "Lava";
 		viscosity = 10;
+		adl = 4;
 	}
 	
 	public boolean tick(int x, int y, int l, int numTick, Map map) {
@@ -23,7 +24,7 @@ public class Lava extends Liquid{
 				ad.setshort(1, (short)(ad.getshort(1)-1));
 			}
 		}
-		if(map.getID(x+1, y, l)==1|map.getID(x-1, y, l)==1|map.getID(x, y+1, l)==1|map.getID(x, y-1, l)==1){
+		if(map.getID(x+1, y, l)==1||map.getID(x-1, y, l)==1||map.getID(x, y+1, l)==1||map.getID(x, y-1, l)==1){
 			if(ad!=null){
 				map.setID(x, y, Map.LAYER_LIQUID, 0);
 				map.setID(x, y, Map.LAYER_FRONT, ad.getshort(0));
@@ -36,8 +37,7 @@ public class Lava extends Liquid{
 	}
 	
 	public void setMat(int x, int y, int l, int ID, Map map){
-		createAD(x, y, l, map, 4);
-		map.getAD(x, y, l).setshort(0, (short)ID);
+		map.getAD(x, y, l).setshort(0, (short) ID);
 		map.getAD(x, y, l).setshort(1, (short) 3000);
 	}
 }

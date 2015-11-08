@@ -17,7 +17,7 @@ import gfx.SpriteSheet;
 public abstract class Pickaxe extends Tool{
 	
 	private double npxs = 0;
-	Item item = new MatStack();
+	private Item item = new MatStack();
 
 	public Pickaxe(){
 		type = 1;

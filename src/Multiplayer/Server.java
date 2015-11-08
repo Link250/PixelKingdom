@@ -20,7 +20,7 @@ public class Server implements Runnable{
 		game = g;
 		map = new Map(files, g.screen);
 		map.setGametype(Map.GT_SERVER);
-		map.loadChunk(512*1024, 512*1024);
+		map.loadChunk(512, 512);
 	}
 	
 	public void run() {
@@ -32,7 +32,7 @@ public class Server implements Runnable{
 		long lastTimer = System.currentTimeMillis();
 		double delta = 0;
 		int ticks = 0;
-				
+		
 		while(running){
 			long now = System.nanoTime();
 			delta += (now - lastTime) / Game.nsPerTick;
@@ -45,13 +45,14 @@ public class Server implements Runnable{
 			}
 			
 			if(System.currentTimeMillis() - lastTimer >= 1000){
-				if(Game.devmode)
+				if(Game.devmode && map.updatecount>0)
 					Game.logInfo("Ticks:"+ticks+" BlockUpdates:"+map.updatecount);
 				map.updatecount=0;
 				lastTimer += 1000;
 				ticks = 0;
 			}
 		}
+		map.save();
 	}
 	
 	public void tick(int ticks){
@@ -65,15 +66,17 @@ public class Server implements Runnable{
 		}
 	}
 	
+	public void save() {
+		map.save();
+	}
+	
 	public void sendChunk(ClientManager c, InputStream cIn) throws IOException {
 		int x = IOConverter.receiveInt(cIn);
 		int y = IOConverter.receiveInt(cIn);
-		while(!map.loadChunk(x*1024, y*1024)) {try {Thread.sleep(1);} catch (InterruptedException e) {}}
+		while(!map.loadChunk(x, y)) {try {Thread.sleep(1);} catch (InterruptedException e) {}}
 		Game.logInfo("sending chunk");
 		byte[] mapd = map.compressedChunk(x, y);
-		c.send2Client(new byte[]{Request.CHUNK_DATA});
-		c.send2Client(ConvertData.I2B(mapd.length));
-		c.send2Client(mapd);
+		c.send2Client(new byte[][]{new byte[]{Request.CHUNK_DATA},ConvertData.I2B(mapd.length),mapd});
 	}
 	
 	public void receivePlayerColor(ClientManager c, InputStream cIn) throws IOException {
@@ -119,6 +122,9 @@ public class Server implements Runnable{
 		}
 	}
 
+	/**
+	 * @deprecated
+	 * */
 	public static void sendMapData(int x, int y, int l, int ID) throws IOException {
 		byte[] data = new byte[11];
 		ArrayList<Byte> temp = new ArrayList<Byte>();
@@ -168,6 +174,7 @@ public class Server implements Runnable{
 		} catch (IOException e) {
 			Game.logError("Client "+id+" disconnected by error");
 		}
+		map.save();
 	}
 	
 	public void sendClients(int i) throws IOException{

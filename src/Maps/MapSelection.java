@@ -81,7 +81,7 @@ public class MapSelection {
 		for(Button button : ButtonList){
 			button.tick();
 		}
-		if(start.isclicked&ButtonList.size()!=0){
+		if(start.isclicked && ButtonList.size()!=0){
 			game.SinglePlayer = new SinglePlayer(game, files[selected]);
 			Game.gamemode = 1;
 		}
@@ -93,7 +93,7 @@ public class MapSelection {
 	        Map.newMap(FILE_DIR,name);
 			LoadFiles();
 		}
-		if(del.isclicked&ButtonList.size()!=0){
+		if(del.isclicked && ButtonList.size()!=0){
 			File dir = new File(files[selected] + File.separator);
 			String[] del = dir.list();
 			try{

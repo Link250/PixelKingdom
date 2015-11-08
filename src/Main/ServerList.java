@@ -107,13 +107,13 @@ public class ServerList {
 			LoadServers(true);
 		}
 		if(start.isclicked && game.server==null){
-			game.server=new Server(game,Game.GAME_PATH+"maps\\Map1");
+			game.server=new Server(game,Game.GAME_PATH+"maps\\Server");
 			Thread t = new Thread(game.server);
 			t.setName("Server");
 			t.start();
 		}
 		if(join.isclicked){
-			game.client = new Client(game, adress.get(selected));
+			game.client = new Client(game, adress.get(selected), Game.GAME_PATH+"serverPlayer"+ File.separator + name.get(selected));
 			Game.gamemode = 2;
 		}
 		back.tick();

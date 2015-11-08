@@ -3,27 +3,36 @@ package Maps;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import Main.ConvertData;
 import Main.IOConverter;
 import Multiplayer.Request;
+import Pixels.AdditionalData;
+import Pixels.PixelList;
 
 public class MapUpdater {
 
-	/** variablen beschreibung, whaaaaat ??? */
 	private ArrayList<int[]> mapChanges = new ArrayList<>();
+	private HashMap<int[],byte[]> ads = new HashMap<>();
 	
 	public boolean hasUpdates() {
 		return !mapChanges.isEmpty();
 	}
 	
-	public synchronized void addUpdate(int[] update) {
+	public synchronized void addUpdate(int[] update, AdditionalData ad) {
 		boolean found = false;
 		for (int i = 0; i < mapChanges.size() && !found; i++) {
-			if(mapChanges.get(i)[2]==update[2] && mapChanges.get(i)[1]==update[1] && mapChanges.get(i)[0]==update[0]) {
+			if(		mapChanges.get(i)[2]==update[2] &&
+					mapChanges.get(i)[1]==update[1] &&
+					mapChanges.get(i)[0]==update[0]) {
 				mapChanges.remove(i);
 				found = true;
 			}
-		}mapChanges.add(update);
+		}if(ad!=null) {
+			ads.put(update, ad.getData());
+		}
+		mapChanges.add(update);
 	}
 	
 	public synchronized byte[][] compUpdates(){
@@ -36,31 +45,46 @@ public class MapUpdater {
 			added=false;
 			for (UpdateList updateList : lists) {
 				if(updateList.isInside(update)) {
-					updateList.addUpdate(update[0]&0x3ff, update[1]&0x3ff);
+					if(ads.containsKey(update)) {
+						updateList.addUpdateAndAD(update[0]&0x3ff, update[1]&0x3ff, ads.get(update));
+					}else {
+						updateList.addUpdate(update[0]&0x3ff, update[1]&0x3ff);
+					}
 					added=true;break;
 				}
 			}
 			if(!added && lists.add(new UpdateList(update)))
-				lists.get(lists.size()-1).addUpdate(update[0]&0x3ff, update[1]&0x3ff);
+				if(ads.containsKey(update)) {
+					lists.get(lists.size()-1).addUpdateAndAD(update[0]&0x3ff, update[1]&0x3ff, ads.get(update));
+				}else {
+					lists.get(lists.size()-1).addUpdate(update[0]&0x3ff, update[1]&0x3ff);
+				}
 		}
 		byte[][] temp = new byte[lists.size()][];
 		for (int i = 0; i < lists.size(); i++) {
 			temp[i]=(lists.get(i).compress());
 		}
+		ads.clear();
 		return temp;
 	}
 	
 	public void decompUpdates(InputStream in, Map map, boolean skipcheck) {
 		try {
-			int n = IOConverter.receiveInt(in),
+			int n  = IOConverter.receiveInt(in),
 				cx = IOConverter.receiveInt(in),
 				cy = IOConverter.receiveInt(in);
 			byte l = (byte) in.read();
 			short x,y,ID = IOConverter.receiveShort(in);
+			int adLength = PixelList.GetPixel(ID, l).adl;
+			boolean hasAD = adLength>0;
 			for (int i = 0; i < n; i++) {
 				x = IOConverter.receiveShort(in);
 				y = IOConverter.receiveShort(in);
-				map.setID((cx*1024)+x, (cy*1024)+y, l, ID, null, skipcheck);
+				if(hasAD) {
+					map.setID((cx*1024)+x, (cy*1024)+y, l, ID, new AdditionalData(in, adLength), skipcheck);
+				}else{
+					map.setID((cx*1024)+x, (cy*1024)+y, l, ID, null, skipcheck);
+				}
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -87,17 +111,32 @@ public class MapUpdater {
 			coords.add(new byte[] {	(byte) ((rx>>8)&0xff),(byte) ((rx)&0xff),
 									(byte) ((ry>>8)&0xff),(byte) ((ry)&0xff)});
 		}
+		public void addUpdateAndAD(int rx, int ry, byte[] data) {
+			byte[] temp = new byte[4+data.length];
+			temp[0] = (byte) ((rx>>8)&0xff);
+			temp[1] = (byte) ((rx   )&0xff);
+			temp[2] = (byte) ((ry>>8)&0xff);
+			temp[3] = (byte) ((ry   )&0xff);
+			for (int i = 0; i < data.length; i++) {
+				temp[i+4] = data[i];
+			}
+			coords.add(temp);
+		}
 		
 		public byte[] compress() {
 			int n = coords.size();
-			byte[] data = new byte[16+4*n];
+			int cLength = coords.get(0).length;
+			//wir gehen davon aus, dass alle Elemente von coords die selbe länge haben
+			//da normalerweise alle Pixel eines Materials einen AD der selben länge besitzen
+			byte[] data = new byte[16+cLength*n];
 			data[0]=Request.MAP_DATA;
-			data[1]=(byte) ((n>>24)&0xff); data[2]=(byte) ((n>>16)&0xff); data[3]=(byte) ((n>>8)&0xff); data[4]=(byte) (n&0xff);
-			data[5]=(byte) ((cx>>24)&0xff); data[6]=(byte) ((cx>>16)&0xff); data[7]=(byte) ((cx>>8)&0xff); data[8]=(byte) (cx&0xff);
-			data[9]=(byte) ((cy>>24)&0xff); data[10]=(byte)((cy>>16)&0xff); data[11]=(byte)((cy>>8)&0xff); data[12]=(byte)(cy&0xff);
-			data[13]=l; data[14]=(byte)((ID>>8)&0xff); data[15]=(byte)(ID&0xff);
-			for (int i = 0; i < 4*n; i++) {
-				data[16+i]=coords.get(i>>2)[i&0b11];
+			ConvertData.I2B(data, 1, n);
+			ConvertData.I2B(data, 5, cx);
+			ConvertData.I2B(data, 9, cy);
+			data[13]=l;
+			ConvertData.S2B(data, 14, ID);
+			for (int i = 0; i < cLength*n; i++) {
+				data[16+i]=coords.get(i/cLength)[i%cLength];
 			}
 			return data;
 		}

@@ -45,6 +45,7 @@ Pflanzen
 	-> Weizen, oder anderes essen etc.
 	kann mit speziellen Werkzeugen abgebaut werden
 		-> Sense, die wie Pickaxe funktioniert aber nur Pflanzenblöcke abbaut (Pflanzenblöcke trotzdem mit anderen Tools abbaubar, dafür dann keine/weniger/seltenere Drops)
+	Riesen Bäume in Wald Biomen
 
 Fehlende HD Texturen ergänzen:
 	- Bags

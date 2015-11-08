@@ -24,7 +24,7 @@ public abstract class Ore extends Material{
 		if(ad.getshort(0)>=melt){
 			map.setID(x, y, l, 0);
 			map.setID(x, y, Map.LAYER_LIQUID, 2);
-			((Lava)PixelList.GetMat(x, y, map, Map.LAYER_LIQUID)).setMat(x, y, l, ingot, map);
+			((Lava)PixelList.GetPixel(2, Map.LAYER_LIQUID)).setMat(x, y, Map.LAYER_LIQUID, ingot, map);
 		}else{
 			if(heat>=ad.getshort(0))ad.setshort(0, (short)(ad.getshort(0)+heatup));
 		}

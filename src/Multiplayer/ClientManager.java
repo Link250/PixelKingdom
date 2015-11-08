@@ -61,17 +61,17 @@ public class ClientManager implements Runnable {
 		}
 	}
 	
-	public void send2Client(int i) throws IOException{
+	public synchronized void send2Client(int i) throws IOException{
 		clientOut.write(i);
 		clientOut.flush();
 	}
 	
-	public void send2Client(byte[] b) throws IOException{
+	public synchronized void send2Client(byte[] b) throws IOException{
 		clientOut.write(b);
 		clientOut.flush();
 	}
 	
-	public void send2Client(byte[][] b, int l) throws IOException{
+	public synchronized void send2Client(byte[][] b, int l) throws IOException{
 		byte[] d = new byte[l];l=0;
 		for (int x = 0; x < b.length; x++) {
 			for (int y = 0; y < b[x].length; y++) {
@@ -82,7 +82,7 @@ public class ClientManager implements Runnable {
 		clientOut.flush();
 	}
 	
-	public void send2Client(byte[][] b) throws IOException{
+	public synchronized void send2Client(byte[][] b) throws IOException{
 		int n = 0;
 		for (int i = 0; i < b.length; i++)
 			n += b[i].length;
@@ -96,7 +96,7 @@ public class ClientManager implements Runnable {
 		clientOut.flush();
 	}
 	
-	public void sendRequest2Client(byte[] b, byte request) throws IOException{
+	public synchronized void sendRequest2Client(byte[] b, byte request) throws IOException{
 		byte[] d = new byte[b.length+1];
 		d[0]=request;
 		for(int i = 0; i < b.length; i++)d[i+1]=b[i];
@@ -104,7 +104,7 @@ public class ClientManager implements Runnable {
 		clientOut.flush();
 	}
 	
-	public void sendRequest2Client(byte[] b, byte request, byte sub) throws IOException{
+	public synchronized void sendRequest2Client(byte[] b, byte request, byte sub) throws IOException{
 		byte[] d = new byte[b.length+2];
 		d[0]=request;
 		d[1]=sub;

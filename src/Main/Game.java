@@ -8,7 +8,6 @@ import gfx.SpriteSheet;
 
 import java.awt.BorderLayout;
 import java.awt.Canvas;
-import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -29,7 +28,6 @@ import Maps.BiomeList;
 import Maps.MapSelection;
 import Main.InputHandler;
 import Multiplayer.Client;
-import Multiplayer.Request;
 import Multiplayer.Server;
 import Pixels.PixelList;
 
@@ -106,6 +104,7 @@ public class Game extends Canvas implements Runnable{
 			@Override
 			public void windowClosing(java.awt.event.WindowEvent windowEvent){
 				if(gamemode == 1)SinglePlayer.map.save();
+				if(server!=null)server.save();
 			}
 		});
 		
@@ -137,10 +136,6 @@ public class Game extends Canvas implements Runnable{
 		biomelist = new BiomeList();
 		
 		/*		TESTING AREA		*/
-	}
-	
-	public void addtoframe(Component comp){
-		frame.add(comp);
 	}
 	
 	public void reset(){
