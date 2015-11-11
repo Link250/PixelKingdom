@@ -263,11 +263,8 @@ public class Game extends Canvas implements Runnable{
 		Graphics g = bs.getDrawGraphics();
 		g.drawRect(0, 0, getWidth(), getHeight());
 
-		for(int y = 0; y < screen.height; y++){
-			for(int x = 0; x < screen.width; x++){
-				screen.resetPixel(x, y);
-			}
-		}
+		screen.resetPixelAll();
+		
 		switch (gamemode){
 		case 0 :
 			g.drawImage(back, 0, 0, WIDTH, HEIGHT, null);
@@ -296,16 +293,16 @@ public class Game extends Canvas implements Runnable{
 			client.render(g);
 			break;
 		default : break;
-		}		
+		}
 		
 		Mouse.render(this);
 		
-		for(int y = 0; y < screen.height; y++){
-			for(int x = 0; x < screen.width; x++){
-				pxsMain[x + y * WIDTH] = screen.pixels[x + y * screen.width];
-				if(x < screen.width/3 & y < screen.height/3)pxsShadow[x + y * WIDTH/3] = screen.shadow[x + y * screen.width/3];
-				pxsGUI[x + y * WIDTH] = screen.GUI[x + y * screen.width];
-			}
+		for(int xy = 0; xy < screen.length; xy++){
+			pxsMain[xy] = screen.pixels[xy];
+			pxsGUI[xy] = screen.GUI[xy];
+		}
+		for(int xy = 0; xy < screen.lengthShadow; xy++){
+			pxsShadow[xy] = screen.shadow[xy];
 		}
 		
 		g.drawImage(image, 0, 0, WIDTH, HEIGHT, null);

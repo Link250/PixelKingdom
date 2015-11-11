@@ -6,8 +6,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.HashMap;
-
 import Main.Game;
 import Multiplayer.Client;
 import Multiplayer.MapManager;
@@ -179,8 +177,7 @@ public class Map {
 							screen.drawShadow(X, Y, 0xff000000);
 						}else{
 							if(ID!=0){
-								if(l!=Map.LAYER_LIQUID)m = PixelList.GetMat(ID);
-								else m = PixelList.GetLiquid(ID);
+								m=PixelList.GetPixel(ID, l);
 								m.render(X, Y, l, this,screen);
 							}
 							if(l==Map.LAYER_LIGHT)screen.drawShadow(X, Y, ((MAX_LIGHT-getlight(X,Y))<<26));
@@ -242,7 +239,7 @@ public class Map {
 			
 			if(!skipUpdate && (gametype== GT_SERVER || gametype == GT_CLIENT)) {
 				if(ad==null)ad = chunks[cx][cy].getAD(x%1024, y%1024, l);
-				mapUpdater.addUpdate(new int[] {x,y,l,ID}, ad);
+				mapUpdater.addUpdateID(new int[] {x,y,l,ID}, ad);
 			}
 		}
 	}
@@ -267,6 +264,9 @@ public class Map {
 		if(chunks[cx][cy]!=null){
 			x %= 1024;y %= 1024;
 			chunks[cx][cy].setAD(x, y, layer, ad);
+			if(ad!=null) {
+				mapUpdater.addUpdateAD(new int[] {x,y,layer}, ad);
+			}
 		}
 	}
 

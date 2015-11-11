@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-
 import Main.Game;
 import Multiplayer.Client;
 import Multiplayer.MapManager;
@@ -17,7 +15,7 @@ import Pixels.AdditionalData;
 import Pixels.Material;
 import Pixels.PixelList;
 
-public class MapTemp {
+public class MapHash  extends Map{
 
 	public static final int LAYER_BACK=0, LAYER_LIQUID = 1, LAYER_FRONT = 2, LAYER_LIGHT = 3,
 			MAX_LIGHT=64,
@@ -39,9 +37,8 @@ public class MapTemp {
 	private HashMap<Long,Chunk> chunks = new HashMap<>();
 //	private Chunk[][] chunks = new Chunk[width][height];
 	
-	public MapTemp(String path, Screen screen){
-		this.path = path;
-		this.screen = screen;
+	public MapHash(String path, Screen screen){
+		super(path, screen);
 	}
 	
 	public void setGametype(int gt){
@@ -57,10 +54,10 @@ public class MapTemp {
 		for(int i = 0; i < size; i++){
 			int[] co = updates.activate(i);
 			x=co[0];y=co[1];l=co[2];
-			if(l!=MapTemp.LAYER_LIGHT){
+			if(l!=Map.LAYER_LIGHT){
 				ID = getID(x, y, l);
 				if(ID!=0 & getUpdate(x,y,l)){
-					if(l==MapTemp.LAYER_LIQUID) m = PixelList.GetLiquid(ID);
+					if(l==Map.LAYER_LIQUID) m = PixelList.GetLiquid(ID);
 					else m = PixelList.GetMat(ID);
 					if(m.tick(x, y, l, tickCount, this))addBlockUpdate(x, y, l);
 				}
@@ -116,21 +113,21 @@ public class MapTemp {
 		for(int X = 0; X <= 2; X++){
 			for(int Y = 0; Y <= 2; Y++){
 				if(gametype != GT_CLIENT) {
-					for(int L : MapTemp.LAYER_ALL){
+					for(int L : Map.LAYER_ALL){
 						if(setUpdating(x+Sx*X-Sx, y+Sy*Y-Sy, L))updates.addUpdate(x+Sx*X-Sx, y+Sy*Y-Sy, L);
 					}
 				}else{
-					if(setUpdating(x+Sx*X-Sx, y+Sy*Y-Sy, MapTemp.LAYER_LIGHT))updates.addUpdate(x+Sx*X-Sx, y+Sy*Y-Sy, MapTemp.LAYER_LIGHT);
+					if(setUpdating(x+Sx*X-Sx, y+Sy*Y-Sy, Map.LAYER_LIGHT))updates.addUpdate(x+Sx*X-Sx, y+Sy*Y-Sy, Map.LAYER_LIGHT);
 				}
 			}
 		}
 	}
 	
 	public void addLightUpdate(int x, int y){
-		if(setUpdating(x+1,y,MapTemp.LAYER_LIGHT))updates.addUpdate(x+1, y, MapTemp.LAYER_LIGHT);
-		if(setUpdating(x-1,y,MapTemp.LAYER_LIGHT))updates.addUpdate(x-1, y, MapTemp.LAYER_LIGHT);
-		if(setUpdating(x,y+1,MapTemp.LAYER_LIGHT))updates.addUpdate(x, y+1, MapTemp.LAYER_LIGHT);
-		if(setUpdating(x,y-1,MapTemp.LAYER_LIGHT))updates.addUpdate(x, y-1, MapTemp.LAYER_LIGHT);
+		if(setUpdating(x+1,y,Map.LAYER_LIGHT))updates.addUpdate(x+1, y, Map.LAYER_LIGHT);
+		if(setUpdating(x-1,y,Map.LAYER_LIGHT))updates.addUpdate(x-1, y, Map.LAYER_LIGHT);
+		if(setUpdating(x,y+1,Map.LAYER_LIGHT))updates.addUpdate(x, y+1, Map.LAYER_LIGHT);
+		if(setUpdating(x,y-1,Map.LAYER_LIGHT))updates.addUpdate(x, y-1, Map.LAYER_LIGHT);
 	}
 	
 	public boolean updateLight(int x, int y){
@@ -140,7 +137,7 @@ public class MapTemp {
 			light = (byte) MAX_LIGHT;
 		}else{
 			light=0;
-			if(getID(x,y,MapTemp.LAYER_FRONT)==0)c=1;
+			if(getID(x,y,Map.LAYER_FRONT)==0)c=1;
 			else c=2;
 			if((tempL = getlight(x+1,y))>light)light = (byte) (tempL-c);
 			if((tempL = getlight(x-1,y))>light)light = (byte) (tempL-c);
@@ -159,7 +156,7 @@ public class MapTemp {
 		int X,Y;
 		short light;
 
-		for(int l = MapTemp.LAYER_BACK; l <= MapTemp.LAYER_LIGHT; l++){
+		for(int l = Map.LAYER_BACK; l <= Map.LAYER_LIGHT; l++){
 			for(int y = 0; y <screen.height/3; y++){
 				for(int x = 0; x <screen.width/3; x++){
 					X=x+screen.xOffset;Y=y+screen.yOffset;
@@ -175,11 +172,11 @@ public class MapTemp {
 							screen.drawShadow(X, Y, 0xff000000);
 						}else{
 							if(ID!=0){
-								if(l!=MapTemp.LAYER_LIQUID)m = PixelList.GetMat(ID);
+								if(l!=Map.LAYER_LIQUID)m = PixelList.GetMat(ID);
 								else m = PixelList.GetLiquid(ID);
 								m.render(X, Y, l, this,screen);
 							}
-							if(l==MapTemp.LAYER_LIGHT)screen.drawShadow(X, Y, ((MAX_LIGHT-getlight(X,Y))<<26));
+							if(l==Map.LAYER_LIGHT)screen.drawShadow(X, Y, ((MAX_LIGHT-getlight(X,Y))<<26));
 						}
 					}
 				}
@@ -219,6 +216,8 @@ public class MapTemp {
 		for(int i = 0; i < cloaders.size(); i++)cloaders.get(i).canceled=true;
 	}
 	
+	private Chunk lastChunk;
+	
 	/**
 	 * This method takes the absolute <b>x,y</b>
 	 * Coordinates of a Pixel on the Map and returns the Chunk
@@ -228,8 +227,14 @@ public class MapTemp {
 	 * @return returns the Chunk where the Coordinate <b>x,y</b> lies
 	 * @see this Method is equal to <code>getChunk(x/1024,y/1024);</code>
 	 */
-	public Chunk getChunkAbs(long x, long y) {
-		return chunks.get(((x/width)<<32)|(y/height));
+	public Chunk getChunkAbs(int x, int y) {
+		if(lastChunk == null) {
+			lastChunk = chunks.get(((((long)x)/width)<<32)|(((long)y)/height));
+		}
+		if(!(x/width == lastChunk.x && y/height == lastChunk.y)) {
+			lastChunk = chunks.get(((((long)x)/width)<<32)|(((long)y)/height));
+		}
+		return lastChunk;
 	}
 	
 	/**
@@ -258,8 +263,11 @@ public class MapTemp {
 	 * @param y
 	 * @return <code>chunks.containsKey(((x/1024)<<32)|(y/1024))</code>
 	 */
-	public boolean isInsideChunk(long x, long y) {
-		return chunks.containsKey(((x/width)<<32)|(y/height));
+	public boolean isInsideChunk(int x, int y) {
+		if(lastChunk != null && lastChunk.x == x/1024 && lastChunk.y==y/1024) {
+			return true;
+		}
+		return chunks.containsKey(((((long)x)/width)<<32)|(((long)y)/height));
 	}
 
 	/**
@@ -291,7 +299,7 @@ public class MapTemp {
 			
 			if(!skipUpdate && (gametype== GT_SERVER || gametype == GT_CLIENT)) {
 				if(ad==null)ad = getChunkAbs(x, y).getAD(x%width, y%height, l);
-				mapUpdater.addUpdate(new int[] {x,y,l,ID}, ad);
+				mapUpdater.addUpdateID(new int[] {x,y,l,ID}, ad);
 			}
 		}
 	}
@@ -333,7 +341,7 @@ public class MapTemp {
 	}
 
 	public boolean isSolid(int x, int y){
-		if(getID(x, y, MapTemp.LAYER_FRONT)!=0 && PixelList.GetMat(getID(x, y, MapTemp.LAYER_FRONT)).solid)return true;
+		if(getID(x, y, Map.LAYER_FRONT)!=0 && PixelList.GetMat(getID(x, y, Map.LAYER_FRONT)).solid)return true;
 		else return false;
 	}
 

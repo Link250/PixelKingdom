@@ -1,5 +1,6 @@
 package gfx;
 
+import Main.Game;
 import Maps.Map;
 
 public class Screen {
@@ -16,12 +17,17 @@ public class Screen {
 	
 	public int width;
 	public int height;
+	/**== width*height*/
+	public int length;
+	public int lengthShadow;
 	
 	public ColorSheet[] csheets = new ColorSheet[3];
 	
 	public Screen(int width, int height, ColorSheet f, ColorSheet l, ColorSheet b){
 		this.width = width;
 		this.height = height;
+		this.length = width*height;
+		this.lengthShadow = this.length/(Game.SCALE*Game.SCALE);
 		csheets[Map.LAYER_BACK] = b;
 		csheets[Map.LAYER_LIQUID] = l;
 		csheets[Map.LAYER_FRONT] = f;
@@ -53,6 +59,22 @@ public class Screen {
 	public void resetPixel(int xPos, int yPos){
 		pixels[xPos + yPos * width] = 0;
 		GUI[xPos + yPos * width] = 0;
+	}
+	
+	public void resetPixelArea(int xPos, int yPos, int width, int height){
+		for (int x = 0; x < width; x++) {
+			for (int y = 0; y < height; y++) {
+				pixels[xPos+x + (yPos+y) * this.width] = 0;
+				GUI[xPos+x + (yPos+y) * this.width] = 0;
+			}
+		}
+	}
+
+	public void resetPixelAll(){
+		for (int xy = 0; xy < this.length; xy++) {
+			pixels[xy] = 0;
+			GUI[xy] = 0;
+		}
 	}
 
 	public void drawPixelScaled(int xPos, int yPos, int color){

@@ -49,7 +49,7 @@ public class AdditionalData{
 	public int getint(int i){
 		return ConvertData.B2I(data, i*4);
 	}
-	public byte[] getData() {
+	public byte[] getArrayData() {
 		return this.data;
 	}
 
