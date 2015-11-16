@@ -104,27 +104,26 @@ public class Screen {
 	}
 
 	public void drawPixelArea(int xPos, int yPos, int color, int xSize, int ySize, boolean gui){
-		double a = color>>>24;
-		if(a != 255){
-			int r = color>>>16&0x00ff, g = color>>>8&0x0000ff, b = color&0x000000ff;
+		double a = (color>>24)&0xff;
+		if(a != 0xff){
+			int r = (color>>16)&0xff, g = (color>>8)&0xff, b = color&0xff;
 			int col,ro,go,bo,ao;
 			for(int x = 0; x < xSize; x++){
 				for(int y = 0; y < ySize; y++){
 					if(xPos+x >= 0 && xPos+x < width && yPos+y >= 0 && yPos+y < height){
-						if(gui) col = GUI[xPos+x + (yPos+y)*width];
-						else col = pixels[xPos+x + (yPos+y)*width];
-						ao = col>>>24&0xff;
-						if(ao>0){
-							ro = (int)(a/255*r) + (int)((255-a)/255*(col>>>16&0x00ff));
-							go = (int)(a/255*g) + (int)((255-a)/255*(col>>>8&0x0000ff));
-							bo = (int)(a/255*b) + (int)((255-a)/255*(col&0x000000ff));
+						col = gui ? col = GUI[xPos+x + (yPos+y)*width] : pixels[xPos+x + (yPos+y)*width];
+						ao = (col>>24)&0xff;
+						if(ao != 0){
+							ro = (int)(a/255*r) + (int)((255-a)/255*((col>>16)&0xff));
+							go = (int)(a/255*g) + (int)((255-a)/255*((col>> 8)&0xff));
+							bo = (int)(a/255*b) + (int)((255-a)/255*((col    )&0xff));
 							if(ao == 255){
 								ao = 255;
 							}else{
-								ao = (int) (a+(255-a)/255*(col>>>24&0xff));
+								ao = (int) (a+(255-a)/255*((col>>24)&0xff));
 							}
-							if(gui) GUI[xPos+x + (yPos+y)*width] = (ao<<24)+(ro<<16)+(go<<8)+bo;
-							else pixels[xPos+x + (yPos+y)*width] = (ao<<24)+(ro<<16)+(go<<8)+bo;
+							if(gui) GUI[xPos+x + (yPos+y)*width] = (ao<<24)|(ro<<16)|(go<<8)|bo;
+							else pixels[xPos+x + (yPos+y)*width] = (ao<<24)|(ro<<16)|(go<<8)|bo;
 						}else{
 							if(gui) GUI[xPos+x + (yPos+y)*width] = color;
 							else pixels[xPos+x + (yPos+y)*width] = color;

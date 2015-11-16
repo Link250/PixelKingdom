@@ -64,9 +64,10 @@ public class Loader {
 	}
 	
 	public void createClasses(){
+		String pathTemp = path.replace('/', '.');
 		for(String name : names){
 			try {
-				classes.add(Class.forName(path+"."+name));
+				classes.add(Class.forName(pathTemp+"."+name));
 			} catch (IllegalArgumentException | SecurityException | ClassNotFoundException e){
 				e.printStackTrace();
 			}

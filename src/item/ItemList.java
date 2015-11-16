@@ -13,7 +13,7 @@ public class ItemList {
 	static ArrayList<Item> itemlist = new ArrayList<Item>();
 	
 	public ItemList(){
-		Loader list = new Loader("ItemList");
+		Loader list = new Loader("item/itemList");
 		list.loadPackage();list.createClasses();
 		for(Class<?> item : list.classes){
 			if(item.toString().endsWith("MatStack")){
@@ -53,7 +53,7 @@ public class ItemList {
 			if(i.ID==ID){
 				try {
 					Item t = (Item) Class.forName(i.getClass().getName()).getConstructor().newInstance();
-					if(t.getClass() == MatStack.class) ((MatStack)t).setMat(ID);
+					if(t instanceof MatStack) ((MatStack)t).setMat(ID);
 					Game.logInfo("new Instance of "+t.name+"("+t.ID+") created.");
 					return (Item) t;
 				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | ClassNotFoundException e){
