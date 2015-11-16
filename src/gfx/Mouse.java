@@ -1,7 +1,7 @@
 package gfx;
 
-import Main.Game;
-import Items.*;
+import item.*;
+import main.Game;
 
 public class Mouse {
 	public static byte mousetype = 0;

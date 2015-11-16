@@ -6,13 +6,13 @@ import java.util.ArrayList;
 
 import gfx.Mouse;
 import gfx.SpriteSheet;
-import GameFields.*;
-import ItemList.MatStack;
-import Items.*;
-import Items.Recipe.component;
-import Main.ConvertData;
-import Main.Game;
-import Maps.Map;
+import item.*;
+import item.Recipe.component;
+import item.itemList.MatStack;
+import main.ConvertData;
+import main.Game;
+import map.Map;
+import gameFields.*;
 
 public class Player extends Mob{
 	

@@ -1,7 +1,7 @@
 package entities;
 
-import Maps.Map;
 import entities.Hitbox;
+import map.Map;
 
 public class Colision{
 

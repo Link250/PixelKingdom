@@ -1,6 +1,6 @@
 package gfx;
 
-import Main.Game;
+import main.Game;
 
 public class PxlFont {
 	private String chars;

@@ -1,7 +1,7 @@
 package gfx;
 
-import Main.Game;
-import Maps.Map;
+import main.Game;
+import map.Map;
 
 public class Screen {
 

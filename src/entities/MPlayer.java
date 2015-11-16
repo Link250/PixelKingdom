@@ -1,8 +1,8 @@
 package entities;
 
 import gfx.SpriteSheet;
-import Main.Game;
-import Maps.Map;
+import main.Game;
+import map.Map;
 
 public class MPlayer extends Mob {
 

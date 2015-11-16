@@ -1,7 +1,7 @@
 package entities;
 
 import gfx.SpriteSheet;
-import Maps.Map;
+import map.Map;
 
 
 public abstract class Mob extends Entity{
