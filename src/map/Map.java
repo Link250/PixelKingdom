@@ -251,8 +251,7 @@ public class Map {
 	}
 	
 	public void movePixel(int xs, int ys, int ls, int xf, int yf, int lf){
-		if(getAD(xs,ys,ls)!=null)setID(xf,yf,lf,getID(xs,ys,ls),new AdditionalData(getAD(xs,ys,ls)),false);
-		else setID(xf,yf,lf,getID(xs,ys,ls),null,false);
+		setID(xf,yf,lf,getID(xs,ys,ls),getAD(xs,ys,ls),false);
 		setID(xs,ys,ls,0);
 	}
 	

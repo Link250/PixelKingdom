@@ -8,6 +8,8 @@ import java.util.HashMap;
 import main.ConvertData;
 import main.IOConverter;
 import multiplayer.Request;
+import multiplayer.conversion.ConverterInStream;
+import pixel.AD;
 import pixel.AdditionalData;
 import pixel.PixelList;
 
@@ -95,20 +97,34 @@ public class MapUpdater {
 			byte l = (byte) in.read();
 			short x,y,ID = IOConverter.receiveShort(in);
 			int adLength = PixelList.GetPixel(ID, l).adl;
-			boolean hasAD = adLength>0;
 			for (int i = 0; i < n; i++) {
 				x = IOConverter.receiveShort(in);
 				y = IOConverter.receiveShort(in);
-				if(hasAD) {
-					map.setID((cx*1024)+x, (cy*1024)+y, l, ID, new AdditionalData(in, adLength), skipcheck);
-				}else{
-					map.setID((cx*1024)+x, (cy*1024)+y, l, ID, null, skipcheck);
-				}
+				map.setID((cx*1024)+x, (cy*1024)+y, l, ID,
+						adLength>0 ? new AdditionalData(in, adLength) : null, skipcheck);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+	}
+	
+	public void decompUpdates(ConverterInStream in, Map map, boolean skipcheck) {
+		try {
+			int n  = in.readInt(),
+				cx = in.readInt(),
+				cy = in.readInt();
+			byte l = in.readByte();
+			short x,y,ID = in.readShort();
+			int adLength = PixelList.GetPixel(ID, l).adl;
+			for (int i = 0; i < n; i++) {
+				x = in.readShort();
+				y = in.readShort();
+				map.setID((cx*1024)+x, (cy*1024)+y, l, ID,
+						adLength>0 ? PixelList.GetMat(ID).getNewAD().load(in) : null, skipcheck);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private class UpdateListID{

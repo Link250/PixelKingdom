@@ -20,7 +20,7 @@ public abstract class Material {
 	public boolean tick = false;
 	public boolean solid = true;
 	public int adl = 0;
-
+	private AD ad = null;
 	
 	public Material(){
 		
@@ -33,7 +33,16 @@ public abstract class Material {
 	public final String getName(){
 		return name;
 	}
-
+	
+	public AD getNewAD() {
+		try {
+			return ad.getClass().newInstance();
+		} catch (InstantiationException | IllegalAccessException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	/**
 	 * Creates a new AD of the length <b>adl</b> on the Position <b>x y l</b>.<br>
 	 * If <b>adl</b> is 0 or negative the current AD will be set to <b><code>null</code></b>.
@@ -44,8 +53,7 @@ public abstract class Material {
 	 * @param adl the length of the AD that should be created
 	 */
 	public final void createAD(int x, int y, int l, Map map, int adl){
-		if(adl>0)map.setAD(x, y, l, new AdditionalData(adl));
-		else map.setAD(x, y, l, null);
+		map.setAD(x, y, l, adl>0 ? new AdditionalData(adl) : null);
 	}
 
 	/**
@@ -58,8 +66,7 @@ public abstract class Material {
 	 * @param map
 	 */
 	public final void createAD(int x, int y, int l, Map map){
-		if(this.adl>0)map.setAD(x, y, l, new AdditionalData(this.adl));
-		else map.setAD(x, y, l, null);
+		map.setAD(x, y, l, this.adl>0 ? new AdditionalData(adl) : null);
 	}
 
 	public final void checkAD(int x, int y, int l, Map map){
@@ -69,6 +76,11 @@ public abstract class Material {
 		}else{
 			if(adl==0){temp = null;if(map.getAD(x, y, l)!=null)Game.logWarning("Could not delete AD");}
 		}
+	}
+	
+	@SuppressWarnings({ "unchecked", "hiding" })
+	public final <AD> AD getAD(int x, int y, int l, Map map) {
+		return (AD) map.getAD(x, y, l);
 	}
 
 	public boolean tick(int x, int y, int l, int numTick, Map map){return false;}

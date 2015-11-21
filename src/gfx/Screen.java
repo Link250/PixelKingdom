@@ -114,9 +114,9 @@ public class Screen {
 						col = gui ? col = GUI[xPos+x + (yPos+y)*width] : pixels[xPos+x + (yPos+y)*width];
 						ao = (col>>24)&0xff;
 						if(ao != 0){
-							ro = (int)(a/255*r) + (int)((255-a)/255*((col>>16)&0xff));
-							go = (int)(a/255*g) + (int)((255-a)/255*((col>> 8)&0xff));
-							bo = (int)(a/255*b) + (int)((255-a)/255*((col    )&0xff));
+							ro = (int)((a/255*r) + ((255-a)/255*((col>>16)&0xff)));
+							go = (int)((a/255*g) + ((255-a)/255*((col>> 8)&0xff)));
+							bo = (int)((a/255*b) + ((255-a)/255*((col    )&0xff)));
 							if(ao == 255){
 								ao = 255;
 							}else{

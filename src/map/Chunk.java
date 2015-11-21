@@ -123,7 +123,6 @@ public class Chunk{
 		liquid = new short[length];
 		back = new short[length];
 		light = new byte[length];
-//		AD = new AdditionalData[length][Map.LAYER_ALL_PIXEL.length];
 		AD = new HashMap<>();
 		
 		if(rawfile==null) {
@@ -144,8 +143,8 @@ public class Chunk{
 				for(int i = 0; i < rawfile.length; i++){
 					filedata.add(rawfile[i]);
 				}
-			}else {
-				try {
+			}else{
+				try{
 					fIS = new FileInputStream(file);
 					fIS = new XZInputStream(fIS);
 					ArrayList<byte[]> bytes = new ArrayList<byte[]>();
@@ -177,7 +176,6 @@ public class Chunk{
 			try{
 				ID=id;
 				id = ConvertData.B2S(filedata);
-//				System.out.print(id+" ");
 			}catch(IndexOutOfBoundsException e){
 				Game.logWarning((int)(x/length)+" "+x%length);
 				break;
@@ -200,8 +198,6 @@ public class Chunk{
 			}else{
 				if(id==32767){
 					setAD((x-1)%length, (int)((x-1)/length), (new AdditionalData()).load(filedata));
-//					(AD[(x-1)%length][(int)((x-1)/length)] = new AdditionalData()).load(filedata);
-//					AD loaded on id "+ID+" on layer "+(int)(x/(1024*1024))
 				}else{
 					l = (int)(x/(1024*1024));
 					switch(l){

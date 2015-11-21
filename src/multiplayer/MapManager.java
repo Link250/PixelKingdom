@@ -21,7 +21,6 @@ public class MapManager implements InputReceiver{
 	
 	public boolean useInput(InputStream in) throws IOException { //is used when the Server sends Map data
 		map.receiveMapUpdates(in);
-//		map.setID(IOConverter.receiveInt(in), IOConverter.receiveInt(in), in.read(), IOConverter.receiveShort(in), null, true);
 		return false;
 	}
 

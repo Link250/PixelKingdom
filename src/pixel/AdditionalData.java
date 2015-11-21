@@ -9,14 +9,6 @@ import main.ConvertData;
 public class AdditionalData{
 	private byte[] data;
 	
-	public AdditionalData(AdditionalData ad){
-		if(ad!=null && ad.length()>0){
-			data = new byte[ad.length()];
-			for(int i=0; i<ad.length(); i++){
-				data[i] = ad.getbyte(i);
-			}
-		}
-	}
 	public AdditionalData(InputStream in, int length){
 		data = new byte[length];
 		try {
@@ -25,9 +17,6 @@ public class AdditionalData{
 			}
 		} catch (IOException e) {e.printStackTrace();}
 	}
-	public AdditionalData(byte[] data){
-		this.data = data;
-	}
 	public AdditionalData(int length){
 		data = new byte[length];
 	}
@@ -35,19 +24,11 @@ public class AdditionalData{
 		
 	}
 	
-	public int length(){
-		if(data!=null)return data.length;
-		else return 0;
-	}
-	
 	public byte getbyte(int i){
 		return data[i];
 	}
 	public short getshort(int i){
 		return ConvertData.B2S(data, i*2);
-	}
-	public int getint(int i){
-		return ConvertData.B2I(data, i*4);
 	}
 	public byte[] getArrayData() {
 		return this.data;
@@ -61,9 +42,6 @@ public class AdditionalData{
 	}
 	public void setint(int index, int n){
 		ConvertData.I2B(data, index*4, n);
-	}
-	public void setData(byte[] data) {
-		this.data=data;
 	}
 	
 	public void save(ArrayList<Byte> file) {
@@ -81,9 +59,4 @@ public class AdditionalData{
 		}
 		return this;
 	}
-	
-	public void getAllData() {
-		String s = ""; s.getBytes();
-	}
-	
 }

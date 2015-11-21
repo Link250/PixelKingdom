@@ -34,18 +34,20 @@ public class ItemList {
 		}
 	}
 	
-	public static Item GetItem(int ID){
+	public static Item GetItem(int ID)/* throws UnknownItemException*/{
 		for(Item i : itemlist){
 			if(i.ID==ID)return i;
 		}
 		return null;
+//		throw new UnknownItemException(Integer.toString(ID));
 	}
 
-	public static Item GetItem(String name){
+	public static Item GetItem(String name)/* throws UnknownItemException*/{
 		for(Item i : itemlist){
 			if(i.name==name)return i;
 		}
 		return null;
+//		throw new UnknownItemException(name);
 	}
 
 	public static Item NewItem(int ID){
@@ -62,5 +64,13 @@ public class ItemList {
 			}
 		}
 		return null;
+	}
+	
+	public static class UnknownItemException extends Exception{
+		private static final long serialVersionUID = -1455881875691855085L;
+		
+		public UnknownItemException(String itemName){
+			super("Item " + itemName + " not found.");
+		}
 	}
 }

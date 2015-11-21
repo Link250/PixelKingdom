@@ -2,6 +2,8 @@ package pixel.pixelList;
 
 import gfx.Screen;
 import map.Map;
+import multiplayer.conversion.InConverter;
+import pixel.AD;
 import pixel.AdditionalData;
 import pixel.Material;
 import pixel.PixelList;
@@ -67,5 +69,14 @@ public class Fire extends Material{
 	public void setTime(int x, int y, int l, byte time, Map map){
 		ad = map.getAD(x, y, l);
 		ad.setbyte(0, time);
+	}
+	
+	
+	private class FireAD extends AD{
+		public FireAD(InConverter in) {
+			super(in);
+		}
+
+		public short burntime;
 	}
 }
