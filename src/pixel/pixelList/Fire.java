@@ -14,7 +14,6 @@ public class Fire extends Material<FireAD>{
 		name = "Fire";
 		tick = true;
 		solid = false;
-		adl = 1;
 	}
 	
 	public boolean tick(int x, int y, int l, int numTick, Map map) {

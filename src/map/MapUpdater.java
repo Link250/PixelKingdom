@@ -94,12 +94,12 @@ public class MapUpdater {
 				cy = in.readInt();
 			byte l = in.readByte();
 			short x,y,ID = in.readShort();
-			int adLength = PixelList.GetPixel(ID, l).adl;
+			boolean canHaveAD = PixelList.GetPixel(ID, l).canHaveAD();
 			for (int i = 0; i < n; i++) {
 				x = in.readShort();
 				y = in.readShort();
 				map.setID((cx*1024)+x, (cy*1024)+y, l, ID,
-						adLength>0 ? PixelList.GetPixel(ID,l).getNewAD().load(in) : null, skipcheck);
+						canHaveAD ? PixelList.GetPixel(ID,l).getNewAD().load(in) : null, skipcheck);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();

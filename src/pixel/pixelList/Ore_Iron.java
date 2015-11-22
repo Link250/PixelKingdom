@@ -7,7 +7,6 @@ public class Ore_Iron extends Ore<OreAD>{
 
 	public Ore_Iron(){
 		super(new OreAD());
-		adl = 2;
 		melt = 600;
 		ID = 17;
 		ingot = 33;

@@ -11,7 +11,6 @@ public class Lava extends Liquid<LavaAD>{
 		ID = 2;
 		name = "Lava";
 		viscosity = 10;
-		adl = 4;
 	}
 	
 	public boolean tick(int x, int y, int l, int numTick, Map map) {

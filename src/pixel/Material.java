@@ -19,7 +19,6 @@ public abstract class Material<ADType extends AD> {
 	public double usePickaxe = 0;
 	public boolean tick = false;
 	public boolean solid = true;
-	public int adl = 0;
 	
 	/**this AD is HOLY !!! it is used to create new ADs for this Material <b>SO NEVER EVER DELETE IT</b>*/
 	private ADType adtype = null;
@@ -47,11 +46,15 @@ public abstract class Material<ADType extends AD> {
 			return (AD) this.adtype.getClass().newInstance();
 		}catch(NullPointerException e){
 			System.out.println(this.adtype);
-			Game.logError("AD was not Initialized yet !!! ID:"+this.ID+" Name:"+this.name+" adl:"+this.adl);
+			Game.logError("AD was not Initialized yet !!! ID:"+this.ID+" Name:"+this.name);
 		}catch(InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public boolean canHaveAD() {
+		return adtype!=null;
 	}
 	
 	/**
@@ -65,15 +68,15 @@ public abstract class Material<ADType extends AD> {
 	 * @param map
 	 */
 	public final void createAD(int x, int y, int l, Map map){
-		map.setAD(x, y, l, this.adl>0 ? getNewAD() : null);
+		map.setAD(x, y, l, this.canHaveAD() ? getNewAD() : null);
 	}
 
 	public final void checkAD(int x, int y, int l, Map map){
 		AD temp = map.getAD(x, y, l);
 		if(temp == null){
-			if(adl>0){map.setAD(x, y, l, getNewAD());Game.logError("Corrupted AD");}
+			if(this.canHaveAD()){map.setAD(x, y, l, getNewAD());Game.logError("Corrupted AD");}
 		}else{
-			if(adl==0){temp = null;if(map.getAD(x, y, l)!=null)Game.logWarning("Could not delete AD");}
+			if(!this.canHaveAD()){temp = null;if(map.getAD(x, y, l)!=null)Game.logWarning("Could not delete AD");}
 		}
 	}
 	
