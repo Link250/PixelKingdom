@@ -2,6 +2,7 @@ package map;
 
 import gfx.Screen;
 import main.Game;
+import main.SinglePlayer;
 import multiplayer.Client;
 import multiplayer.MapManager;
 import multiplayer.Server;
@@ -27,8 +28,9 @@ public class Map {
 	public int width = 1024;
 	public int height = 1024;
 	protected UpdateManager updatesPixel = new UpdateManager();
+	public int updateCountPixel = 0;
 	protected UpdateManager updatesLight = new UpdateManager();
-	public int updatecount = 0;
+	public int updateCountLight = 0;
 	private ArrayList<MapManager.chunkLoader> cloaders = new ArrayList<>();
 	private int gametype = 0;
 	private MapManager mapManager;
@@ -59,14 +61,16 @@ public class Map {
 				m = PixelList.GetPixel(ID, l);
 				if(m.tick(x, y, l, tickCount, this))addBlockUpdate(x, y, l);
 			}
-			updatecount++;
+			updateCountPixel++;
 		}
 		size = updatesLight.startUpdate();
 		for(int i = 0; i < size; i++){
 			int[] co = updatesLight.activate(i);
 			x=co[0];y=co[1];l=co[2];
-			if(getUpdate(x,y,l))updateLight(x, y);
-			updatecount++;
+			if(getUpdate(x,y,l)) {
+				updateLight(x, y);
+			}
+			updateCountLight++;
 		}
 	}
 	
@@ -152,6 +156,10 @@ public class Map {
 		}else{
 			light=0;
 			c = (byte) (getID(x,y,Map.LAYER_FRONT)==0 ? 1 : 2);
+			for (int L= 0; L < LAYER_ALL_PIXEL.length; L++) {
+				tempL = PixelList.GetPixel(getID(x, y, L),L).tickLight(x, y, L, this);
+				if(tempL>light)light = tempL;
+			}
 			if((tempL = getlight(x+1,y))-c>light)light = (byte) (tempL-c);
 			if((tempL = getlight(x-1,y))-c>light)light = (byte) (tempL-c);
 			if((tempL = getlight(x,y+1))-c>light)light = (byte) (tempL-c);

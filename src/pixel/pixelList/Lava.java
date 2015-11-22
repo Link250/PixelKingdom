@@ -14,7 +14,6 @@ public class Lava extends Liquid<LavaAD>{
 	}
 	
 	public boolean tick(int x, int y, int l, int numTick, Map map) {
-		map.setlighter(x, y, (byte) (Math.random()*4+60));
 		if(numTick%3==0)flow(x, y, l, map);
 		
 		ad = map.getAD(x, y, l);
@@ -36,6 +35,10 @@ public class Lava extends Liquid<LavaAD>{
 			}
 		}
 		return true;
+	}
+	
+	public byte tickLight(int x, int y, int l, Map map) {
+		return (byte) (Map.MAX_LIGHT*0.8);
 	}
 	
 	public void setMat(int x, int y, int l, int ID, Map map){

@@ -23,19 +23,21 @@ public class Fire extends Material<FireAD>{
 			}
 		}
 		ad = map.getAD(x, y, l);
-		byte n = ad.burntime;
-		map.setlighter(x, y, (byte) (n/2+10));
 		if(Math.random()*500<1){
 			spread(x, y, l, map);
 		}
 		if(numTick%60==30){
-			if(n>0){
-				ad.burntime = (byte) (n-1);
+			if(ad.burntime>0){
+				ad.burntime = (byte) (ad.burntime-1);
 			}else{
 				map.setID(x, y, l, 0);return true;
 			}
 		}
 		return true;
+	}
+	
+	public byte tickLight(int x, int y, int l, Map map) {
+		return (byte) (map.<FireAD>getAD(x, y, l).burntime*Map.MAX_LIGHT/100);
 	}
 	
 	public void render(int x, int y, int l, Map map, Screen screen) {
@@ -55,7 +57,9 @@ public class Fire extends Material<FireAD>{
 					burntime = PixelList.GetMat(Xt, Yt, map, L).burnable;
 					if((int)(Math.random()*100+1)<=burntime){
 						map.setID(Xt, Yt, L, 32);
+						try {
 						((Fire)PixelList.GetMat(Xt, Yt, map, L)).setTime(Xt, Yt, L, burntime,map);
+						}catch(NullPointerException e) {}
 					}
 				}
 			}

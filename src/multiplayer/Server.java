@@ -46,9 +46,9 @@ public class Server implements Runnable{
 			}
 			
 			if(System.currentTimeMillis() - lastTimer >= 1000){
-				if(Game.devmode && map.updatecount>0)
-					Game.logInfo("Ticks:"+ticks+" BlockUpdates:"+map.updatecount);
-				map.updatecount=0;
+				if(Game.devmode && map.updateCountPixel>0)
+					Game.logInfo("Ticks:"+ticks+" BlockUpdates:"+map.updateCountPixel);
+				map.updateCountPixel=0;
 				lastTimer += 1000;
 				ticks = 0;
 			}

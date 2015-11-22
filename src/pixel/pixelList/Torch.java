@@ -19,9 +19,8 @@ public class Torch extends Material<AD>{
 		solid = false;
 	}
 
-	public boolean tick(int x, int y, int l, int numTick, Map map) {
-		map.setlighter(x, y, Map.MAX_LIGHT);
-		return true;
+	public byte tickLight(int x, int y, int l, Map map) {
+		return Map.MAX_LIGHT;
 	}
 	
 	public void render(int x, int y, int l, Map map, Screen screen) {

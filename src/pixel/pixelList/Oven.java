@@ -28,7 +28,6 @@ public class Oven extends Material<OvenAD>{
 	
 	public boolean tick(int x, int y, int l, int numTick, Map map) {
 		ad = map.getAD(x, y, l);
-		map.setlighter(x, y, (byte) (ad.heat/(maxHeat/16)));
 		int id;
 		for(int X=-1; X<=1; X++){
 			for(int Y=-1; Y<=1; Y++){
@@ -68,6 +67,10 @@ public class Oven extends Material<OvenAD>{
 			}
 		}
 		return ad.heat>0;
+	}
+	
+	public byte tickLight(int x, int y, int l, Map map) {
+		return (byte) (map.<OvenAD>getAD(x, y, l).heat/(maxHeat/16));
 	}
 	
 	public void render(int x, int y, int l, Map map, Screen screen) {

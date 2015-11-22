@@ -80,6 +80,8 @@ public abstract class Material<ADType extends AD> {
 		}
 	}
 	
+	public byte tickLight(int x, int y, int l, Map map) {return 0;}
+	
 	public boolean tick(int x, int y, int l, int numTick, Map map){return false;}
 	
 	public void render(int x, int y, int l, Map map, Screen screen) {

@@ -85,8 +85,9 @@ public class SinglePlayer {
 				map.addBlockUpdate(X, Y, 1);
 			}
 			if(tickCount%60==0){
-				Game.logInfo("FPS:"+Game.fps+" BlockUpdates:"+map.updatecount);
-				map.updatecount=0;
+				Game.logInfo("FPS:"+Game.fps+" PixelUpdates:"+map.updateCountPixel+" LightUpdates:"+map.updateCountLight);
+				map.updateCountPixel=0;
+				map.updateCountLight=0;
 			}
 		}
 	}
