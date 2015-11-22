@@ -12,7 +12,6 @@ import pixel.PixelList;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 public class Map {

@@ -9,11 +9,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.tukaani.xz.LZMA2Options;
 import org.tukaani.xz.XZInputStream;
-import org.tukaani.xz.XZOutputStream;
-
-import main.ConvertData;
 import main.Game;
 import multiplayer.conversion.ConverterList;
 import pixel.AD;

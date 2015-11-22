@@ -1,8 +1,6 @@
 package multiplayer;
 
 import java.io.IOException;
-import java.io.InputStream;
-
 import multiplayer.conversion.ConverterInStream;
 
 public interface InputReceiver {

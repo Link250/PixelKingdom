@@ -37,7 +37,7 @@ public abstract class Pickaxe extends Tool{
 		while(npxs > 0){
 			r = size;
 			int pX = 0, pY = 0;
-			Material m = null;
+			Material<?> m = null;
 			int l = Map.LAYER_FRONT;
 			if(input.mousel.isPressed()){
 				for(int x = -size; x <= size; x++){
