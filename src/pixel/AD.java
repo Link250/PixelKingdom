@@ -12,8 +12,13 @@ public abstract class AD{
 		load(in);
 	}
 	
-	public void save(OutConverter out) {
+	public AD() {
+		
+	}
+	
+	public void save(OutConverter out, boolean header) {
 		try {
+			if(header)out.writeShort((short) 0x7fff);
 			Field[] f = this.getClass().getDeclaredFields();
 			for (Field field : f) {
 				if(byte.class == field.getType()){out.writeByte(field.getByte(this));continue;}

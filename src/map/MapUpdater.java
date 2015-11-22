@@ -1,33 +1,31 @@
 package map;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import main.ConvertData;
-import main.IOConverter;
 import multiplayer.Request;
 import multiplayer.conversion.ConverterInStream;
+import multiplayer.conversion.ConverterList;
 import pixel.AD;
-import pixel.AdditionalData;
 import pixel.PixelList;
 
 public class MapUpdater {
 
 	/**this HashMap stores the the ADs linked to the Map Updates*/
-	private HashMap<int[],byte[]> adsMap = new HashMap<>();
+	private HashMap<int[],AD> adsMap = new HashMap<>();
 	private ArrayList<int[]> mapChanges = new ArrayList<>();
 	
 	/**this HashMap stores the the ADs linked to the AD Updates*/
-	private HashMap<int[],byte[]> ads = new HashMap<>();
+	private HashMap<int[],AD> ads = new HashMap<>();
 	private ArrayList<int[]> adChanges = new ArrayList<>();
 	
 	public boolean hasUpdates() {
 		return !mapChanges.isEmpty() || !adChanges.isEmpty();
 	}
 	
-	public synchronized void addUpdateID(int[] update, AdditionalData ad) {
+	public synchronized void addUpdateID(int[] update, AD ad) {
 		boolean found = false;
 		for (int i = 0; i < mapChanges.size() && !found; i++) {
 			if(		mapChanges.get(i)[2]==update[2] &&
@@ -37,12 +35,12 @@ public class MapUpdater {
 				found = true;
 			}
 		}if(ad!=null) {
-			adsMap.put(update, ad.getArrayData());
+			adsMap.put(update, ad);
 		}
 		mapChanges.add(update);
 	}
 	
-	public synchronized void addUpdateAD(int[] coords, AdditionalData ad) {
+	public synchronized void addUpdateAD(int[] coords, AD ad) {
 		boolean found = false;
 		for (int i = 0; i < adChanges.size() && !found; i++) {
 			if(		adChanges.get(i)[2]==coords[2] &&
@@ -52,7 +50,7 @@ public class MapUpdater {
 				found = true;
 			}
 		}
-		ads.put(coords, ad.getArrayData());
+		ads.put(coords, ad);
 		adChanges.add(coords);
 	}
 	
@@ -89,25 +87,6 @@ public class MapUpdater {
 		return temp;
 	}
 	
-	public void decompUpdates(InputStream in, Map map, boolean skipcheck) {
-		try {
-			int n  = IOConverter.receiveInt(in),
-				cx = IOConverter.receiveInt(in),
-				cy = IOConverter.receiveInt(in);
-			byte l = (byte) in.read();
-			short x,y,ID = IOConverter.receiveShort(in);
-			int adLength = PixelList.GetPixel(ID, l).adl;
-			for (int i = 0; i < n; i++) {
-				x = IOConverter.receiveShort(in);
-				y = IOConverter.receiveShort(in);
-				map.setID((cx*1024)+x, (cy*1024)+y, l, ID,
-						adLength>0 ? new AdditionalData(in, adLength) : null, skipcheck);
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
-	
 	public void decompUpdates(ConverterInStream in, Map map, boolean skipcheck) {
 		try {
 			int n  = in.readInt(),
@@ -120,7 +99,7 @@ public class MapUpdater {
 				x = in.readShort();
 				y = in.readShort();
 				map.setID((cx*1024)+x, (cy*1024)+y, l, ID,
-						adLength>0 ? PixelList.GetMat(ID).getNewAD().load(in) : null, skipcheck);
+						adLength>0 ? PixelList.GetPixel(ID,l).getNewAD().load(in) : null, skipcheck);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -146,14 +125,16 @@ public class MapUpdater {
 			coords.add(new byte[] {	(byte) ((rx>>8)&0xff),(byte) ((rx)&0xff),
 									(byte) ((ry>>8)&0xff),(byte) ((ry)&0xff)});
 		}
-		public void addUpdateAndAD(int rx, int ry, byte[] data) {
-			byte[] temp = new byte[4+data.length];
-			temp[0] = (byte) ((rx>>8)&0xff);
-			temp[1] = (byte) ((rx   )&0xff);
-			temp[2] = (byte) ((ry>>8)&0xff);
-			temp[3] = (byte) ((ry   )&0xff);
-			for (int i = 0; i < data.length; i++) {
-				temp[i+4] = data[i];
+		public void addUpdateAndAD(int rx, int ry, AD ad) {
+			ConverterList data = new ConverterList();
+			try {
+				data.writeShort((short)rx);
+				data.writeShort((short)ry);
+			} catch (IOException e) {}
+			ad.save(data,false);
+			byte[] temp = new byte[data.length()];
+			for (int i = 0; i < temp.length; i++) {
+				try {temp[i] = data.readByte();} catch (IOException e) {}
 			}
 			coords.add(temp);
 		}

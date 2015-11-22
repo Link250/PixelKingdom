@@ -2,17 +2,14 @@ package pixel.pixelList;
 
 import gfx.Screen;
 import map.Map;
-import multiplayer.conversion.InConverter;
-import pixel.AD;
-import pixel.AdditionalData;
 import pixel.Material;
 import pixel.PixelList;
+import pixel.ads.FireAD;
 
-public class Fire extends Material{
+public class Fire extends Material<FireAD>{
 
-	AdditionalData ad;
-	
 	public Fire(){
+		super(new FireAD());
 		ID = 32;
 		name = "Fire";
 		tick = true;
@@ -27,14 +24,14 @@ public class Fire extends Material{
 			}
 		}
 		ad = map.getAD(x, y, l);
-		byte n = ad.getbyte(0);
+		byte n = ad.burntime;
 		map.setlighter(x, y, (byte) (n/2+10));
 		if(Math.random()*500<1){
 			spread(x, y, l, map);
 		}
 		if(numTick%60==30){
 			if(n>0){
-				ad.setbyte(0, (byte) (n-1));
+				ad.burntime = (byte) (n-1);
 			}else{
 				map.setID(x, y, l, 0);return true;
 			}
@@ -43,7 +40,7 @@ public class Fire extends Material{
 	}
 	
 	public void render(int x, int y, int l, Map map, Screen screen) {
-		screen.drawPixelScaled(x, y, 0xffff0000 | (((byte)(map.getAD(x, y, l).getbyte(0)*2+Math.random()*55))<<8));
+		screen.drawPixelScaled(x, y, 0xffff0000 | (((byte)(map.<FireAD>getAD(x, y, l).burntime*2+Math.random()*55))<<8));
 	}
 	
 	public void spread(int x, int y, int l, Map map){
@@ -68,15 +65,6 @@ public class Fire extends Material{
 	
 	public void setTime(int x, int y, int l, byte time, Map map){
 		ad = map.getAD(x, y, l);
-		ad.setbyte(0, time);
-	}
-	
-	
-	private class FireAD extends AD{
-		public FireAD(InConverter in) {
-			super(in);
-		}
-
-		public short burntime;
+		ad.burntime=time;
 	}
 }

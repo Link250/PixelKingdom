@@ -11,6 +11,10 @@ public class ConverterList implements OutConverter, InConverter{
 	public ConverterList() {
 		data = new LinkedList<>();
 	}
+	
+	public int length() {
+		return data.size();
+	}
 
 	public void writeByte(byte b) throws IOException {
 		data.add(b);

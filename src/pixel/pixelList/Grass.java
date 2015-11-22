@@ -1,11 +1,13 @@
 package pixel.pixelList;
 
 import map.Map;
+import pixel.AD;
 import pixel.Material;
 
-public class Grass extends Material{
+public class Grass extends Material<AD>{
 
 	public Grass(){
+		super(null);
 		ID = 3;
 		name = "Grass";
 		usePickaxe = 1;

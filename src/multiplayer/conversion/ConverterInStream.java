@@ -9,5 +9,7 @@ public class ConverterInStream extends ObjectInputStream implements InConverter{
 	public ConverterInStream(InputStream in) throws IOException {
 		super(in);
 	}
-
+	
+	protected void readStreamHeader(){}
+	
 }

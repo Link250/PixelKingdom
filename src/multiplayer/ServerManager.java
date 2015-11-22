@@ -4,14 +4,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
+import multiplayer.conversion.ConverterInStream;
+
 public class ServerManager implements Runnable {
 	
 	boolean running = true;
 	Client client;
-	InputStream server;
+	ConverterInStream server;
 	public ArrayList<InputReceiver> requests = new ArrayList<InputReceiver>();
 	
-	public ServerManager(Client c, InputStream s){
+	public ServerManager(Client c, ConverterInStream s){
 		server = s;
 		client = c;
 	}

@@ -15,7 +15,8 @@ import org.tukaani.xz.XZOutputStream;
 
 import main.ConvertData;
 import main.Game;
-import pixel.AdditionalData;
+import multiplayer.conversion.ConverterList;
+import pixel.AD;
 import pixel.Material;
 import pixel.PixelList;
 
@@ -28,7 +29,7 @@ public class Chunk{
 	private short[] back;
 	public byte[] light;
 //	private AdditionalData[][] AD;
-	private HashMap<Integer,AdditionalData> AD = new HashMap<>();
+	private HashMap<Integer,AD> AD = new HashMap<>();
 	private boolean[][][] updating = new boolean[width][height][Map.LAYER_ALL.length];
 	private Map map;
 	
@@ -77,24 +78,25 @@ public class Chunk{
 		return false;
 	}
 	
-	public AdditionalData getAD(int x, int y, int l){
-		return AD.get(l*length+y*width+x);
+	@SuppressWarnings("unchecked")
+	public <ADType> ADType getAD(int x, int y, int l){
+		return (ADType) this.AD.get(l*length+y*width+x);
 //		return(AD[x + y*width][layer]);
 	}
-	public AdditionalData getAD(int xy, int l){
-		return AD.get(l*length+xy);
+	public AD getAD(int xy, int l){
+		return this.AD.get(l*length+xy);
 	}
 	
-	public void setAD(int x, int y, int l, AdditionalData ad){
-		AD.put(l*length+y*width+x, ad);
+	public void setAD(int x, int y, int l, AD ad){
+		this.AD.put(l*length+y*width+x, ad);
 //		AD[x + y*width][layer] = ad;
 	}
-	public void setAD(int xy, int l, AdditionalData ad){
-		AD.put(l*length+xy, ad);
+	public void setAD(int xy, int l, AD ad){
+		this.AD.put(l*length+xy, ad);
 	}
 		
 	public void refreshUpdates(){
-		Material m;
+		Material<?> m;
 		int ID;
 		for(int l : Map.LAYER_ALL){
 			for(int Y=y*1024; Y<y*1024+height; Y++){
@@ -117,8 +119,8 @@ public class Chunk{
 	}
 
 	@SuppressWarnings("unused")
-	public void load(byte[] rawfile){
-		ArrayList<Byte> filedata = new ArrayList<Byte>();
+	public void load(byte[] rawfile) throws IOException{
+		ConverterList filedata = new ConverterList();
 		front = new short[length];
 		liquid = new short[length];
 		back = new short[length];
@@ -141,7 +143,7 @@ public class Chunk{
 					e.printStackTrace();
 				}
 				for(int i = 0; i < rawfile.length; i++){
-					filedata.add(rawfile[i]);
+					filedata.writeByte(rawfile[i]);
 				}
 			}else{
 				try{
@@ -157,8 +159,8 @@ public class Chunk{
 					int j = 0;
 					try {
 						for(byte[] btemp : bytes) {
-							for(int i = 0; i < btemp.length && filedata.size() < s; i++) {
-								filedata.add(btemp[i]);
+							for(int i = 0; i < btemp.length && filedata.length() < s; i++) {
+								filedata.writeByte(btemp[i]);
 							}
 						}
 					}catch(ArrayIndexOutOfBoundsException e) {}
@@ -167,21 +169,21 @@ public class Chunk{
 		}
 		else
 		for(int i = 0; i < rawfile.length; i++){
-			filedata.add(rawfile[i]);
+			filedata.writeByte(rawfile[i]);
 		}
 		
 		int x = 0,l;
 		short id=0,ID;
-		while(filedata.size()>0){
+		while(filedata.length()>0){
 			try{
 				ID=id;
-				id = ConvertData.B2S(filedata);
-			}catch(IndexOutOfBoundsException e){
+				id = filedata.readShort();
+			}catch(NullPointerException e){
 				Game.logWarning((int)(x/length)+" "+x%length);
 				break;
 			}
 			if(id < 0){
-				ID = ConvertData.B2S(filedata);
+				ID = filedata.readShort();
 				if(ID==0) {
 					x-=id;
 					continue;
@@ -189,19 +191,19 @@ public class Chunk{
 				for(int n = 0; n < -id; n++){
 					l = (int)(x/length);
 					switch(l){
-					case Map.LAYER_FRONT :	front[x%length]=ID;	break;
+					case Map.LAYER_FRONT :	front[x%length]=ID;		break;
 					case Map.LAYER_LIQUID :	liquid[x%length]=ID;	break;
 					case Map.LAYER_BACK :	back[x%length]=ID;		break;
 					}
 					x++;
 				}
 			}else{
-				if(id==32767){
-					setAD((x-1)%length, (int)((x-1)/length), (new AdditionalData()).load(filedata));
+				if(id==0x7fff){
+					setAD((x-1)%length, (int)((x-1)/length), PixelList.GetPixel(ID, (x/length)).getNewAD().load(filedata));
 				}else{
-					l = (int)(x/(1024*1024));
+					l = (x/length);
 					switch(l){
-					case Map.LAYER_FRONT :	front[x%length]=id;	break;
+					case Map.LAYER_FRONT :	front[x%length]=id;		break;
 					case Map.LAYER_LIQUID :	liquid[x%length]=id;	break;
 					case Map.LAYER_BACK :	back[x%length]=id;		break;
 					}
@@ -253,8 +255,8 @@ public class Chunk{
 		}
 	}
 
-	public byte[] compress() {
-		ArrayList<Byte> rawFile = new ArrayList<Byte>();
+	public byte[] compress() throws IOException {
+		ConverterList data = new ConverterList();
 		ArrayList<short[]> layers = new ArrayList<short[]>();
 		layers.add(back);
 		layers.add(liquid);
@@ -262,17 +264,16 @@ public class Chunk{
 		for(int l = 0; l < layers.size(); l++){
 			for(int i = 0; i < layers.get(l).length; i++){
 				short ID = layers.get(l)[i], n = 0;
-				AdditionalData ad = getAD(i,l);
-//				AdditionalData ad = AD[i][l];
-				if(ad==null){for(n = 0; layers.get(l)[i+n]==ID && n < 32767 && i+n < layers.get(l).length-1; n++){}}
+				AD ad = getAD(i,l);
+				if(ad==null){for(n = 0; layers.get(l)[i+n]==ID && n < 0x7fff && i+n < layers.get(l).length-1; n++){}}
 				if(n > 1){
-					ConvertData.S2B(rawFile, (short) -n);
+					data.writeShort((short)-n);
 					i+=(n-1);
 				}
-				ConvertData.S2B(rawFile, ID);
+				data.writeShort(ID);
 				if(ad!=null){
 					try{
-						ad.save(rawFile);
+						ad.save(data,true);
 					}catch(NullPointerException e){
 						Game.logError("Error with "+ID);
 					}
@@ -280,8 +281,8 @@ public class Chunk{
 			}
 		}
 
-		byte[] newFile = new byte[rawFile.size()];
-		for(int i = 0; i < newFile.length; i++){newFile[i]=rawFile.get(i);}
+		byte[] newFile = new byte[data.length()];
+		for(int i = 0; i < newFile.length; i++){newFile[i]=data.readByte();}
 		
 		return newFile;
 	}

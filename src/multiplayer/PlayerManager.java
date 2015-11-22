@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import entities.MPlayer;
 import main.Game;
 import main.IOConverter;
+import multiplayer.conversion.ConverterInStream;
 
 	public class PlayerManager implements InputReceiver{
 		private Game game;
@@ -17,7 +18,7 @@ import main.IOConverter;
 			Client.server.requests.add(this);
 		}
 		
-		public boolean useInput(InputStream in) throws IOException {
+		public boolean useInput(ConverterInStream in) throws IOException {
 			int i = 0,n;
 			try {i = in.read();} catch (IOException e) {e.printStackTrace();}
 			switch(i) {

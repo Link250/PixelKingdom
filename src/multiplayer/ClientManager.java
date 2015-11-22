@@ -1,18 +1,18 @@
 package multiplayer;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.Socket;
 
 import entities.MPlayer;
 import main.Game;
+import multiplayer.conversion.ConverterInStream;
+import multiplayer.conversion.ConverterOutStream;
 
 public class ClientManager implements Runnable {
 	
 	boolean running = true;
-	InputStream clientIn;
-	OutputStream clientOut;
+	ConverterInStream clientIn;
+	ConverterOutStream clientOut;
 	Server server;
 	public MPlayer player;
 	int id;
@@ -22,9 +22,9 @@ public class ClientManager implements Runnable {
 		player = new MPlayer(null, null, n);
 		try {
 			id = n;
-			clientIn = c.getInputStream();
-			clientOut = c.getOutputStream();
-		} catch (IOException e) {}
+			clientIn = new ConverterInStream(c.getInputStream());
+			clientOut = new ConverterOutStream(c.getOutputStream());
+		} catch (IOException e) {e.printStackTrace();}
 	}
 
 	public void run() {
@@ -56,6 +56,7 @@ public class ClientManager implements Runnable {
 				}
 			}
 		} catch (IOException e) {
+			e.printStackTrace();
 			running = false;
 			server.closeConnection(id);
 		}

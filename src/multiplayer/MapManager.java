@@ -9,6 +9,7 @@ import main.Game;
 import main.IOConverter;
 import map.Chunk;
 import map.Map;
+import multiplayer.conversion.ConverterInStream;
 
 public class MapManager implements InputReceiver{
 
@@ -19,7 +20,7 @@ public class MapManager implements InputReceiver{
 		Client.server.requests.add(this);
 	}
 	
-	public boolean useInput(InputStream in) throws IOException { //is used when the Server sends Map data
+	public boolean useInput(ConverterInStream in) throws IOException { //is used when the Server sends Map data
 		map.receiveMapUpdates(in);
 		return false;
 	}
@@ -34,7 +35,9 @@ public class MapManager implements InputReceiver{
 		public chunkLoader(Chunk c) {chunk=c;finished=false;canceled=false;}
 
 		public void run() {
-			if(chunk.path!=null)chunk.load(null);
+			if(chunk.path!=null) {
+				try {chunk.load(null);} catch (IOException e) {}
+			}
 			else{
 				byte[] data = new byte[8];
 				ArrayList<Byte> temp = new ArrayList<Byte>();
@@ -52,7 +55,7 @@ public class MapManager implements InputReceiver{
 			finished=true;
 		}
 		
-		public boolean useInput(InputStream in) throws IOException {
+		public boolean useInput(ConverterInStream in) throws IOException {
 			Game.logInfo("used receiving map data");
 			int l = IOConverter.receiveInt(in);
 			byte[] data = new byte[l];

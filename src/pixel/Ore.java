@@ -2,40 +2,41 @@ package pixel;
 
 import gfx.Screen;
 import map.Map;
+import pixel.ads.OreAD;
 import pixel.pixelList.Lava;
 
-public abstract class Ore extends Material{
+public abstract class Ore<OreADType extends OreAD> extends Material<OreADType>{
 
 	public int melt;
 	public int ingot;
 	
-	public Ore(){
-		ID = 15;
+	public Ore(OreADType ad){
+		super(ad);
 		name = "Ore";
 		usePickaxe = 1;
 		tick = false;
 	}
-
+	
 	public void heatUp(int x, int y, int l, short heat, short heatup, Map map){
-		AdditionalData ad = map.getAD(x, y, l);
+		this.ad = map.getAD(x, y, l);
 		if(ad==null){
-			map.setAD(x, y, l, new AdditionalData(2));
+			map.setAD(x, y, l, super.getNewAD());
 			ad = map.getAD(x, y, l);
 		}
-		if(ad.getshort(0)>=melt){
+		if(ad.heat>=melt){
 			map.setID(x, y, l, 0);
 			map.setID(x, y, Map.LAYER_LIQUID, 2);
 			((Lava)PixelList.GetPixel(2, Map.LAYER_LIQUID)).setMat(x, y, Map.LAYER_LIQUID, ingot, map);
 		}else{
-			if(heat>=ad.getshort(0))ad.setshort(0, (short)(ad.getshort(0)+heatup));
+			if(heat>=ad.heat)ad.heat += heatup;
 		}
 	}
 	
 	public void render(int x, int y, int l, Map map, Screen screen) {
 		screen.drawMaterial(x, y, ID, l);
-		AdditionalData ad = map.getAD(x, y, l);
+		ad = map.getAD(x, y, l);
 		if(melt>0 && ad!=null){
-			int r = (int) (ad.getshort(0)/(((double)melt)/250));if(r>255)r=255;
+			int r = (int) (ad.heat/(((double)melt)/250));if(r>255)r=255;
 			screen.drawPixelScaled(x, y, 0x00ff0000 | (r<<24));
 		}
 	}

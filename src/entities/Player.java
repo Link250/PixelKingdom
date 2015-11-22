@@ -267,9 +267,12 @@ public class Player extends Mob{
 		if(equipment.itembag2!=null){b=equipment.itembag2;for(int i = 0; i < b.inventory.length; i++){			if(b.inventory[i]!=null){if(b.inventory[i].getStack()<=0)b.inventory[i] = null;}}}
 
 		try{
-			if(game.input.mousel.isClickable())equipment.beltbag1.inventory[selected].useItem(game.input, this, map, game.screen);
-			else game.input.mousel.click();
-		}catch(NullPointerException e){}
+			if(equipment.beltbag1.inventory[selected]!=null && game.input.mousel.isClickable()) {
+				equipment.beltbag1.inventory[selected].useItem(game.input, this, map, game.screen);
+			}else{
+				game.input.mousel.click();
+			}
+		}catch(NullPointerException e){e.printStackTrace();}
 
 		
 		/*		ANIMATION		*/

@@ -9,6 +9,8 @@ import main.Game;
 import main.InputHandler;
 import map.Chunk;
 import map.Map;
+import multiplayer.conversion.ConverterInStream;
+import multiplayer.conversion.ConverterOutStream;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -27,8 +29,8 @@ import javax.imageio.ImageIO;
 public class Client {
 
 	private String IP = "91.89.152.87";
-	private static OutputStream out;
-	private InputStream in;
+	private static ConverterOutStream out;
+	private ConverterInStream in;
 	private Socket serverConnection = null;
 	public static ServerManager server;
 	
@@ -52,8 +54,8 @@ public class Client {
 		try {
 			serverConnection = new Socket(IP, Game.PORT);
 			Game.logInfo("connected so Server");
-			in = serverConnection.getInputStream();
-			out = serverConnection.getOutputStream();
+			in = new ConverterInStream(serverConnection.getInputStream());
+			out = new ConverterOutStream(serverConnection.getOutputStream());
 		} catch (IOException e) {e.printStackTrace();}
 		server = new ServerManager(this,in);
 		try {

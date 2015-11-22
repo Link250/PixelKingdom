@@ -10,6 +10,8 @@ public class ConverterOutStream extends ObjectOutputStream implements OutConvert
 		super(out);
 	}
 	
+	protected void writeStreamHeader(){}
+	
 	public void writeByte(byte b) throws IOException {
 		super.writeByte(b);
 	}

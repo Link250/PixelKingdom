@@ -9,6 +9,7 @@ import main.ConvertData;
 import main.Game;
 import main.IOConverter;
 import map.Map;
+import multiplayer.conversion.ConverterInStream;
 
 public class Server implements Runnable{
 	boolean running = true;
@@ -112,7 +113,7 @@ public class Server implements Runnable{
 		}
 	}
 	
-	public void receiveMapData(ClientManager c, InputStream cIn) throws IOException {
+	public void receiveMapData(ClientManager c, ConverterInStream cIn) throws IOException {
 		map.receiveMapUpdates(cIn);
 	}
 	

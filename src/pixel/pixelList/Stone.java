@@ -1,10 +1,12 @@
 package pixel.pixelList;
 
+import pixel.AD;
 import pixel.Material;
 
-public class Stone extends Material{
+public class Stone extends Material<AD>{
 
 	public Stone(){
+		super(null);
 		ID = 1;
 		name = "Stone";
 		usePickaxe = 1.5;

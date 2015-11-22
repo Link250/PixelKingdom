@@ -5,7 +5,8 @@ import main.Game;
 import multiplayer.Client;
 import multiplayer.MapManager;
 import multiplayer.Server;
-import pixel.AdditionalData;
+import multiplayer.conversion.ConverterInStream;
+import pixel.AD;
 import pixel.Material;
 import pixel.PixelList;
 
@@ -47,7 +48,7 @@ public class Map {
 	}
 	
 	public void tick(int tickCount){
-		Material m;
+		Material<?> m;
 		int x,y,l;
 		int ID;
 		int size = updatesPixel.startUpdate();
@@ -87,7 +88,7 @@ public class Map {
 		}
 	}
 	
-	public void receiveMapUpdates(InputStream in) {
+	public void receiveMapUpdates(ConverterInStream in){
 		mapUpdater.decompUpdates(in, this, gametype==GT_CLIENT);
 	}
 	
@@ -163,7 +164,7 @@ public class Map {
 	
 	public void render(){
 		int ID;
-		Material m;
+		Material<?> m;
 		int X,Y;
 		short light;
 
@@ -235,7 +236,7 @@ public class Map {
 	public void setID(int x, int y, int l, int ID){
 		setID(x,y,l,ID,null,false);
 	}
-	public void setID(int x, int y, int l, int ID, AdditionalData ad, boolean skipUpdate){
+	public void setID(int x, int y, int l, int ID, AD ad, boolean skipUpdate){
 		int cx = x/1024,cy = y/1024;
 		if(chunks[cx][cy]!=null){
 			addBlockUpdate(x, y, l);
@@ -255,7 +256,7 @@ public class Map {
 		setID(xs,ys,ls,0);
 	}
 	
-	public AdditionalData getAD(int x, int y, int layer){
+	public <ADType extends AD> ADType getAD(int x, int y, int layer){
 		int cx = x/1024,cy = y/1024;
 		if(chunks[cx][cy]!=null){
 			x %= 1024;y %= 1024;
@@ -264,7 +265,7 @@ public class Map {
 			return null;
 		}
 	}
-	public void setAD(int x, int y, int layer, AdditionalData ad){
+	public void setAD(int x, int y, int layer, AD ad){
 		int cx = x/1024,cy = y/1024;
 		if(chunks[cx][cy]!=null){
 			x %= 1024;y %= 1024;
@@ -313,7 +314,10 @@ public class Map {
 	}
 	
 	public byte[] compressedChunk(int x, int y) {
-		return chunks[x][y].compress();
+		try {
+			return chunks[x][y].compress();
+		} catch (IOException e) {/*dont worry, this should never ever happen C: */}
+		return null;
 	}
 	
 	public static void newMap(String path,String name){

@@ -1,10 +1,12 @@
 package pixel.pixelList;
 
 import pixel.Ore;
+import pixel.ads.OreAD;
 
-public class Ore_Coal extends Ore{
+public class Ore_Coal extends Ore<OreAD>{
 
 	public Ore_Coal(){
+		super(null);
 		ID = 16;
 		name = "CoalOre";
 		usePickaxe = 1.9;

@@ -2,12 +2,12 @@ package pixel;
 
 import map.Map;
 
-public abstract class Liquid extends Material{
+public abstract class Liquid<LiquidADType extends AD> extends Material<LiquidADType>{
 
 	public int viscosity = 100;
 	
-	public Liquid(){
-		ID = 0;
+	public Liquid(LiquidADType ad){
+		super(ad);
 		name = "Liquid";
 		tick = true;
 	}
