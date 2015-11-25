@@ -2,9 +2,9 @@ package map;
 
 import gfx.Screen;
 import main.Game;
-import main.SinglePlayer;
 import multiplayer.Client;
 import multiplayer.MapManager;
+import multiplayer.Request;
 import multiplayer.Server;
 import multiplayer.conversion.ConverterInStream;
 import pixel.AD;
@@ -23,20 +23,19 @@ public class Map {
 	public static final byte[] LAYER_ALL = {LAYER_BACK,LAYER_LIQUID,LAYER_FRONT,LAYER_LIGHT},
 			LAYER_ALL_PIXEL = {LAYER_BACK,LAYER_LIQUID,LAYER_FRONT},
 			LAYER_ALL_MATERIAL = {LAYER_BACK,LAYER_FRONT};
+	public static final int widthh = 1024, heighth = 1024;
 	public String path;
 	public Screen screen;
-	public int width = 1024;
-	public int height = 1024;
 	protected UpdateManager updatesPixel = new UpdateManager();
 	public int updateCountPixel = 0;
 	protected UpdateManager updatesLight = new UpdateManager();
 	public int updateCountLight = 0;
 	private ArrayList<MapManager.chunkLoader> cloaders = new ArrayList<>();
 	private int gametype = 0;
-	private MapManager mapManager;
+	private MapManager mapManager = null;
 	private MapUpdater mapUpdater = new MapUpdater();
 
-	private Chunk[][] chunks = new Chunk[width][height];
+	private Chunk[][] chunks = new Chunk[1024][1024];
 	
 	public Map(String path, Screen screen){
 		this.path = path;
@@ -59,7 +58,12 @@ public class Map {
 			ID = getID(x, y, l);
 			if(getUpdate(x,y,l) && ID!=0){
 				m = PixelList.GetPixel(ID, l);
-				if(m.tick(x, y, l, tickCount, this))addBlockUpdate(x, y, l);
+				try {
+					if(m.tick(x, y, l, tickCount, this))addPixelUpdate(x, y, l);
+				}catch(NullPointerException e) {
+					e.printStackTrace();
+					/*dont worry, can happen in MP if some ADs are not loaded*/
+				}
 			}
 			updateCountPixel++;
 		}
@@ -91,8 +95,15 @@ public class Map {
 		}
 	}
 	
-	public void receiveMapUpdates(ConverterInStream in){
-		mapUpdater.decompUpdates(in, this, gametype==GT_CLIENT);
+	public void receiveMapUpdates(ConverterInStream in) throws IOException{
+		switch(in.readByte()) {
+		case Request.MAP_UPDATE_PXL:
+			mapUpdater.decompPixelUpdates(in, this, gametype==GT_CLIENT);
+			break;
+		case Request.MAP_UPDATE_AD:
+			mapUpdater.decompADUpdates(in, this, gametype==GT_CLIENT);
+			break;
+		}
 	}
 	
 	public boolean isUpdating(int x, int y, int l){
@@ -119,9 +130,15 @@ public class Map {
 		}else return false;
 	}
 	
-	public void addBlockUpdate(int x, int y, int l){
-		int Sx;if(Math.random()<0.5)Sx=1;else Sx=-1;
-		int Sy;if(Math.random()<0.5)Sy=1;else Sy=-1;
+	public void addADUpdate(int x, int y, int l, AD ad){
+		if(gametype == GT_SERVER || gametype == GT_CLIENT) {
+			mapUpdater.addUpdateAD(new int[]{x,y,l}, ad);
+		}
+	}
+	
+	public void addPixelUpdate(int x, int y, int l){
+		int Sx = Math.random()<0.5 ? 1 : -1,
+			Sy = Math.random()<0.5 ? 1 : -1;
 		for(int X = 0; X <= 2; X++){
 			for(int Y = 0; Y <= 2; Y++){
 				if(gametype != GT_CLIENT) {
@@ -246,14 +263,13 @@ public class Map {
 	public void setID(int x, int y, int l, int ID, AD ad, boolean skipUpdate){
 		int cx = x/1024,cy = y/1024;
 		if(chunks[cx][cy]!=null){
-			addBlockUpdate(x, y, l);
-			if(ad!=null)setAD(x,y,l,ad);
-			else PixelList.GetPixel(ID, l).createAD(x, y, l, this);
+			addPixelUpdate(x, y, l);
+			setAD(x,y,l,ad!=null ? ad : PixelList.GetPixel(ID, l).createAD(),true);
 			chunks[cx][cy].setID(x%1024, y%1024, (short) ID, l);
 			
 			if(!skipUpdate && (gametype== GT_SERVER || gametype == GT_CLIENT)) {
 				if(ad==null)ad = chunks[cx][cy].getAD(x%1024, y%1024, l);
-				mapUpdater.addUpdateID(new int[] {x,y,l,ID}, ad);
+				mapUpdater.addUpdatePixel(new int[] {x,y,l,ID}, ad);
 			}
 		}
 	}
@@ -272,13 +288,14 @@ public class Map {
 			return null;
 		}
 	}
-	public void setAD(int x, int y, int layer, AD ad){
+	
+	public void setAD(int x, int y, int l, AD ad, boolean skipcheck){
 		int cx = x/1024,cy = y/1024;
 		if(chunks[cx][cy]!=null){
 			x %= 1024;y %= 1024;
-			chunks[cx][cy].setAD(x, y, layer, ad);
-			if(ad!=null) {
-				mapUpdater.addUpdateAD(new int[] {x,y,layer}, ad);
+			chunks[cx][cy].setAD(x, y, l, ad);
+			if(!skipcheck && ad!=null) {
+//				mapUpdater.addUpdateAD(new int[] {x,y,l}, ad);
 			}
 		}
 	}
@@ -287,7 +304,7 @@ public class Map {
 		int cx = x/1024,cy = y/1024;
 		if(chunks[cx][cy]!=null){
 			x %= 1024;y %= 1024;
-			return chunks[cx][cy].light[x+y*width];
+			return chunks[cx][cy].light[x+y*1024];
 		}else{
 			return 0;
 		}
@@ -296,8 +313,8 @@ public class Map {
 		int cx = x/1024,cy = y/1024;
 		if(chunks[cx][cy]!=null){
 			x %= 1024;y %= 1024;
-			if(chunks[cx][cy].light[x+y*width]!=b) {
-				chunks[cx][cy].light[x+y*width]=b;
+			if(chunks[cx][cy].light[x+y*1024]!=b) {
+				chunks[cx][cy].light[x+y*1024]=b;
 				addLightUpdate(cx*1024+x,cy*1024+y);
 			}
 		}
@@ -313,8 +330,8 @@ public class Map {
 	}
 
 	public void save(){
-		for(int x = 0; x < width; x++){
-			for(int y = 0; y < height; y++){
+		for(int x = 0; x < Map.widthh; x++){
+			for(int y = 0; y < Map.heighth; y++){
 				if(chunks[x][y]!=null)chunks[x][y].save();
 			}
 		}

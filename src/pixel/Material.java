@@ -67,19 +67,10 @@ public abstract class Material<ADType extends AD> {
 	 * @param l
 	 * @param map
 	 */
-	public final void createAD(int x, int y, int l, Map map){
-		map.setAD(x, y, l, this.canHaveAD() ? getNewAD() : null);
+	public final AD createAD(){
+		return this.canHaveAD() ? this.getNewAD() : null;
 	}
 
-	public final void checkAD(int x, int y, int l, Map map){
-		AD temp = map.getAD(x, y, l);
-		if(temp == null){
-			if(this.canHaveAD()){map.setAD(x, y, l, getNewAD());Game.logError("Corrupted AD");}
-		}else{
-			if(!this.canHaveAD()){temp = null;if(map.getAD(x, y, l)!=null)Game.logWarning("Could not delete AD");}
-		}
-	}
-	
 	public byte tickLight(int x, int y, int l, Map map) {return 0;}
 	
 	public boolean tick(int x, int y, int l, int numTick, Map map){return false;}

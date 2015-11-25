@@ -3,8 +3,6 @@ package map;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-
-import main.ConvertData;
 import multiplayer.Request;
 import multiplayer.conversion.ConverterInStream;
 import multiplayer.conversion.ConverterList;
@@ -19,13 +17,12 @@ public class MapUpdater {
 	
 	/**this HashMap stores the the ADs linked to the AD Updates*/
 	private HashMap<int[],AD> ads = new HashMap<>();
-	private ArrayList<int[]> adChanges = new ArrayList<>();
 	
 	public boolean hasUpdates() {
-		return !mapChanges.isEmpty() || !adChanges.isEmpty();
+		return !mapChanges.isEmpty() || !ads.isEmpty();
 	}
 	
-	public synchronized void addUpdateID(int[] update, AD ad) {
+	public synchronized void addUpdatePixel(int[] update, AD ad) {
 		boolean found = false;
 		for (int i = 0; i < mapChanges.size() && !found; i++) {
 			if(		mapChanges.get(i)[2]==update[2] &&
@@ -42,28 +39,48 @@ public class MapUpdater {
 	
 	public synchronized void addUpdateAD(int[] coords, AD ad) {
 		boolean found = false;
-		for (int i = 0; i < adChanges.size() && !found; i++) {
-			if(		adChanges.get(i)[2]==coords[2] &&
-					adChanges.get(i)[1]==coords[1] &&
-					adChanges.get(i)[0]==coords[0]) {
-				adChanges.remove(i);
+		for(java.util.Map.Entry<int[], AD> entry : this.ads.entrySet()) {
+			if(		entry.getKey()[2]==coords[2] &&
+					entry.getKey()[1]==coords[1] &&
+					entry.getKey()[0]==coords[0]) {
+				entry.setValue(ad);
 				found = true;
 			}
 		}
-		ads.put(coords, ad);
-		adChanges.add(coords);
+		if(!found)ads.put(coords, ad);
 	}
 	
 	public synchronized byte[][] compUpdates(){
-		ArrayList<UpdateListID> lists = new ArrayList<>();
+		ArrayList<UpdateListPixel> listsPixel = compUpdatesPixel();
+//		ArrayList<UpdateListAD> listsAD = compUpdatesAD();
+//		byte[][] temp = new byte[listsPixel.size()+listsAD.size()][];
+		byte[][] temp = new byte[listsPixel.size()][];
+		
+		int i = 0;
+		while(listsPixel.size()>0) {
+			temp[i] = listsPixel.remove(0).compress();
+			i++;
+		}
+//		while(listsAD.size()>0) {
+//			temp[i] = listsAD.remove(0).compress();
+//			i++;
+//		}
+		ads.clear();
+		return temp;
+	}
+	
+	public synchronized ArrayList<UpdateListPixel> compUpdatesPixel(){
+		ArrayList<UpdateListPixel> lists = new ArrayList<>();
 		int[] update;
 		boolean added;
 		while(mapChanges.size()!=0) {
 			update = mapChanges.remove(0);
 			if(update==null)continue;
 			added=false;
-			for (UpdateListID updateList : lists) {
+			//try to add this update to a list
+			for (UpdateListPixel updateList : lists) {
 				if(updateList.isInside(update)) {
+					//checks if this Update has an AD
 					if(adsMap.containsKey(update)) {
 						updateList.addUpdateAndAD(update[0]&0x3ff, update[1]&0x3ff, adsMap.get(update));
 					}else {
@@ -72,22 +89,46 @@ public class MapUpdater {
 					added=true;break;
 				}
 			}
-			if(!added && lists.add(new UpdateListID(update)))
+			//no matching list found ? create a new one !
+			if(!added) {
+				UpdateListPixel list = new UpdateListPixel(update);
+				lists.add(list);
 				if(adsMap.containsKey(update)) {
-					lists.get(lists.size()-1).addUpdateAndAD(update[0]&0x3ff, update[1]&0x3ff, adsMap.get(update));
+					list.addUpdateAndAD(update[0]&0x3ff, update[1]&0x3ff, adsMap.get(update));
 				}else {
-					lists.get(lists.size()-1).addUpdate(update[0]&0x3ff, update[1]&0x3ff);
+					list.addUpdate(update[0]&0x3ff, update[1]&0x3ff);
 				}
-		}
-		byte[][] temp = new byte[lists.size()][];
-		for (int i = 0; i < lists.size(); i++) {
-			temp[i]=(lists.get(i).compress());
+			}
 		}
 		adsMap.clear();
-		return temp;
+		return lists;
 	}
 	
-	public void decompUpdates(ConverterInStream in, Map map, boolean skipcheck) {
+	public synchronized ArrayList<UpdateListAD> compUpdatesAD(){
+		ArrayList<UpdateListAD> lists = new ArrayList<>();
+		boolean added;
+		for(java.util.Map.Entry<int[], AD> entry : this.ads.entrySet()) {
+			int[] coords = entry.getKey();
+			added=false;
+			//try to add this update to a list
+			for (UpdateListAD list : lists) {
+				if(list.isInside(coords)) {
+					list.addAD(coords[0]%Chunk.width, coords[1]%Chunk.height, entry.getValue());
+					added=true;break;
+				}
+			}
+			//no matching list found ? create a new one !
+			if(!added) {
+				UpdateListAD list = new UpdateListAD(coords);
+				lists.add(list);
+				list.addAD(coords[0]%Chunk.width, coords[1]%Chunk.height, entry.getValue());
+			}
+		}
+		ads.clear();
+		return lists;
+	}
+	
+	public void decompPixelUpdates(ConverterInStream in, Map map, boolean skipcheck) {
 		try {
 			int n  = in.readInt(),
 				cx = in.readInt(),
@@ -106,14 +147,35 @@ public class MapUpdater {
 		}
 	}
 	
-	private class UpdateListID{
+	public void decompADUpdates(ConverterInStream in, Map map, boolean skipcheck) {
+		try {
+			int n  = in.readInt(),
+				cx = in.readInt(),
+				cy = in.readInt();
+			byte l = in.readByte();
+			short x,y;
+			for (int i = 0; i < n; i++) {
+				x = in.readShort();
+				y = in.readShort();
+				try{
+					map.getAD((cx*1024)+x, (cy*1024)+y, l).load(in);
+				}catch(NullPointerException e) {
+					System.out.println(map.getID((cx*1024)+x, (cy*1024)+y, l));
+				}
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private class UpdateListPixel{
 		private ArrayList<byte[]> coords = new ArrayList<>();
 		
 		int cx,cy;
 		byte l;
 		short ID;
 		
-		public UpdateListID(int[] update) {
+		public UpdateListPixel(int[] update) {
 			cx=update[0]>>10; cy=update[1]>>10; l=(byte) update[2]; ID=(short) update[3];
 		}
 		
@@ -127,86 +189,78 @@ public class MapUpdater {
 		}
 		public void addUpdateAndAD(int rx, int ry, AD ad) {
 			ConverterList data = new ConverterList();
-			try {
-				data.writeShort((short)rx);
-				data.writeShort((short)ry);
-			} catch (IOException e) {}
+			data.addShort((short)rx);
+			data.addShort((short)ry);
 			ad.save(data,false);
 			byte[] temp = new byte[data.length()];
 			for (int i = 0; i < temp.length; i++) {
-				try {temp[i] = data.readByte();} catch (IOException e) {}
+				temp[i] = data.pollByte();
 			}
 			coords.add(temp);
 		}
 		
 		public byte[] compress() {
+			ConverterList data = new ConverterList();
 			int n = coords.size();
 			int cLength = coords.get(0).length;
 			//wir gehen davon aus, dass alle Elemente von coords die selbe länge haben
 			//da normalerweise alle Pixel eines Materials einen AD der selben länge besitzen
-			byte[] data = new byte[16+cLength*n];
-			data[0]=Request.MAP_DATA;
-			ConvertData.I2B(data, 1, n);
-			ConvertData.I2B(data, 5, cx);
-			ConvertData.I2B(data, 9, cy);
-			data[13]=l;
-			ConvertData.S2B(data, 14, ID);
+			data.addByte(Request.MAP_DATA);
+			data.addByte(Request.MAP_UPDATE_PXL);
+			data.addInt(n);
+			data.addInt(cx);
+			data.addInt(cy);
+			data.addByte(l);
+			data.addShort(ID);
 			for (int i = 0; i < cLength*n; i++) {
-				data[16+i]=coords.get(i/cLength)[i%cLength];
+				data.addByte(coords.get(i/cLength)[i%cLength]);
 			}
-			return data;
+			byte[] returnData = new byte[data.length()];
+			for (int i = 0; i < returnData.length; i++) {
+				returnData[i] = data.pollByte();
+			}
+			return returnData;
 		}
 	}
 	
 	private class UpdateListAD{
-		private ArrayList<byte[]> coords = new ArrayList<>();
+		ConverterList data = new ConverterList();
+		int numberADs = 0;
 		
 		int cx,cy;
 		byte l;
-		short ID;
 		
 		public UpdateListAD(int[] update) {
-			cx=update[0]>>10; cy=update[1]>>10; l=(byte) update[2];
+			cx=update[0]>>Chunk.wLog; cy=update[1]>>Chunk.hLog; l=(byte) update[2];
 		}
 		
 		public boolean isInside(int[] update) {
-			return (update[2]==l && (update[1]>>10)==cy && (update[0]>>10)==cx);
+			return (update[2]==l && (update[1]>>Chunk.hLog)==cy && (update[0]>>Chunk.wLog)==cx);
 		}
 		
-		public void addUpdateAndAD(int rx, int ry, byte[] data) {
-			byte[] temp = new byte[4+data.length];
-			temp[0] = (byte) ((rx>>8)&0xff);
-			temp[1] = (byte) ((rx   )&0xff);
-			temp[2] = (byte) ((ry>>8)&0xff);
-			temp[3] = (byte) ((ry   )&0xff);
-			for (int i = 0; i < data.length; i++) {
-				temp[i+4] = data[i];
-			}
-			coords.add(temp);
+		public void addAD(int rx, int ry, AD ad) {
+			data.addShort((short)rx);
+			data.addShort((short)ry);
+			ad.save(data,false);
+			numberADs++;
 		}
 		
 		public byte[] compress() {
-			int n = coords.size();
-			int length = 0;
-			
-			for(byte[] b : coords) {length += b.length;}
-			
-			byte[] data = new byte[16+length];
-			data[0]=Request.MAP_DATA;
-			ConvertData.I2B(data, 1, n);
-			ConvertData.I2B(data, 5, cx);
-			ConvertData.I2B(data, 9, cy);
-			data[13]=l;
-			ConvertData.S2B(data, 14, ID);
-			
-			n=16;
-			for (int i = 0; i < length; i++) {
-				for(int j = 0; j < coords.get(i).length; j++) {
-					data[n]=coords.get(i)[j];
-					n++;
-				}
+			ConverterList tempData = new ConverterList();
+			tempData.addByte(Request.MAP_DATA);
+			tempData.addByte(Request.MAP_UPDATE_AD);
+			tempData.addInt(numberADs);
+			tempData.addInt(cx);
+			tempData.addInt(cy);
+			tempData.addByte(l);
+			while(data.length() > 0) {
+				tempData.addByte(data.pollByte());
 			}
-			return data;
+			byte[] returnData = new byte[tempData.length()];
+			for (int i = 0; tempData.length() > 0; i++) {
+				returnData[i] = tempData.pollByte();
+			}
+			return returnData;
 		}
 	}
 }

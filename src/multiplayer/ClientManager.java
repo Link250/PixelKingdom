@@ -38,9 +38,6 @@ public class ClientManager implements Runnable {
 					running = false;
 					server.closeConnection(id);
 					break;
-				case Request.CHUNK_DATA:
-					server.sendChunk(this, clientIn);
-					break;
 				case Request.PLAYER_DATA:
 					server.receivePlayerData(this, clientIn);
 					break;
@@ -49,6 +46,9 @@ public class ClientManager implements Runnable {
 					break;
 				case Request.MAP_DATA:
 					server.receiveMapData(this, clientIn);
+					break;
+				case Request.MAP_CHUNK_DATA:
+					server.sendChunk(this, clientIn);
 					break;
 				default:
 					Game.logError("Non existing request received with ID "+in);

@@ -42,7 +42,7 @@ public class MapManager implements InputReceiver{
 				ArrayList<Byte> temp = new ArrayList<Byte>();
 				ConvertData.I2B(temp, chunk.x); ConvertData.I2B(temp, chunk.y); for(int i = 0; i < temp.size(); i++)data[i]=temp.get(i);
 				try {
-					ServerManager.request(Request.CHUNK_DATA, data);
+					ServerManager.request(Request.MAP_CHUNK_DATA, data);
 				} catch (IOException e1) {canceled=true;}
 				Client.server.requests.add(this);
 				while(!finished & !canceled){
@@ -65,7 +65,7 @@ public class MapManager implements InputReceiver{
 			return true;
 		}
 
-		public int requestType() {return Request.CHUNK_DATA;}
+		public int requestType() {return Request.MAP_CHUNK_DATA;}
 
 	}
 }

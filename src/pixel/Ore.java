@@ -19,16 +19,15 @@ public abstract class Ore<OreADType extends OreAD> extends Material<OreADType>{
 	
 	public void heatUp(int x, int y, int l, short heat, short heatup, Map map){
 		this.ad = map.getAD(x, y, l);
-		if(ad==null){
-			map.setAD(x, y, l, super.getNewAD());
-			ad = map.getAD(x, y, l);
-		}
 		if(ad.heat>=melt){
 			map.setID(x, y, l, 0);
 			map.setID(x, y, Map.LAYER_LIQUID, 2);
 			((Lava)PixelList.GetPixel(2, Map.LAYER_LIQUID)).setMat(x, y, Map.LAYER_LIQUID, ingot, map);
 		}else{
-			if(heat>=ad.heat)ad.heat += heatup;
+			if(heat>=ad.heat) {
+				ad.heat += heatup;
+				map.addADUpdate(x, y, l, ad);
+			}
 		}
 	}
 	

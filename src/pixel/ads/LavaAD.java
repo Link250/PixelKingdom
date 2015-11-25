@@ -4,5 +4,5 @@ import pixel.AD;
 
 public class LavaAD extends AD {
 	public short ID;
-	public short heat;
+	public byte heat;
 }

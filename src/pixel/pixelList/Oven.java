@@ -28,6 +28,7 @@ public class Oven extends Material<OvenAD>{
 	
 	public boolean tick(int x, int y, int l, int numTick, Map map) {
 		ad = map.getAD(x, y, l);
+		short heat = ad.heat;
 		int id;
 		for(int X=-1; X<=1; X++){
 			for(int Y=-1; Y<=1; Y++){
@@ -66,6 +67,7 @@ public class Oven extends Material<OvenAD>{
 				}
 			}
 		}
+		if(ad.heat!=heat)map.addADUpdate(x, y, l, ad);
 		return ad.heat>0;
 	}
 	

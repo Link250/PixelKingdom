@@ -21,7 +21,6 @@ public class Server implements Runnable{
 		game = g;
 		map = new Map(files, g.screen);
 		map.setGametype(Map.GT_SERVER);
-		map.loadChunk(512, 512);
 	}
 	
 	public void run() {
@@ -63,7 +62,7 @@ public class Server implements Runnable{
 			int X = game.input.mouse.x/Game.SCALE+game.screen.xOffset, Y = game.input.mouse.y/Game.SCALE+game.screen.yOffset;
 			Game.logInfo(X+" "+Y+" id{"+map.getID(X, Y, 1)		+","+map.getID(X, Y, 2)		+","+map.getID(X, Y, 3)		+"}");
 			Game.logInfo(X+" "+Y+" up{"+map.isUpdating(X, Y, 0)	+","+map.isUpdating(X, Y, 0)+","+map.isUpdating(X, Y, 0)+"}");
-			map.addBlockUpdate(X, Y, 1);
+			map.addPixelUpdate(X, Y, 1);
 		}
 	}
 	
@@ -77,7 +76,7 @@ public class Server implements Runnable{
 		while(!map.loadChunk(x, y)) {try {Thread.sleep(1);} catch (InterruptedException e) {}}
 		Game.logInfo("sending chunk");
 		byte[] mapd = map.compressedChunk(x, y);
-		c.send2Client(new byte[][]{new byte[]{Request.CHUNK_DATA},ConvertData.I2B(mapd.length),mapd});
+		c.send2Client(new byte[][]{new byte[]{Request.MAP_CHUNK_DATA},ConvertData.I2B(mapd.length),mapd});
 	}
 	
 	public void receivePlayerColor(ClientManager c, InputStream cIn) throws IOException {

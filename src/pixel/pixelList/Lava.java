@@ -22,7 +22,10 @@ public class Lava extends Liquid<LavaAD>{
 				map.setID(x, y, Map.LAYER_LIQUID, 0);
 				map.setID(x, y, Map.LAYER_FRONT, ad.ID);
 			}else{
-				ad.heat--;
+				if(numTick==0) {
+					ad.heat--;
+					map.addADUpdate(x, y, l, ad);
+				}
 			}
 		}
 		if(map.getID(x+1, y, l)==1||map.getID(x-1, y, l)==1||map.getID(x, y+1, l)==1||map.getID(x, y-1, l)==1){
@@ -44,6 +47,6 @@ public class Lava extends Liquid<LavaAD>{
 	public void setMat(int x, int y, int l, int ID, Map map){
 		ad = map.getAD(x, y, l);
 		ad.ID = (short) ID;
-		ad.heat = (short) 3000;
+		ad.heat = 60;
 	}
 }

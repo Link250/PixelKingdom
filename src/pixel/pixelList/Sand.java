@@ -20,12 +20,7 @@ public class Sand extends Material<AD>{
 			y++;
 			return true;
 		}
-		if(Math.random()<0.5){
-			if(falltoside(x, y, l, -1, map))return true;
-		}else{
-			if(falltoside(x, y, l, 1, map))return true;
-		}
-		return false;
+		return Math.random()<0.5 ? falltoside(x, y, l, -1, map) : falltoside(x, y, l, 1, map);
 	}
 	
 	private boolean falltoside(int x, int y, int l, int side, Map map){

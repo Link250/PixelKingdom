@@ -23,12 +23,13 @@ public class Fire extends Material<FireAD>{
 			}
 		}
 		ad = map.getAD(x, y, l);
-		if(Math.random()*500<1){
+		if(Math.random()*500 <= 1){
 			spread(x, y, l, map);
 		}
 		if(numTick%60==30){
 			if(ad.burntime>0){
 				ad.burntime = (byte) (ad.burntime-1);
+				map.addADUpdate(x, y, l, ad);
 			}else{
 				map.setID(x, y, l, 0);return true;
 			}
@@ -41,15 +42,19 @@ public class Fire extends Material<FireAD>{
 	}
 	
 	public void render(int x, int y, int l, Map map, Screen screen) {
-		screen.drawPixelScaled(x, y, 0xffff0000 | (((byte)(map.<FireAD>getAD(x, y, l).burntime*2+Math.random()*55))<<8));
+		try {
+			screen.drawPixelScaled(x, y, 0xffff0000 | (((byte)(map.<FireAD>getAD(x, y, l).burntime*2+Math.random()*55))<<8));
+		}catch(NullPointerException e) {
+			System.out.println("Fire.render()");
+			//can happen if the AD is changed while this pixel is being rendered
+		}
 	}
 	
 	public void spread(int x, int y, int l, Map map){
 		byte burntime;
 		int Xt,Yt;
-		byte Xd,Yd;
-		if(Math.random()<0.5)Xd=1;else Xd=-1;
-		if(Math.random()<0.5)Yd=1;else Yd=-1;
+		byte Xd = (byte) (Math.random() < 0.5 ? 1 : -1),
+			 Yd = (byte) (Math.random() < 0.5 ? 1 : -1);
 		for(int Y=-2; Y<=2; Y++){
 			for(int X=-2; X<=2; X++){
 				for(int L : Map.LAYER_ALL_PIXEL){

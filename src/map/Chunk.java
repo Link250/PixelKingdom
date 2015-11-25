@@ -18,7 +18,17 @@ import pixel.PixelList;
 
 public class Chunk{
 	public String path;
-	public static final int width = 1024, height = 1024, length = height*width;
+	/**the base 2 log of width/height -> used for bitshifts*/
+	public static final int wLog = 10,
+							hLog = 10;
+	/**the size of a chunk. will be a base 2 potent*/
+	public static final int width = (int) Math.pow(2, wLog),
+							height = (int) Math.pow(2, hLog);
+	/**the bits that can be covered by width/height -> used for & and | */
+	public static final int wBit = width-1,
+							hBit = height-1;
+	/**the total 1D length of a chunk*/
+	public static final int length = height*width;
 	public int x,y;
 	private short[] front;
 	private short[] liquid;

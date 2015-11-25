@@ -82,7 +82,7 @@ public class SinglePlayer {
 						+map.isUpdating(X, Y, Map.LAYER_LIQUID)+","
 						+map.isUpdating(X, Y, Map.LAYER_FRONT)+","
 						+map.isUpdating(X, Y, Map.LAYER_LIGHT)+"}");
-				map.addBlockUpdate(X, Y, 1);
+				map.addPixelUpdate(X, Y, 1);
 			}
 			if(tickCount%60==0){
 				Game.logInfo("FPS:"+Game.fps+" PixelUpdates:"+map.updateCountPixel+" LightUpdates:"+map.updateCountLight);

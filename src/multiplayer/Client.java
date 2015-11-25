@@ -41,6 +41,7 @@ public class Client {
 	private ArrayList<MPlayer> players;
 	private BufferedImage back = null;
 	public PlayerManager playerManager;
+	public static boolean debuginfo = false;
 	
 	public Client(Game game, String ip, String files) {
 		try {back = ImageIO.read(SpriteSheet.class.getResourceAsStream("/NormalBack.png"));} catch (IOException e) {e.printStackTrace();}
@@ -99,6 +100,17 @@ public class Client {
 		if(input.Esc.isPressed()){
 			send2Server(Request.CLOSE_CONNECTION);
 			Game.reset = true;
+		}
+		if(input.F3.click()){
+			if(debuginfo)debuginfo = false;
+			else debuginfo = true;
+		}
+		if(debuginfo){
+			if(tickCount%60==0){
+				Game.logInfo("FPS:"+Game.fps+" PixelUpdates:"+map.updateCountPixel+" LightUpdates:"+map.updateCountLight);
+				map.updateCountPixel=0;
+				map.updateCountLight=0;
+			}
 		}
 		screen.xOffset= player.x-Game.WIDTH/3/2;
 		screen.yOffset= player.y-Game.HEIGHT/3/2;
