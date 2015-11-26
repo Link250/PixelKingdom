@@ -1,15 +1,16 @@
-package multiplayer;
+package multiplayer.server;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 
-import main.ConvertData;
 import main.Game;
-import main.IOConverter;
+import main.conversion.ConvertData;
+import main.conversion.ConverterInStream;
+import main.conversion.IOConverter;
 import map.Map;
-import multiplayer.conversion.ConverterInStream;
+import multiplayer.Request;
 
 public class Server implements Runnable{
 	boolean running = true;
@@ -177,6 +178,7 @@ public class Server implements Runnable{
 		map.save();
 	}
 	
+	@Deprecated
 	public void sendClients(int i) throws IOException{
 		for(ClientManager c : clients){
 			c.send2Client(i);

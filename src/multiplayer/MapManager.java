@@ -3,12 +3,14 @@ package multiplayer;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import main.ConvertData;
 import main.Game;
-import main.IOConverter;
+import main.conversion.ConvertData;
+import main.conversion.ConverterInStream;
+import main.conversion.IOConverter;
 import map.Chunk;
 import map.Map;
-import multiplayer.conversion.ConverterInStream;
+import multiplayer.client.Client;
+import multiplayer.client.ServerManager;
 
 public class MapManager implements InputReceiver{
 

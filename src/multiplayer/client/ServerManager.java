@@ -1,9 +1,10 @@
-package multiplayer;
+package multiplayer.client;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
-import multiplayer.conversion.ConverterInStream;
+import main.conversion.ConverterInStream;
+import multiplayer.InputReceiver;
 
 public class ServerManager implements Runnable {
 	
@@ -22,19 +23,18 @@ public class ServerManager implements Runnable {
 		try {
 			while (running){
 				Thread.sleep(1);
-				if(input==0)input = server.read();
+				input = server.read();
 				if(input==1) {running=false;client.close();}
-				for(int i = 0; i < requests.size(); i++) {
-					if(requests.get(i).requestType()==input) {
-						if(requests.get(i).useInput(server)) {
-							requests.remove(i);
-							i--;
+				for (InputReceiver inputReceiver : requests) {
+					if(inputReceiver.requestType() == input) {
+						if(inputReceiver.useInput(server)) {
+							requests.remove(inputReceiver);
 						}
-						input=0;
+						break;
 					}
 				}
 			}
-		} catch (IOException | InterruptedException e) {running = false;}
+		} catch (IOException | InterruptedException e) {running = false;client.close();}
 	}
 	
 	public static void request(byte rNumber, byte[] data) throws IOException{

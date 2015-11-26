@@ -1,4 +1,4 @@
-package main;
+package main.conversion;
 
 import java.util.ArrayList;
 

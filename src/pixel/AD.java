@@ -2,9 +2,10 @@ package pixel;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import multiplayer.conversion.Convertable;
-import multiplayer.conversion.InConverter;
-import multiplayer.conversion.OutConverter;
+
+import main.conversion.Convertable;
+import main.conversion.InConverter;
+import main.conversion.OutConverter;
 
 public abstract class AD{
 	

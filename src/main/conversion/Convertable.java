@@ -1,4 +1,4 @@
-package multiplayer.conversion;
+package main.conversion;
 
 public interface Convertable {
 

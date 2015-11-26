@@ -1,11 +1,13 @@
-package map;
+package multiplayer;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import multiplayer.Request;
-import multiplayer.conversion.ConverterInStream;
-import multiplayer.conversion.ConverterList;
+
+import main.conversion.ConverterInStream;
+import main.conversion.ConverterList;
+import map.Chunk;
+import map.Map;
 import pixel.AD;
 import pixel.PixelList;
 

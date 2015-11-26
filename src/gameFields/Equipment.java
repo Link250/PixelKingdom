@@ -6,9 +6,9 @@ import entities.Player;
 import gfx.Mouse;
 import gfx.SpriteSheet;
 import item.*;
-import main.ConvertData;
 import main.Game;
 import main.PArea;
+import main.conversion.ConvertData;
 
 public class Equipment extends GameField {
 	

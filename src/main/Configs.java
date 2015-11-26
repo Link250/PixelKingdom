@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import main.conversion.ConvertData;
+
 public class Configs {
 	
 	public int length;

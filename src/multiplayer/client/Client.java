@@ -1,16 +1,18 @@
-package multiplayer;
+package multiplayer.client;
 
 import entities.MPlayer;
 import entities.Player;
 import gfx.Screen;
 import gfx.SpriteSheet;
-import main.ConvertData;
 import main.Game;
 import main.InputHandler;
+import main.conversion.ConvertData;
+import main.conversion.ConverterInStream;
+import main.conversion.ConverterOutStream;
 import map.Chunk;
 import map.Map;
-import multiplayer.conversion.ConverterInStream;
-import multiplayer.conversion.ConverterOutStream;
+import multiplayer.Request;
+import multiplayer.server.PlayerManager;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -34,7 +36,7 @@ public class Client {
 	
 	private Screen screen;
 	private InputHandler input;
-	protected Map map;
+	public Map map;
 	private Player player;
 	private File plr;
 	private String files;
@@ -132,24 +134,28 @@ public class Client {
 		Game.sfont.render(10+screen.xOffset, 50+screen.yOffset, "rY:" + Integer.toString(player.y%Chunk.height), 0, 0xff000000, screen);
 	}
 	
+	@Deprecated
 	public static void send2Server(int i) throws IOException{
 		byte[] b = {(byte) (i>>24),(byte) (i>>16),(byte) (i>>8),(byte) i};
 		out.write(b);
 		out.flush();
 	}
 	
+	@Deprecated
 	public static void send2Server(short i) throws IOException{
 		byte[] b = {(byte) (i>>8),(byte) i};
 		out.write(b);
 		out.flush();
 	}
 	
+	@Deprecated
 	public static void send2Server(byte i) throws IOException{
 		byte[] b = {i};
 		out.write(b);
 		out.flush();
 	}
 	
+	@Deprecated
 	public static void send2Server(byte[] b) throws IOException{
 		out.write(b);
 		out.flush();
@@ -203,6 +209,7 @@ public class Client {
 		player.create();
 		Game.logInfo("Player Created");
 	}
+	
 	public void save(){
 		ArrayList<Byte> savedata = new ArrayList<Byte>();
 		player.save(savedata);
@@ -217,6 +224,7 @@ public class Client {
 			fos.close();
 		} catch (IOException e) {e.printStackTrace();}
 	}
+	
 	public void load(){
 		byte[] temp = new byte[(int)plr.length()];
 		try {

@@ -1,12 +1,13 @@
-package multiplayer;
+package multiplayer.server;
 
 import java.io.IOException;
 import java.net.Socket;
 
 import entities.MPlayer;
 import main.Game;
-import multiplayer.conversion.ConverterInStream;
-import multiplayer.conversion.ConverterOutStream;
+import main.conversion.ConverterInStream;
+import main.conversion.ConverterOutStream;
+import multiplayer.Request;
 
 public class ClientManager implements Runnable {
 	
@@ -62,6 +63,7 @@ public class ClientManager implements Runnable {
 		}
 	}
 	
+	@Deprecated
 	public synchronized void send2Client(int i) throws IOException{
 		clientOut.write(i);
 		clientOut.flush();

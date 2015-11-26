@@ -12,8 +12,8 @@ import java.util.List;
 import gfx.SpriteSheet;
 import gui.Button;
 import main.Game;
-import multiplayer.Client;
-import multiplayer.Server;
+import multiplayer.client.Client;
+import multiplayer.server.Server;
 
 public class ServerList {
 	

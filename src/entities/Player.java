@@ -9,8 +9,8 @@ import gfx.SpriteSheet;
 import item.*;
 import item.Recipe.component;
 import item.itemList.MatStack;
-import main.ConvertData;
 import main.Game;
+import main.conversion.ConvertData;
 import map.Map;
 import gameFields.*;
 

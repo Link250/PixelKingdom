@@ -7,9 +7,9 @@ import gfx.Mouse;
 import gfx.Screen;
 import gfx.SpriteSheet;
 import item.Item;
-import main.ConvertData;
 import main.Game;
 import main.InputHandler;
+import main.conversion.ConvertData;
 import map.Map;
 import pixel.PixelList;
 

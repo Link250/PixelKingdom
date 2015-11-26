@@ -8,7 +8,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import multiplayer.conversion.ConverterList;
+import main.conversion.ConverterList;
 
 public class TestConverterList {
 

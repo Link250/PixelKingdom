@@ -6,8 +6,8 @@ import entities.Player;
 import gfx.Screen;
 import gfx.SpriteSheet;
 import item.itemList.MatStack;
-import main.ConvertData;
 import main.InputHandler;
+import main.conversion.ConvertData;
 import map.Map;
 
 public abstract class MaterialBag extends Bag {

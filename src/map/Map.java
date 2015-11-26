@@ -2,11 +2,12 @@ package map;
 
 import gfx.Screen;
 import main.Game;
-import multiplayer.Client;
+import main.conversion.ConverterInStream;
 import multiplayer.MapManager;
+import multiplayer.MapUpdater;
 import multiplayer.Request;
-import multiplayer.Server;
-import multiplayer.conversion.ConverterInStream;
+import multiplayer.client.Client;
+import multiplayer.server.Server;
 import pixel.AD;
 import pixel.Material;
 import pixel.PixelList;

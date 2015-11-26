@@ -11,7 +11,7 @@ import java.util.HashMap;
 
 import org.tukaani.xz.XZInputStream;
 import main.Game;
-import multiplayer.conversion.ConverterList;
+import main.conversion.ConverterList;
 import pixel.AD;
 import pixel.Material;
 import pixel.PixelList;

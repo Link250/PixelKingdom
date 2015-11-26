@@ -1,4 +1,4 @@
-package multiplayer.conversion;
+package main.conversion;
 
 import java.io.IOException;
 import java.util.LinkedList;

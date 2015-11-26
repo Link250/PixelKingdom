@@ -10,8 +10,8 @@ import item.ItemList;
 import main.InputHandler;
 import map.BiomeList;
 import map.MapSelection;
-import multiplayer.Client;
-import multiplayer.Server;
+import multiplayer.client.Client;
+import multiplayer.server.Server;
 import pixel.PixelList;
 
 import java.awt.BorderLayout;

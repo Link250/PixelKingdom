@@ -1,12 +1,15 @@
-package multiplayer;
+package multiplayer.server;
 
 import java.io.IOException;
 import java.util.ArrayList;
 
 import entities.MPlayer;
 import main.Game;
-import main.IOConverter;
-import multiplayer.conversion.ConverterInStream;
+import main.conversion.ConverterInStream;
+import main.conversion.IOConverter;
+import multiplayer.InputReceiver;
+import multiplayer.Request;
+import multiplayer.client.Client;
 
 	public class PlayerManager implements InputReceiver{
 		private Game game;
