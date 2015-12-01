@@ -50,7 +50,7 @@ public class SinglePlayer {
 	public void tick(int tickCount){
 		
 		player.tick(tickCount);
-		if(tickCount%4==0) player.Gravity();
+		if(tickCount%4==0) player.applyGravity();
 
 		map.tick(tickCount);
 		

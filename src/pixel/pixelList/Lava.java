@@ -22,7 +22,7 @@ public class Lava extends Liquid<LavaAD>{
 				map.setID(x, y, Map.LAYER_LIQUID, 0);
 				map.setID(x, y, Map.LAYER_FRONT, ad.ID);
 			}else{
-				if(numTick==0) {
+				if(numTick%60==0) {
 					ad.heat--;
 					map.addADUpdate(x, y, l, ad);
 				}

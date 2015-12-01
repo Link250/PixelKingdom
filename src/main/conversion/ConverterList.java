@@ -192,4 +192,20 @@ public class ConverterList implements OutConverter, InConverter{
 					   (data.poll()    )&0x00ff);
 	}
 	
+	public int skipBytes(int n) throws IOException {
+		int i;
+		for(i = 0; i < n && !data.isEmpty(); i++) {
+			data.remove();
+		}
+		return i;
+	}
+	
+	public byte[] emptyToArray() {
+		byte[] data = new byte[this.data.size()];
+		for (int i = 0; this.data.size() > 0; i++) {
+			data[i] = this.data.poll();
+		}
+		return data;
+	}
+
 }

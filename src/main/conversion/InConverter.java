@@ -12,5 +12,6 @@ public interface InConverter {
 	public double readDouble() throws IOException ;
 	public boolean readBoolean() throws IOException ;
 	public char readChar() throws IOException ;
+	public int skipBytes(int n) throws IOException ;
 	
 }

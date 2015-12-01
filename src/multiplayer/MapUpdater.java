@@ -20,6 +20,15 @@ public class MapUpdater {
 	/**this HashMap stores the the ADs linked to the AD Updates*/
 	private HashMap<int[],AD> ads = new HashMap<>();
 	
+	public int gametype;
+	private Map map;
+	
+	public MapUpdater(Map map, int gametype) {
+		this.gametype = gametype;
+		this.map = map;
+		map.setMapUpdater(this);
+	}
+	
 	public boolean hasUpdates() {
 		return !mapChanges.isEmpty() || !ads.isEmpty();
 	}
@@ -52,23 +61,18 @@ public class MapUpdater {
 		if(!found)ads.put(coords, ad);
 	}
 	
-	public synchronized byte[][] compUpdates(){
+	public synchronized ArrayList<UpdateList> compUpdates(){
 		ArrayList<UpdateListPixel> listsPixel = compUpdatesPixel();
-//		ArrayList<UpdateListAD> listsAD = compUpdatesAD();
-//		byte[][] temp = new byte[listsPixel.size()+listsAD.size()][];
-		byte[][] temp = new byte[listsPixel.size()][];
+		ArrayList<UpdateListAD> listsAD = compUpdatesAD();
+		ArrayList<UpdateList> lists = new ArrayList<>();
 		
-		int i = 0;
-		while(listsPixel.size()>0) {
-			temp[i] = listsPixel.remove(0).compress();
-			i++;
+		while(listsPixel.size() > 0) {
+			lists.add(listsPixel.remove(0));
 		}
-//		while(listsAD.size()>0) {
-//			temp[i] = listsAD.remove(0).compress();
-//			i++;
-//		}
-		ads.clear();
-		return temp;
+		while(listsAD.size() > 0) {
+			lists.add(listsAD.remove(0));
+		}
+		return lists;
 	}
 	
 	public synchronized ArrayList<UpdateListPixel> compUpdatesPixel(){
@@ -130,7 +134,7 @@ public class MapUpdater {
 		return lists;
 	}
 	
-	public void decompPixelUpdates(ConverterInStream in, Map map, boolean skipcheck) {
+	public void decompPixelUpdates(ConverterInStream in) {
 		try {
 			int n  = in.readInt(),
 				cx = in.readInt(),
@@ -142,14 +146,14 @@ public class MapUpdater {
 				x = in.readShort();
 				y = in.readShort();
 				map.setID((cx*1024)+x, (cy*1024)+y, l, ID,
-						canHaveAD ? PixelList.GetPixel(ID,l).getNewAD().load(in) : null, skipcheck);
+						canHaveAD ? PixelList.GetPixel(ID,l).getNewAD().load(in) : null, gametype==Map.GT_CLIENT);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	public void decompADUpdates(ConverterInStream in, Map map, boolean skipcheck) {
+	public void decompADUpdates(ConverterInStream in) {
 		try {
 			int n  = in.readInt(),
 				cx = in.readInt(),
@@ -170,7 +174,12 @@ public class MapUpdater {
 		}
 	}
 
-	private class UpdateListPixel{
+	public interface UpdateList{
+		public ConverterList compress();
+		public int[] getCoords();
+	}
+	
+	public class UpdateListPixel implements UpdateList{
 		private ArrayList<byte[]> coords = new ArrayList<>();
 		
 		int cx,cy;
@@ -179,6 +188,10 @@ public class MapUpdater {
 		
 		public UpdateListPixel(int[] update) {
 			cx=update[0]>>10; cy=update[1]>>10; l=(byte) update[2]; ID=(short) update[3];
+		}
+		
+		public int[] getCoords() {
+			return new int[] {cx,cy,l};
 		}
 		
 		public boolean isInside(int[] update) {
@@ -201,7 +214,7 @@ public class MapUpdater {
 			coords.add(temp);
 		}
 		
-		public byte[] compress() {
+		public ConverterList compress() {
 			ConverterList data = new ConverterList();
 			int n = coords.size();
 			int cLength = coords.get(0).length;
@@ -217,15 +230,11 @@ public class MapUpdater {
 			for (int i = 0; i < cLength*n; i++) {
 				data.addByte(coords.get(i/cLength)[i%cLength]);
 			}
-			byte[] returnData = new byte[data.length()];
-			for (int i = 0; i < returnData.length; i++) {
-				returnData[i] = data.pollByte();
-			}
-			return returnData;
+			return data;
 		}
 	}
 	
-	private class UpdateListAD{
+	public class UpdateListAD implements UpdateList{
 		ConverterList data = new ConverterList();
 		int numberADs = 0;
 		
@@ -234,6 +243,10 @@ public class MapUpdater {
 		
 		public UpdateListAD(int[] update) {
 			cx=update[0]>>Chunk.wLog; cy=update[1]>>Chunk.hLog; l=(byte) update[2];
+		}
+		
+		public int[] getCoords() {
+			return new int[] {cx,cy,l};
 		}
 		
 		public boolean isInside(int[] update) {
@@ -247,7 +260,7 @@ public class MapUpdater {
 			numberADs++;
 		}
 		
-		public byte[] compress() {
+		public ConverterList compress() {
 			ConverterList tempData = new ConverterList();
 			tempData.addByte(Request.MAP_DATA);
 			tempData.addByte(Request.MAP_UPDATE_AD);
@@ -258,11 +271,7 @@ public class MapUpdater {
 			while(data.length() > 0) {
 				tempData.addByte(data.pollByte());
 			}
-			byte[] returnData = new byte[tempData.length()];
-			for (int i = 0; tempData.length() > 0; i++) {
-				returnData[i] = tempData.pollByte();
-			}
-			return returnData;
+			return tempData;
 		}
 	}
 }

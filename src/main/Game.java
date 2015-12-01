@@ -67,7 +67,7 @@ public class Game extends Canvas implements Runnable{
 	public static ColorSheet csheetf = new ColorSheet("/Mat_Front.png");
 	public static ColorSheet csheetm = new ColorSheet("/Mat_Mid.png");
 	public static ColorSheet csheetb = new ColorSheet("/Mat_Back.png");
-	public Screen screen;
+	public static Screen screen;
 	private BufferedImage back = null;
 	public InputHandler input;
 	public static PxlFont font;

@@ -39,6 +39,8 @@ public class Chunk{
 	private boolean[][][] updating = new boolean[width][height][Map.LAYER_ALL.length];
 	private Map map;
 	
+	private boolean finishedLoading = false;
+	
 	public Chunk(String path, int x, int y, Map map){
 		this.path = path;
 		this.x = x;
@@ -123,7 +125,17 @@ public class Chunk{
 			}
 		}
 	}
-
+	
+	public void refreshLight(){
+		for(int Y=y*1024; Y<y*1024+height; Y++){
+			for(int X=x*1024; X<x*1024+width; X++){
+				map.updateLight(X, Y);
+				//inverted directions for Light Updates
+				map.updateLight(1023-X+x*2048, 1023-Y+y*2048);
+			}
+		}
+	}
+	
 	@SuppressWarnings("unused")
 	public void load(byte[] rawfile) throws IOException{
 		ConverterList filedata = new ConverterList();
@@ -218,6 +230,7 @@ public class Chunk{
 			}
 		}
 		Game.logInfo("Chunk loaded at X:"+this.x+" Y:"+this.y);
+		this.finishedLoading = true;
 //		refreshUpdates();
 	}
 	
@@ -245,6 +258,7 @@ public class Chunk{
 			}
 		}
 		Game.logInfo("New Chunk created at X:"+x+" Y:"+y);
+		this.finishedLoading = true;
 	}
 	
 	public void save(){
@@ -291,5 +305,9 @@ public class Chunk{
 		for(int i = 0; i < newFile.length; i++){newFile[i]=data.readByte();}
 		
 		return newFile;
+	}
+	
+	public boolean finishedLoading() {
+		return this.finishedLoading;
 	}
 }

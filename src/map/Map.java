@@ -1,20 +1,16 @@
 package map;
 
 import gfx.Screen;
-import main.Game;
-import main.conversion.ConverterInStream;
-import multiplayer.MapManager;
 import multiplayer.MapUpdater;
-import multiplayer.Request;
-import multiplayer.client.Client;
-import multiplayer.server.Server;
+import multiplayer.client.ChunkManagerC;
+import multiplayer.client.ServerManager;
+import multiplayer.server.ClientManager;
 import pixel.AD;
 import pixel.Material;
 import pixel.PixelList;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class Map {
 
@@ -31,21 +27,31 @@ public class Map {
 	public int updateCountPixel = 0;
 	protected UpdateManager updatesLight = new UpdateManager();
 	public int updateCountLight = 0;
-	private ArrayList<MapManager.chunkLoader> cloaders = new ArrayList<>();
+	private ChunkManager chunkMaganer;
 	private int gametype = 0;
-	private MapManager mapManager = null;
-	private MapUpdater mapUpdater = new MapUpdater();
+	private MapUpdater mapUpdater;
 
 	private Chunk[][] chunks = new Chunk[1024][1024];
 	
 	public Map(String path, Screen screen){
 		this.path = path;
 		this.screen = screen;
+		//the standard Chunk Manager is the one for Single Player
+		chunkMaganer = new ChunkManagerSP(this, chunks, path);
 	}
 	
-	public void setGametype(int gt){
-		gametype = gt;
-		if(gt==GT_CLIENT && mapManager==null)mapManager = new MapManager(this);
+	public void setMapUpdater(MapUpdater mapUpdater){
+		this.gametype = mapUpdater.gametype;
+		this.mapUpdater = mapUpdater;
+	}
+	
+	public ChunkManagerC setChunkManager(ServerManager manager){
+		ChunkManagerC chunkManager = new ChunkManagerC(this, chunks, manager);
+		this.chunkMaganer = chunkManager;
+		return chunkManager;
+	}
+	public void setChunkManager(ClientManager manager){
+//		this.chunkMaganer = new ChunkManagerC(this, chunks, manager);
 	}
 	
 	public void tick(int tickCount){
@@ -76,34 +82,6 @@ public class Map {
 				updateLight(x, y);
 			}
 			updateCountLight++;
-		}
-	}
-	
-	public void sendMapUpdates(int tickCount) {
-		if(mapUpdater.hasUpdates())
-		switch(gametype) {
-		case GT_CLIENT:
-			try {
-				Client.send2Server(mapUpdater.compUpdates());
-			} catch (IOException e) {Game.logError("Exception sending Map Updates");}
-			//send to server
-			break;
-		case GT_SERVER:
-			try {
-				Server.sendMapData(mapUpdater.compUpdates());
-			} catch (IOException e) {Game.logError("Exception sending Map Updates");}
-			break;
-		}
-	}
-	
-	public void receiveMapUpdates(ConverterInStream in) throws IOException{
-		switch(in.readByte()) {
-		case Request.MAP_UPDATE_PXL:
-			mapUpdater.decompPixelUpdates(in, this, gametype==GT_CLIENT);
-			break;
-		case Request.MAP_UPDATE_AD:
-			mapUpdater.decompADUpdates(in, this, gametype==GT_CLIENT);
-			break;
 		}
 	}
 	
@@ -220,33 +198,16 @@ public class Map {
 		}
 	}
 	
-	public boolean loadChunk(int cx, int cy){
-		for(MapManager.chunkLoader cl : cloaders) {
-			if(cl.finished) {
-				cloaders.remove(cl);
-				if(!cl.canceled) {
-					chunks[cl.chunk.x][cl.chunk.y]=cl.chunk;
-					chunks[cl.chunk.x][cl.chunk.y].refreshUpdates();
-//					return true;
-				}
-				return false;
-			}
-			if(cx==cl.chunk.x && cy==cl.chunk.y)return false;
-		}
-		if(chunks[cx][cy]==null) {
-			MapManager.chunkLoader l = new MapManager.chunkLoader(new Chunk(path, cx, cy, this));
-			cloaders.add(l);
-			Thread t = new Thread(l);
-			t.setName(Thread.currentThread().getName()+"_cl"+cx+"_"+cy);
-			t.start();
-			return false;
-		}else {
-			return true;
-		}
+	public void loadChunk(int cx, int cy){
+		this.chunkMaganer.loadChunk(cx, cy);
 	}
 	
 	public void cancelChunkLoading() {
-		for(int i = 0; i < cloaders.size(); i++)cloaders.get(i).canceled=true;
+		this.chunkMaganer.cancelChunkLoading();
+	}
+	
+	public boolean hasLoadedChunk(int cx, int cy) {
+		return this.chunks[cx][cy]!=null && this.chunks[cx][cy].finishedLoading();
 	}
 	
 	public int getID(int x, int y, int layer){
@@ -353,5 +314,10 @@ public class Map {
 			dir = new File(path + File.separator +  name + Integer.toString(n));
 		}
 		dir.mkdirs();
+	}
+	
+	public static interface ChunkManager{
+		public void loadChunk(int cx, int cy);
+		public void cancelChunkLoading();
 	}
 }

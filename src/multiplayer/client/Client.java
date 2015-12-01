@@ -6,13 +6,10 @@ import gfx.Screen;
 import gfx.SpriteSheet;
 import main.Game;
 import main.InputHandler;
-import main.conversion.ConvertData;
-import main.conversion.ConverterInStream;
-import main.conversion.ConverterOutStream;
 import map.Chunk;
 import map.Map;
-import multiplayer.Request;
-import multiplayer.server.PlayerManager;
+import multiplayer.MapManager;
+import multiplayer.MapUpdater;
 
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
@@ -29,86 +26,86 @@ import javax.imageio.ImageIO;
 public class Client {
 
 	private String IP = "91.89.152.87";
-	private static ConverterOutStream out;
-	private ConverterInStream in;
 	private Socket serverConnection = null;
-	public static ServerManager server;
+	private ServerManager serverManager;
 	
 	private Screen screen;
+	private BufferedImage back;
 	private InputHandler input;
-	public Map map;
+	private Map map;
+	private MapManager mapManager;
+	
+	private ArrayList<MPlayer> players;
 	private Player player;
 	private File plr;
 	private String files;
-	private ArrayList<MPlayer> players;
-	private BufferedImage back = null;
-	public PlayerManager playerManager;
+	
 	public static boolean debuginfo = false;
 	
 	public Client(Game game, String ip, String files) {
-		try {back = ImageIO.read(SpriteSheet.class.getResourceAsStream("/NormalBack.png"));} catch (IOException e) {e.printStackTrace();}
-		this.screen = game.screen;
+		try {back = ImageIO.read(SpriteSheet.class.getResourceAsStream("/NormalBack.png"));} catch (IOException e) {e.printStackTrace();back=null;}
+		this.screen = Game.screen;
 		this.input = game.input;
 		this.files = files;
-		IP=ip;
-		map = new Map(null, screen);
-		try {
-			serverConnection = new Socket(IP, Game.PORT);
-			Game.logInfo("connected so Server");
-			in = new ConverterInStream(serverConnection.getInputStream());
-			out = new ConverterOutStream(serverConnection.getOutputStream());
-		} catch (IOException e) {e.printStackTrace();}
-		server = new ServerManager(this,in);
-		try {
-			ServerManager.request(Request.PLAYER_COLOR,ConvertData.I2B(Game.configs.PlrCol));
-		} catch (IOException e) {e.printStackTrace();}
+		this.IP=ip;
 		
-		Thread t = new Thread(server);
-		t.setName("ServerConnection");
-		t.start();
-		player = new Player(map, game);
+		this.map = new Map(null, screen);
 		
-		plr = new File(files + File.separator + "plr.pdat");
-		if(plr.exists()){
-			try {load();}catch(ClassCastException e){create();save();}
+		this.player = new Player(map, game);
+		this.plr = new File(files + File.separator + "plr.pdat");
+		if(this.plr.exists()){
+			load();
 		}else{
 			create();
 			save();
 		}
-		
 		screen.xOffset= player.x-Game.WIDTH/3/2;
 		screen.yOffset= player.y-Game.HEIGHT/3/2;
-		players = new ArrayList<MPlayer>();
-		playerManager = new PlayerManager(game, players);
-		map.setGametype(Map.GT_CLIENT);
+		this.players = new ArrayList<MPlayer>();
+		
+		try {
+			serverConnection = new Socket(IP, Game.PORT);
+			Game.logInfo("connected so Server");
+		} catch (IOException e) {e.printStackTrace();}
+		
+		serverManager = new ServerManager(this,serverConnection);
+		mapManager = new MapManager(new MapUpdater(map, Map.GT_CLIENT), serverManager);
+		
+		serverManager.addInputReceiver(mapManager);
+		serverManager.addInputReceiver(new PlayerManager(players));
+		serverManager.addInputReceiver(map.setChunkManager(serverManager));
+		
+		serverManager.startThread();
+		
+		try {
+			serverManager.sendPlayerColor(player);
+		} catch (IOException e) {e.printStackTrace();}
 	}
 	
 	public void tick(int tickCount) throws IOException{
 		player.tick(tickCount);
 		map.tick(tickCount);
-		map.sendMapUpdates(tickCount);
+		
+		mapManager.sendMapUpdates();
+		
 		for(MPlayer p : players)p.tick(tickCount);
-		if(tickCount%4==0) player.Gravity();
+		if(tickCount%4==0) {
+			this.player.applyGravity();
+		}
 		
 		if(tickCount%3==0) {
-			byte[] data = new byte[10];
-			ConvertData.I2B(data, 0, player.x);
-			ConvertData.I2B(data, 4, player.y);
-			data[8]=player.getAnim();
-			data[9]=player.getDir();
-			ServerManager.request(Request.PLAYER_DATA, data);
+			this.serverManager.sendPlayerUpdate(player);
 		}
 		
 		if(input.Esc.isPressed()){
-			send2Server(Request.CLOSE_CONNECTION);
+			this.serverManager.disconnect();
 			Game.reset = true;
 		}
 		if(input.F3.click()){
-			if(debuginfo)debuginfo = false;
-			else debuginfo = true;
+			debuginfo =! debuginfo;
 		}
-		if(debuginfo){
-			if(tickCount%60==0){
+		if(tickCount%60==0){
+			if(debuginfo){
 				Game.logInfo("FPS:"+Game.fps+" PixelUpdates:"+map.updateCountPixel+" LightUpdates:"+map.updateCountLight);
 				map.updateCountPixel=0;
 				map.updateCountLight=0;
@@ -127,71 +124,20 @@ public class Client {
 		
 		for(MPlayer p : players)p.render();
 		
-		Game.sfont.render(10+screen.xOffset, 10+screen.yOffset, "FPS:" + Integer.toString(Game.fps), 0, 0xff000000, screen);
-		Game.sfont.render(10+screen.xOffset, 20+screen.yOffset, "cX:" + Integer.toString(player.x/Chunk.width), 0, 0xff000000, screen);
-		Game.sfont.render(10+screen.xOffset, 30+screen.yOffset, "cY:" + Integer.toString(player.y/Chunk.height), 0, 0xff000000, screen);
-		Game.sfont.render(10+screen.xOffset, 40+screen.yOffset, "rX:" + Integer.toString(player.x%Chunk.width), 0, 0xff000000, screen);
-		Game.sfont.render(10+screen.xOffset, 50+screen.yOffset, "rY:" + Integer.toString(player.y%Chunk.height), 0, 0xff000000, screen);
-	}
-	
-	@Deprecated
-	public static void send2Server(int i) throws IOException{
-		byte[] b = {(byte) (i>>24),(byte) (i>>16),(byte) (i>>8),(byte) i};
-		out.write(b);
-		out.flush();
-	}
-	
-	@Deprecated
-	public static void send2Server(short i) throws IOException{
-		byte[] b = {(byte) (i>>8),(byte) i};
-		out.write(b);
-		out.flush();
-	}
-	
-	@Deprecated
-	public static void send2Server(byte i) throws IOException{
-		byte[] b = {i};
-		out.write(b);
-		out.flush();
-	}
-	
-	@Deprecated
-	public static void send2Server(byte[] b) throws IOException{
-		out.write(b);
-		out.flush();
-	}
-	
-	public static void send2Server(byte[][] b, int l) throws IOException{
-		byte[] d = new byte[l]; l=0;
-		for (int x = 0; x < b.length; x++) {
-			for (int y = 0; y < b[x].length; y++) {
-				d[l]=b[x][y];l++;
-			}
+		if(debuginfo){
+			Game.sfont.render(10+screen.xOffset, 10+screen.yOffset, "FPS:" + Integer.toString(Game.fps), 0, 0xff000000, screen);
+			Game.sfont.render(10+screen.xOffset, 20+screen.yOffset, "cX:" + Integer.toString(player.x/Chunk.width), 0, 0xff000000, screen);
+			Game.sfont.render(10+screen.xOffset, 30+screen.yOffset, "cY:" + Integer.toString(player.y/Chunk.height), 0, 0xff000000, screen);
+			Game.sfont.render(10+screen.xOffset, 40+screen.yOffset, "rX:" + Integer.toString(player.x%Chunk.width), 0, 0xff000000, screen);
+			Game.sfont.render(10+screen.xOffset, 50+screen.yOffset, "rY:" + Integer.toString(player.y%Chunk.height), 0, 0xff000000, screen);
 		}
-		out.write(d);
-		out.flush();
-	}
-	
-	public static void send2Server(byte[][] b) throws IOException{
-		int n = 0;
-		for (int i = 0; i < b.length; i++)
-			n += b[i].length;
-		byte[] d = new byte[n]; n=0;
-		for (int x = 0; x < b.length; x++) {
-			for (int y = 0; y < b[x].length; y++) {
-				d[n]=b[x][y];n++;
-			}
-		}
-		out.write(d);
-		out.flush();
 	}
 	
 	public void close() {
 		try {
-			out.close();
-			in.close();
 			serverConnection.close();
-		} catch (IOException e) {e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		} finally {
 			save();
 		}
@@ -201,7 +147,7 @@ public class Client {
 		map.cancelChunkLoading();
 	}
 	
-	public void create(){
+	private void create(){
 		try {
 			(new File(files)).mkdirs();
 			plr.createNewFile();
@@ -210,7 +156,7 @@ public class Client {
 		Game.logInfo("Player Created");
 	}
 	
-	public void save(){
+	private void save(){
 		ArrayList<Byte> savedata = new ArrayList<Byte>();
 		player.save(savedata);
 		
@@ -225,7 +171,7 @@ public class Client {
 		} catch (IOException e) {e.printStackTrace();}
 	}
 	
-	public void load(){
+	private void load(){
 		byte[] temp = new byte[(int)plr.length()];
 		try {
 			FileInputStream fileInputStream = new FileInputStream(plr);

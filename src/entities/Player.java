@@ -68,7 +68,7 @@ public class Player extends Mob{
 		return (byte) movingDir;
 	}
 	
-	public void Gravity(){
+	public void applyGravity(){
 		if(gravity != 0 && isinair){
 			if(speedX < -1) speedX = -1;
 			if(speedX > 1) speedX = 1;
@@ -268,7 +268,7 @@ public class Player extends Mob{
 
 		try{
 			if(equipment.beltbag1.inventory[selected]!=null && game.input.mousel.isClickable()) {
-				equipment.beltbag1.inventory[selected].useItem(game.input, this, map, game.screen);
+				equipment.beltbag1.inventory[selected].useItem(game.input, this, map, Game.screen);
 			}else{
 				game.input.mousel.click();
 			}
@@ -299,17 +299,17 @@ public class Player extends Mob{
 	}
 	
 	public void render() {
-		game.screen.drawTile(x-xOffset, y-yOffset, anim, movingDir*16, sheet, Color);
+		Game.screen.drawTile(x-xOffset, y-yOffset, anim, movingDir*16, sheet, Color);
 		
 		if((anim == 10 || anim == 11) & equipment.beltbag1 != null){
 			try{
-				if(anim == 10)	equipment.beltbag1.inventory[selected].render(game.screen, x+3-movingDir*10, y-5, movingDir*16);
-				if(anim == 11)	equipment.beltbag1.inventory[selected].render(game.screen, x+4-movingDir*12, y-3, movingDir*16);
+				if(anim == 10)	equipment.beltbag1.inventory[selected].render(Game.screen, x+3-movingDir*10, y-5, movingDir*16);
+				if(anim == 11)	equipment.beltbag1.inventory[selected].render(Game.screen, x+4-movingDir*12, y-3, movingDir*16);
 			}catch(NullPointerException e){}
 		}
 		if(anim == 12 & equipment.beltbag1 != null){
 			try{
-				equipment.beltbag1.inventory[selected].render(game.screen, x+3-movingDir*8, y-2, movingDir*16);
+				equipment.beltbag1.inventory[selected].render(Game.screen, x+3-movingDir*8, y-2, movingDir*16);
 			}catch(NullPointerException e){}
 		}
 		/*		EQUIPMENT		*/
@@ -332,24 +332,24 @@ public class Player extends Mob{
 		if(openHotBar != 0){
 			if(equipment.beltbag1 != null){
 				for(int i = 0; i < equipment.beltbag1.inventory.length; i ++){
-					game.screen.drawGUITile(
-							hotBar.x/Game.SCALE+game.screen.xOffset+(int)(openHotBar*Math.sin((i+0.5)*Math.PI*2/equipment.beltbag1.inventory.length))-6
-							,hotBar.y/Game.SCALE+game.screen.yOffset+(int)(-openHotBar*Math.cos((i+0.5)*Math.PI*2/equipment.beltbag1.inventory.length))-6
+					Game.screen.drawGUITile(
+							hotBar.x/Game.SCALE+Game.screen.xOffset+(int)(openHotBar*Math.sin((i+0.5)*Math.PI*2/equipment.beltbag1.inventory.length))-6
+							,hotBar.y/Game.SCALE+Game.screen.yOffset+(int)(-openHotBar*Math.cos((i+0.5)*Math.PI*2/equipment.beltbag1.inventory.length))-6
 							, 0, 0, itemBackground, 0);
 					if(i == selected){
-						game.screen.drawGUITile(
-								hotBar.x/Game.SCALE+game.screen.xOffset+(int)(openHotBar*Math.sin((selected+0.5)*Math.PI*2/equipment.beltbag1.inventory.length))-6
-								,hotBar.y/Game.SCALE+game.screen.yOffset+(int)(-openHotBar*Math.cos((selected+0.5)*Math.PI*2/equipment.beltbag1.inventory.length))-6
+						Game.screen.drawGUITile(
+								hotBar.x/Game.SCALE+Game.screen.xOffset+(int)(openHotBar*Math.sin((selected+0.5)*Math.PI*2/equipment.beltbag1.inventory.length))-6
+								,hotBar.y/Game.SCALE+Game.screen.yOffset+(int)(-openHotBar*Math.cos((selected+0.5)*Math.PI*2/equipment.beltbag1.inventory.length))-6
 								, 0, 0, itemBackgrounds, 0);
 					}
 					try{
-						equipment.beltbag1.inventory[i].render(game.screen
-								,hotBar.x/Game.SCALE+game.screen.xOffset+(int)(openHotBar*Math.sin((i+0.5)*Math.PI*2/equipment.beltbag1.inventory.length))-5
-								,hotBar.y/Game.SCALE+game.screen.yOffset+(int)(-openHotBar*Math.cos((i+0.5)*Math.PI*2/equipment.beltbag1.inventory.length))-5
+						equipment.beltbag1.inventory[i].render(Game.screen
+								,hotBar.x/Game.SCALE+Game.screen.xOffset+(int)(openHotBar*Math.sin((i+0.5)*Math.PI*2/equipment.beltbag1.inventory.length))-5
+								,hotBar.y/Game.SCALE+Game.screen.yOffset+(int)(-openHotBar*Math.cos((i+0.5)*Math.PI*2/equipment.beltbag1.inventory.length))-5
 								,true);
 					}catch(NullPointerException e){}
 				}
-				try{Game.font.render(game.input.mouse.x/Game.SCALE+game.screen.xOffset, game.input.mouse.y/Game.SCALE+game.screen.yOffset, (equipment.beltbag1.inventory[selected].getName()), 0, 0xff000000, game.screen);}
+				try{Game.font.render(game.input.mouse.x/Game.SCALE+Game.screen.xOffset, game.input.mouse.y/Game.SCALE+Game.screen.yOffset, (equipment.beltbag1.inventory[selected].getName()), 0, 0xff000000, Game.screen);}
 			catch(NullPointerException e){}
 			}
 		}

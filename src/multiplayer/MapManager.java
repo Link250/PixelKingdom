@@ -1,73 +1,45 @@
 package multiplayer;
 
 import java.io.IOException;
-import java.util.ArrayList;
-
-import main.Game;
-import main.conversion.ConvertData;
 import main.conversion.ConverterInStream;
-import main.conversion.IOConverter;
-import map.Chunk;
-import map.Map;
-import multiplayer.client.Client;
-import multiplayer.client.ServerManager;
 
-public class MapManager implements InputReceiver{
+public class MapManager implements multiplayer.client.InputReceiver, multiplayer.server.InputReceiver{
 
-	private Map map;
+	private MapUpdater mapUpdater;
+	private ConnectionManager manager;
 	
-	public MapManager(Map m) {
-		map = m;
-		Client.server.requests.add(this);
+	public MapManager(MapUpdater mapUpdater, ConnectionManager manager) {
+		this.mapUpdater = mapUpdater;
+		this.manager = manager;
 	}
 	
-	public boolean useInput(ConverterInStream in) throws IOException { //is used when the Server sends Map data
-		map.receiveMapUpdates(in);
-		return false;
-	}
-
-	public int requestType() {return Request.MAP_DATA;}
-
-	public static class chunkLoader implements Runnable, InputReceiver{
-		public Chunk chunk;
-		public boolean finished;
-		public boolean canceled;
-		
-		public chunkLoader(Chunk c) {chunk=c;finished=false;canceled=false;}
-
-		public void run() {
-			if(chunk.path!=null) {
-				try {chunk.load(null);} catch (IOException e) {}
-			}
-			else{
-				byte[] data = new byte[8];
-				ArrayList<Byte> temp = new ArrayList<Byte>();
-				ConvertData.I2B(temp, chunk.x); ConvertData.I2B(temp, chunk.y); for(int i = 0; i < temp.size(); i++)data[i]=temp.get(i);
-				try {
-					ServerManager.request(Request.MAP_CHUNK_DATA, data);
-				} catch (IOException e1) {canceled=true;}
-				Client.server.requests.add(this);
-				while(!finished & !canceled){
-					try {
-						Thread.sleep(10);
-					} catch (InterruptedException e){e.printStackTrace();}
-				}
-			}
-			finished=true;
+	public void useInput(ConverterInStream in) throws IOException { //is used when the Server sends Map data
+		switch(in.readByte()) {
+		case Request.MAP_UPDATE_PXL:
+			this.mapUpdater.decompPixelUpdates(in);
+			break;
+		case Request.MAP_UPDATE_AD:
+			this.mapUpdater.decompADUpdates(in);
+			break;
 		}
-		
-		public boolean useInput(ConverterInStream in) throws IOException {
-			Game.logInfo("used receiving map data");
-			int l = IOConverter.receiveInt(in);
-			byte[] data = new byte[l];
-			for(int i = 0; i < l; i++) {
-				data[i]=(byte)in.read();
-			}chunk.load(data);
-			finished = true;
-			return true;
-		}
-
-		public int requestType() {return Request.MAP_CHUNK_DATA;}
-
 	}
+	
+	public void useInput(ConverterInStream in, byte ID) throws IOException { //is used when a Client sends Map data
+		switch(in.readByte()) {
+		case Request.MAP_UPDATE_PXL:
+			this.mapUpdater.decompPixelUpdates(in);
+			break;
+		case Request.MAP_UPDATE_AD:
+			this.mapUpdater.decompADUpdates(in);
+			break;
+		}
+	}
+	
+	public void sendMapUpdates() throws IOException {
+		if(mapUpdater.hasUpdates()) {
+			this.manager.sendMapUpdates(mapUpdater.compUpdates());
+		}
+	}
+	
+	public byte requestType() {return Request.MAP_DATA;}
 }
