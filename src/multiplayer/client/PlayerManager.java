@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 import entities.MPlayer;
 import main.Game;
-import main.conversion.ConverterInStream;
+import main.conversion.InConverter;
 import multiplayer.Request;
 
 	public class PlayerManager implements InputReceiver{
@@ -14,7 +14,7 @@ import multiplayer.Request;
 			plrs = players;
 		}
 		
-		public void useInput(ConverterInStream in) throws IOException {
+		public void useInput(InConverter in) throws IOException {
 			byte request = in.readByte(),
 				 ID = in.readByte();
 //			Game.logWarning("pm"+request+" "+ID);

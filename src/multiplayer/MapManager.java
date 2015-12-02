@@ -1,7 +1,7 @@
 package multiplayer;
 
 import java.io.IOException;
-import main.conversion.ConverterInStream;
+import main.conversion.InConverter;
 
 public class MapManager implements multiplayer.client.InputReceiver, multiplayer.server.InputReceiver{
 
@@ -13,7 +13,7 @@ public class MapManager implements multiplayer.client.InputReceiver, multiplayer
 		this.manager = manager;
 	}
 	
-	public void useInput(ConverterInStream in) throws IOException { //is used when the Server sends Map data
+	public void useInput(InConverter in) throws IOException { //is used when the Server sends Map data
 		switch(in.readByte()) {
 		case Request.MAP_UPDATE_PXL:
 			this.mapUpdater.decompPixelUpdates(in);
@@ -24,7 +24,7 @@ public class MapManager implements multiplayer.client.InputReceiver, multiplayer
 		}
 	}
 	
-	public void useInput(ConverterInStream in, byte ID) throws IOException { //is used when a Client sends Map data
+	public void useInput(InConverter in, byte ID) throws IOException { //is used when a Client sends Map data
 		switch(in.readByte()) {
 		case Request.MAP_UPDATE_PXL:
 			this.mapUpdater.decompPixelUpdates(in);

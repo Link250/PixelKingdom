@@ -2,7 +2,7 @@ package multiplayer.server;
 
 import java.io.IOException;
 
-import main.conversion.ConverterInStream;
+import main.conversion.InConverter;
 import map.Map;
 import multiplayer.Request;
 
@@ -16,7 +16,7 @@ public class ChunkManagerS implements InputReceiver {
 		this.map = map;
 	}
 	
-	public void useInput(ConverterInStream in, byte ID) throws IOException {
+	public void useInput(InConverter in, byte ID) throws IOException {
 		int cx = in.readInt(),
 			cy = in.readInt();
 		if(map.hasLoadedChunk(cx, cy)) {

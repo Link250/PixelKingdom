@@ -6,6 +6,7 @@ import java.util.HashMap;
 
 import main.conversion.ConverterInStream;
 import main.conversion.ConverterList;
+import main.conversion.InConverter;
 import map.Chunk;
 import map.Map;
 import pixel.AD;
@@ -134,7 +135,7 @@ public class MapUpdater {
 		return lists;
 	}
 	
-	public void decompPixelUpdates(ConverterInStream in) {
+	public void decompPixelUpdates(InConverter in) {
 		try {
 			int n  = in.readInt(),
 				cx = in.readInt(),
@@ -153,7 +154,7 @@ public class MapUpdater {
 		}
 	}
 	
-	public void decompADUpdates(ConverterInStream in) {
+	public void decompADUpdates(InConverter in) {
 		try {
 			int n  = in.readInt(),
 				cx = in.readInt(),

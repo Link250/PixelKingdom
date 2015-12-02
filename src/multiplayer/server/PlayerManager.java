@@ -2,7 +2,7 @@ package multiplayer.server;
 
 import java.io.IOException;
 import entities.MPlayer;
-import main.conversion.ConverterInStream;
+import main.conversion.InConverter;
 import multiplayer.Request;
 
 	public class PlayerManager implements InputReceiver{
@@ -11,7 +11,7 @@ import multiplayer.Request;
 			this.clientsManager = clients;
 		}
 		
-		public void useInput(ConverterInStream in, byte ID) throws IOException {
+		public void useInput(InConverter in, byte ID) throws IOException {
 			byte request = in.readByte();
 //			Game.logWarning("pm"+request+" "+ID);
 			switch(request) {

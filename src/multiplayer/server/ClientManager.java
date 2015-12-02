@@ -48,13 +48,17 @@ public class ClientManager implements Runnable, ConnectionManager {
 		while (running){
 			try {
 				Thread.sleep(1);
-				length = clientIn.readInt();
+				length = clientIn.readInt()-1;
 				request = clientIn.readByte();
 				if(request==Request.CLOSE_CONNECTION || request==Request.END_OF_STREAM) {
 					this.running=false;
 					this.clientsManager.closeConnection(ID);
 				}else if(this.receivers.containsKey(request)){
-					this.receivers.get(request).useInput(clientIn, this.ID);
+					ConverterList data = new ConverterList();
+					for (int i = 0; i < length; i++) {
+						data.addByte(this.clientIn.readByte());
+					}
+					this.receivers.get(request).useInput(data, this.ID);
 				}else{
 					logWarning("Skipping "+length+" bytes of request type "+request);
 					this.clientIn.skipBytes(length);

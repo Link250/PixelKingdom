@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import main.Game;
-import main.conversion.ConverterInStream;
+import main.conversion.InConverter;
 import map.Chunk;
 import map.Map;
 import multiplayer.Request;
@@ -28,7 +28,7 @@ public class ChunkManagerC implements InputReceiver, Map.ChunkManager{
 		this.serverManager = manager;
 	}
 	
-	public void useInput(ConverterInStream in) throws IOException {
+	public void useInput(InConverter in) throws IOException {
 		Game.logInfo("using receiving map data");
 		int l = in.readInt();
 		int cx = in.readInt();
