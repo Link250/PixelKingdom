@@ -10,7 +10,7 @@ import java.util.HashMap;
 import entities.MPlayer;
 import main.Game;
 import main.conversion.ConverterInStream;
-import main.conversion.ConverterList;
+import main.conversion.ConverterQueue;
 import main.conversion.ConverterOutStream;
 import multiplayer.ConnectionManager;
 import multiplayer.MapUpdater.UpdateList;
@@ -51,14 +51,17 @@ public class ClientManager implements Runnable, ConnectionManager {
 				length = clientIn.readInt()-1;
 				request = clientIn.readByte();
 				if(request==Request.CLOSE_CONNECTION || request==Request.END_OF_STREAM) {
+					Game.logInfo("Disconnect of Client Nr. "+this.ID+" received");
 					this.running=false;
-					this.clientsManager.closeConnection(ID);
+					this.clientsManager.closeConnection(this.ID);
 				}else if(this.receivers.containsKey(request)){
-					ConverterList data = new ConverterList();
+					ConverterQueue data = new ConverterQueue();
 					for (int i = 0; i < length; i++) {
 						data.addByte(this.clientIn.readByte());
 					}
-					this.receivers.get(request).useInput(data, this.ID);
+					try{
+						this.receivers.get(request).useInput(data, this.ID);
+					}catch(NullPointerException e) {e.printStackTrace();}
 				}else{
 					logWarning("Skipping "+length+" bytes of request type "+request);
 					this.clientIn.skipBytes(length);
@@ -66,17 +69,14 @@ public class ClientManager implements Runnable, ConnectionManager {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
+				Game.logError("Exception with Client Nr. "+this.ID+" catched");
 				this.running = false;
-				try {
-					this.clientsManager.closeConnection(ID);
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				}
+				this.clientsManager.closeConnection(this.ID);
 			}
 		}
 	}
 	
-	private synchronized void sendToClient(ConverterList data) throws IOException {
+	private synchronized void sendToClient(ConverterQueue data) throws IOException {
 		this.sendToClient(data.emptyToArray());
 	}
 	
@@ -95,12 +95,14 @@ public class ClientManager implements Runnable, ConnectionManager {
 		this.sendToClient(Request.PLAYER_DATA, Request.PLAYER_NEW, ID);
 	}
 	
-	public void sendPlayerDisconnect(byte ID) throws IOException {
-		this.sendToClient(Request.PLAYER_DATA, Request.PLAYER_DELETE, ID);
+	public void sendPlayerDisconnect(byte ID){
+		try {
+			this.sendToClient(Request.PLAYER_DATA, Request.PLAYER_DELETE, ID);
+		} catch (IOException e) {e.printStackTrace();}
 	}
 	
 	public void sendPlayerColor(byte ID, int color) throws IOException {
-		ConverterList data = new ConverterList();
+		ConverterQueue data = new ConverterQueue();
 		data.addByte(Request.PLAYER_DATA);
 		data.addByte(Request.PLAYER_COLOR);
 		data.addByte(ID);
@@ -110,7 +112,7 @@ public class ClientManager implements Runnable, ConnectionManager {
 	
 	public void sendPlayerRefresh(byte ID) throws IOException {
 		MPlayer player = clientsManager.getClient(ID).player;
-		ConverterList data = new ConverterList();
+		ConverterQueue data = new ConverterQueue();
 		data.addByte(Request.PLAYER_DATA);
 		data.addByte(Request.PLAYER_REFRESH);
 		data.addByte(ID);
@@ -128,7 +130,7 @@ public class ClientManager implements Runnable, ConnectionManager {
 	}
 	
 	public void sendChunk(int cx, int cy, byte[] rawData) throws IOException {
-		ConverterList data = new ConverterList();
+		ConverterQueue data = new ConverterQueue();
 		data.addByte(Request.CHUNK_DATA);
 		data.addInt(rawData.length);
 		data.addInt(cx);

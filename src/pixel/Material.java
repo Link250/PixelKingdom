@@ -45,7 +45,6 @@ public abstract class Material<ADType extends AD> {
 		try {
 			return (AD) this.adtype.getClass().newInstance();
 		}catch(NullPointerException e){
-			System.out.println(this.adtype);
 			Game.logError("AD was not Initialized yet !!! ID:"+this.ID+" Name:"+this.name);
 		}catch(InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();

@@ -11,7 +11,7 @@ import java.util.HashMap;
 
 import org.tukaani.xz.XZInputStream;
 import main.Game;
-import main.conversion.ConverterList;
+import main.conversion.ConverterQueue;
 import pixel.AD;
 import pixel.Material;
 import pixel.PixelList;
@@ -138,7 +138,7 @@ public class Chunk{
 	
 	@SuppressWarnings("unused")
 	public void load(byte[] rawfile) throws IOException{
-		ConverterList filedata = new ConverterList();
+		ConverterQueue filedata = new ConverterQueue();
 		front = new short[length];
 		liquid = new short[length];
 		back = new short[length];
@@ -276,7 +276,7 @@ public class Chunk{
 	}
 
 	public byte[] compress() throws IOException {
-		ConverterList data = new ConverterList();
+		ConverterQueue data = new ConverterQueue();
 		ArrayList<short[]> layers = new ArrayList<short[]>();
 		layers.add(back);
 		layers.add(liquid);

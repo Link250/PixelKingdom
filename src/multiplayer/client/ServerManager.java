@@ -11,7 +11,7 @@ import static main.Game.*;
 
 import main.Game;
 import main.conversion.ConverterInStream;
-import main.conversion.ConverterList;
+import main.conversion.ConverterQueue;
 import main.conversion.ConverterOutStream;
 import multiplayer.ConnectionManager;
 import multiplayer.MapUpdater.UpdateList;
@@ -58,11 +58,13 @@ public class ServerManager implements Runnable, ConnectionManager {
 					this.running=false;
 					this.client.close();
 				}else if(this.receivers.containsKey(request)){
-					ConverterList data = new ConverterList();
+					ConverterQueue data = new ConverterQueue();
 					for (int i = 0; i < length; i++) {
 						data.addByte(this.serverIn.readByte());
 					}
-					this.receivers.get(request).useInput(data);
+					try{
+						this.receivers.get(request).useInput(data);
+					}catch(NullPointerException e) {e.printStackTrace();}
 				}else{
 					logWarning("Skipping "+length+" bytes of request type "+request+"\nlast request type: "+lastRequest);
 					this.serverIn.skipBytes(length);
@@ -80,7 +82,7 @@ public class ServerManager implements Runnable, ConnectionManager {
 		this.receivers.put(ir.requestType(), ir);
 	}
 	
-	private synchronized void sendToServer(ConverterList data) throws IOException {
+	private synchronized void sendToServer(ConverterQueue data) throws IOException {
 		this.sendToServer(data.emptyToArray());
 	}
 	
@@ -95,7 +97,7 @@ public class ServerManager implements Runnable, ConnectionManager {
 	}
 	
 	public void sendPlayerColor(Player player) throws IOException {
-		ConverterList data = new ConverterList();
+		ConverterQueue data = new ConverterQueue();
 		data.addByte(Request.PLAYER_DATA);
 		data.addByte(Request.PLAYER_COLOR);
 		data.addInt(Game.configs.PlrCol);
@@ -103,7 +105,7 @@ public class ServerManager implements Runnable, ConnectionManager {
 	}
 	
 	public void sendPlayerUpdate(Player player) throws IOException {
-		ConverterList data = new ConverterList();
+		ConverterQueue data = new ConverterQueue();
 		data.addByte(Request.PLAYER_DATA);
 		data.addByte(Request.PLAYER_REFRESH);
 		data.addInt(player.x);
@@ -120,7 +122,7 @@ public class ServerManager implements Runnable, ConnectionManager {
 	}
 	
 	public void sendChunkRequest(int chunkX, int chunkY) throws IOException {
-		ConverterList data = new ConverterList();
+		ConverterQueue data = new ConverterQueue();
 		data.addByte(Request.CHUNK_DATA);
 		data.addInt(chunkX);
 		data.addInt(chunkY);

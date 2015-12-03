@@ -1,19 +1,11 @@
 package multiplayer.server;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.ArrayList;
-
 import main.Game;
-import main.conversion.ConvertData;
-import main.conversion.ConverterInStream;
-import main.conversion.IOConverter;
 import map.Map;
 import multiplayer.MapManager;
 import multiplayer.MapUpdater;
-import multiplayer.Request;
 
 public class Server implements Runnable{
 	boolean running = true;

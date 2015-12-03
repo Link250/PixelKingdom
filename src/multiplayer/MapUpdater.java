@@ -4,8 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import main.conversion.ConverterInStream;
-import main.conversion.ConverterList;
+import main.conversion.ConverterQueue;
 import main.conversion.InConverter;
 import map.Chunk;
 import map.Map;
@@ -156,6 +155,7 @@ public class MapUpdater {
 	
 	public void decompADUpdates(InConverter in) {
 		try {
+			AD ad = null;
 			int n  = in.readInt(),
 				cx = in.readInt(),
 				cy = in.readInt();
@@ -164,11 +164,7 @@ public class MapUpdater {
 			for (int i = 0; i < n; i++) {
 				x = in.readShort();
 				y = in.readShort();
-				try{
-					map.getAD((cx*1024)+x, (cy*1024)+y, l).load(in);
-				}catch(NullPointerException e) {
-					System.out.println(map.getID((cx*1024)+x, (cy*1024)+y, l));
-				}
+				if((ad = map.getAD((cx*1024)+x, (cy*1024)+y, l)) != null)ad.load(in);
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -176,7 +172,7 @@ public class MapUpdater {
 	}
 
 	public interface UpdateList{
-		public ConverterList compress();
+		public ConverterQueue compress();
 		public int[] getCoords();
 	}
 	
@@ -204,7 +200,7 @@ public class MapUpdater {
 									(byte) ((ry>>8)&0xff),(byte) ((ry)&0xff)});
 		}
 		public void addUpdateAndAD(int rx, int ry, AD ad) {
-			ConverterList data = new ConverterList();
+			ConverterQueue data = new ConverterQueue();
 			data.addShort((short)rx);
 			data.addShort((short)ry);
 			ad.save(data,false);
@@ -215,8 +211,8 @@ public class MapUpdater {
 			coords.add(temp);
 		}
 		
-		public ConverterList compress() {
-			ConverterList data = new ConverterList();
+		public ConverterQueue compress() {
+			ConverterQueue data = new ConverterQueue();
 			int n = coords.size();
 			int cLength = coords.get(0).length;
 			//wir gehen davon aus, dass alle Elemente von coords die selbe länge haben
@@ -236,11 +232,12 @@ public class MapUpdater {
 	}
 	
 	public class UpdateListAD implements UpdateList{
-		ConverterList data = new ConverterList();
-		int numberADs = 0;
+		private ConverterQueue data = new ConverterQueue();
+		private byte[] arrayData;
+		private int numberADs = 0;
 		
-		int cx,cy;
-		byte l;
+		private int cx,cy;
+		private byte l;
 		
 		public UpdateListAD(int[] update) {
 			cx=update[0]>>Chunk.wLog; cy=update[1]>>Chunk.hLog; l=(byte) update[2];
@@ -261,16 +258,19 @@ public class MapUpdater {
 			numberADs++;
 		}
 		
-		public ConverterList compress() {
-			ConverterList tempData = new ConverterList();
+		public ConverterQueue compress() {
+			ConverterQueue tempData = new ConverterQueue();
 			tempData.addByte(Request.MAP_DATA);
 			tempData.addByte(Request.MAP_UPDATE_AD);
 			tempData.addInt(numberADs);
 			tempData.addInt(cx);
 			tempData.addInt(cy);
 			tempData.addByte(l);
-			while(data.length() > 0) {
-				tempData.addByte(data.pollByte());
+			if(data.length()>0) {
+				arrayData = data.emptyToArray();
+			}
+			for (int i = 0; i < arrayData.length; i++) {
+				tempData.addByte(arrayData[i]);
 			}
 			return tempData;
 		}

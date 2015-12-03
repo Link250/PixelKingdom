@@ -38,7 +38,7 @@ import multiplayer.Request;
 						mPlayer.color = in.readInt();
 						break switches;
 					}
-				}in.skipBytes(4);
+				}
 				break;
 			case Request.PLAYER_REFRESH:
 				for (MPlayer mPlayer : plrs) {
@@ -49,7 +49,7 @@ import multiplayer.Request;
 						mPlayer.setDir(in.readByte());
 						break switches;
 					}
-				}in.skipBytes(10);
+				}
 				break;
 			}
 		}

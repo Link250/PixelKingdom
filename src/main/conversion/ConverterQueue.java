@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class ConverterList implements OutConverter, InConverter{
+public class ConverterQueue implements OutConverter, InConverter{
 	
 	private Queue<Byte> data;
 	
-	public ConverterList() {
+	public ConverterQueue() {
 		data = new LinkedList<>();
 	}
 	

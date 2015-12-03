@@ -61,7 +61,6 @@ public class ChunkManagerC implements InputReceiver, Map.ChunkManager{
 			cloaders.add(l);
 			Thread t = new Thread(l);
 			t.setName("Client_cl"+cx+"_"+cy);
-			System.out.println("new Thread Client_cl"+cx+"_"+cy);
 			t.start();
 		}
 	}

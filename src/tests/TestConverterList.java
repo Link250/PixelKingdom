@@ -8,11 +8,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import main.conversion.ConverterList;
+import main.conversion.ConverterQueue;
 
 public class TestConverterList {
 
-	ConverterList list;
+	ConverterQueue list;
 	Random ran;
 	boolean bool;
 	byte b;
@@ -25,7 +25,7 @@ public class TestConverterList {
 	
 	@Before
 	public void setUp() throws Exception {
-		list = new ConverterList();
+		list = new ConverterQueue();
 		ran = new Random();
 		
 		bool = ran.nextBoolean();

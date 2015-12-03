@@ -56,13 +56,15 @@ public class ClientsManager implements Runnable, ConnectionManager {
 		this.clients.put(ID, clientManager);
 	}
 	
-	protected void closeConnection(byte ID) throws IOException{
+	protected void closeConnection(byte ID){
 		ClientManager client = clients.get(ID);
 		try {
 			client.closeConnection();
 			Game.logInfo("Client "+ID+" disconnected");
 		} catch (IOException e) {
 			Game.logError("Client "+ID+" disconnected by error");
+		} catch(NullPointerException e) {
+			Game.logError("Client "+ID+" was already missing");
 		} finally {
 			this.server.save();
 			clients.remove(ID);
