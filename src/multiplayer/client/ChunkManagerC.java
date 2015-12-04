@@ -52,16 +52,16 @@ public class ChunkManagerC implements InputReceiver, Map.ChunkManager{
 			}
 		}
 		if(chunks[cx][cy]==null) {
-			try {
-				this.serverManager.sendChunkRequest(cx, cy);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
 			ChunkLoader l = new ChunkLoader(new Chunk(null, cx, cy, map), this);
 			cloaders.add(l);
 			Thread t = new Thread(l);
 			t.setName("Client_cl"+cx+"_"+cy);
 			t.start();
+			try {
+				this.serverManager.sendChunkRequest(cx, cy);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	

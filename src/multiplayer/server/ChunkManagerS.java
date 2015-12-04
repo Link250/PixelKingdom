@@ -48,9 +48,7 @@ public class ChunkManagerS implements InputReceiver {
 					Thread.sleep(10);
 				} catch (InterruptedException e) {e.printStackTrace();}
 			}
-			try {
-				this.manager.sendChunk(cx, cy, map.compressedChunk(cx, cy));
-			} catch (IOException e) {e.printStackTrace();}
+			this.manager.sendChunk(cx, cy, map.compressedChunk(cx, cy));
 		}
 	}
 }

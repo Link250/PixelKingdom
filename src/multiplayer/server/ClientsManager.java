@@ -74,7 +74,7 @@ public class ClientsManager implements Runnable, ConnectionManager {
 		}
 	}
 	
-	public void sendPlayerColor(byte ID, int color) throws IOException{
+	public void sendPlayerColor(byte ID, int color){
 		for (ClientManager clientManager : clients.values()) {
 			if(clientManager.ID!=ID) {
 				clientManager.sendPlayerColor(ID, color);
@@ -82,7 +82,7 @@ public class ClientsManager implements Runnable, ConnectionManager {
 		}
 	}
 	
-	public void sendPlayerRefresh(byte ID) throws IOException{
+	public void sendPlayerRefresh(byte ID){
 		for (ClientManager clientManager : clients.values()) {
 			if(clientManager.ID!=ID) {
 				clientManager.sendPlayerRefresh(ID);
@@ -90,7 +90,7 @@ public class ClientsManager implements Runnable, ConnectionManager {
 		}
 	}
 	
-	public void sendMapUpdates(ArrayList<UpdateList> UpdateLists) throws IOException {
+	public void sendMapUpdates(ArrayList<UpdateList> UpdateLists){
 		for (ClientManager clientManager : clients.values()) {
 			clientManager.sendMapUpdates(UpdateLists);
 		}

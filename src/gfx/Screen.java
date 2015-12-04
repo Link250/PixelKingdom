@@ -111,15 +111,13 @@ public class Screen {
 			for(int x = 0; x < xSize; x++){
 				for(int y = 0; y < ySize; y++){
 					if(xPos+x >= 0 && xPos+x < width && yPos+y >= 0 && yPos+y < height){
-						col = gui ? col = GUI[xPos+x + (yPos+y)*width] : pixels[xPos+x + (yPos+y)*width];
+						col = gui ? GUI[xPos+x + (yPos+y)*width] : pixels[xPos+x + (yPos+y)*width];
 						ao = (col>>24)&0xff;
 						if(ao != 0){
 							ro = (int)((a/255*r) + ((255-a)/255*((col>>16)&0xff)));
 							go = (int)((a/255*g) + ((255-a)/255*((col>> 8)&0xff)));
 							bo = (int)((a/255*b) + ((255-a)/255*((col    )&0xff)));
-							if(ao == 255){
-								ao = 255;
-							}else{
+							if(ao != 255){
 								ao = (int) (a+(255-a)/255*((col>>24)&0xff));
 							}
 							if(gui) GUI[xPos+x + (yPos+y)*width] = (ao<<24)|(ro<<16)|(go<<8)|bo;

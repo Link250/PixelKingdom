@@ -98,7 +98,7 @@ public class ServerList {
 		}
 		if(add.isclicked){
 	        name.add("Server"+name.size());
-	        adress.add("46.5.116.45");
+	        adress.add("91.89.155.195");
 			LoadServers(true);
 		}
 		if(del.isclicked&ButtonList.size()!=0){
