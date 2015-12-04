@@ -98,7 +98,7 @@ public class ServerList {
 		}
 		if(back.isclicked){
 			if(this.newServerWindow != null)this.newServerWindow.dispose();
-			Game.menu=0;
+			Game.menu=Game.Menu.MainMenu;
 		}
 		if(add.isclicked){
 			if(newServerWindow != null && newServerWindow.isDisplayable()) {
@@ -127,8 +127,13 @@ public class ServerList {
 			t.start();
 		}
 		if(join.isclicked){
-			game.client = new Client(game, adress.get(selected), this.DATA_PATH + name.get(selected));
-			Game.gamemode = 2;
+			try {
+				game.client = new Client(game, adress.get(selected), this.DATA_PATH + name.get(selected));
+				Game.gamemode = Game.GameMode.MultiPlayer;
+			} catch (IOException e) {
+				System.out.println("Could not connect to Server.");
+				game.client = null;
+			}
 		}
 		back.tick();
 		add.tick();

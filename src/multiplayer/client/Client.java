@@ -19,6 +19,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
@@ -42,7 +43,10 @@ public class Client {
 	
 	public static boolean debuginfo = false;
 	
-	public Client(Game game, String ip, String files) {
+	public Client(Game game, String ip, String files) throws UnknownHostException, IOException {
+		serverConnection = new Socket(IP, Game.PORT);
+		Game.logInfo("connected so Server");
+		
 		try {back = ImageIO.read(SpriteSheet.class.getResourceAsStream("/NormalBack.png"));} catch (IOException e) {e.printStackTrace();back=null;}
 		this.screen = Game.screen;
 		this.input = game.input;
@@ -63,11 +67,6 @@ public class Client {
 		screen.yOffset= player.y-Game.HEIGHT/3/2;
 		this.players = new ArrayList<MPlayer>();
 		
-		try {
-			serverConnection = new Socket(IP, Game.PORT);
-			Game.logInfo("connected so Server");
-		} catch (IOException e) {e.printStackTrace();}
-		
 		serverManager = new ServerManager(this,serverConnection);
 		mapManager = new MapManager(new MapUpdater(map, Map.GT_CLIENT), serverManager);
 		
@@ -77,9 +76,7 @@ public class Client {
 		
 		serverManager.startThread();
 		
-		try {
-			serverManager.sendPlayerColor(player);
-		} catch (IOException e) {e.printStackTrace();}
+		serverManager.sendPlayerColor(player);
 	}
 	
 	public void tick(int tickCount) throws IOException{

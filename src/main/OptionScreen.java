@@ -31,7 +31,7 @@ public class OptionScreen {
 	public void tick(){
 		back.tick();
 		if(back.isclicked){
-			Game.menu=0;
+			Game.menu=Game.Menu.MainMenu;
 		}
 		if(game.input.mousel.isPressed()){
 			int x = game.input.mouse.x/Game.SCALE;

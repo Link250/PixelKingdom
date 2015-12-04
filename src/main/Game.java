@@ -33,6 +33,13 @@ import javax.swing.JFrame;
 public class Game extends Canvas implements Runnable{
 
 	private static final long serialVersionUID = 1L;
+	
+	public static enum GameMode{
+		Menu,SinglePlayer,MultiPlayer
+	}
+	public static enum Menu{
+		MainMenu,MapSelection,ServerList,ServerConnection,Options
+	}
 
 	public static int WIDTH;
 	public static int HEIGHT;
@@ -52,8 +59,8 @@ public class Game extends Canvas implements Runnable{
 	public static boolean reset = false;
 	public int tickCount = 0;
 	public static boolean devmode;
-	public static int gamemode = 0;
-	public static int menu = 0;
+	public static GameMode gamemode = GameMode.Menu;
+	public static Menu menu = Menu.MainMenu;
 	
 	private BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
 	private int[] pxsMain = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
@@ -103,7 +110,7 @@ public class Game extends Canvas implements Runnable{
 		frame.addWindowListener(new java.awt.event.WindowAdapter(){
 			@Override
 			public void windowClosing(java.awt.event.WindowEvent windowEvent){
-				if(gamemode == 1)SinglePlayer.map.save();
+				if(gamemode == GameMode.SinglePlayer)SinglePlayer.map.save();
 				if(server!=null)server.save();
 			}
 		});
@@ -141,8 +148,8 @@ public class Game extends Canvas implements Runnable{
 	}
 	
 	public void reset(){
-		gamemode = 0;
-		menu = 0;
+		gamemode = GameMode.Menu;
+		menu = Menu.MainMenu;
 		screen.xOffset=0;
 		screen.yOffset=0;
 		Mouse.Item = null;
@@ -210,44 +217,45 @@ public class Game extends Canvas implements Runnable{
 		tickCount++;
 		if(reset)reset();
 		switch (gamemode){
-		case 0 : 
+		case Menu : 
 			switch (menu){
-			case 0 :
+			case MainMenu :
 				SP.tick();
 				if(SP.isclicked){
 					MapSelect = new MapSelection(this);
-					menu = 1;
+					menu = Menu.MapSelection;
 				}
 				MP.tick();
 				if(MP.isclicked){
 					ServerList = new ServerList(this);
-					menu = 2;
+					menu = Menu.ServerList;
 				}
 				OP.tick();
 				if(OP.isclicked){
 					OptionScreen = new OptionScreen(this);
-					menu = 3;
+					menu = Menu.Options;
 				}
 				QT.tick();
 				if(QT.isclicked){
 					running = false;
 				}
 				break;
-			case 1 :
+			case MapSelection :
 				MapSelect.tick();
 				break;
-			case 2 :
+			case ServerList :
 				ServerList.tick();
 				break;
-			case 3 :
+			case Options :
 				OptionScreen.tick();
 				break;
+			default:break;
 			}
 			break;
-		case 1 :
+		case SinglePlayer :
 			SinglePlayer.tick(tickCount);
 			break;
-		case 2 :
+		case MultiPlayer :
 			try {
 				client.tick(tickCount);
 			} catch (IOException e) {Game.reset=true;}
@@ -268,30 +276,31 @@ public class Game extends Canvas implements Runnable{
 		screen.resetPixelAll();
 		
 		switch (gamemode){
-		case 0 :
+		case Menu :
 			g.drawImage(back, 0, 0, WIDTH, HEIGHT, null);
 			switch (menu){
-			case 0 :
+			case MainMenu :
 				SP.render();
 				MP.render();
 				OP.render();
 				QT.render();
 				break;
-			case 1 :
+			case MapSelection :
 				MapSelect.render();
 				break;
-			case 2 :
+			case ServerList :
 				ServerList.render();
 				break;
-			case 3 :
+			case Options :
 				OptionScreen.render();
 				break;
+			default:break;
 			}
 			break;
-		case 1 :
+		case SinglePlayer :
 			SinglePlayer.render(g);
 			break;
-		case 2 :
+		case MultiPlayer :
 			client.render(g);
 			break;
 		default : break;

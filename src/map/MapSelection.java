@@ -86,11 +86,11 @@ public class MapSelection {
 		}
 		if(start.isclicked && ButtonList.size()!=0){
 			game.SinglePlayer = new SinglePlayer(game, files[selected]);
-			Game.gamemode = 1;
+			Game.gamemode = Game.GameMode.SinglePlayer;
 		}
 		if(back.isclicked){
 			if(this.newMapWindow != null)this.newMapWindow.dispose();
-			Game.menu=0;
+			Game.menu=Game.Menu.MainMenu;
 		}
 		if(genmap.isclicked){
 			if(this.newMapWindow != null && this.newMapWindow.isDisplayable()) {
