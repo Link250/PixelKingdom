@@ -2,6 +2,8 @@ package map;
 
 import gfx.SpriteSheet;
 import gui.Button;
+import gui.NewMapWindow;
+import gui.NewServerWindow;
 import main.Game;
 import main.SinglePlayer;
 
@@ -11,7 +13,7 @@ import java.util.ArrayList;
 
 public class MapSelection {
 	 
-	private static final String FILE_DIR = Game.GAME_PATH+"maps";
+	public static final String FILE_DIR = Game.GAME_PATH+"maps";
 	
 	ArrayList<Button> ButtonList;
 	private Game game;
@@ -19,6 +21,8 @@ public class MapSelection {
 	private String[] files;
 	private Button  back,genmap,del,start,scrollUP,scrollDOWN;
 	private int selected = 0;
+	
+	private NewMapWindow newMapWindow;
 	
 	public MapSelection(Game game) {
 		this.game = game;
@@ -88,9 +92,11 @@ public class MapSelection {
 			Game.menu=0;
 		}
 		if(genmap.isclicked){
-	        String name = "Map";
-	        Map.newMap(FILE_DIR,name);
-			LoadFiles();
+			if(this.newMapWindow != null) {
+				this.newMapWindow.requestFocus();
+			}else{
+				this.newMapWindow = new NewMapWindow(game, this);
+			}
 		}
 		if(del.isclicked && ButtonList.size()!=0){
 			File dir = new File(files[selected] + File.separator);
@@ -128,5 +134,9 @@ public class MapSelection {
 		if(selected > 0)scrollUP.render();
 		if(selected < ButtonList.size()-1)scrollDOWN.render();
 		Game.font.render(game.screen.width/Game.SCALE/2-50, 10, "Map Selection", 0, 0xff000000, game.screen);
+	}
+	
+	public void resetWindow() {
+		this.newMapWindow = null;
 	}
 }

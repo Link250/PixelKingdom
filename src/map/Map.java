@@ -313,6 +313,9 @@ public class Map {
 			n ++;
 			dir = new File(path + File.separator +  name + Integer.toString(n));
 		}
+		if(n==1) {
+			dir = new File(path + File.separator +  name);
+		}
 		dir.mkdirs();
 	}
 	
