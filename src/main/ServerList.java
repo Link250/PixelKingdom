@@ -19,6 +19,7 @@ import multiplayer.server.Server;
 public class ServerList {
 	
 	private final String PATH = Game.GAME_PATH+"Server.list";
+	private final String DATA_PATH = Game.GAME_PATH+"serverData"+File.separator;
 	
 	private ArrayList<Button> ButtonList;
 	private ArrayList<String> adress;
@@ -107,18 +108,26 @@ public class ServerList {
 			}
 		}
 		if(del.isclicked&ButtonList.size()!=0){
-			name.remove(selected);
+			String DIR = this.DATA_PATH + name.remove(selected);
+			try {
+				for(String Fdel : new File(DIR + File.separator).list()){
+					new File(DIR + File.separator + Fdel).delete();
+				}
+			}catch(NullPointerException e) {e.printStackTrace();}
+			new File(DIR).delete();
 			adress.remove(selected);
 			LoadServers(true);
 		}
 		if(start.isclicked && game.server==null){
-			game.server=new Server(game,Game.GAME_PATH+"maps\\Server");
+			File dir = new File(Game.GAME_PATH+"maps"+File.separator+"Server"+File.separator);
+			if(!dir.isDirectory()) {dir.mkdirs();}
+			game.server=new Server(game,Game.GAME_PATH+"maps"+File.separator+"Server");
 			Thread t = new Thread(game.server);
 			t.setName("Server");
 			t.start();
 		}
 		if(join.isclicked){
-			game.client = new Client(game, adress.get(selected), Game.GAME_PATH+"serverPlayer"+ File.separator + name.get(selected));
+			game.client = new Client(game, adress.get(selected), this.DATA_PATH + name.get(selected));
 			Game.gamemode = 2;
 		}
 		back.tick();
@@ -154,6 +163,11 @@ public class ServerList {
 	public void addServer(String name, String adress) {
         this.name.add(name);
         this.adress.add(adress);
+        File dir = new File(this.DATA_PATH);
+        if(!dir.isDirectory()) {
+        	dir.mkdirs();
+        }
+        new File(this.DATA_PATH+name).mkdir();
 		this.LoadServers(true);
 	}
 }
