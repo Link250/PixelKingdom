@@ -89,10 +89,11 @@ public class MapSelection {
 			Game.gamemode = 1;
 		}
 		if(back.isclicked){
+			this.newMapWindow.dispose();
 			Game.menu=0;
 		}
 		if(genmap.isclicked){
-			if(this.newMapWindow != null) {
+			if(this.newMapWindow != null && this.newMapWindow.isDisplayable()) {
 				this.newMapWindow.requestFocus();
 			}else{
 				this.newMapWindow = new NewMapWindow(game, this);
@@ -134,9 +135,5 @@ public class MapSelection {
 		if(selected > 0)scrollUP.render();
 		if(selected < ButtonList.size()-1)scrollDOWN.render();
 		Game.font.render(game.screen.width/Game.SCALE/2-50, 10, "Map Selection", 0, 0xff000000, game.screen);
-	}
-	
-	public void resetWindow() {
-		this.newMapWindow = null;
 	}
 }

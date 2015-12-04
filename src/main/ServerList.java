@@ -96,10 +96,11 @@ public class ServerList {
 			//Game.gamemode = 1;
 		}
 		if(back.isclicked){
+			this.newServerWindow.dispose();
 			Game.menu=0;
 		}
 		if(add.isclicked){
-			if(newServerWindow != null) {
+			if(newServerWindow != null && newServerWindow.isDisplayable()) {
 				newServerWindow.requestFocus();
 			}else{
 				newServerWindow = new NewServerWindow(game, this);
@@ -154,11 +155,5 @@ public class ServerList {
         this.name.add(name);
         this.adress.add(adress);
 		this.LoadServers(true);
-		this.newServerWindow = null;
-	}
-	
-	public void cancelAdding() {
-		this.LoadServers(true);
-		this.newServerWindow = null;
 	}
 }

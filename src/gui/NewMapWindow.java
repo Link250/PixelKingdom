@@ -4,12 +4,18 @@ import java.awt.Font;
 import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import gfx.SpriteSheet;
 import main.Game;
 import main.ServerList;
 import map.Map;
@@ -32,6 +38,14 @@ public class NewMapWindow extends JFrame {
 		this.setAlwaysOnTop(true);
 		this.setLocationRelativeTo(game);
 		
+		this.addWindowListener(new WindowAdapter(){
+			public void windowClosing(WindowEvent windowEvent){
+				dispose();
+			}
+		});
+		
+		try {this.setIconImage(ImageIO.read(SpriteSheet.class.getResourceAsStream("/Buttons/WindowIconNew.png")));} catch (IOException e) {e.printStackTrace();}
+		
 		nameLabel = new Label();
 		nameLabel.setBounds(10, 10, 140, 30);
 		nameLabel.setFont(new Font("Arial",0,20));
@@ -51,13 +65,12 @@ public class NewMapWindow extends JFrame {
 		addButton = new JButton();
 		addButton.setBounds(10, 50, WIDTH/2-20, 30);
 		addButton.setFont(new Font("Arial",0,20));
-		addButton.setText("Add Server");
+		addButton.setText("Create Map");
 		addButton.setEnabled(false);
 		addButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 		        Map.newMap(MapSelection.FILE_DIR,nameField.getText());
 				mapSelection.LoadFiles();
-				mapSelection.resetWindow();
 				dispose();
 			}
 		});
@@ -69,7 +82,6 @@ public class NewMapWindow extends JFrame {
 		cancelButton.setText("Cancel");
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				mapSelection.resetWindow();
 				dispose();
 			}
 		});
