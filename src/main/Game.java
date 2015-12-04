@@ -37,7 +37,7 @@ public class Game extends Canvas implements Runnable{
 	public static int WIDTH;
 	public static int HEIGHT;
 	public static final int SCALE = 3;
-	public static final String NAME = "Pixel Kingdom";
+	public static final String NAME = "Pixel Kingdom - the number of Commits is over 100 !";
 	public static final String GAME_PATH = System.getenv("APPDATA") + "\\PixelKingdom\\";
 	public static final int PORT = 7777;
 	public static final double nsPerTick = 1000000000D/60D;
