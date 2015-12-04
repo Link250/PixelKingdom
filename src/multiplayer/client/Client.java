@@ -26,7 +26,6 @@ import javax.imageio.ImageIO;
 
 public class Client {
 
-	private String IP = "91.89.152.87";
 	private Socket serverConnection = null;
 	private ServerManager serverManager;
 	
@@ -43,7 +42,7 @@ public class Client {
 	
 	public static boolean debuginfo = false;
 	
-	public Client(Game game, String ip, String files) throws UnknownHostException, IOException {
+	public Client(Game game, String IP, String files) throws UnknownHostException, IOException {
 		serverConnection = new Socket(IP, Game.PORT);
 		Game.logInfo("connected so Server");
 		
@@ -51,7 +50,6 @@ public class Client {
 		this.screen = Game.screen;
 		this.input = game.input;
 		this.files = files;
-		this.IP=ip;
 		
 		this.map = new Map(null, screen);
 		

@@ -131,7 +131,7 @@ public class ServerList {
 				game.client = new Client(game, adress.get(selected), this.DATA_PATH + name.get(selected));
 				Game.gamemode = Game.GameMode.MultiPlayer;
 			} catch (IOException e) {
-				System.out.println("Could not connect to Server.");
+				Game.logWarning("Could not connect to Server.");
 				game.client = null;
 			}
 		}
