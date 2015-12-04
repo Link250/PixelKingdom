@@ -11,6 +11,7 @@ import java.util.List;
 
 import gfx.SpriteSheet;
 import gui.Button;
+import gui.NewServerWindow;
 import main.Game;
 import multiplayer.client.Client;
 import multiplayer.server.Server;
@@ -25,6 +26,7 @@ public class ServerList {
 	private Game game;
 	private Button  back,add,del,join,scrollUP,scrollDOWN,start;
 	private int selected = 0;
+	private NewServerWindow newServerWindow;
 	
 	public ServerList(Game game) {
 		this.game = game;
@@ -97,9 +99,11 @@ public class ServerList {
 			Game.menu=0;
 		}
 		if(add.isclicked){
-	        name.add("Server"+name.size());
-	        adress.add("91.89.155.195");
-			LoadServers(true);
+			if(newServerWindow != null) {
+				newServerWindow.requestFocus();
+			}else{
+				newServerWindow = new NewServerWindow(game, this);
+			}
 		}
 		if(del.isclicked&ButtonList.size()!=0){
 			name.remove(selected);
@@ -144,5 +148,12 @@ public class ServerList {
 		if(selected > 0)scrollUP.render();
 		if(selected < ButtonList.size()-1)scrollDOWN.render();
 		Game.font.render(game.screen.width/Game.SCALE/2-50, 10, "Multiplayer", 0, 0xff000000, game.screen);
+	}
+	
+	public void addServer(String name, String adress) {
+        this.name.add(name);
+        this.adress.add(adress);
+		this.LoadServers(true);
+		this.newServerWindow = null;
 	}
 }
