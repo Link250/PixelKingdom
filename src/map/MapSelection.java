@@ -89,7 +89,7 @@ public class MapSelection {
 			Game.gamemode = 1;
 		}
 		if(back.isclicked){
-			this.newMapWindow.dispose();
+			if(this.newMapWindow != null)this.newMapWindow.dispose();
 			Game.menu=0;
 		}
 		if(genmap.isclicked){

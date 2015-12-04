@@ -308,13 +308,10 @@ public class Map {
 	
 	public static void newMap(String path,String name){
 		int n = 1;
-		File dir = new File(path + File.separator +  name + Integer.toString(n));
+		File dir = new File(path + File.separator +  name);
 		while(dir.isDirectory()){
 			n ++;
 			dir = new File(path + File.separator +  name + Integer.toString(n));
-		}
-		if(n==1) {
-			dir = new File(path + File.separator +  name);
 		}
 		dir.mkdirs();
 	}

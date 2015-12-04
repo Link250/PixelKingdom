@@ -96,7 +96,7 @@ public class ServerList {
 			//Game.gamemode = 1;
 		}
 		if(back.isclicked){
-			this.newServerWindow.dispose();
+			if(this.newServerWindow != null)this.newServerWindow.dispose();
 			Game.menu=0;
 		}
 		if(add.isclicked){
