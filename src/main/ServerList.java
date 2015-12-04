@@ -156,4 +156,9 @@ public class ServerList {
 		this.LoadServers(true);
 		this.newServerWindow = null;
 	}
+	
+	public void cancelAdding() {
+		this.LoadServers(true);
+		this.newServerWindow = null;
+	}
 }

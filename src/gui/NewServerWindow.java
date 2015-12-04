@@ -81,6 +81,7 @@ public class NewServerWindow extends JFrame {
 		cancelButton.setText("Cancel");
 		cancelButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
+				serverList.cancelAdding();
 				dispose();
 			}
 		});
