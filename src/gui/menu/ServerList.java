@@ -1,4 +1,4 @@
-package main;
+package gui.menu;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -16,7 +16,7 @@ import main.Game;
 import multiplayer.client.Client;
 import multiplayer.server.Server;
 
-public class ServerList {
+public class ServerList implements GameMenu{
 	
 	private final String PATH = Game.GAME_PATH+"Server.list";
 	private final String DATA_PATH = Game.GAME_PATH+"serverData"+File.separator;
@@ -31,19 +31,19 @@ public class ServerList {
 	
 	public ServerList(Game game) {
 		this.game = game;
-		back = new Button(10, 10, 20, 20, game.screen, game.input);
+		back = new Button(10, 10, 20, 20);
 		back.gfxData(new SpriteSheet("/Buttons/back.png"), true);
-		add = new Button(game.screen.width/Game.SCALE-30, 10, 20, 20, game.screen, game.input);
+		add = new Button(Game.screen.width/Game.SCALE-30, 10, 20, 20);
 		add.gfxData(new SpriteSheet("/Buttons/new.png"), true);
-		start = new Button(game.screen.width/Game.SCALE-30, game.screen.height/Game.SCALE-30, 20, 20, game.screen, game.input);
+		start = new Button(Game.screen.width/Game.SCALE-30, Game.screen.height/Game.SCALE-30, 20, 20);
 		start.gfxData(new SpriteSheet("/Buttons/new.png"), true);
-		del = new Button(game.screen.width/Game.SCALE/2-80, 100, 20, 20, game.screen, game.input);
+		del = new Button(Game.screen.width/Game.SCALE/2-80, 100, 20, 20);
 		del.gfxData(new SpriteSheet("/Buttons/delete.png"), true);
-		join = new Button(game.screen.width/Game.SCALE/2+60, 100, 20, 20, game.screen, game.input);
+		join = new Button(Game.screen.width/Game.SCALE/2+60, 100, 20, 20);
 		join.gfxData(new SpriteSheet("/Buttons/play.png"), true);
-		scrollUP = new Button(game.screen.width/Game.SCALE/2-10, 40, 20, 20, game.screen, game.input);
+		scrollUP = new Button(Game.screen.width/Game.SCALE/2-10, 40, 20, 20);
 		scrollUP.gfxData(new SpriteSheet("/Buttons/ArrowDown.png"), 0x01, false);
-		scrollDOWN = new Button(game.screen.width/Game.SCALE/2-10, 160, 20, 20, game.screen, game.input);
+		scrollDOWN = new Button(Game.screen.width/Game.SCALE/2-10, 160, 20, 20);
 		scrollDOWN.gfxData(new SpriteSheet("/Buttons/ArrowDown.png"), false);
 		LoadServers(false);
 	}
@@ -66,7 +66,7 @@ public class ServerList {
 			for(String s : serverlist){
 				if(turn) {
 					name.add(s);
-					ButtonList.add(new Button(Game.WIDTH/Game.SCALE/2-50, 1, 100, 20, game.screen, game.input));
+					ButtonList.add(new Button(Game.WIDTH/Game.SCALE/2-50, 1, 100, 20));
 					ButtonList.get(ButtonList.size()-1).TextData( s, true, 0, 0);
 				}else{
 					adress.add(s);
@@ -93,12 +93,9 @@ public class ServerList {
 		for(Button button : ButtonList){
 			button.tick();
 		}
-		if(join.isclicked&ButtonList.size()!=0){
-			//Game.gamemode = 1;
-		}
 		if(back.isclicked){
 			if(this.newServerWindow != null)this.newServerWindow.dispose();
-			Game.menu=Game.Menu.MainMenu;
+			Game.mainMenu.menu=MainMenu.Menu.MainMenu;
 		}
 		if(add.isclicked){
 			if(newServerWindow != null && newServerWindow.isDisplayable()) {
@@ -121,7 +118,7 @@ public class ServerList {
 		if(start.isclicked && game.server==null){
 			File dir = new File(Game.GAME_PATH+"maps"+File.separator+"Server"+File.separator);
 			if(!dir.isDirectory()) {dir.mkdirs();}
-			game.server=new Server(game,Game.GAME_PATH+"maps"+File.separator+"Server");
+			game.server=new Server(Game.GAME_PATH+"maps"+File.separator+"Server");
 			Thread t = new Thread(game.server);
 			t.setName("Server");
 			t.start();
@@ -157,12 +154,12 @@ public class ServerList {
 		back.render();
 		add.render();
 		if(game.server==null)start.render();
-		else Game.font.render(game.screen.width/Game.SCALE/2-65, game.screen.height/Game.SCALE-20, "ServerRunning", 0, 0xff000000, game.screen);
+		else Game.font.render(Game.screen.width/Game.SCALE/2-65, Game.screen.height/Game.SCALE-20, "ServerRunning", 0, 0xff000000, Game.screen);
 		if(ButtonList.size()!=0)del.render();
 		if(ButtonList.size()!=0)join.render();
 		if(selected > 0)scrollUP.render();
 		if(selected < ButtonList.size()-1)scrollDOWN.render();
-		Game.font.render(game.screen.width/Game.SCALE/2-50, 10, "Multiplayer", 0, 0xff000000, game.screen);
+		Game.font.render(Game.screen.width/Game.SCALE/2-50, 10, "Multiplayer", 0, 0xff000000, Game.screen);
 	}
 	
 	public void addServer(String name, String adress) {

@@ -16,7 +16,6 @@ import gameFields.*;
 
 public class Player extends Mob{
 	
-	private Game game;
 	private int anim;
 	private int Color;
 	private Hitbox col = new Hitbox(-1,-7,1,6); //walking
@@ -47,12 +46,11 @@ public class Player extends Mob{
 	private SpriteSheet itemBackground = new SpriteSheet("/Items/field.png");
 	private SpriteSheet itemBackgrounds = new SpriteSheet("/Items/fields.png");
 
-	public Player(Map map, Game game) {
+	public Player(Map map) {
 		super(map ,"Player", 0, 0, new SpriteSheet("/sprite_sheet_player.png"));
-		this.game = game;
 		this.map = map;
-		equipment = new Equipment(game, this);
-		crafting = new Crafting(game, this);
+		equipment = new Equipment(this);
+		crafting = new Crafting(this);
 		Color = Game.configs.PlrCol;
 		xOffset=6;
 		yOffset=9;
@@ -162,25 +160,25 @@ public class Player extends Mob{
 	public void tick(int numTick) {
 		
 //		map.setlight(x, y, (byte) (64));map.addBlockUpdate(x, y,0); // just for testing lightsystem
-		if(game.input.space.isPressed() && canJump){
+		if(Game.input.space.isPressed() && canJump){
 			speedY-= jumpspeed;
 			canJump = false;
 			jumpcooldown = 10;
 		}
-		if(game.input.left.isPressed() && speedX > -walkspeed){
+		if(Game.input.left.isPressed() && speedX > -walkspeed){
 			speedX-=1;
 			movingDir = 1;
 		}
-		if(game.input.right.isPressed()  && speedX < walkspeed){
+		if(Game.input.right.isPressed()  && speedX < walkspeed){
 			speedX+=1;
 			movingDir = 0;
 		}
-		if(game.input.shift.isPressed() && !isinair){
+		if(Game.input.shift.isPressed() && !isinair){
 			iscrouching=true;
 		}else{
 			iscrouching=false;
 		}
-		if((!game.input.right.isPressed() && !game.input.left.isPressed()) | (game.input.right.isPressed() && game.input.left.isPressed())){
+		if((!Game.input.right.isPressed() && !Game.input.left.isPressed()) | (Game.input.right.isPressed() && Game.input.left.isPressed())){
 			speedX=0;
 			isMoving = false;
 		}else{
@@ -215,10 +213,10 @@ public class Player extends Mob{
 		}
 		
 		/*		HOTBAR		*/
-		if(game.input.mousem.click() || game.input.H.click()){
+		if(Game.input.mousem.click() || Game.input.H.click()){
 			if(openHotBar == 0) {
-				hotBar.x = game.input.mouse.x;
-				hotBar.y = game.input.mouse.y;
+				hotBar.x = Game.input.mouse.x;
+				hotBar.y = Game.input.mouse.y;
 				openHotBar++;
 			}else
 				openHotBar=0;
@@ -226,8 +224,8 @@ public class Player extends Mob{
 		if(openHotBar != 0){
 			if(equipment.beltbag1 != null){
 				if(openHotBar < 20+equipment.beltbag1.inventory.length)openHotBar +=2;
-				if(Math.sqrt(Math.pow((game.input.mouse.x-hotBar.x)/Game.SCALE, 2)+Math.pow((game.input.mouse.y-hotBar.y)/Game.SCALE, 2)) >= 20+equipment.beltbag1.inventory.length){
-					selected = (byte)(equipment.beltbag1.inventory.length/2-Math.atan2(game.input.mouse.x-hotBar.x, game.input.mouse.y-hotBar.y)/(Math.PI*2/equipment.beltbag1.inventory.length));
+				if(Math.sqrt(Math.pow((Game.input.mouse.x-hotBar.x)/Game.SCALE, 2)+Math.pow((Game.input.mouse.y-hotBar.y)/Game.SCALE, 2)) >= 20+equipment.beltbag1.inventory.length){
+					selected = (byte)(equipment.beltbag1.inventory.length/2-Math.atan2(Game.input.mouse.x-hotBar.x, Game.input.mouse.y-hotBar.y)/(Math.PI*2/equipment.beltbag1.inventory.length));
 				}
 			}
 		}
@@ -236,19 +234,19 @@ public class Player extends Mob{
 		}catch(NullPointerException e){Mouse.mousetype=0;}
 
 		/*		EQUIPMENT		*/
-		if(game.input.equip.click()){
+		if(Game.input.equip.click()){
 			if(openEquip)openEquip = false;
 			else openEquip = true;
 		}if(openEquip)equipment.tick();
 		
 		/*		CRAFTING		*/
-		if(game.input.craft.click()){
+		if(Game.input.craft.click()){
 			if(openCraft)openCraft = false;
 			else openCraft = true;
 		}if(openCraft)crafting.tick();
 		
 		/*		INVENTORY		*/
-		if(game.input.inv.click()){
+		if(Game.input.inv.click()){
 			if(openInv)openInv = false;
 			else openInv = true;
 		}if(openInv){
@@ -267,10 +265,10 @@ public class Player extends Mob{
 		if(equipment.itembag2!=null){b=equipment.itembag2;for(int i = 0; i < b.inventory.length; i++){			if(b.inventory[i]!=null){if(b.inventory[i].getStack()<=0)b.inventory[i] = null;}}}
 
 		try{
-			if(equipment.beltbag1.inventory[selected]!=null && game.input.mousel.isClickable()) {
-				equipment.beltbag1.inventory[selected].useItem(game.input, this, map, Game.screen);
+			if(equipment.beltbag1.inventory[selected]!=null && Game.input.mousel.isClickable()) {
+				equipment.beltbag1.inventory[selected].useItem(Game.input, this, map, Game.screen);
 			}else{
-				game.input.mousel.click();
+				Game.input.mousel.click();
 			}
 		}catch(NullPointerException e){e.printStackTrace();}
 
@@ -349,7 +347,7 @@ public class Player extends Mob{
 								,true);
 					}catch(NullPointerException e){}
 				}
-				try{Game.font.render(game.input.mouse.x/Game.SCALE+Game.screen.xOffset, game.input.mouse.y/Game.SCALE+Game.screen.yOffset, (equipment.beltbag1.inventory[selected].getName()), 0, 0xff000000, Game.screen);}
+				try{Game.font.render(Game.input.mouse.x/Game.SCALE+Game.screen.xOffset, Game.input.mouse.y/Game.SCALE+Game.screen.yOffset, (equipment.beltbag1.inventory[selected].getName()), 0, 0xff000000, Game.screen);}
 			catch(NullPointerException e){}
 			}
 		}

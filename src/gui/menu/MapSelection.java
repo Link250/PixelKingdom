@@ -1,9 +1,8 @@
-package map;
+package gui.menu;
 
 import gfx.SpriteSheet;
 import gui.Button;
 import gui.NewMapWindow;
-import gui.NewServerWindow;
 import main.Game;
 import main.SinglePlayer;
 
@@ -11,32 +10,32 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 
-public class MapSelection {
+public class MapSelection implements GameMenu{
 	 
 	public static final String FILE_DIR = Game.GAME_PATH+"maps";
 	
 	ArrayList<Button> ButtonList;
-	private Game game;
 	private String[] list;
 	private String[] files;
 	private Button  back,genmap,del,start,scrollUP,scrollDOWN;
 	private int selected = 0;
+	private Game game;
 	
 	private NewMapWindow newMapWindow;
 	
 	public MapSelection(Game game) {
 		this.game = game;
-		back = new Button(10, 10, 20, 20, game.screen, game.input);
+		back = new Button(10, 10, 20, 20);
 		back.gfxData(new SpriteSheet("/Buttons/back.png"), true);
-		genmap = new Button(game.screen.width/Game.SCALE-30, 10, 20, 20, game.screen, game.input);
+		genmap = new Button(Game.screen.width/Game.SCALE-30, 10, 20, 20);
 		genmap.gfxData(new SpriteSheet("/Buttons/new.png"), true);
-		del = new Button(game.screen.width/Game.SCALE/2-80, 100, 20, 20, game.screen, game.input);
+		del = new Button(Game.screen.width/Game.SCALE/2-80, 100, 20, 20);
 		del.gfxData(new SpriteSheet("/Buttons/delete.png"), true);
-		start = new Button(game.screen.width/Game.SCALE/2+60, 100, 20, 20, game.screen, game.input);
+		start = new Button(Game.screen.width/Game.SCALE/2+60, 100, 20, 20);
 		start.gfxData(new SpriteSheet("/Buttons/play.png"), true);
-		scrollUP = new Button(game.screen.width/Game.SCALE/2-10, 40, 20, 20, game.screen, game.input);
+		scrollUP = new Button(Game.screen.width/Game.SCALE/2-10, 40, 20, 20);
 		scrollUP.gfxData(new SpriteSheet("/Buttons/ArrowDown.png"), 0x01, false);
-		scrollDOWN = new Button(game.screen.width/Game.SCALE/2-10, 160, 20, 20, game.screen, game.input);
+		scrollDOWN = new Button(Game.screen.width/Game.SCALE/2-10, 160, 20, 20);
 		scrollDOWN.gfxData(new SpriteSheet("/Buttons/ArrowDown.png"), false);
 		LoadFiles();
 	}
@@ -61,7 +60,7 @@ public class MapSelection {
 		for (int i = 0; i < list.length; i++) {
 			if(new File(FILE_DIR + File.separator + list[i]).isDirectory()){
 				files[i] = FILE_DIR + File.separator + list[i];
-				ButtonList.add(new Button(Game.WIDTH/Game.SCALE/2-50, 1, 100, 20, game.screen, game.input));
+				ButtonList.add(new Button(Game.WIDTH/Game.SCALE/2-50, 1, 100, 20));
 				ButtonList.get(i).TextData( list[i], true, 0, 0);
 			}
 		}
@@ -85,12 +84,12 @@ public class MapSelection {
 			button.tick();
 		}
 		if(start.isclicked && ButtonList.size()!=0){
-			game.SinglePlayer = new SinglePlayer(game, files[selected]);
+			game.SinglePlayer = new SinglePlayer(files[selected]);
 			Game.gamemode = Game.GameMode.SinglePlayer;
 		}
 		if(back.isclicked){
 			if(this.newMapWindow != null)this.newMapWindow.dispose();
-			Game.menu=Game.Menu.MainMenu;
+			Game.mainMenu.menu=MainMenu.Menu.MainMenu;
 		}
 		if(genmap.isclicked){
 			if(this.newMapWindow != null && this.newMapWindow.isDisplayable()) {
@@ -134,6 +133,6 @@ public class MapSelection {
 		if(ButtonList.size()!=0)start.render();
 		if(selected > 0)scrollUP.render();
 		if(selected < ButtonList.size()-1)scrollDOWN.render();
-		Game.font.render(game.screen.width/Game.SCALE/2-50, 10, "Map Selection", 0, 0xff000000, game.screen);
+		Game.font.render(Game.screen.width/Game.SCALE/2-50, 10, "Map Selection", 0, 0xff000000, Game.screen);
 	}
 }

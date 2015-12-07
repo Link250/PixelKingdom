@@ -16,8 +16,8 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import gfx.SpriteSheet;
+import gui.menu.ServerList;
 import main.Game;
-import main.ServerList;
 
 public class NewServerWindow extends JFrame {
 	private static final long serialVersionUID = 9218100846608549089L;

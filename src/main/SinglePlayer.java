@@ -26,16 +26,14 @@ public class SinglePlayer {
 	private String files;
 	public File plr;
 	private BufferedImage back = null;
-	private Game game;
 	
-	public SinglePlayer(Game game, String files){
+	public SinglePlayer(String files){
 		try {back = ImageIO.read(SpriteSheet.class.getResourceAsStream("/NormalBack.png"));} catch (IOException e) {e.printStackTrace();}
-		this.screen = game.screen;
-		this.input = game.input;
+		this.screen = Game.screen;
+		this.input = Game.input;
 		this.files = files;
-		this.game = game;
 		map = new Map(files, screen);
-		player = new Player(map, game);
+		player = new Player(map);
 		plr = new File(files + File.separator + "plr.pdat");
 		if(plr.exists()){
 			try {load();}catch(ClassCastException e){create();save();}
@@ -71,8 +69,8 @@ public class SinglePlayer {
 		screen.yOffset= player.y-Game.HEIGHT/3/2;
 
 		if(debuginfo){
-			if(Game.devmode&&game.input.X.click()) {
-				int X = game.input.mouse.x/Game.SCALE+game.screen.xOffset, Y = game.input.mouse.y/Game.SCALE+game.screen.yOffset;
+			if(Game.devmode&&Game.input.X.click()) {
+				int X = Game.input.mouse.x/Game.SCALE+Game.screen.xOffset, Y = Game.input.mouse.y/Game.SCALE+Game.screen.yOffset;
 				Game.logInfo(X+" "+Y+" id{"
 						+map.getID(X, Y, Map.LAYER_BACK)+","
 						+map.getID(X, Y, Map.LAYER_LIQUID)+","

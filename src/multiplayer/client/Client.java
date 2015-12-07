@@ -48,12 +48,12 @@ public class Client {
 		
 		try {back = ImageIO.read(SpriteSheet.class.getResourceAsStream("/NormalBack.png"));} catch (IOException e) {e.printStackTrace();back=null;}
 		this.screen = Game.screen;
-		this.input = game.input;
+		this.input = Game.input;
 		this.files = files;
 		
 		this.map = new Map(null, screen);
 		
-		this.player = new Player(map, game);
+		this.player = new Player(map);
 		this.plr = new File(files + File.separator + "plr.pdat");
 		if(this.plr.exists()){
 			load();

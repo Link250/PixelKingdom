@@ -14,18 +14,18 @@ public class ItemBagInv extends GameField {
 
 	public ItemBag bag;
 	
-	public ItemBagInv(ItemBag bag, Game game, int savefile) {
-		super(width*12, bag.inventory.length/width*12+11, game, savefile);
+	public ItemBagInv(ItemBag bag, int savefile) {
+		super(width*12, bag.inventory.length/width*12+11, savefile);
 		this.bag = bag;
 		this.savefile = savefile;
 	}
 	
 	public void tick() {
 		Drag();
-		if(mouseover(game.input.mouse.x/Game.SCALE, game.input.mouse.y/Game.SCALE)){
+		if(mouseover(Game.input.mouse.x/Game.SCALE, Game.input.mouse.y/Game.SCALE)){
 			Mouse.mousetype=0;
-			if(game.input.mousel.click()){
-				int mx = game.input.mousel.x/Game.SCALE, my = game.input.mousel.y/Game.SCALE;
+			if(Game.input.mousel.click()){
+				int mx = Game.input.mousel.x/Game.SCALE, my = Game.input.mousel.y/Game.SCALE;
 				PArea r = new PArea(0,0,10,10);
 				for(int x = 0; x < width; x++){
 					for(int y = 0; y < bag.inventory.length/width; y++){
@@ -49,11 +49,11 @@ public class ItemBagInv extends GameField {
 	
 	public void render() {
 		renderfield();
-		Game.sfont.render(game.screen.xOffset+field.x+2, game.screen.yOffset+field.y+1, "Items", 0, 0xff000000, game.screen);
+		Game.sfont.render(Game.screen.xOffset+field.x+2, Game.screen.yOffset+field.y+1, "Items", 0, 0xff000000, Game.screen);
 		for(int x = 0; x < width; x++){
 			for(int y = 0; y < bag.inventory.length/width; y++){
-				game.screen.drawGUITile(game.screen.xOffset+field.x+x*12, game.screen.yOffset+field.y+y*12+11, 0, 0, Background, 0xff000000);
-				if(bag.inventory[x+y*width]!=null) bag.inventory[x+y*width].render(game.screen, game.screen.xOffset+field.x+x*12+1, game.screen.yOffset+field.y+y*12+12,true);
+				Game.screen.drawGUITile(Game.screen.xOffset+field.x+x*12, Game.screen.yOffset+field.y+y*12+11, 0, 0, Background, 0xff000000);
+				if(bag.inventory[x+y*width]!=null) bag.inventory[x+y*width].render(Game.screen, Game.screen.xOffset+field.x+x*12+1, Game.screen.yOffset+field.y+y*12+12,true);
 			}
 		}
 	}

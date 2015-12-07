@@ -7,6 +7,14 @@ import main.conversion.Convertable;
 import main.conversion.InConverter;
 import main.conversion.OutConverter;
 
+/**
+ * The universal data storage object for everything a pixel could need to store.
+ * Just extend it and give it all the attributes it needs. But beware ! only
+ * primitive types like <b>byte, int, char, boolean</b> and Classes with the Interface
+ * {@link Convertable} are supported !
+ * @author Daniel
+ *
+ */
 public abstract class AD{
 	
 	public AD(InConverter in){

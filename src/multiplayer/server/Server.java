@@ -12,14 +12,10 @@ public class Server implements Runnable{
 	
 	private ServerSocket serverSocket;
 	private ClientsManager clientsManager;
-	private Game game;
-	
 	private Map map;
 	private MapManager mapManager;
 	
-	public Server(Game g, String files) {
-		this.game = g;
-		
+	public Server(String files) {
 		try {
 			serverSocket = new ServerSocket(Game.PORT);
 		} catch (IOException e) {
@@ -72,8 +68,8 @@ public class Server implements Runnable{
 			e.printStackTrace();
 		}
 		
-		if(Game.devmode&&game.input.X.click()) {
-			int X = game.input.mouse.x/Game.SCALE+Game.screen.xOffset, Y = game.input.mouse.y/Game.SCALE+Game.screen.yOffset;
+		if(Game.devmode&&Game.input.X.click()) {
+			int X = Game.input.mouse.x/Game.SCALE+Game.screen.xOffset, Y = Game.input.mouse.y/Game.SCALE+Game.screen.yOffset;
 			Game.logInfo(X+" "+Y+" id{"+map.getID(X, Y, 1)		+","+map.getID(X, Y, 2)		+","+map.getID(X, Y, 3)		+"}");
 			Game.logInfo(X+" "+Y+" up{"+map.isUpdating(X, Y, 0)	+","+map.isUpdating(X, Y, 0)+","+map.isUpdating(X, Y, 0)+"}");
 			map.addPixelUpdate(X, Y, 1);

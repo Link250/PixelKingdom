@@ -16,10 +16,9 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
 import gfx.SpriteSheet;
+import gui.menu.MapSelection;
 import main.Game;
-import main.ServerList;
 import map.Map;
-import map.MapSelection;
 
 public class NewMapWindow extends JFrame {
 	private static final long serialVersionUID = 9218100846608549089L;

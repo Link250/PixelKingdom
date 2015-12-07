@@ -10,37 +10,34 @@ public abstract class GameField {
 	public PArea fieldTop;
 	public Point grab;
 	public boolean grabing;
-	public Game game;
 	public int savefile;
 	
-	
-	public GameField(int w, int h, Game game, int savefile){
+	public GameField(int w, int h, int savefile){
 		int x = Game.configs.FieldPosX[savefile];
 		int y = Game.configs.FieldPosY[savefile];
 		field = new PArea(x,y,w,h);
 		fieldTop = new PArea(x,y,w,10);
 		grab = new Point();
 		this.savefile = savefile;
-		this.game = game;
 	}
 	
 	public abstract void tick();
 	
 	public void Drag(){
-		if(fieldTop.contains(game.input.mouse.x/Game.SCALE, game.input.mouse.y/Game.SCALE)){
-			if(game.input.mousel.click()){
-				grab.x = game.input.mousel.x/Game.SCALE-field.x;
-				grab.y = game.input.mousel.y/Game.SCALE-field.y;
+		if(fieldTop.contains(Game.input.mouse.x/Game.SCALE, Game.input.mouse.y/Game.SCALE)){
+			if(Game.input.mousel.click()){
+				grab.x = Game.input.mousel.x/Game.SCALE-field.x;
+				grab.y = Game.input.mousel.y/Game.SCALE-field.y;
 				grabing = true;
 			}
 		}
-		if(grabing & game.input.mousel.isPressed()){
-			field.x = game.input.mouse.x/Game.SCALE - grab.x;
-			field.y = game.input.mouse.y/Game.SCALE - grab.y;
+		if(grabing & Game.input.mousel.isPressed()){
+			field.x = Game.input.mouse.x/Game.SCALE - grab.x;
+			field.y = Game.input.mouse.y/Game.SCALE - grab.y;
 			if(field.x < 0)field.x = 0;
-			if(field.x > game.screen.width-field.width)field.x = game.screen.width-field.width;
+			if(field.x > Game.screen.width-field.width)field.x = Game.screen.width-field.width;
 			if(field.y < 0)field.y = 0;
-			if(field.y > game.screen.height-field.height)field.y = game.screen.height-field.height;
+			if(field.y > Game.screen.height-field.height)field.y = Game.screen.height-field.height;
 			fieldTop.x = field.x;
 			fieldTop.y = field.y;
 		}else{
@@ -55,11 +52,11 @@ public abstract class GameField {
 		for(int x = 0; x < field.width; x++){
 			for(int y = 0; y < field.height; y++){
 				if(y < fieldTop.height){
-					if(x == 0 | y == 0 | x == fieldTop.width-1 | y == fieldTop.height-1)game.screen.drawGUIScaled(game.screen.xOffset+field.x+x, game.screen.yOffset+field.y+y, 0xff404040);
-					else game.screen.drawGUIScaled(game.screen.xOffset+field.x+x, game.screen.yOffset+field.y+y, 0xff808080);
+					if(x == 0 | y == 0 | x == fieldTop.width-1 | y == fieldTop.height-1)Game.screen.drawGUIScaled(Game.screen.xOffset+field.x+x, Game.screen.yOffset+field.y+y, 0xff404040);
+					else Game.screen.drawGUIScaled(Game.screen.xOffset+field.x+x, Game.screen.yOffset+field.y+y, 0xff808080);
 				}else{
-					if(x == 0 | y == 0 | x == field.width-1 | y == field.height-1)game.screen.drawGUIScaled(game.screen.xOffset+field.x+x, game.screen.yOffset+field.y+y, 0x80404040);
-					else game.screen.drawGUIScaled(game.screen.xOffset+field.x+x, game.screen.yOffset+field.y+y, 0x40808080);
+					if(x == 0 | y == 0 | x == field.width-1 | y == field.height-1)Game.screen.drawGUIScaled(Game.screen.xOffset+field.x+x, Game.screen.yOffset+field.y+y, 0x80404040);
+					else Game.screen.drawGUIScaled(Game.screen.xOffset+field.x+x, Game.screen.yOffset+field.y+y, 0x40808080);
 				}
 			}
 		}

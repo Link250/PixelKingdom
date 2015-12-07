@@ -78,8 +78,8 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
 			this.x = x;
 			this.y = y;
 			try{
-				xMap = x/Game.SCALE+game.screen.xOffset;
-				yMap = y/Game.SCALE+game.screen.yOffset;
+				xMap = x/Game.SCALE+Game.screen.xOffset;
+				yMap = y/Game.SCALE+Game.screen.yOffset;
 			}catch(NullPointerException e){}
 		}
 		

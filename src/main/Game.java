@@ -5,11 +5,10 @@ import gfx.PxlFont;
 import gfx.Mouse;
 import gfx.Screen;
 import gfx.SpriteSheet;
-import gui.Button;
+import gui.menu.MainMenu;
 import item.ItemList;
 import main.InputHandler;
 import map.BiomeList;
-import map.MapSelection;
 import multiplayer.client.Client;
 import multiplayer.server.Server;
 import pixel.PixelList;
@@ -37,9 +36,6 @@ public class Game extends Canvas implements Runnable{
 	public static enum GameMode{
 		Menu,SinglePlayer,MultiPlayer
 	}
-	public static enum Menu{
-		MainMenu,MapSelection,ServerList,ServerConnection,Options
-	}
 
 	public static int WIDTH;
 	public static int HEIGHT;
@@ -48,19 +44,19 @@ public class Game extends Canvas implements Runnable{
 	public static final String GAME_PATH = System.getenv("APPDATA") + "\\PixelKingdom\\";
 	public static final int PORT = 7777;
 	public static final double nsPerTick = 1000000000D/60D;
-	static int ticks = 0;
-	static int frames = 0;
+	public static int ticks = 0;
+	public static int frames = 0;
 	public static int fps = 0;
 	
 	private JFrame frame;
 	private Image windowIcon;
 	
-	public boolean running = false;
+	private boolean running = false;
 	public static boolean reset = false;
 	public int tickCount = 0;
 	public static boolean devmode;
 	public static GameMode gamemode = GameMode.Menu;
-	public static Menu menu = Menu.MainMenu;
+	public static MainMenu mainMenu;
 	
 	private BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
 	private int[] pxsMain = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
@@ -77,18 +73,14 @@ public class Game extends Canvas implements Runnable{
 	public static ColorSheet csheetm = new ColorSheet("/Mat_Mid.png");
 	public static ColorSheet csheetb = new ColorSheet("/Mat_Back.png");
 	public static Screen screen;
-	private BufferedImage back = null;
-	public InputHandler input;
+	public static InputHandler input;
 	public static PxlFont font;
 	public static PxlFont sfont;
 	public static PxlFont mfont;
-	private Button SP, MP, OP, QT;
+	private BufferedImage back = null;
 	public SinglePlayer SinglePlayer;
 	public Client client;
 	public Server server;
-	public ServerList ServerList;
-	public MapSelection MapSelect;
-	public OptionScreen OptionScreen;
 	
 	public Game(){
 		setMinimumSize(new Dimension(WIDTH-12, HEIGHT-12));
@@ -131,14 +123,7 @@ public class Game extends Canvas implements Runnable{
 		sfont = new PxlFont(new SpriteSheet("/8x8Font.png"), " !\"# %&´()* ,-./0123456789:; = ? ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{ }~",8*Game.SCALE,8*Game.SCALE);
 		font = new PxlFont(new SpriteSheet("/Font.png"), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 1234567890!\",;%&/()=?ß+-.",15*Game.SCALE,20*Game.SCALE);
 		screen = new Screen(WIDTH, HEIGHT, csheetf, csheetm, csheetb);
-		SP = new Button(WIDTH/Game.SCALE/2-50,110,100,20,screen,input);
-		SP.gfxData(new SpriteSheet("/Buttons/SP.png"), true);
-		MP = new Button(WIDTH/Game.SCALE/2-50,140,100,20,screen,input);
-		MP.gfxData(new SpriteSheet("/Buttons/MP.png"), true);
-		OP = new Button(WIDTH/Game.SCALE/2-50,170,100,20,screen,input);
-		OP.gfxData(new SpriteSheet("/Buttons/OP.png"), true);
-		QT = new Button(WIDTH/Game.SCALE/2-50,200,100,20,screen,input);
-		QT.gfxData(new SpriteSheet("/Buttons/QT.png"), true);
+		mainMenu = new MainMenu(this);
 		
 		pixellist = new PixelList();
 		itemlist = new ItemList();
@@ -149,7 +134,7 @@ public class Game extends Canvas implements Runnable{
 	
 	public void reset(){
 		gamemode = GameMode.Menu;
-		menu = Menu.MainMenu;
+		mainMenu.menu = MainMenu.Menu.MainMenu;
 		screen.xOffset=0;
 		screen.yOffset=0;
 		Mouse.Item = null;
@@ -218,39 +203,7 @@ public class Game extends Canvas implements Runnable{
 		if(reset)reset();
 		switch (gamemode){
 		case Menu : 
-			switch (menu){
-			case MainMenu :
-				SP.tick();
-				if(SP.isclicked){
-					MapSelect = new MapSelection(this);
-					menu = Menu.MapSelection;
-				}
-				MP.tick();
-				if(MP.isclicked){
-					ServerList = new ServerList(this);
-					menu = Menu.ServerList;
-				}
-				OP.tick();
-				if(OP.isclicked){
-					OptionScreen = new OptionScreen(this);
-					menu = Menu.Options;
-				}
-				QT.tick();
-				if(QT.isclicked){
-					running = false;
-				}
-				break;
-			case MapSelection :
-				MapSelect.tick();
-				break;
-			case ServerList :
-				ServerList.tick();
-				break;
-			case Options :
-				OptionScreen.tick();
-				break;
-			default:break;
-			}
+			mainMenu.tick();
 			break;
 		case SinglePlayer :
 			SinglePlayer.tick(tickCount);
@@ -278,24 +231,7 @@ public class Game extends Canvas implements Runnable{
 		switch (gamemode){
 		case Menu :
 			g.drawImage(back, 0, 0, WIDTH, HEIGHT, null);
-			switch (menu){
-			case MainMenu :
-				SP.render();
-				MP.render();
-				OP.render();
-				QT.render();
-				break;
-			case MapSelection :
-				MapSelect.render();
-				break;
-			case ServerList :
-				ServerList.render();
-				break;
-			case Options :
-				OptionScreen.render();
-				break;
-			default:break;
-			}
+			mainMenu.render();
 			break;
 		case SinglePlayer :
 			SinglePlayer.render(g);
@@ -306,7 +242,7 @@ public class Game extends Canvas implements Runnable{
 		default : break;
 		}
 		
-		Mouse.render(this);
+		Mouse.render();
 		
 		for(int xy = 0; xy < screen.length; xy++){
 			pxsMain[xy] = screen.pixels[xy];
