@@ -6,6 +6,7 @@ import gfx.Mouse;
 import gfx.Screen;
 import gfx.SpriteSheet;
 import gui.menu.MainMenu;
+import gui.menu.Menu;
 import item.ItemList;
 import main.InputHandler;
 import map.BiomeList;
@@ -56,7 +57,7 @@ public class Game extends Canvas implements Runnable{
 	public int tickCount = 0;
 	public static boolean devmode;
 	public static GameMode gamemode = GameMode.Menu;
-	public static MainMenu mainMenu;
+	public static MainMenu menu;
 	
 	private BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
 	private int[] pxsMain = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
@@ -123,7 +124,7 @@ public class Game extends Canvas implements Runnable{
 		sfont = new PxlFont(new SpriteSheet("/8x8Font.png"), " !\"# %&´()* ,-./0123456789:; = ? ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{ }~",8*Game.SCALE,8*Game.SCALE);
 		font = new PxlFont(new SpriteSheet("/Font.png"), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 1234567890!\",;%&/()=?ß+-.",15*Game.SCALE,20*Game.SCALE);
 		screen = new Screen(WIDTH, HEIGHT, csheetf, csheetm, csheetb);
-		mainMenu = new MainMenu(this);
+		menu = new MainMenu(this);
 		
 		pixellist = new PixelList();
 		itemlist = new ItemList();
@@ -134,7 +135,7 @@ public class Game extends Canvas implements Runnable{
 	
 	public void reset(){
 		gamemode = GameMode.Menu;
-		mainMenu.menu = MainMenu.Menu.MainMenu;
+		menu.subMenu = Menu.MainMenu;
 		screen.xOffset=0;
 		screen.yOffset=0;
 		Mouse.Item = null;
@@ -203,7 +204,7 @@ public class Game extends Canvas implements Runnable{
 		if(reset)reset();
 		switch (gamemode){
 		case Menu : 
-			mainMenu.tick();
+			menu.tick();
 			break;
 		case SinglePlayer :
 			SinglePlayer.tick(tickCount);
@@ -231,7 +232,7 @@ public class Game extends Canvas implements Runnable{
 		switch (gamemode){
 		case Menu :
 			g.drawImage(back, 0, 0, WIDTH, HEIGHT, null);
-			mainMenu.render();
+			menu.render();
 			break;
 		case SinglePlayer :
 			SinglePlayer.render(g);

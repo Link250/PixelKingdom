@@ -1,7 +1,5 @@
 package item;
 
-import gfx.SpriteSheet;
-
 public abstract class Tool extends Item{
 	protected int strength;
 	protected int size;
@@ -10,7 +8,6 @@ public abstract class Tool extends Item{
 	
 	public Tool(){
 		super();
-		catgfx = new SpriteSheet("/Items/BeltBag.png");
 	}
 
 	public int getStregth(){

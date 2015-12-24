@@ -50,20 +50,26 @@ public class ItemList {
 //		throw new UnknownItemException(name);
 	}
 
-	public static Item NewItem(int ID){
-		for(Item i : itemlist){
-			if(i.ID==ID){
-				try {
-					Item t = (Item) Class.forName(i.getClass().getName()).getConstructor().newInstance();
-					if(t instanceof MatStack) ((MatStack)t).setMat(ID);
-					Game.logInfo("new Instance of "+t.name+"("+t.ID+") created.");
-					return (Item) t;
-				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | ClassNotFoundException e){
-					e.printStackTrace();
-				}
+	public static Item NewItem(Item i){
+		if(i!=null) {
+			try {
+				Item t = (Item) Class.forName(i.getClass().getName()).getConstructor().newInstance();
+				if(t instanceof MatStack) ((MatStack)t).setMat(i.ID);
+				Game.logInfo("new Instance of "+t.name+"("+t.ID+") created.");
+				return (Item) t;
+			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | ClassNotFoundException e){
+				e.printStackTrace();
 			}
 		}
 		return null;
+	}
+	
+	public static Item NewItem(String itemName){
+		return NewItem(GetItem(itemName));
+	}
+	
+	public static Item NewItem(int ID){
+		return NewItem(GetItem(ID));
 	}
 	
 	public static class UnknownItemException extends Exception{

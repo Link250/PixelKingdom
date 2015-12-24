@@ -6,11 +6,7 @@ import main.Game;
 
 public class MainMenu implements GameMenu{
 	
-	public static enum Menu{
-		MainMenu,MapSelection,ServerList,ServerConnection,Options
-	}
-	
-	public Menu menu = Menu.MainMenu;
+	public Menu subMenu = Menu.MainMenu;
 	private Button SP, MP, OP, QT;
 	public ServerList ServerList;
 	public MapSelection MapSelect;
@@ -30,7 +26,7 @@ public class MainMenu implements GameMenu{
 	}
 	
 	public void render() {
-		switch(menu) {
+		switch(subMenu) {
 		case MapSelection:
 			MapSelect.render();
 			break;
@@ -51,28 +47,7 @@ public class MainMenu implements GameMenu{
 	}
 
 	public void tick() {
-		switch (menu){
-		case MainMenu :
-			SP.tick();
-			if(SP.isclicked){
-				MapSelect = new MapSelection(game);
-				menu = Menu.MapSelection;
-			}
-			MP.tick();
-			if(MP.isclicked){
-				ServerList = new ServerList(game);
-				menu = Menu.ServerList;
-			}
-			OP.tick();
-			if(OP.isclicked){
-				OptionScreen = new OptionScreen(game);
-				menu = Menu.Options;
-			}
-			QT.tick();
-			if(QT.isclicked){
-				game.stop();
-			}
-			break;
+		switch (subMenu){
 		case MapSelection :
 			MapSelect.tick();
 			break;
@@ -82,7 +57,28 @@ public class MainMenu implements GameMenu{
 		case Options :
 			OptionScreen.tick();
 			break;
-		default:break;
+		default:
+		case MainMenu :
+			SP.tick();
+			if(SP.isclicked){
+				MapSelect = new MapSelection(game);
+				subMenu = Menu.MapSelection;
+			}
+			MP.tick();
+			if(MP.isclicked){
+				ServerList = new ServerList(game);
+				subMenu = Menu.ServerList;
+			}
+			OP.tick();
+			if(OP.isclicked){
+				OptionScreen = new OptionScreen(game);
+				subMenu = Menu.Options;
+			}
+			QT.tick();
+			if(QT.isclicked){
+				game.stop();
+			}
+			break;
 		}
 	}
 }

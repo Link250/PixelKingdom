@@ -95,7 +95,7 @@ public class ServerList implements GameMenu{
 		}
 		if(back.isclicked){
 			if(this.newServerWindow != null)this.newServerWindow.dispose();
-			Game.mainMenu.menu=MainMenu.Menu.MainMenu;
+			Game.menu.subMenu=Menu.MainMenu;
 		}
 		if(add.isclicked){
 			if(newServerWindow != null && newServerWindow.isDisplayable()) {

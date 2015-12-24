@@ -12,7 +12,12 @@ public class PArea {
 		this.width = w;
 		this.height = h;
 	}
-
+	
+	public void setSize(int w, int h){
+		this.width = w;
+		this.height = h;
+	}
+	
 	public void setBounds(int x, int y, int w, int h){
 		this.x = x;
 		this.y = y;
@@ -21,7 +26,7 @@ public class PArea {
 	}
 
 	public boolean contains(int X, int Y){
-		if(X >= x & X < x+width & Y >= y & Y < y+height) return true;
+		if(X >= x && X < x+width && Y >= y && Y < y+height) return true;
 		else return false;
 	}
 	

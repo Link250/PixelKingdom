@@ -71,8 +71,7 @@ public abstract class Pickaxe extends Tool{
 			}
 			m = PixelList.GetMat(map.getID(pX,pY,l));
 			if(m.ID!=0){
-//				System.out.println(map.getID(pX, pY, l));
-				if(plr.PickUp(item, map.getID(pX, pY, l)) || Game.devmode){
+				if(plr.PickUp(ItemList.NewItem(m.ID)) || Game.devmode){
 					npxs -= PixelList.GetMat((byte)map.getID(pX, pY, l)).usePickaxe;
 					map.setID(pX, pY, l, 0);
 				}else{npxs = 0;}

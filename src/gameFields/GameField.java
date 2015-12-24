@@ -12,6 +12,15 @@ public abstract class GameField {
 	public boolean grabing;
 	public int savefile;
 	
+	public GameField(int savefile) {
+		int x = Game.configs.FieldPosX[savefile];
+		int y = Game.configs.FieldPosY[savefile];
+		field = new PArea(x,y,30,10);
+		fieldTop = new PArea(x,y,30,10);
+		grab = new Point();
+		this.savefile = savefile;
+	}
+	
 	public GameField(int w, int h, int savefile){
 		int x = Game.configs.FieldPosX[savefile];
 		int y = Game.configs.FieldPosY[savefile];
@@ -19,6 +28,11 @@ public abstract class GameField {
 		fieldTop = new PArea(x,y,w,10);
 		grab = new Point();
 		this.savefile = savefile;
+	}
+	
+	protected void setSize(int width, int height) {
+		field.setSize(width, height);
+		fieldTop.setSize(width, 10);
 	}
 	
 	public abstract void tick();

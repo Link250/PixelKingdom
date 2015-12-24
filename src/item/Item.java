@@ -19,7 +19,6 @@ public abstract class Item {
 	protected SpriteSheet gfxs;
 	protected int col;
 	protected int anim;
-	public SpriteSheet catgfx;
 	
 	public Item(){
 	}

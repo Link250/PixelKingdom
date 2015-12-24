@@ -89,7 +89,7 @@ public class MapSelection implements GameMenu{
 		}
 		if(back.isclicked){
 			if(this.newMapWindow != null)this.newMapWindow.dispose();
-			Game.mainMenu.menu=MainMenu.Menu.MainMenu;
+			Game.menu.subMenu=Menu.MainMenu;
 		}
 		if(genmap.isclicked){
 			if(this.newMapWindow != null && this.newMapWindow.isDisplayable()) {
