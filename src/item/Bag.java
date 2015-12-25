@@ -73,13 +73,22 @@ public abstract class Bag<ItemType extends Item> extends Item {
 		}
 	}
 	
+	/**
+	 * This mehtod will change the stack number of <code>item</code>.
+	 * if this method returns true, the new stack number will be 0
+	 * or between 0 and the original number. if this method returns false
+	 * the stack number wont be changed.
+	 * @param i
+	 * @param item
+	 * @return true if this item was completely(or partially) inserted
+	 */
 	public boolean insertItem(int i, Item item) {
 		if(this.inventory.get(i)==null) {
 			return setItem(i, item);
 		}
 		if(item.ID == this.inventory.get(i).ID) {
-			this.inventory.get(i).addStack(item.stack);
-			return true;
+			this.inventory.get(i).addStack(item, item.stack);
+			return item.stack==0;
 		}
 		return false;
 	}
@@ -108,7 +117,23 @@ public abstract class Bag<ItemType extends Item> extends Item {
 		return clazz.isInstance(item);
 	}
 	
+	/**
+	 * will return the index where <code>item</code> has enough space to fit in completely
+	 * @param item
+	 * @return
+	 */
 	public int hasSpace(Item item) {
+		return this.hasSpace(item, false);
+	}
+	
+	/**
+	 * will return the index where <code>item</code> has enough space to fit in completely.
+	 * if <code>onlyPartially</code> is true it will also return an index
+	 * where <code>item</code> could partially fit.
+	 * @param item
+	 * @return
+	 */
+	public int hasSpace(Item item, boolean onlyPartially) {
 		int space = -1;
 		int i = 0;
 		for (ItemType cItem : inventory) {
@@ -117,7 +142,30 @@ public abstract class Bag<ItemType extends Item> extends Item {
 				i++;
 				continue;
 			}
-			if(cItem.ID == item.ID && (cItem.stackMax-cItem.stack)>=item.stack){
+			if(cItem.ID == item.ID && cItem.stack<cItem.stackMax && (onlyPartially || (cItem.stackMax-cItem.stack)>=item.stack)){
+				return i;
+			}else {
+				i++;
+			}
+		}
+		return space;
+	}
+	
+	/**
+	 * will return the index where an item with <code>ID</code> could partially or completely fit.
+	 * @param ID
+	 * @return
+	 */
+	public int hasSpace(int ID) {
+		int space = -1;
+		int i = 0;
+		for (ItemType cItem : inventory) {
+			if(cItem==null) {
+				space=i;
+				i++;
+				continue;
+			}
+			if(cItem.ID == ID && cItem.stack<cItem.stackMax){
 				return i;
 			}else {
 				i++;

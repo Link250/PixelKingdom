@@ -3,7 +3,6 @@ package entities;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.EnumMap;
-import gfx.Mouse;
 import gfx.SpriteSheet;
 import item.*;
 import item.Recipe.component;
@@ -124,47 +123,73 @@ public class Player extends Mob{
 		}
 	}
 	
-	public boolean PickUp(Item item){
-		Bag<?> pBag = null;
-		int cIndex, pIndex = 0;
-		for (Bag<?> cBag : bags.values()) {
-			if(cBag.canContain(item) && (cIndex = cBag.hasSpace(item)) >= 0) {
-				if(pBag==null || cBag.getItemPriority() > pBag.getItemPriority()) {
-					pBag = cBag;
-					pIndex = cIndex;
+	/**
+	 * Will add the amout specified in <code>count</code> to an existing ItemStack with the <code>ID</code>
+	 * If this Method was sucessfull it will return 0.
+	 * @param ID
+	 * @param count
+	 * @return the leftover that could not be added
+	 */
+	public int addToStack(int ID, int count){
+		while(count>0) {
+			Bag<?> pBag = null;
+			int cIndex, pIndex = 0;
+			for (Bag<?> cBag : bags.values()) {
+				if(cBag.canContain(ItemList.GetItem(ID)) && (cIndex = cBag.hasSpace(ID)) >= 0) {
+					if(pBag==null || cBag.getItemPriority() > pBag.getItemPriority()) {
+						pBag = cBag;
+						pIndex = cIndex;
+					}
 				}
 			}
+			if(pBag!=null) {
+				if(pBag.getItem(pIndex) == null) {
+					pBag.setItem(pIndex, ItemList.NewItem(ID));
+				}
+				count = pBag.getItem(pIndex).addStack(count);
+				if(count > 0) {
+					continue;
+				}
+				break;
+			}else{
+				break;
+			}
 		}
-		if(pBag!=null) {
-			pBag.insertItem(pIndex, item);
-			return true;
-		}else{
-			return false;
-		}
+		return count;
 	}
 	
-	public boolean AddtoStack(int ID, Item[] inv){
-		for(int i = 0; i < inv.length; i++){
-			try{
-				if(inv[i].getID()==ID && inv[i].getStack() < inv[i].getStackMax()){
-					inv[i].addStack(1);
+	/**
+	 * Will try to add the Item into the Bags with the highes priority.
+	 * If this item is a Stack of Items it will try to fit as many Items into the bags as Possible,
+	 * during this prozess the stacksize of <code>item</code> will be changed.
+	 * After sucess the stacksize will be at 0.
+	 * @param item
+	 * @return true if there was enough space for the whole Item Stack
+	 */
+	public boolean PickUp(Item item){
+		while(item.getStack()>0) {
+			Bag<?> pBag = null;
+			int cIndex, pIndex = 0;
+			for (Bag<?> cBag : bags.values()) {
+				if(cBag.canContain(item) && (cIndex = cBag.hasSpace(item, true)) >= 0) {
+					if(pBag==null || cBag.getItemPriority() > pBag.getItemPriority()) {
+						pBag = cBag;
+						pIndex = cIndex;
+					}
+				}
+			}
+			if(pBag!=null) {
+				if(pBag.insertItem(pIndex, item)) {
 					return true;
 				}
-			}catch(NullPointerException e){}
+				continue;
+			}else{
+				return false;
+			}
 		}
-		return false;
+		return true;
 	}
 	
-	public boolean CreateStack(int ID, Item[] inv){
-		for(int i = 0; i < inv.length; i++){
-			if(inv[i]==null){
-				inv[i] = ItemList.NewItem(ID);
-				if(inv[i] != null)return true;
-				else return false;
-			}
-		}return false;
-	}
-
 	public boolean CraftItem(Recipe r){
 		for(component c : r.educts){
 			int n = c.n;
@@ -186,15 +211,16 @@ public class Player extends Mob{
 					if(bag.getItem(i)!=null){
 						if(bag.getItem(i).getID()==c.ID) {
 							n=bag.getItem(i).delStack(n);
+							if(bag.getItem(i).getStack() <= 0) {
+								this.delItem(bag.getItem(i));
+							}
 						}
 					}
 				}
 			}
 		}
 		for(component c : r.products){
-			for(int i=0; i < c.n; i++){
-				PickUp(ItemList.GetItem(c.ID));
-			}
+			PickUp(ItemList.NewItem(c.ID, c.n));
 		}
 //		System.out.println("craftable");
 		return true;
@@ -272,9 +298,9 @@ public class Player extends Mob{
 				}
 			}
 		}
-		try{
+		if(this.bags.containsKey(BAG.BELT_1) && this.bags.get(BAG.BELT_1).getItem(selected)!=null) {
 			this.bags.get(BAG.BELT_1).getItem(selected).setMouse();
-		}catch(NullPointerException e){Mouse.mousetype=0;}
+		}
 
 		/*		EQUIPMENT		*/
 		if(Game.input.equip.click()){
@@ -295,13 +321,11 @@ public class Player extends Mob{
 			}
 		}
 
-		try{
-			if(this.bags.get(BAG.BELT_1).getItem(selected)!=null && Game.input.mousel.isClickable()) {
-				this.bags.get(BAG.BELT_1).getItem(selected).useItem(Game.input, this, map, Game.screen);
-			}else{
-				Game.input.mousel.click();
-			}
-		}catch(NullPointerException e){e.printStackTrace();}
+		if(this.bags.containsKey(BAG.BELT_1) && this.bags.get(BAG.BELT_1).getItem(selected)!=null && Game.input.mousel.isClickable()) {
+			this.bags.get(BAG.BELT_1).getItem(selected).useItem(Game.input, this, map, Game.screen);
+		}else{
+			Game.input.mousel.click();
+		}
 
 		
 		/*		ANIMATION		*/
@@ -419,21 +443,20 @@ public class Player extends Mob{
 		//initializing Inventory
 		Pickaxe newpick = (Pickaxe) ItemList.NewItem("StonePickaxe");
 		this.PickUp(newpick);
-/*		if(Game.devmode){
+		if(Game.devmode){
 			Item newitem = ItemList.NewItem(64); newitem.addStack(999);
-			equipment.materialbag1.setItem(0,newitem);
+			this.PickUp(newitem);
 			newitem = ItemList.NewItem(16); newitem.addStack(999);
-			equipment.materialbag1.setItem(1,newitem);
+			this.PickUp(newitem);
 			newitem = ItemList.NewItem(17); newitem.addStack(999);
-			equipment.materialbag1.setItem(2,newitem);
+			this.PickUp(newitem);
 			newitem = ItemList.NewItem(18); newitem.addStack(999);
-			equipment.materialbag1.setItem(3,newitem);
+			this.PickUp(newitem);
 			
-			equipment.beltbag1.setItem(1,ItemList.NewItem(333));
+			this.PickUp(ItemList.NewItem(333));
 			newitem = ItemList.NewItem(400);newitem.addStack(999);
-			equipment.beltbag1.setItem(2,newitem);
-			equipment.beltbag1.setItem(3,ItemList.NewItem(332));
-			equipment.itembag2 = (ItemBag) ItemList.NewItem(403);
-		}*/
+			this.PickUp(newitem);
+			this.PickUp(ItemList.NewItem(332));
+		}
 	}
 }

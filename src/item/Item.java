@@ -39,18 +39,54 @@ public abstract class Item {
 		return stackMax;
 	}
 
-	public int addStack(int i){
+	public void setStack(int n) {
+		if(n >= 0 && n <= this.stackMax)this.stack = n;
+	}
+	
+	/**
+	 * 
+	 * @param n
+	 * @return the number of items left, that did not fit inside the stack
+	 */
+	public int addStack(int n){
 		while(stack < stackMax){
-			if(i <= 0)return i;
-			stack ++;i--;
-		}return i;
+			if(n > 0) {
+				stack ++;
+				n--;
+			}else {
+				return n;
+			}
+		}return n;
 	}
 
-	public int delStack(int i){
+	/**
+	 * removes n or as many as possible from <code>item</code> and returns the number left
+	 * @param item
+	 * @param n
+	 * @return
+	 */
+	public int addStack(Item item, int n){
+		while(stack < stackMax){
+			if(n > 0) {
+				this.stack++;
+				item.stack--;
+				n--;
+			}else {
+				return n;
+			}
+		}return n;
+	}
+	
+	public int delStack(int n){
 		while(stack > 0){
-			if(i <= 0)return i;
-			stack --;i--;
-		}return i;
+			if(n > 0) {
+				stack --;
+				n--;
+			}else {
+				return n;
+			}
+		}
+		return n;
 	}
 
 	public void render(Screen screen, int x, int y, boolean showstack){

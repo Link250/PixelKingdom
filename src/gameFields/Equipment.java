@@ -1,6 +1,5 @@
 package gameFields;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.EnumMap;
 import entities.Player;
 import entities.Player.BAG;

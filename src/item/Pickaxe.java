@@ -6,7 +6,6 @@ import entities.Player;
 import gfx.Mouse;
 import gfx.Screen;
 import gfx.SpriteSheet;
-import item.itemList.MatStack;
 import main.Game;
 import main.InputHandler;
 import main.conversion.ConvertData;
@@ -17,8 +16,6 @@ import pixel.PixelList;
 public abstract class Pickaxe extends Tool{
 	
 	private double npxs = 0;
-	private Item item = new MatStack();
-
 	public Pickaxe(){
 		type = 1;
 		name = "Pickaxe";
@@ -71,7 +68,8 @@ public abstract class Pickaxe extends Tool{
 			}
 			m = PixelList.GetMat(map.getID(pX,pY,l));
 			if(m.ID!=0){
-				if(plr.PickUp(ItemList.NewItem(m.ID)) || Game.devmode){
+//				if(plr.PickUp(ItemList.NewItem(m.ID)) || Game.devmode){
+				if(plr.addToStack(m.ID, 1)==0 || Game.devmode){
 					npxs -= PixelList.GetMat((byte)map.getID(pX, pY, l)).usePickaxe;
 					map.setID(pX, pY, l, 0);
 				}else{npxs = 0;}

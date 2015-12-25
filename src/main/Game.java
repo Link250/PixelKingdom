@@ -18,7 +18,7 @@ import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
@@ -224,14 +224,14 @@ public class Game extends Canvas implements Runnable{
 			createBufferStrategy(2);
 			return;
 		}
-		Graphics g = bs.getDrawGraphics();
-//		g.clearRect(0, 0, WIDTH, HEIGHT);
+		Graphics2D g = (Graphics2D) bs.getDrawGraphics();
 
 		screen.resetPixelAll();
 		
 		switch (gamemode){
 		case Menu :
 			g.drawImage(back, 0, 0, WIDTH, HEIGHT, null);
+//			g.drawImage(back, AffineTransform.getRotateInstance(Math.PI, back.getWidth()/2, back.getHeight()/2), null);
 			menu.render();
 			break;
 		case SinglePlayer :
