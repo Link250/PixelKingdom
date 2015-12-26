@@ -87,7 +87,7 @@ public class MapSelection implements GameMenu{
 			game.SinglePlayer = new SinglePlayer(files[selected]);
 			Game.gamemode = Game.GameMode.SinglePlayer;
 		}
-		if(back.isclicked){
+		if(back.isclicked || Game.input.Esc.click()){
 			if(this.newMapWindow != null)this.newMapWindow.dispose();
 			Game.menu.subMenu=Menu.MainMenu;
 		}

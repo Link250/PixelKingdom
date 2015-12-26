@@ -229,7 +229,7 @@ public class Player extends Mob{
 	public void tick(int numTick) {
 		
 //		map.setlight(x, y, (byte) (64));map.addBlockUpdate(x, y,0); // just for testing lightsystem
-		if(Game.input.space.isPressed() && canJump){
+		if(Game.input.jump.isPressed() && canJump){
 			speedY-= jumpspeed;
 			canJump = false;
 			jumpcooldown = 10;
@@ -242,7 +242,7 @@ public class Player extends Mob{
 			speedX+=1;
 			movingDir = 0;
 		}
-		if(Game.input.shift.isPressed() && !isinair){
+		if(Game.input.crouch.isPressed() && !isinair){
 			iscrouching=true;
 		}else{
 			iscrouching=false;
@@ -282,7 +282,7 @@ public class Player extends Mob{
 		}
 		
 		/*		HOTBAR		*/
-		if(Game.input.mousem.click() || Game.input.H.click()){
+		if(Game.input.mousem.click() || Game.input.hotbar.click()){
 			if(openHotBar == 0) {
 				hotBar.x = Game.input.mouse.x;
 				hotBar.y = Game.input.mouse.y;

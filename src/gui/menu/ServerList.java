@@ -93,7 +93,7 @@ public class ServerList implements GameMenu{
 		for(Button button : ButtonList){
 			button.tick();
 		}
-		if(back.isclicked){
+		if(back.isclicked || Game.input.Esc.click()){
 			if(this.newServerWindow != null)this.newServerWindow.dispose();
 			Game.menu.subMenu=Menu.MainMenu;
 		}

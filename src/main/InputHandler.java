@@ -12,6 +12,27 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
 	
 	Game game;
 	
+	public Key up = new Key();
+	public Key down = new Key();
+	public Key left = new Key();
+	public Key right = new Key();
+	public Key jump = new Key();
+	public Key crouch = new Key();
+	public Key inv = new Key();
+	public Key equip = new Key();
+	public Key craft = new Key();
+	public Key B = new Key();
+	public Key hotbar = new Key();
+	public Key X = new Key();
+	public Key Esc = new Key();
+	public Key F3 = new Key();
+	public Key F5 = new Key();
+	public Key F12 = new Key();
+	public Mouse mouse = new Mouse();
+	public Mouse mousel = new Mouse();
+	public Mouse mouser = new Mouse();
+	public Mouse mousem = new Mouse();
+	
 	public InputHandler(Game game){
 		this.game = game;
 		game.addKeyListener(this);
@@ -27,11 +48,12 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
 		public boolean isPressed(){
 			return pressed;
 		}
+		
 		public boolean isClickable(){
 			return clickable;
 		}
 		
-		public void toggle(boolean isPressed){
+		private void toggle(boolean isPressed){
 			pressed = isPressed;
 		}
 
@@ -99,50 +121,6 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
 		}
 	}
 	
-	public Key up = new Key();
-	public Key down = new Key();
-	public Key left = new Key();
-	public Key right = new Key();
-	public Key space = new Key();
-	public Key shift = new Key();
-	public Key inv = new Key();
-	public Key equip = new Key();
-	public Key craft = new Key();
-	public Key A = new Key();
-	public Key B = new Key();
-	public Key C = new Key();
-	public Key D = new Key();
-	public Key E = new Key();
-	public Key F = new Key();
-	public Key G = new Key();
-	public Key H = new Key();
-	public Key I = new Key();
-	public Key J = new Key();
-	public Key K = new Key();
-	public Key L = new Key();
-	public Key M = new Key();
-	public Key N = new Key();
-	public Key O = new Key();
-	public Key P = new Key();
-	public Key Q = new Key();
-	public Key R = new Key();
-	public Key S = new Key();
-	public Key T = new Key();
-	public Key U = new Key();
-	public Key V = new Key();
-	public Key W = new Key();
-	public Key X = new Key();
-	public Key Y = new Key();
-	public Key Z = new Key();
-	public Key Esc = new Key();
-	public Key F3 = new Key();
-	public Key F5 = new Key();
-	public Key F12 = new Key();
-	public Mouse mouse = new Mouse();
-	public Mouse mousel = new Mouse();
-	public Mouse mouser = new Mouse();
-	public Mouse mousem = new Mouse();
-	
 	public void keyPressed(KeyEvent e){
 		toggleKey(e.getKeyCode(), true);
 	}
@@ -156,12 +134,15 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
 	}
 	
 	public void toggleKey(int keyCode, boolean isPressed){
-		if(keyCode == KeyEvent.VK_W){up.toggle(isPressed);}
+		if(Game.configs.keyConfig.containsKey(keyCode)) {
+			Game.configs.keyConfig.get(keyCode).toggle(isPressed);
+		}
+/*		if(keyCode == KeyEvent.VK_W){up.toggle(isPressed);}
 		if(keyCode == KeyEvent.VK_S){down.toggle(isPressed);}
 		if(keyCode == KeyEvent.VK_A){left.toggle(isPressed);}
 		if(keyCode == KeyEvent.VK_D){right.toggle(isPressed);}
-		if(keyCode == KeyEvent.VK_SPACE){space.toggle(isPressed);}
-		if(keyCode == KeyEvent.VK_SHIFT){shift.toggle(isPressed);}
+		if(keyCode == KeyEvent.VK_SPACE){jump.toggle(isPressed);}
+		if(keyCode == KeyEvent.VK_SHIFT){crouch.toggle(isPressed);}
 		if(keyCode == KeyEvent.VK_ESCAPE){Esc.toggle(isPressed);}
 		if(keyCode == KeyEvent.VK_E){equip.toggle(isPressed);}
 		if(keyCode == KeyEvent.VK_C){craft.toggle(isPressed);}
@@ -169,9 +150,9 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
 		if(keyCode == KeyEvent.VK_F3){F3.toggle(isPressed);}
 		if(keyCode == KeyEvent.VK_F5){F5.toggle(isPressed);}
 		if(keyCode == KeyEvent.VK_F12){F12.toggle(isPressed);}
-		if(keyCode == KeyEvent.VK_H){H.toggle(isPressed);mousem.x=Game.WIDTH/2*Game.SCALE;mousem.y=Game.HEIGHT/2*Game.SCALE;}
+		if(keyCode == KeyEvent.VK_H){hotbar.toggle(isPressed);}
 		if(keyCode == KeyEvent.VK_B){B.toggle(isPressed);}
-		if(keyCode == KeyEvent.VK_X){X.toggle(isPressed);}
+		if(keyCode == KeyEvent.VK_X){X.toggle(isPressed);}*/
 	}
 
 	public void mouseClicked(MouseEvent e) {

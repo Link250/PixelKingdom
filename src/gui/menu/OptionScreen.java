@@ -2,117 +2,83 @@ package gui.menu;
 
 import gfx.SpriteSheet;
 import gui.Button;
-import item.itemList.MatStack;
+import gui.menu.options.Controls;
+import gui.menu.options.Visuals;
 import main.Game;
-import main.PArea;
 
 public class OptionScreen implements GameMenu{
 	
-	private Button  back;
+	public static enum SubMenu{
+		MAIN,VISUALS,CONTROLS;
+	}
 	
-	private Button Stacktype;
-	private MatStack mat, matf, mate, matm;
-	private SpriteSheet itemback;
-	private Game game;
+	private Button visualsButton, controlsButton;
+	private Button back;
+	
+//	private Game game;
+	private Visuals visuals;
+	private Controls controls;
+	
+	private SubMenu subMenu = SubMenu.MAIN;
 	
 	public OptionScreen(Game game) {
-		this.game = game;
+//		this.game = game;
+		this.visuals = new Visuals(this);
+		this.controls = new Controls(this);
+		
 		back = new Button(10, 10, 20, 20);
 		back.gfxData(new SpriteSheet("/Buttons/back.png"), true);
-		
-		Stacktype = new Button(Game.WIDTH/Game.SCALE/2, 80, 70, 20);
-		mat = new MatStack();
-		mate = new MatStack();
-		matm = new MatStack();matm.addStack(511);
-		matf = new MatStack();matf.addStack(1023);
-		itemback = new SpriteSheet("/Items/field.png");
+		visualsButton = new Button(Game.WIDTH/Game.SCALE/2-50,110,100,20);
+		visualsButton.TextData("Visuals", false, 0, 0);
+		controlsButton = new Button(Game.WIDTH/Game.SCALE/2-50,140,100,20);
+		controlsButton.TextData("Controls", false, 0, 0);
+	}
+	
+	public void resetMenu() {
+		this.subMenu = SubMenu.MAIN;
 	}
 	
 	public void tick(){
-		back.tick();
-		if(back.isclicked){
-			Game.menu.subMenu=Menu.MainMenu;
-		}
-		if(Game.input.mousel.isPressed()){
-			int x = Game.input.mouse.x/Game.SCALE;
-			int y = Game.input.mouse.y/Game.SCALE;
-			if(new PArea(Game.WIDTH/Game.SCALE/2,50,128,6).contains(x, y)){
-				Game.configs.PlrCol = ((Game.configs.PlrCol&0xff00ffff) + ((x-Game.WIDTH/Game.SCALE/2)*2<<16)) | 0xff000000;
-				Game.configs.save();
+		switch(this.subMenu) {
+		case CONTROLS:
+			this.controls.tick();
+			break;
+		case VISUALS:
+			this.visuals.tick();
+			break;
+		case MAIN:
+		default:
+			this.back.tick();
+			this.visualsButton.tick();
+			this.controlsButton.tick();
+			if(back.isclicked || Game.input.Esc.click()){
+				Game.menu.subMenu=Menu.MainMenu;
 			}
-			if(new PArea(Game.WIDTH/Game.SCALE/2,57,128,6).contains(x, y)){
-				Game.configs.PlrCol = ((Game.configs.PlrCol&0xffff00ff) + ((x-Game.WIDTH/Game.SCALE/2)*2<<8)) | 0xff000000;
-				Game.configs.save();
+			if(visualsButton.isclicked) {
+				this.subMenu = SubMenu.VISUALS;
 			}
-			if(new PArea(Game.WIDTH/Game.SCALE/2,64,128,6).contains(x, y)){
-				Game.configs.PlrCol = ((Game.configs.PlrCol&0xffffff00) + ((x-Game.WIDTH/Game.SCALE/2)*2)) | 0xff000000;
-				Game.configs.save();
+			if(controlsButton.isclicked) {
+				this.subMenu = SubMenu.CONTROLS;
 			}
-		}
-		
-		Stacktype.tick();
-		mat.addStack(1);
-		if(mat.getStack() == 1024)mat = new MatStack();
-		if(Stacktype.isclicked){
-			Game.configs.stacktype++;
-			if(Game.configs.stacktype > 3)Game.configs.stacktype=1;
-			Game.configs.save();
+			break;
 		}
 	}
 	
 	public void render(){
-		back.render();
-		Game.font.render(Game.screen.width/Game.SCALE/2-30, 10, "Options", 0, 0xff000000, Game.screen);
-		
-		/*		PLAYER COLOR	*/
-		Game.font.render(10, 50, "PlayerColor", 0, 0xff000000, Game.screen);
-		for(int c = -2; c < 258; c+=2){
-			for(int i = 0; i < 6; i++){
-				if(i==0|i==5|c<0|c>255){
-					Game.screen.drawPixelScaled(Game.WIDTH/Game.SCALE/2+c/2, 50+i, 0xff404040);
-					Game.screen.drawPixelScaled(Game.WIDTH/Game.SCALE/2+c/2, 57+i, 0xff404040);
-					Game.screen.drawPixelScaled(Game.WIDTH/Game.SCALE/2+c/2, 64+i, 0xff404040);
-				}else{
-					Game.screen.drawPixelScaled(Game.WIDTH/Game.SCALE/2+c/2, 50+i, 0xff000000|(c<<16));
-					Game.screen.drawPixelScaled(Game.WIDTH/Game.SCALE/2+c/2, 57+i, 0xff000000|(c<<8));
-					Game.screen.drawPixelScaled(Game.WIDTH/Game.SCALE/2+c/2, 64+i, 0xff000000|c);
-				}
-			}
+		switch(this.subMenu) {
+		case CONTROLS:
+			this.controls.render();
+			break;
+		case VISUALS:
+			this.visuals.render();
+			break;
+		case MAIN:
+		default:
+			Game.font.render(Game.screen.width/Game.SCALE/2-30, 10, "Options", 0, 0xff000000, Game.screen);
+			back.render();
+			this.visualsButton.render();
+			this.controlsButton.render();
+			break;
 		}
-		for(int i = 0; i < 6; i++){
-			int c = (Game.configs.PlrCol&0x00ff0000)>>16;
-			Game.screen.drawPixelScaled(Game.WIDTH/Game.SCALE/2+c/2, 50+i, 0xff000000 + ((255-c)<<16) + ((255-c)<<8) + (255-c));
-			c = (Game.configs.PlrCol&0x0000ff00)>>8;
-			Game.screen.drawPixelScaled(Game.WIDTH/Game.SCALE/2+c/2, 57+i, 0xff000000 + ((255-c)<<16) + ((255-c)<<8) + (255-c));
-			c = Game.configs.PlrCol&0x000000ff;
-			Game.screen.drawPixelScaled(Game.WIDTH/Game.SCALE/2+c/2, 64+i, 0xff000000 + ((255-c)<<16) + ((255-c)<<8) + (255-c));
-		}
-		for(int x = 0; x < 12; x++){
-			for(int y = 0; y < 12; y++){
-				if(x == 0 | x == 11 | y == 0 | y == 11){
-					Game.screen.drawPixelScaled(x+Game.WIDTH/Game.SCALE/2+132, y+54, 0xff404040);
-				}else{
-					Game.screen.drawPixelScaled(x+Game.WIDTH/Game.SCALE/2+132, y+54, Game.configs.PlrCol);
-				}
-			}
-		}
-		
-		/*		STACK TYPE	*/
-		Game.font.render(10, 80, "Stack Type", 0, 0xff000000, Game.screen);
-		switch(Game.configs.stacktype){
-		case 1:Stacktype.TextData("Numbers", false, 0, 0);break;
-		case 2:Stacktype.TextData("Colors", false, 0, 0);break;
-		case 3:Stacktype.TextData("Binary", false, 0, 0);break;
-		}
-		Stacktype.render();
-		Game.screen.drawTile(Game.WIDTH/Game.SCALE/2+80, 83, 0, 0, itemback, 0);
-		mate.render(Game.screen, Game.WIDTH/Game.SCALE/2+81, 84, true);
-		Game.screen.drawTile(Game.WIDTH/Game.SCALE/2+100, 83, 0, 0, itemback, 0);
-		matm.render(Game.screen, Game.WIDTH/Game.SCALE/2+101, 84, true);
-		Game.screen.drawTile(Game.WIDTH/Game.SCALE/2+120, 83, 0, 0, itemback, 0);
-		matf.render(Game.screen, Game.WIDTH/Game.SCALE/2+121, 84, true);
-		Game.screen.drawTile(Game.WIDTH/Game.SCALE/2+140, 83, 0, 0, itemback, 0);
-		mat.render(Game.screen, Game.WIDTH/Game.SCALE/2+141, 84, true);
-		
 	}
 }

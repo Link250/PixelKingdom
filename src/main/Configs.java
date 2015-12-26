@@ -1,11 +1,15 @@
 package main;
 
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Map;
+import java.util.TreeMap;
 
+import main.InputHandler.Key;
 import main.conversion.ConvertData;
 
 public class Configs {
@@ -19,6 +23,8 @@ public class Configs {
 	public int PlrCol;
 	public int resX,resY;
 	public byte stacktype;
+	
+	public Map<Integer, Key> keyConfig;
 
 	public Configs(){
 		file = new File(Game.GAME_PATH+"Options.optn");
@@ -27,9 +33,29 @@ public class Configs {
 		}
 		FieldPosX = new int[8];
 		FieldPosY = new int[8];
+		keyConfig = new TreeMap<>();
 		
 		load();
 		
+	}
+	
+	public void setDefaultKeys() {
+		this.keyConfig.put(KeyEvent.VK_W,Game.input.up);
+		this.keyConfig.put(KeyEvent.VK_S,Game.input.down);
+		this.keyConfig.put(KeyEvent.VK_A,Game.input.left);
+		this.keyConfig.put(KeyEvent.VK_D,Game.input.right);
+		this.keyConfig.put(KeyEvent.VK_SPACE,Game.input.jump);
+		this.keyConfig.put(KeyEvent.VK_SHIFT,Game.input.crouch);
+		this.keyConfig.put(KeyEvent.VK_ESCAPE,Game.input.Esc);
+		this.keyConfig.put(KeyEvent.VK_E,Game.input.equip);
+		this.keyConfig.put(KeyEvent.VK_C,Game.input.craft);
+		this.keyConfig.put(KeyEvent.VK_I,Game.input.inv);
+		this.keyConfig.put(KeyEvent.VK_F3,Game.input.F3);
+		this.keyConfig.put(KeyEvent.VK_F5,Game.input.F5);
+		this.keyConfig.put(KeyEvent.VK_F12,Game.input.F12);
+		this.keyConfig.put(KeyEvent.VK_H,Game.input.hotbar);
+		this.keyConfig.put(KeyEvent.VK_B,Game.input.B);
+		this.keyConfig.put(KeyEvent.VK_X,Game.input.X);
 	}
 	
 	public void create(){
