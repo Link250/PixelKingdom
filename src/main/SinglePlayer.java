@@ -52,15 +52,15 @@ public class SinglePlayer {
 
 		map.tick(tickCount);
 		
-		if(input.F3.click()){
+		if(input.debugInfo.click()){
 			if(debuginfo)debuginfo = false;
 			else debuginfo = true;
 		}
-		if(input.F5.click()){
+		if(input.debugMode.click()){
 			if(Game.devmode)Game.devmode = false;
 			else Game.devmode = true;
 		}
-		if(input.Esc.isPressed()){
+		if(input.menu.isPressed()){
 			map.save();
 			this.save();
 			Game.reset = true;
@@ -69,7 +69,7 @@ public class SinglePlayer {
 		screen.yOffset= player.y-Game.HEIGHT/3/2;
 
 		if(debuginfo){
-			if(Game.devmode&&Game.input.X.click()) {
+			if(Game.devmode&&Game.input.debugPixel.click()) {
 				int X = Game.input.mouse.x/Game.SCALE+Game.screen.xOffset, Y = Game.input.mouse.y/Game.SCALE+Game.screen.yOffset;
 				Game.logInfo(X+" "+Y+" id{"
 						+map.getID(X, Y, Map.LAYER_BACK)+","

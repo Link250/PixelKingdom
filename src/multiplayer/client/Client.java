@@ -92,11 +92,11 @@ public class Client {
 			this.serverManager.sendPlayerUpdate(player);
 		}
 		
-		if(input.Esc.isPressed()){
+		if(input.menu.isPressed()){
 			this.serverManager.disconnect();
 			Game.reset = true;
 		}
-		if(input.F3.click()){
+		if(input.debugInfo.click()){
 			debuginfo =! debuginfo;
 		}
 		if(tickCount%60==0){

@@ -34,9 +34,9 @@ public class ServerList implements GameMenu{
 		back = new Button(10, 10, 20, 20);
 		back.gfxData(new SpriteSheet("/Buttons/back.png"), true);
 		add = new Button(Game.screen.width/Game.SCALE-30, 10, 20, 20);
-		add.gfxData(new SpriteSheet("/Buttons/new.png"), true);
+		add.gfxData(new SpriteSheet("/Buttons/add_server.png"), true);
 		start = new Button(Game.screen.width/Game.SCALE-30, Game.screen.height/Game.SCALE-30, 20, 20);
-		start.gfxData(new SpriteSheet("/Buttons/new.png"), true);
+		start.gfxData(new SpriteSheet("/Buttons/new_server.png"), true);
 		del = new Button(Game.screen.width/Game.SCALE/2-80, 100, 20, 20);
 		del.gfxData(new SpriteSheet("/Buttons/delete.png"), true);
 		join = new Button(Game.screen.width/Game.SCALE/2+60, 100, 20, 20);
@@ -93,7 +93,7 @@ public class ServerList implements GameMenu{
 		for(Button button : ButtonList){
 			button.tick();
 		}
-		if(back.isclicked || Game.input.Esc.click()){
+		if(back.isclicked || Game.input.menu.click()){
 			if(this.newServerWindow != null)this.newServerWindow.dispose();
 			Game.menu.subMenu=Menu.MainMenu;
 		}

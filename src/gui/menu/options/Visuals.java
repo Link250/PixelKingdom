@@ -31,7 +31,7 @@ public class Visuals {
 	
 	public void tick(){
 		back.tick();
-		if(back.isclicked || Game.input.Esc.click()){
+		if(back.isclicked || Game.input.menu.click()){
 			this.mainMenu.resetMenu();
 		}
 		if(Game.input.mousel.isPressed()){

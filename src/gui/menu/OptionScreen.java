@@ -51,7 +51,7 @@ public class OptionScreen implements GameMenu{
 			this.back.tick();
 			this.visualsButton.tick();
 			this.controlsButton.tick();
-			if(back.isclicked || Game.input.Esc.click()){
+			if(back.isclicked || Game.input.menu.click()){
 				Game.menu.subMenu=Menu.MainMenu;
 			}
 			if(visualsButton.isclicked) {

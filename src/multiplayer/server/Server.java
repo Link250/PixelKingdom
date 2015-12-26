@@ -68,7 +68,7 @@ public class Server implements Runnable{
 			e.printStackTrace();
 		}
 		
-		if(Game.devmode&&Game.input.X.click()) {
+		if(Game.devmode&&Game.input.debugPixel.click()) {
 			int X = Game.input.mouse.x/Game.SCALE+Game.screen.xOffset, Y = Game.input.mouse.y/Game.SCALE+Game.screen.yOffset;
 			Game.logInfo(X+" "+Y+" id{"+map.getID(X, Y, 1)		+","+map.getID(X, Y, 2)		+","+map.getID(X, Y, 3)		+"}");
 			Game.logInfo(X+" "+Y+" up{"+map.isUpdating(X, Y, 0)	+","+map.isUpdating(X, Y, 0)+","+map.isUpdating(X, Y, 0)+"}");

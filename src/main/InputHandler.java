@@ -12,6 +12,8 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
 	
 	Game game;
 	
+	public int lastKeyCode = 0;
+	
 	public Key up = new Key();
 	public Key down = new Key();
 	public Key left = new Key();
@@ -21,13 +23,11 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
 	public Key inv = new Key();
 	public Key equip = new Key();
 	public Key craft = new Key();
-	public Key B = new Key();
 	public Key hotbar = new Key();
-	public Key X = new Key();
-	public Key Esc = new Key();
-	public Key F3 = new Key();
-	public Key F5 = new Key();
-	public Key F12 = new Key();
+	public Key debugPixel = new Key();
+	public Key menu = new Key();
+	public Key debugInfo = new Key();
+	public Key debugMode = new Key();
 	public Mouse mouse = new Mouse();
 	public Mouse mousel = new Mouse();
 	public Mouse mouser = new Mouse();
@@ -122,10 +122,12 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
 	}
 	
 	public void keyPressed(KeyEvent e){
+		this.lastKeyCode = e.getKeyCode();
 		toggleKey(e.getKeyCode(), true);
 	}
 
 	public void keyReleased(KeyEvent e){
+		this.lastKeyCode = 0;
 		toggleKey(e.getKeyCode(), false);
 	}
 	
@@ -137,22 +139,6 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
 		if(Game.configs.keyConfig.containsKey(keyCode)) {
 			Game.configs.keyConfig.get(keyCode).toggle(isPressed);
 		}
-/*		if(keyCode == KeyEvent.VK_W){up.toggle(isPressed);}
-		if(keyCode == KeyEvent.VK_S){down.toggle(isPressed);}
-		if(keyCode == KeyEvent.VK_A){left.toggle(isPressed);}
-		if(keyCode == KeyEvent.VK_D){right.toggle(isPressed);}
-		if(keyCode == KeyEvent.VK_SPACE){jump.toggle(isPressed);}
-		if(keyCode == KeyEvent.VK_SHIFT){crouch.toggle(isPressed);}
-		if(keyCode == KeyEvent.VK_ESCAPE){Esc.toggle(isPressed);}
-		if(keyCode == KeyEvent.VK_E){equip.toggle(isPressed);}
-		if(keyCode == KeyEvent.VK_C){craft.toggle(isPressed);}
-		if(keyCode == KeyEvent.VK_I){inv.toggle(isPressed);}
-		if(keyCode == KeyEvent.VK_F3){F3.toggle(isPressed);}
-		if(keyCode == KeyEvent.VK_F5){F5.toggle(isPressed);}
-		if(keyCode == KeyEvent.VK_F12){F12.toggle(isPressed);}
-		if(keyCode == KeyEvent.VK_H){hotbar.toggle(isPressed);}
-		if(keyCode == KeyEvent.VK_B){B.toggle(isPressed);}
-		if(keyCode == KeyEvent.VK_X){X.toggle(isPressed);}*/
 	}
 
 	public void mouseClicked(MouseEvent e) {

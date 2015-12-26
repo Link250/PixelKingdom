@@ -46,16 +46,14 @@ public class Configs {
 		this.keyConfig.put(KeyEvent.VK_D,Game.input.right);
 		this.keyConfig.put(KeyEvent.VK_SPACE,Game.input.jump);
 		this.keyConfig.put(KeyEvent.VK_SHIFT,Game.input.crouch);
-		this.keyConfig.put(KeyEvent.VK_ESCAPE,Game.input.Esc);
-		this.keyConfig.put(KeyEvent.VK_E,Game.input.equip);
-		this.keyConfig.put(KeyEvent.VK_C,Game.input.craft);
-		this.keyConfig.put(KeyEvent.VK_I,Game.input.inv);
-		this.keyConfig.put(KeyEvent.VK_F3,Game.input.F3);
-		this.keyConfig.put(KeyEvent.VK_F5,Game.input.F5);
-		this.keyConfig.put(KeyEvent.VK_F12,Game.input.F12);
+		this.keyConfig.put(KeyEvent.VK_ESCAPE,Game.input.menu);
 		this.keyConfig.put(KeyEvent.VK_H,Game.input.hotbar);
-		this.keyConfig.put(KeyEvent.VK_B,Game.input.B);
-		this.keyConfig.put(KeyEvent.VK_X,Game.input.X);
+		this.keyConfig.put(KeyEvent.VK_I,Game.input.inv);
+		this.keyConfig.put(KeyEvent.VK_C,Game.input.craft);
+		this.keyConfig.put(KeyEvent.VK_E,Game.input.equip);
+		this.keyConfig.put(KeyEvent.VK_F3,Game.input.debugInfo);
+		this.keyConfig.put(KeyEvent.VK_F5,Game.input.debugMode);
+		this.keyConfig.put(KeyEvent.VK_X,Game.input.debugPixel);
 	}
 	
 	public void create(){
