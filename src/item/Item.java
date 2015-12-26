@@ -13,6 +13,7 @@ public abstract class Item {
 	
 	protected int ID;
 	protected String name;
+	protected String displayName;
 	protected int stack;
 	protected int stackMax;
 	protected SpriteSheet gfx;
@@ -23,6 +24,10 @@ public abstract class Item {
 	public Item(){
 	}
 	
+	public String getDisplayName(){
+		return displayName;
+	}
+
 	public String getName(){
 		return name;
 	}

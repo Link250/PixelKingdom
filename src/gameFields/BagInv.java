@@ -20,7 +20,7 @@ public class BagInv extends GameField {
 		this.width = bag.invWidth();
 		this.setSize(width*12, bag.invSize()/width*12+11);
 		this.bag = bag;
-		this.title = bag.getName();
+		this.title = bag.getDisplayName();
 	}
 
 	public void tick() {
