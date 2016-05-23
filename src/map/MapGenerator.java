@@ -31,6 +31,49 @@ public class MapGenerator {
 		}
 	}
 	
+	/**
+	 * WIP
+	 */
+	public static void newTreeType2(int x, int y, short[][][] map){
+		int treeSize = (int)(Math.random()*4+6);
+		for (int i = 1; i < treeSize; i++) {
+			drawTwig(x, y, (i*Math.PI/treeSize), 1, 10, map, false);
+		}
+		drawTwig(x, y, Math.PI*1.5, treeSize, 5, map, true);
+	}
+	
+	/**
+	 * WIP
+	 */
+	private static void drawTwig(int x, int y, double r, int size, int length, short[][][] map, boolean leafes){
+		DrawPixelLine(x, y, (int)(x+length*Math.cos(r)), (int)(y+length*Math.sin(r)), map[Map.LAYER_FRONT], (byte)4, size/4, true);
+		if(leafes && size == 0)DrawPixelLine(x, y, (int)(x+length*Math.cos(r)), (int)(y+length*Math.sin(r)), map[Map.LAYER_BACK], (byte)5, 2, false);
+		double diff = Math.random()*Math.PI/8-Math.PI/16;
+		r += diff;
+		if(size>0) {
+			drawTwig((int)(x+length*Math.cos(r)), (int)(y+length*Math.sin(r)), r, size-1, 5, map, leafes);
+			r += (diff<0 ? 1 : -1)*Math.PI/4;
+			if(size <6)drawTwig((int)(x+length*Math.cos(r)), (int)(y+length*Math.sin(r)), r, size-1, 5, map, leafes);
+		}
+	}
+	
+	public static void newTreeType3(int x, int y, short[][][] map){
+		int treeSize = (int)(Math.random()*8+12);
+		int stepsize = 5;
+		double leftTwigRad = Math.PI*0.8;
+		double rightTwigRad = Math.PI*0.2;
+		for (int i = 0; i < treeSize; i++) {
+			DrawPixelLine(x, y-i*stepsize, x, y-(i+1)*stepsize, map[Map.LAYER_FRONT], (byte)4, (treeSize-i)/8, true);
+			if(i>treeSize/4) {
+				int twigLength = 5 + treeSize-i;
+				DrawPixelLine(x, y-(i+1)*stepsize, (int)(x+Math.cos(rightTwigRad)*twigLength), (int)(y+Math.sin(rightTwigRad)*twigLength-(i+1)*stepsize), map[Map.LAYER_FRONT], (byte)4, 0, true);
+				DrawPixelLine(x, y-(i+1)*stepsize, (int)(x+Math.cos(rightTwigRad)*twigLength), (int)(y+Math.sin(rightTwigRad)*twigLength-(i+1)*stepsize), map[Map.LAYER_BACK], (byte)5, 2, true);
+				DrawPixelLine(x, y-(i+1)*stepsize, (int)(x+Math.cos(leftTwigRad)*twigLength), (int)(y+Math.sin(leftTwigRad)*twigLength-(i+1)*stepsize), map[Map.LAYER_FRONT], (byte)4, 0, true);
+				DrawPixelLine(x, y-(i+1)*stepsize, (int)(x+Math.cos(leftTwigRad)*twigLength), (int)(y+Math.sin(leftTwigRad)*twigLength-(i+1)*stepsize), map[Map.LAYER_BACK], (byte)5, 2, true);
+			}
+		}
+	}
+	
 	public static Point getNearestPixel(int sx, int sy, int r, short[][] Map, byte ID){
 		int fx=0,fy=0;
 		double d=r;

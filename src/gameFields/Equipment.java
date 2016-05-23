@@ -63,9 +63,9 @@ public class Equipment extends GameField {
 		
 		for (BAG bag : Player.BAG.values()) {
 			if(this.bags.containsKey(bag)) {
-				this.bags.get(bag).render(Game.screen, Game.screen.xOffset+this.bagAreas.get(bag).x, Game.screen.yOffset+this.bagAreas.get(bag).y);
+				this.bags.get(bag).render(Game.screen, Game.screen.xOffset+this.bagAreas.get(bag).x+field.x, Game.screen.yOffset+this.bagAreas.get(bag).y+field.y);
 			}else{
-				Game.screen.drawGUITile(Game.screen.xOffset+this.bagAreas.get(bag).x, Game.screen.yOffset+this.bagAreas.get(bag).y, 0, 0, bag.defaultSprite, 0);
+				Game.screen.drawGUITile(Game.screen.xOffset+this.bagAreas.get(bag).x+field.x, Game.screen.yOffset+this.bagAreas.get(bag).y+field.y, 0, 0, bag.defaultSprite, 0);
 			}
 		}
 	}
