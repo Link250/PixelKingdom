@@ -10,6 +10,19 @@ import java.awt.event.MouseWheelListener;
 
 public class InputHandler implements KeyListener, MouseListener, MouseMotionListener, MouseWheelListener{
 	
+	public enum Keys{
+		UP("Up"), DOWN("Down"), LEFT("Left"), RIGHT("Right"),
+		JUMP("Jump"), CROUCH("Crouch"),
+		INV("Inventory"), EQUIP("Equipment"), CRAFT("Craft"), HOTBAR("Hotbar"),
+		DEBUGPXL("Debug Pixel"), MENU("Menu"), DEBUGINFO("Debug Info"), DEBUGMODE("Debug Mode");
+		
+		private String name;
+		
+		private Keys(String name){
+			this.name = name;
+		}
+	}
+	
 	Game game;
 	
 	public int lastKeyCode = 0;
