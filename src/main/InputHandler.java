@@ -10,37 +10,10 @@ import java.awt.event.MouseWheelListener;
 
 public class InputHandler implements KeyListener, MouseListener, MouseMotionListener, MouseWheelListener{
 	
-	public enum Keys{
-		UP("Up"), DOWN("Down"), LEFT("Left"), RIGHT("Right"),
-		JUMP("Jump"), CROUCH("Crouch"),
-		INV("Inventory"), EQUIP("Equipment"), CRAFT("Craft"), HOTBAR("Hotbar"),
-		DEBUGPXL("Debug Pixel"), MENU("Menu"), DEBUGINFO("Debug Info"), DEBUGMODE("Debug Mode");
-		
-		private String name;
-		
-		private Keys(String name){
-			this.name = name;
-		}
-	}
-	
 	Game game;
 	
 	public int lastKeyCode = 0;
 	
-	public Key up = new Key();
-	public Key down = new Key();
-	public Key left = new Key();
-	public Key right = new Key();
-	public Key jump = new Key();
-	public Key crouch = new Key();
-	public Key inv = new Key();
-	public Key equip = new Key();
-	public Key craft = new Key();
-	public Key hotbar = new Key();
-	public Key debugPixel = new Key();
-	public Key menu = new Key();
-	public Key debugInfo = new Key();
-	public Key debugMode = new Key();
 	public Mouse mouse = new Mouse();
 	public Mouse mousel = new Mouse();
 	public Mouse mouser = new Mouse();
@@ -52,35 +25,6 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
 		game.addMouseListener(this);
 		game.addMouseMotionListener(this);
 		game.addMouseWheelListener(this);
-	}
-	
-	public class Key{
-		private boolean pressed = false;
-		private boolean clickable = true;
-		
-		public boolean isPressed(){
-			return pressed;
-		}
-		
-		public boolean isClickable(){
-			return clickable;
-		}
-		
-		private void toggle(boolean isPressed){
-			pressed = isPressed;
-		}
-
-		public boolean click(){
-			if(clickable && pressed){
-				clickable = false;
-				return pressed;
-			}else{
-				if(!pressed){
-					clickable = true;
-				}
-			}
-			return false;
-		}
 	}
 	
 	public class Mouse{

@@ -7,6 +7,7 @@ import gfx.SpriteSheet;
 import item.*;
 import item.Recipe.component;
 import main.Game;
+import main.Keys;
 import main.conversion.ConvertData;
 import map.Map;
 import gameFields.*;
@@ -229,25 +230,25 @@ public class Player extends Mob{
 	public void tick(int numTick) {
 		
 //		map.setlight(x, y, (byte) (64));map.addBlockUpdate(x, y,0); // just for testing lightsystem
-		if(Game.input.jump.isPressed() && canJump){
+		if(Keys.JUMP.isPressed() && canJump){
 			speedY-= jumpspeed;
 			canJump = false;
 			jumpcooldown = 10;
 		}
-		if(Game.input.left.isPressed() && speedX > -walkspeed){
+		if(Keys.LEFT.isPressed() && speedX > -walkspeed){
 			speedX-=1;
 			movingDir = 1;
 		}
-		if(Game.input.right.isPressed()  && speedX < walkspeed){
+		if(Keys.RIGHT.isPressed()  && speedX < walkspeed){
 			speedX+=1;
 			movingDir = 0;
 		}
-		if(Game.input.crouch.isPressed() && !isinair){
+		if(Keys.CROUCH.isPressed() && !isinair){
 			iscrouching=true;
 		}else{
 			iscrouching=false;
 		}
-		if((!Game.input.right.isPressed() && !Game.input.left.isPressed()) | (Game.input.right.isPressed() && Game.input.left.isPressed())){
+		if(!Keys.RIGHT.isPressed() == !Keys.LEFT.isPressed()){
 			speedX=0;
 			isMoving = false;
 		}else{
@@ -282,7 +283,7 @@ public class Player extends Mob{
 		}
 		
 		/*		HOTBAR		*/
-		if(Game.input.mousem.click() || Game.input.hotbar.click()){
+		if(Game.input.mousem.click() || Keys.HOTBAR.click()){
 			if(openHotBar == 0) {
 				hotBar.x = Game.input.mouse.x;
 				hotBar.y = Game.input.mouse.y;
@@ -303,17 +304,17 @@ public class Player extends Mob{
 		}
 
 		/*		EQUIPMENT		*/
-		if(Game.input.equip.click()){
+		if(Keys.EQUIP.click()){
 			openEquip = !openEquip;
 		}if(openEquip)equipment.tick();
 		
 		/*		CRAFTING		*/
-		if(Game.input.craft.click()){
+		if(Keys.CRAFT.click()){
 			openCraft = !openCraft;
 		}if(openCraft)crafting.tick();
 		
 		/*		INVENTORY		*/
-		if(Game.input.inv.click()){
+		if(Keys.INV.click()){
 			openInv = !openInv;
 		}if(openInv){
 			for (BagInv bagInv : bagInvs.values()) {

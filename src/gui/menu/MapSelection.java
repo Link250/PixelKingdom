@@ -4,6 +4,7 @@ import gfx.SpriteSheet;
 import gui.Button;
 import gui.NewMapWindow;
 import main.Game;
+import main.Keys;
 import main.SinglePlayer;
 
 import java.io.File;
@@ -87,7 +88,7 @@ public class MapSelection implements GameMenu{
 			game.SinglePlayer = new SinglePlayer(files[selected]);
 			Game.gamemode = Game.GameMode.SinglePlayer;
 		}
-		if(back.isclicked || Game.input.menu.click()){
+		if(back.isclicked || Keys.MENU.click()){
 			if(this.newMapWindow != null)this.newMapWindow.dispose();
 			Game.menu.subMenu=Menu.MainMenu;
 		}

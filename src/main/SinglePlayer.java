@@ -14,12 +14,10 @@ import javax.imageio.ImageIO;
 import entities.Player;
 import gfx.Screen;
 import gfx.SpriteSheet;
-import main.InputHandler;
 import map.Map;
 
 public class SinglePlayer {
 	private Screen screen;
-	private InputHandler input;
 	protected Map map;
 	private Player player;
 	public static boolean debuginfo = false;
@@ -30,7 +28,6 @@ public class SinglePlayer {
 	public SinglePlayer(String files){
 		try {back = ImageIO.read(SpriteSheet.class.getResourceAsStream("/NormalBack.png"));} catch (IOException e) {e.printStackTrace();}
 		this.screen = Game.screen;
-		this.input = Game.input;
 		this.files = files;
 		map = new Map(files, screen);
 		player = new Player(map);
@@ -52,15 +49,15 @@ public class SinglePlayer {
 
 		map.tick(tickCount);
 		
-		if(input.debugInfo.click()){
+		if(Keys.DEBUGINFO.click()){
 			if(debuginfo)debuginfo = false;
 			else debuginfo = true;
 		}
-		if(input.debugMode.click()){
+		if(Keys.DEBUGMODE.click()){
 			if(Game.devmode)Game.devmode = false;
 			else Game.devmode = true;
 		}
-		if(input.menu.isPressed()){
+		if(Keys.MENU.isPressed()){
 			map.save();
 			this.save();
 			Game.reset = true;
@@ -69,7 +66,7 @@ public class SinglePlayer {
 		screen.yOffset= player.y-Game.HEIGHT/3/2;
 
 		if(debuginfo){
-			if(Game.devmode&&Game.input.debugPixel.click()) {
+			if(Game.devmode&&Keys.DEBUGPXL.click()) {
 				int X = Game.input.mouse.x/Game.SCALE+Game.screen.xOffset, Y = Game.input.mouse.y/Game.SCALE+Game.screen.yOffset;
 				Game.logInfo(X+" "+Y+" id{"
 						+map.getID(X, Y, Map.LAYER_BACK)+","

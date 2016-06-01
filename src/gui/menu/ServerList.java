@@ -13,6 +13,7 @@ import gfx.SpriteSheet;
 import gui.Button;
 import gui.NewServerWindow;
 import main.Game;
+import main.Keys;
 import multiplayer.client.Client;
 import multiplayer.server.Server;
 
@@ -93,7 +94,7 @@ public class ServerList implements GameMenu{
 		for(Button button : ButtonList){
 			button.tick();
 		}
-		if(back.isclicked || Game.input.menu.click()){
+		if(back.isclicked || Keys.MENU.click()){
 			if(this.newServerWindow != null)this.newServerWindow.dispose();
 			Game.menu.subMenu=Menu.MainMenu;
 		}

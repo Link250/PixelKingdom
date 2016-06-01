@@ -5,6 +5,7 @@ import gui.Button;
 import gui.menu.OptionScreen;
 import item.itemList.MatStack;
 import main.Game;
+import main.Keys;
 import main.PArea;
 
 public class Visuals {
@@ -31,7 +32,7 @@ public class Visuals {
 	
 	public void tick(){
 		back.tick();
-		if(back.isclicked || Game.input.menu.click()){
+		if(back.isclicked || Keys.MENU.click()){
 			this.mainMenu.resetMenu();
 		}
 		if(Game.input.mousel.isPressed()){

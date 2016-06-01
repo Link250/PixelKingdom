@@ -5,6 +5,7 @@ import gui.Button;
 import gui.menu.options.Controls;
 import gui.menu.options.Visuals;
 import main.Game;
+import main.Keys;
 
 public class OptionScreen implements GameMenu{
 	
@@ -51,7 +52,7 @@ public class OptionScreen implements GameMenu{
 			this.back.tick();
 			this.visualsButton.tick();
 			this.controlsButton.tick();
-			if(back.isclicked || Game.input.menu.click()){
+			if(back.isclicked || Keys.MENU.click()){
 				Game.menu.subMenu=Menu.MainMenu;
 			}
 			if(visualsButton.isclicked) {

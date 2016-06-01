@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
 
-import main.InputHandler.Key;
 import main.conversion.ConvertData;
 
 public class Configs {
@@ -24,7 +23,7 @@ public class Configs {
 	public int resX,resY;
 	public byte stacktype;
 	
-	public Map<Integer, Key> keyConfig;
+	public Map<Integer, Keys> keyConfig;
 
 	public Configs(){
 		file = new File(Game.GAME_PATH+"Options.optn");
@@ -40,20 +39,20 @@ public class Configs {
 	}
 	
 	public void setDefaultKeys() {
-		this.keyConfig.put(KeyEvent.VK_W,Game.input.up);
-		this.keyConfig.put(KeyEvent.VK_S,Game.input.down);
-		this.keyConfig.put(KeyEvent.VK_A,Game.input.left);
-		this.keyConfig.put(KeyEvent.VK_D,Game.input.right);
-		this.keyConfig.put(KeyEvent.VK_SPACE,Game.input.jump);
-		this.keyConfig.put(KeyEvent.VK_SHIFT,Game.input.crouch);
-		this.keyConfig.put(KeyEvent.VK_ESCAPE,Game.input.menu);
-		this.keyConfig.put(KeyEvent.VK_H,Game.input.hotbar);
-		this.keyConfig.put(KeyEvent.VK_I,Game.input.inv);
-		this.keyConfig.put(KeyEvent.VK_C,Game.input.craft);
-		this.keyConfig.put(KeyEvent.VK_E,Game.input.equip);
-		this.keyConfig.put(KeyEvent.VK_F3,Game.input.debugInfo);
-		this.keyConfig.put(KeyEvent.VK_F5,Game.input.debugMode);
-		this.keyConfig.put(KeyEvent.VK_X,Game.input.debugPixel);
+		this.keyConfig.put(KeyEvent.VK_W,Keys.UP);
+		this.keyConfig.put(KeyEvent.VK_S,Keys.DOWN);
+		this.keyConfig.put(KeyEvent.VK_A,Keys.LEFT);
+		this.keyConfig.put(KeyEvent.VK_D,Keys.RIGHT);
+		this.keyConfig.put(KeyEvent.VK_SPACE,Keys.JUMP);
+		this.keyConfig.put(KeyEvent.VK_SHIFT,Keys.CROUCH);
+		this.keyConfig.put(KeyEvent.VK_ESCAPE,Keys.MENU);
+		this.keyConfig.put(KeyEvent.VK_H,Keys.HOTBAR);
+		this.keyConfig.put(KeyEvent.VK_I,Keys.INV);
+		this.keyConfig.put(KeyEvent.VK_C,Keys.CRAFT);
+		this.keyConfig.put(KeyEvent.VK_E,Keys.EQUIP);
+		this.keyConfig.put(KeyEvent.VK_F3,Keys.DEBUGINFO);
+		this.keyConfig.put(KeyEvent.VK_F5,Keys.DEBUGMODE);
+		this.keyConfig.put(KeyEvent.VK_X,Keys.DEBUGPXL);
 	}
 	
 	public void create(){

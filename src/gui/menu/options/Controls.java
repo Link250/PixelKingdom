@@ -10,7 +10,7 @@ import gfx.SpriteSheet;
 import gui.Button;
 import gui.menu.OptionScreen;
 import main.Game;
-import main.InputHandler.Key;
+import main.Keys;
 
 public class Controls {
 	private OptionScreen mainMenu;
@@ -26,26 +26,15 @@ public class Controls {
 		
 		this.buttonValues = new HashMap<>();
 		this.keyConfigs = new ArrayList<>();
-//		this.resetKeyButtons();
+		this.resetKeyButtons();
 	}
 	
 	private void resetKeyButtons() {
 		this.buttonValues.clear();
 		this.keyConfigs.clear();
-		addKeyButton("Up",Game.input.up);
-		addKeyButton("Down",Game.input.down);
-		addKeyButton("Left",Game.input.left);
-		addKeyButton("Right",Game.input.right);
-		addKeyButton("Jump",Game.input.jump);
-		addKeyButton("Crouch",Game.input.crouch);
-		addKeyButton("Hotbar",Game.input.hotbar);
-		addKeyButton("Inventory",Game.input.inv);
-		addKeyButton("Crafting",Game.input.craft);
-		addKeyButton("Equipment",Game.input.equip);
-		addKeyButton("Menu",Game.input.menu);
-		addKeyButton("Debug Mode",Game.input.debugMode);
-		addKeyButton("Debug Info",Game.input.debugInfo);
-		addKeyButton("Debug Pixel",Game.input.debugPixel);
+		for (Keys key : Keys.values()) {
+			addKeyButton(key.getName(), key);
+		}
 		int i = 0;
 		for (KeyConfig keyConfig : keyConfigs) {
 			keyConfig.button.SetPos(Game.screen.width/Game.SCALE/2, Game.screen.height/Game.SCALE/keyConfigs.size()*i);
@@ -54,9 +43,9 @@ public class Controls {
 		}
 	}
 	
-	private void addKeyButton(String name, Key key) {
+	private void addKeyButton(String name, Keys key) {
 		Button button = new Button(100, 100, 100, 20);
-		for (Entry<Integer, Key> entry : Game.configs.keyConfig.entrySet()) {
+		for (Entry<Integer, Keys> entry : Game.configs.keyConfig.entrySet()) {
 			if(key.equals(entry.getValue())) {
 				buttonValues.put(button, entry.getKey());
 				button.TextData(KeyEvent.getKeyText(entry.getKey()), false, 5, 0);
@@ -69,7 +58,7 @@ public class Controls {
 	private void setKey(KeyConfig keyConfig){
 		int keyCode = 0;
 		int keyCodeOld = this.buttonValues.get(keyConfig.button);
-		Key key = Game.configs.keyConfig.get(keyCodeOld);
+		Keys key = Game.configs.keyConfig.get(keyCodeOld);
 		while((keyCode=Game.input.lastKeyCode)==0) {try{Thread.sleep(10);} catch (InterruptedException e) {}}
 		//check if this key is unused
 		for (Integer code : Game.configs.keyConfig.keySet()) {
@@ -85,21 +74,21 @@ public class Controls {
 	
 	public void tick(){
 		back.tick();
-		if(back.isclicked || Game.input.menu.click()){
+		if(back.isclicked || Keys.MENU.click()){
 			this.mainMenu.resetMenu();
 		}
-//		for (KeyConfig keyConfig : keyConfigs) {
-//			if(keyConfig.tick())break;
-//		}
+		for (KeyConfig keyConfig : keyConfigs) {
+			if(keyConfig.tick())break;
+		}
 	}
 	
 	public void render(){
 		back.render();
 		Game.font.render(Game.screen.width/Game.SCALE/2-30, 10, "Controls", 0, 0xff000000, Game.screen);
-		Game.font.render(Game.screen.width/Game.SCALE/2-50, Game.screen.height/Game.SCALE/2, "COMING-SOON", 0, 0xff000000, Game.screen);
-//		for (KeyConfig keyConfig : keyConfigs) {
-//			keyConfig.render();
-//		}
+//		Game.font.render(Game.screen.width/Game.SCALE/2-50, Game.screen.height/Game.SCALE/2, "COMING-SOON", 0, 0xff000000, Game.screen);
+		for (KeyConfig keyConfig : keyConfigs) {
+			keyConfig.render();
+		}
 	}
 	
 	private class KeyConfig{
