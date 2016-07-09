@@ -7,6 +7,7 @@ import gfx.Mouse;
 import gfx.SpriteSheet;
 import item.*;
 import item.itemList.MatStack;
+import main.MainConfig.GameFields;
 import main.Game;
 import main.PArea;
 
@@ -25,7 +26,7 @@ public class Crafting extends GameField {
 	public Player plr;
 	
 	public Crafting(Player plr){
-		super(5*12+4,10+ 5*12, 7);
+		super(5*12+4,10+ 5*12, GameFields.Field_Crafting);
 		this.plr = plr;
 		types.add(Tool.class);
 		types.add(Bag.class);

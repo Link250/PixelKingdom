@@ -1,5 +1,6 @@
 package main;
 
+import static main.KeyConfig.keyMapping;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -93,8 +94,8 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
 	}
 	
 	public void toggleKey(int keyCode, boolean isPressed){
-		if(Game.configs.keyConfig.containsKey(keyCode)) {
-			Game.configs.keyConfig.get(keyCode).toggle(isPressed);
+		if(keyMapping.containsKey(keyCode)) {
+			keyMapping.get(keyCode).toggle(isPressed);
 		}
 	}
 

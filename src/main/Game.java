@@ -25,6 +25,7 @@ import java.awt.Toolkit;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
+import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
 import javax.imageio.ImageIO;
@@ -66,7 +67,6 @@ public class Game extends Canvas implements Runnable{
 	private BufferedImage GUI = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
 	private int[] pxsGUI = ((DataBufferInt)GUI.getRaster().getDataBuffer()).getData();
 	
-	public static Configs configs;
 	public static ItemList itemlist;
 	public static PixelList pixellist;
 	public static BiomeList biomelist;
@@ -120,7 +120,6 @@ public class Game extends Canvas implements Runnable{
 		try {windowIcon = ImageIO.read(SpriteSheet.class.getResourceAsStream("/WindowIcon.png"));} catch (IOException e) {e.printStackTrace();}
 		frame.setIconImage(windowIcon);
 		input = new InputHandler(this);
-		configs.setDefaultKeys();
 		mfont = new PxlFont(new SpriteSheet("/StackFont.png"), "1234567890", 4*Game.SCALE, 5*Game.SCALE);
 		sfont = new PxlFont(new SpriteSheet("/8x8Font.png"), " !\"# %&´()* ,-./0123456789:; = ? ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{ }~",8*Game.SCALE,8*Game.SCALE);
 		font = new PxlFont(new SpriteSheet("/Font.png"), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 1234567890!\",;%&/()=?ß+-.",15*Game.SCALE,20*Game.SCALE);
@@ -195,7 +194,8 @@ public class Game extends Canvas implements Runnable{
 				ticks = 0;
 			}
 		}
-		configs.save();
+		MainConfig.save();
+		KeyConfig.save();
 		Game.logInfo("Game shut down by User "+System.getProperty("user.name")+". ~Thanks 4 playing");
 		System.exit(0);
 	}
@@ -298,7 +298,11 @@ public class Game extends Canvas implements Runnable{
 		Game.logInfo("Current Java Version running : "+System.getProperty("java.version"));
 		Game.logInfo("Current Operating System : "+System.getProperty("os.name"));
 		for(String s : args){if(s.contains("-devmode")){Game.devmode = true;Game.logInfo("Developer Mode activated !");}}
-		Game.configs = new Configs();
+		
+		File gameDir = new File(Game.GAME_PATH);
+		if(!gameDir.isDirectory()) {gameDir.mkdirs();Game.logInfo("Created PixelKingdom Path");}
+		MainConfig.load();
+		KeyConfig.load();
 		Game.WIDTH = 320*3;//configs.resX;
 		Game.HEIGHT = WIDTH/12*9;//configs.resY;
 		for(String s : args){

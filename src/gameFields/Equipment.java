@@ -6,6 +6,7 @@ import entities.Player.BAG;
 import gfx.Mouse;
 import gfx.SpriteSheet;
 import item.*;
+import main.MainConfig.GameFields;
 import main.Game;
 import main.PArea;
 
@@ -18,7 +19,7 @@ public class Equipment extends GameField {
 	private Player player;
 	
 	public Equipment(Player player, EnumMap<BAG, Bag<?>> bags){
-		super(70,59, 0);
+		super(70,59, GameFields.Field_Equipment);
 		this.player = player;
 		this.bags = bags;
 		this.bagAreas = new EnumMap<>(BAG.class);
