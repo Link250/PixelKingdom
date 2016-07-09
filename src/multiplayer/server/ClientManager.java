@@ -10,6 +10,7 @@ import java.util.HashMap;
 
 import entities.MPlayer;
 import main.Game;
+import main.MainConfig;
 import main.conversion.ConverterInStream;
 import main.conversion.ConverterQueue;
 import main.conversion.ConverterOutStream;
@@ -118,7 +119,7 @@ public class ClientManager implements Runnable, ConnectionManager {
 		data.addByte(Request.PLAYER_DATA);
 		data.addByte(Request.PLAYER_COLOR);
 		data.addByte(ID);
-		data.addInt(Game.configs.PlrCol);
+		data.addInt(MainConfig.PlrCol);
 		this.sendToClient(data);
 	}
 	

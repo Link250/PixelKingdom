@@ -2,7 +2,9 @@ package gameFields;
 
 import java.awt.Point;
 
+import main.MainConfig.GameFields;
 import main.Game;
+import main.MainConfig;
 import main.PArea;
 
 public abstract class GameField {
@@ -10,22 +12,20 @@ public abstract class GameField {
 	public PArea fieldTop;
 	public Point grab;
 	public boolean grabing;
-	public int savefile;
+	public GameFields savefile;
 	
-	public GameField(int savefile) {
-		int x = Game.configs.FieldPosX[savefile];
-		int y = Game.configs.FieldPosY[savefile];
-		field = new PArea(x,y,30,10);
-		fieldTop = new PArea(x,y,30,10);
+	public GameField(GameFields savefile) {
+		Point p = MainConfig.fieldPos.get(savefile);
+		field = new PArea(p.x,p.y,30,10);
+		fieldTop = new PArea(p.x,p.y,30,10);
 		grab = new Point();
 		this.savefile = savefile;
 	}
 	
-	public GameField(int w, int h, int savefile){
-		int x = Game.configs.FieldPosX[savefile];
-		int y = Game.configs.FieldPosY[savefile];
-		field = new PArea(x,y,w,h);
-		fieldTop = new PArea(x,y,w,10);
+	public GameField(int w, int h, GameFields savefile){
+		Point p = MainConfig.fieldPos.get(savefile);
+		field = new PArea(p.x,p.y,w,h);
+		fieldTop = new PArea(p.x,p.y,w,10);
 		grab = new Point();
 		this.savefile = savefile;
 	}
@@ -77,9 +77,7 @@ public abstract class GameField {
 	}
 	
 	public void save(){
-		Game.configs.FieldPosX[savefile] = field.x;
-		Game.configs.FieldPosY[savefile] = field.y;
-		Game.configs.save();
+		MainConfig.fieldPos.put(savefile,new Point(field.x, field.y));
 	}
 
 	public boolean mouseover(int mousex, int mousey){

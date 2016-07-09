@@ -90,4 +90,12 @@ public class Button {
 			Game.font.render(x+ToffX, y+ToffY, Text, 0, 0xff000000, Game.screen);
 		}
 	}
+	
+	public int getWidth() {
+		return width;
+	}
+
+	public int getHeight() {
+		return height;
+	}
 }

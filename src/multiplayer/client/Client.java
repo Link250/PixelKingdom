@@ -6,6 +6,7 @@ import gfx.Screen;
 import gfx.SpriteSheet;
 import main.Game;
 import main.InputHandler;
+import main.Keys;
 import map.Chunk;
 import map.Map;
 import multiplayer.MapManager;
@@ -92,11 +93,11 @@ public class Client {
 			this.serverManager.sendPlayerUpdate(player);
 		}
 		
-		if(input.menu.isPressed()){
+		if(Keys.MENU.isPressed()){
 			this.serverManager.disconnect();
 			Game.reset = true;
 		}
-		if(input.debugInfo.click()){
+		if(Keys.DEBUGINFO.click()){
 			debuginfo =! debuginfo;
 		}
 		if(tickCount%60==0){

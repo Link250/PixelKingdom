@@ -6,7 +6,10 @@ import java.util.EnumMap;
 import gfx.SpriteSheet;
 import item.*;
 import item.Recipe.component;
+import main.MainConfig.GameFields;
 import main.Game;
+import main.Keys;
+import main.MainConfig;
 import main.conversion.ConvertData;
 import map.Map;
 import gameFields.*;
@@ -14,21 +17,21 @@ import gameFields.*;
 public class Player extends Mob{
 	
 	public static enum BAG{
-		TOOL_1(ToolBag.class,new SpriteSheet("/Items/ToolBag.png"),1),
-		MAT_1(MaterialBag.class,new SpriteSheet("/Items/MaterialBag.png"),2),
-		MAT_2(MaterialBag.class,new SpriteSheet("/Items/MaterialBag.png"),3),
-		BELT_1(BeltBag.class,new SpriteSheet("/Items/BeltBag.png"),4),
-		ITEM_1(ItemBag.class,new SpriteSheet("/Items/ItemBag.png"),5),
-		ITEM_2(ItemBag.class,new SpriteSheet("/Items/ItemBag.png"),6);
+		TOOL_1(ToolBag.class,new SpriteSheet("/Items/ToolBag.png"),GameFields.Field_ToolBag1),
+		MAT_1(MaterialBag.class,new SpriteSheet("/Items/MaterialBag.png"),GameFields.Field_MatBag1),
+		MAT_2(MaterialBag.class,new SpriteSheet("/Items/MaterialBag.png"),GameFields.Field_MatBag2),
+		BELT_1(BeltBag.class,new SpriteSheet("/Items/BeltBag.png"),GameFields.Field_BeltBag1),
+		ITEM_1(ItemBag.class,new SpriteSheet("/Items/ItemBag.png"),GameFields.Field_ItemBag1),
+		ITEM_2(ItemBag.class,new SpriteSheet("/Items/ItemBag.png"),GameFields.Field_ItemBag2);
 		
 		public final Class<? extends Bag<?>> bagClass;
-		public final int saveID;
+		public final GameFields fieldEnum;
 		public final SpriteSheet defaultSprite;
 		
-		BAG(Class<? extends Bag<?>> bagClass, SpriteSheet defaultSprite, int saveID) {
+		BAG(Class<? extends Bag<?>> bagClass, SpriteSheet defaultSprite, GameFields fieldEnum) {
 			this.bagClass = bagClass;
 			this.defaultSprite = defaultSprite;
-			this.saveID = saveID;
+			this.fieldEnum = fieldEnum;
 		}
 	}
 	//bag Enums
@@ -37,7 +40,7 @@ public class Player extends Mob{
 	
 	//visual and Hitboxes
 	private int anim;
-	private int Color;
+	private int color;
 	private Hitbox col = new Hitbox(-1,-7,1,6); //walking
 	private Hitbox cols = new Hitbox(-1,-1,1,6);//sneaking
 	
@@ -72,7 +75,7 @@ public class Player extends Mob{
 		this.bagInvs = new EnumMap<>(BAG.class);
 		equipment = new Equipment(this, bags);
 		crafting = new Crafting(this);
-		Color = Game.configs.PlrCol;
+		color = MainConfig.PlrCol;
 		xOffset=6;
 		yOffset=9;
 		sheet.tileWidth = 13*3;
@@ -86,6 +89,10 @@ public class Player extends Mob{
 		}else {
 			this.bagInvs.remove(bagEnum);
 		}
+	}
+	
+	public int getColor() {
+		return this.color;
 	}
 	
 	public byte getAnim() {
@@ -229,25 +236,25 @@ public class Player extends Mob{
 	public void tick(int numTick) {
 		
 //		map.setlight(x, y, (byte) (64));map.addBlockUpdate(x, y,0); // just for testing lightsystem
-		if(Game.input.jump.isPressed() && canJump){
+		if(Keys.JUMP.isPressed() && canJump){
 			speedY-= jumpspeed;
 			canJump = false;
 			jumpcooldown = 10;
 		}
-		if(Game.input.left.isPressed() && speedX > -walkspeed){
+		if(Keys.LEFT.isPressed() && speedX > -walkspeed){
 			speedX-=1;
 			movingDir = 1;
 		}
-		if(Game.input.right.isPressed()  && speedX < walkspeed){
+		if(Keys.RIGHT.isPressed()  && speedX < walkspeed){
 			speedX+=1;
 			movingDir = 0;
 		}
-		if(Game.input.crouch.isPressed() && !isinair){
+		if(Keys.CROUCH.isPressed() && !isinair){
 			iscrouching=true;
 		}else{
 			iscrouching=false;
 		}
-		if((!Game.input.right.isPressed() && !Game.input.left.isPressed()) | (Game.input.right.isPressed() && Game.input.left.isPressed())){
+		if(!Keys.RIGHT.isPressed() == !Keys.LEFT.isPressed()){
 			speedX=0;
 			isMoving = false;
 		}else{
@@ -282,7 +289,7 @@ public class Player extends Mob{
 		}
 		
 		/*		HOTBAR		*/
-		if(Game.input.mousem.click() || Game.input.hotbar.click()){
+		if(Game.input.mousem.click() || Keys.HOTBAR.click()){
 			if(openHotBar == 0) {
 				hotBar.x = Game.input.mouse.x;
 				hotBar.y = Game.input.mouse.y;
@@ -303,17 +310,17 @@ public class Player extends Mob{
 		}
 
 		/*		EQUIPMENT		*/
-		if(Game.input.equip.click()){
+		if(Keys.EQUIP.click()){
 			openEquip = !openEquip;
 		}if(openEquip)equipment.tick();
 		
 		/*		CRAFTING		*/
-		if(Game.input.craft.click()){
+		if(Keys.CRAFT.click()){
 			openCraft = !openCraft;
 		}if(openCraft)crafting.tick();
 		
 		/*		INVENTORY		*/
-		if(Game.input.inv.click()){
+		if(Keys.INV.click()){
 			openInv = !openInv;
 		}if(openInv){
 			for (BagInv bagInv : bagInvs.values()) {
@@ -352,7 +359,7 @@ public class Player extends Mob{
 	}
 	
 	public void render() {
-		Game.screen.drawTile(x-xOffset, y-yOffset, anim, movingDir*16, sheet, Color);
+		Game.screen.drawTile(x-xOffset, y-yOffset, anim, movingDir*16, sheet, color);
 		
 		if((anim == 10 || anim == 11) & this.bags.get(BAG.BELT_1) != null){
 			try{

@@ -16,7 +16,7 @@ public class BagInv extends GameField {
 	public Bag<?> bag;
 	
 	public BagInv(Bag<?> bag, Player.BAG bagEnum) {
-		super(bagEnum.saveID);
+		super(bagEnum.fieldEnum);
 		this.width = bag.invWidth();
 		this.setSize(width*12, bag.invSize()/width*12+11);
 		this.bag = bag;

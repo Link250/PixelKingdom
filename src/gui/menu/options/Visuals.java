@@ -1,10 +1,13 @@
 package gui.menu.options;
 
+import static main.MainConfig.stacktype;
+import static main.MainConfig.PlrCol;
 import gfx.SpriteSheet;
 import gui.Button;
 import gui.menu.OptionScreen;
 import item.itemList.MatStack;
 import main.Game;
+import main.Keys;
 import main.PArea;
 
 public class Visuals {
@@ -31,23 +34,20 @@ public class Visuals {
 	
 	public void tick(){
 		back.tick();
-		if(back.isclicked || Game.input.menu.click()){
+		if(back.isclicked || Keys.MENU.click()){
 			this.mainMenu.resetMenu();
 		}
 		if(Game.input.mousel.isPressed()){
 			int x = Game.input.mouse.x/Game.SCALE;
 			int y = Game.input.mouse.y/Game.SCALE;
 			if(new PArea(Game.WIDTH/Game.SCALE/2,50,128,6).contains(x, y)){
-				Game.configs.PlrCol = ((Game.configs.PlrCol&0xff00ffff) + ((x-Game.WIDTH/Game.SCALE/2)*2<<16)) | 0xff000000;
-				Game.configs.save();
+				PlrCol = ((PlrCol&0xff00ffff) + ((x-Game.WIDTH/Game.SCALE/2)*2<<16)) | 0xff000000;
 			}
 			if(new PArea(Game.WIDTH/Game.SCALE/2,57,128,6).contains(x, y)){
-				Game.configs.PlrCol = ((Game.configs.PlrCol&0xffff00ff) + ((x-Game.WIDTH/Game.SCALE/2)*2<<8)) | 0xff000000;
-				Game.configs.save();
+				PlrCol = ((PlrCol&0xffff00ff) + ((x-Game.WIDTH/Game.SCALE/2)*2<<8)) | 0xff000000;
 			}
 			if(new PArea(Game.WIDTH/Game.SCALE/2,64,128,6).contains(x, y)){
-				Game.configs.PlrCol = ((Game.configs.PlrCol&0xffffff00) + ((x-Game.WIDTH/Game.SCALE/2)*2)) | 0xff000000;
-				Game.configs.save();
+				PlrCol = ((PlrCol&0xffffff00) + ((x-Game.WIDTH/Game.SCALE/2)*2)) | 0xff000000;
 			}
 		}
 		
@@ -55,9 +55,8 @@ public class Visuals {
 		mat.addStack(1);
 		if(mat.getStack() == 1024)mat = new MatStack();
 		if(Stacktype.isclicked){
-			Game.configs.stacktype++;
-			if(Game.configs.stacktype > 3)Game.configs.stacktype=1;
-			Game.configs.save();
+			stacktype++;
+			if(stacktype > 3)stacktype=1;
 		}
 	}
 	
@@ -81,11 +80,11 @@ public class Visuals {
 			}
 		}
 		for(int i = 0; i < 6; i++){
-			int c = (Game.configs.PlrCol&0x00ff0000)>>16;
+			int c = (PlrCol&0x00ff0000)>>16;
 			Game.screen.drawPixelScaled(Game.WIDTH/Game.SCALE/2+c/2, 50+i, 0xff000000 + ((255-c)<<16) + ((255-c)<<8) + (255-c));
-			c = (Game.configs.PlrCol&0x0000ff00)>>8;
+			c = (PlrCol&0x0000ff00)>>8;
 			Game.screen.drawPixelScaled(Game.WIDTH/Game.SCALE/2+c/2, 57+i, 0xff000000 + ((255-c)<<16) + ((255-c)<<8) + (255-c));
-			c = Game.configs.PlrCol&0x000000ff;
+			c = PlrCol&0x000000ff;
 			Game.screen.drawPixelScaled(Game.WIDTH/Game.SCALE/2+c/2, 64+i, 0xff000000 + ((255-c)<<16) + ((255-c)<<8) + (255-c));
 		}
 		for(int x = 0; x < 12; x++){
@@ -93,14 +92,14 @@ public class Visuals {
 				if(x == 0 | x == 11 | y == 0 | y == 11){
 					Game.screen.drawPixelScaled(x+Game.WIDTH/Game.SCALE/2+132, y+54, 0xff404040);
 				}else{
-					Game.screen.drawPixelScaled(x+Game.WIDTH/Game.SCALE/2+132, y+54, Game.configs.PlrCol);
+					Game.screen.drawPixelScaled(x+Game.WIDTH/Game.SCALE/2+132, y+54, PlrCol);
 				}
 			}
 		}
 		
 		/*		STACK TYPE	*/
 		Game.font.render(10, 80, "Stack Type", 0, 0xff000000, Game.screen);
-		switch(Game.configs.stacktype){
+		switch(stacktype){
 		case 1:Stacktype.TextData("Numbers", false, 0, 0);break;
 		case 2:Stacktype.TextData("Colors", false, 0, 0);break;
 		case 3:Stacktype.TextData("Binary", false, 0, 0);break;

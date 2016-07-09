@@ -9,7 +9,7 @@ import entities.Player;
 
 import static main.Game.*;
 
-import main.Game;
+import main.MainConfig;
 import main.conversion.ConverterInStream;
 import main.conversion.ConverterQueue;
 import main.conversion.ConverterOutStream;
@@ -100,7 +100,7 @@ public class ServerManager implements Runnable, ConnectionManager {
 		ConverterQueue data = new ConverterQueue();
 		data.addByte(Request.PLAYER_DATA);
 		data.addByte(Request.PLAYER_COLOR);
-		data.addInt(Game.configs.PlrCol);
+		data.addInt(MainConfig.PlrCol);
 		this.sendToServer(data);
 	}
 	

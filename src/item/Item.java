@@ -7,6 +7,7 @@ import gfx.Screen;
 import gfx.SpriteSheet;
 import main.Game;
 import main.InputHandler;
+import main.MainConfig;
 import map.Map;
 
 public abstract class Item {
@@ -97,7 +98,7 @@ public abstract class Item {
 	public void render(Screen screen, int x, int y, boolean showstack){
 		screen.drawGUITile(x, y, 0, 0x00, gfx, col);
 		if(showstack & stackMax != 1){
-			switch(Game.configs.stacktype){
+			switch(MainConfig.stacktype){
 			case 1:
 				y+=6;
 				if(stack>999){Game.mfont.render(x-2, y, Integer.toString(stack), 0, 0xff000000, screen);break;}
