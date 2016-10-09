@@ -90,6 +90,12 @@ public class Screen {
 		drawPixelArea(xPos,yPos,color,1,1,false);
 	}
 
+	/**
+	 * This Mehtod should be used if you want to draw a Pixel relative to the Map and with the zoomlevel of the Map
+	 * @param xPos
+	 * @param yPos
+	 * @param color
+	 */
 	public void drawGUIScaled(int xPos, int yPos, int color){
 		xPos -= xOffset;
 		yPos -= yOffset;
@@ -141,6 +147,36 @@ public class Screen {
 		}
 	}
 	
+	public void drawPixel(int x, int y, int color, boolean gui){
+		double a = (color>>24)&0xff;
+		if(a != 0xff){
+			int r = (color>>16)&0xff, g = (color>>8)&0xff, b = color&0xff;
+			int col,ro,go,bo,ao;
+			if(x >= 0 && x < width && y >= 0 && y < height){
+				col = gui ? GUI[x + (y)*width] : pixels[x + (y)*width];
+				ao = (col>>24)&0xff;
+				if(ao != 0){
+					ro = (int)((a/255*r) + ((255-a)/255*((col>>16)&0xff)));
+					go = (int)((a/255*g) + ((255-a)/255*((col>> 8)&0xff)));
+					bo = (int)((a/255*b) + ((255-a)/255*((col    )&0xff)));
+					if(ao != 255){
+						ao = (int) (a+(255-a)/255*((col>>24)&0xff));
+					}
+					if(gui) GUI[x + (y)*width] = (ao<<24)|(ro<<16)|(go<<8)|bo;
+					else pixels[x + (y)*width] = (ao<<24)|(ro<<16)|(go<<8)|bo;
+				}else{
+					if(gui) GUI[x + (y)*width] = color;
+					else pixels[x + (y)*width] = color;
+				}
+			}
+		}else{
+			if(x >= 0 && x < width && y >= 0 && y < height){
+				if(gui) GUI[x + (y)*width] = color;
+				else pixels[x + (y)*width] = color;
+			}
+		}
+	}
+	
 	public void drawMaterial(int xPos, int yPos, int tile, int layer){
 		int col = csheets[layer].pixels[tile];
 		drawPixelScaled(xPos, yPos, col);
@@ -153,7 +189,7 @@ public class Screen {
 		drawTile(xPos,yPos,tile,mirrorXY,sheet,color,false);
 	}
 
-	public void drawTile(int xPos, int yPos, int tile, int mirrorXY, SpriteSheet sheet, int color, boolean GUI){
+	private void drawTile(int xPos, int yPos, int tile, int mirrorXY, SpriteSheet sheet, int color, boolean GUI){
 		xPos -= xOffset;
 		yPos -= yOffset;
 		xPos*=3;yPos*=3;
@@ -172,9 +208,9 @@ public class Screen {
 						sheetc = sheet.pixels[(xTile*sheet.tileWidth+xsheet) + (yTile*sheet.tileHeight+ysheet)*sheet.width];
 						if(sheetc>>24 != 0){
 							if((sheetc & 0xffffff)== 0xff00ff){
-								drawPixelArea(xPos+x, yPos+y, color, 1, 1, GUI);
+								drawPixel(xPos+x, yPos+y, color, GUI);
 							}else{
-								drawPixelArea(xPos+x, yPos+y, sheetc, 1, 1, GUI);
+								drawPixel(xPos+x, yPos+y, sheetc, GUI);
 							}
 						}
 					}

@@ -236,7 +236,12 @@ public class Map {
 		}
 	}
 	
-	public void movePixel(int xs, int ys, int ls, int xf, int yf, int lf){
+	public void movePixelRel(int xs, int ys, int ls, int xr, int yr, int lf){
+		setID(xs+xr,ys+yr,lf,getID(xs,ys,ls),getAD(xs,ys,ls),false);
+		setID(xs,ys,ls,0);
+	}
+	
+	public void movePixelAbs(int xs, int ys, int ls, int xf, int yf, int lf){
 		setID(xf,yf,lf,getID(xs,ys,ls),getAD(xs,ys,ls),false);
 		setID(xs,ys,ls,0);
 	}

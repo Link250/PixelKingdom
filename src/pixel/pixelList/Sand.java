@@ -16,7 +16,7 @@ public class Sand extends Material<AD>{
 	
 	public boolean tick(int x, int y, int l, int numTick, Map map) {
 		if(map.getID(x,y+1,l)==0){
-			map.movePixel(x, y, l, x, y+1, l);
+			map.movePixelAbs(x, y, l, x, y+1, l);
 			y++;
 			return true;
 		}
@@ -25,7 +25,7 @@ public class Sand extends Material<AD>{
 	
 	private boolean falltoside(int x, int y, int l, int side, Map map){
 		if(map.getID(x+side,y,l)==0 & map.getID(x+side,y+1,l)==0){
-			map.movePixel(x, y, l, x+side, y+1, l);
+			map.movePixelAbs(x, y, l, x+side, y+1, l);
 			y++;x--;
 			return true;
 		}return false;

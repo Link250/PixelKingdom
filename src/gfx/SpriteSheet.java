@@ -15,6 +15,22 @@ public class SpriteSheet {
 	
 	public int pixels[];
 	
+	public SpriteSheet() {
+		this.width = 1;
+		this.height = 1;
+		this.tileWidth = 1;
+		this.tileHeight = 1;
+		this.pixels = new int[1];
+	}
+	
+	public void setPixels(int[] pixels, int width, int height, int tileWidth, int tileHeight) {
+		this.pixels = pixels;
+		this.width = width;
+		this.height = height;
+		this.tileWidth = tileWidth;
+		this.tileHeight = tileHeight;
+	}
+	
 	public SpriteSheet(String path){
 		BufferedImage image = null;
 		

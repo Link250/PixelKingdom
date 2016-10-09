@@ -45,12 +45,10 @@ public class Player extends Mob{
 	private Hitbox cols = new Hitbox(-1,-1,1,6);//sneaking
 	
 	//internal values for physics
-	private int gravity = 1;
 	private int jumpspeed = 4;
 	private int walkspeed = 1;
 	
 	//physical abilities
-	public boolean isinair;
 	private boolean canJump;
 	public boolean iscrouching;
 	private int jumpcooldown;
@@ -70,7 +68,6 @@ public class Player extends Mob{
 
 	public Player(Map map) {
 		super(map ,"Player", 0, 0, new SpriteSheet("/sprite_sheet_player.png"));
-		this.map = map;
 		this.bags = new EnumMap<>(BAG.class);
 		this.bagInvs = new EnumMap<>(BAG.class);
 		equipment = new Equipment(this, bags);
@@ -100,14 +97,6 @@ public class Player extends Mob{
 	}
 	public byte getDir() {
 		return (byte) movingDir;
-	}
-	
-	public void applyGravity(){
-		if(gravity != 0 && isinair){
-			if(speedX < -1) speedX = -1;
-			if(speedX > 1) speedX = 1;
-			speedY += gravity;
-		}
 	}
 	
 	public boolean equipItem(BAG bag_enum, Item item) {

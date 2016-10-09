@@ -11,7 +11,9 @@ import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
+import entities.Mob;
 import entities.Player;
+import entities.entityList.Slime;
 import gfx.Screen;
 import gfx.SpriteSheet;
 import map.Map;
@@ -24,6 +26,7 @@ public class SinglePlayer {
 	private String files;
 	public File plr;
 	private BufferedImage back = null;
+	private ArrayList<Mob> mobList = new ArrayList<>();
 	
 	public SinglePlayer(String files){
 		try {back = ImageIO.read(SpriteSheet.class.getResourceAsStream("/NormalBack.png"));} catch (IOException e) {e.printStackTrace();}
@@ -45,7 +48,12 @@ public class SinglePlayer {
 	public void tick(int tickCount){
 		
 		player.tick(tickCount);
-		if(tickCount%4==0) player.applyGravity();
+		for (Mob mob : mobList) {mob.tick(tickCount);}
+		
+		if(tickCount%4==0) {
+			player.applyGravity();
+			for (Mob mob : mobList) {mob.applyGravity();}
+		}
 
 		map.tick(tickCount);
 		
@@ -78,6 +86,7 @@ public class SinglePlayer {
 						+map.isUpdating(X, Y, Map.LAYER_FRONT)+","
 						+map.isUpdating(X, Y, Map.LAYER_LIGHT)+"}");
 				map.addPixelUpdate(X, Y, 1);
+				this.mobList.add(new Slime(this.map, player.x, player.y));
 			}
 			if(tickCount%60==0){
 				Game.logInfo("FPS:"+Game.fps+" PixelUpdates:"+map.updateCountPixel+" LightUpdates:"+map.updateCountLight);
@@ -92,7 +101,7 @@ public class SinglePlayer {
 		g.drawImage(back, 0, 0, Game.WIDTH, Game.HEIGHT, null);
 
 		map.render();
-		
+		for (Mob mob : mobList) {mob.render();}
 		player.render();
 		
 		if(debuginfo){

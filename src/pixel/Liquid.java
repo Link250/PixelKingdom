@@ -14,7 +14,7 @@ public abstract class Liquid<LiquidADType extends AD> extends Material<LiquidADT
 	
 	public boolean flow(int x, int y, int l, Map map) {
 		if(map.getID(x,y+1,Map.LAYER_FRONT)==0 && map.getID(x,y+1,Map.LAYER_LIQUID)==0){
-			map.movePixel(x, y, Map.LAYER_LIQUID, x, y+1, Map.LAYER_LIQUID);
+			map.movePixelAbs(x, y, Map.LAYER_LIQUID, x, y+1, Map.LAYER_LIQUID);
 			y++;
 			return true;
 		}
@@ -34,7 +34,7 @@ public abstract class Liquid<LiquidADType extends AD> extends Material<LiquidADT
 			if(side<0)for(i = side; i > viscosity*side && map.getID(x+i,y+1,Map.LAYER_LIQUID)!=0; i+=side){}
 			if(side>0)for(i = side; i < viscosity*side && map.getID(x+i,y+1,Map.LAYER_LIQUID)!=0; i+=side){}
 			if(map.getID(x+i,y+1,Map.LAYER_FRONT)==0 && map.getID(x+i,y+1,Map.LAYER_LIQUID)==0){
-				map.movePixel(x, y, Map.LAYER_LIQUID, x+i, y+1, Map.LAYER_LIQUID);
+				map.movePixelAbs(x, y, Map.LAYER_LIQUID, x+i, y+1, Map.LAYER_LIQUID);
 				return true;
 			}
 		}return false;

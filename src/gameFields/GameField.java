@@ -2,17 +2,19 @@ package gameFields;
 
 import java.awt.Point;
 
+import gfx.SpriteSheet;
 import main.MainConfig.GameFields;
 import main.Game;
 import main.MainConfig;
 import main.PArea;
 
 public abstract class GameField {
-	public PArea field;
-	public PArea fieldTop;
-	public Point grab;
-	public boolean grabing;
-	public GameFields savefile;
+	protected PArea field;
+	protected PArea fieldTop;
+	private Point grab;
+	private boolean grabing;
+	private GameFields savefile;
+	private SpriteSheet background;
 	
 	public GameField(GameFields savefile) {
 		Point p = MainConfig.fieldPos.get(savefile);
@@ -28,11 +30,32 @@ public abstract class GameField {
 		fieldTop = new PArea(p.x,p.y,w,10);
 		grab = new Point();
 		this.savefile = savefile;
+		constructBackground();
 	}
 	
 	protected void setSize(int width, int height) {
 		field.setSize(width, height);
 		fieldTop.setSize(width, 10);
+		constructBackground();
+	}
+	
+	private void constructBackground() {
+		int[] pixelscaled = new int[field.width * field.height * 9];
+		int[] pixels = new int[field.width * field.height];
+		this.background = new SpriteSheet();
+		this.background.setPixels(pixelscaled, field.width*3, field.height*3, field.width*3, field.height*3);
+		for(int x = 0; x < field.width; x++){
+			for(int y = 0; y < field.height; y++){
+				pixels[y*field.width+x] = y < (fieldTop.height)?
+						((x == 0 || y == 0 || x == fieldTop.width-1 || y == fieldTop.height-1)? 0xff404040 : 0xff808080):
+						((x == 0 || y == 0 || x == field.width-1 || y == field.height-1)? 0x80404040 : 0x40808080);
+			}
+		}
+		for(int x = 0; x < field.width*3; x++){
+			for(int y = 0; y < field.height*3; y++){
+				pixelscaled[y*field.width*3+x] = pixels[(y/3)*field.width+x/3];
+			}
+		}
 	}
 	
 	public abstract void tick();
@@ -63,17 +86,20 @@ public abstract class GameField {
 	public abstract void render();
 	
 	protected void renderfield(){
-		for(int x = 0; x < field.width; x++){
-			for(int y = 0; y < field.height; y++){
-				if(y < fieldTop.height){
-					if(x == 0 | y == 0 | x == fieldTop.width-1 | y == fieldTop.height-1)Game.screen.drawGUIScaled(Game.screen.xOffset+field.x+x, Game.screen.yOffset+field.y+y, 0xff404040);
-					else Game.screen.drawGUIScaled(Game.screen.xOffset+field.x+x, Game.screen.yOffset+field.y+y, 0xff808080);
-				}else{
-					if(x == 0 | y == 0 | x == field.width-1 | y == field.height-1)Game.screen.drawGUIScaled(Game.screen.xOffset+field.x+x, Game.screen.yOffset+field.y+y, 0x80404040);
-					else Game.screen.drawGUIScaled(Game.screen.xOffset+field.x+x, Game.screen.yOffset+field.y+y, 0x40808080);
-				}
-			}
-		}
+//		long t = System.nanoTime();
+		Game.screen.drawGUITile(field.x+Game.screen.xOffset, field.y+Game.screen.yOffset, 0, 0, background, 0);
+//		for(int x = 0; x < field.width; x++){
+//			for(int y = 0; y < field.height; y++){
+//				if(y < fieldTop.height){
+//					if(x == 0 | y == 0 | x == fieldTop.width-1 | y == fieldTop.height-1)Game.screen.drawGUIScaled(Game.screen.xOffset+field.x+x, Game.screen.yOffset+field.y+y, 0xff404040);
+//					else Game.screen.drawGUIScaled(Game.screen.xOffset+field.x+x, Game.screen.yOffset+field.y+y, 0xff808080);
+//				}else{
+//					if(x == 0 | y == 0 | x == field.width-1 | y == field.height-1)Game.screen.drawGUIScaled(Game.screen.xOffset+field.x+x, Game.screen.yOffset+field.y+y, 0x80404040);
+//					else Game.screen.drawGUIScaled(Game.screen.xOffset+field.x+x, Game.screen.yOffset+field.y+y, 0x40808080);
+//				}
+//			}
+//		}
+//		System.out.println(System.nanoTime()-t);
 	}
 	
 	public void save(){
