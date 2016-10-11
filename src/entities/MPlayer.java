@@ -1,5 +1,6 @@
 package entities;
 
+import gfx.Screen;
 import gfx.SpriteSheet;
 import main.Game;
 
@@ -16,8 +17,8 @@ public class MPlayer extends Mob {
 		this.anim = 0;
 		this.xOffset=6;
 		this.yOffset=9;
-		this.sheet.tileWidth = 13*Game.SCALE;
-		this.sheet.tileHeight = 16*Game.SCALE;
+		this.sheet.tileWidth = 13*Screen.MAP_SCALE;
+		this.sheet.tileHeight = 16*Screen.MAP_SCALE;
 	}
 	public void setColor(int col) {color=col;}
 	public void setDir(int dir) {movingDir=dir;}
@@ -28,6 +29,6 @@ public class MPlayer extends Mob {
 	public void tick(int numTick) {}
 	
 	public void render() {
-		Game.screen.drawTile(x-xOffset, y-yOffset, anim, movingDir*16, sheet, color);
+		Game.screen.drawMapTile(x-xOffset, y-yOffset, anim, movingDir*16, sheet, color);
 	}
 }

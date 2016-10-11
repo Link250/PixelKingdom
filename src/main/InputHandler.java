@@ -9,6 +9,8 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 
+import gfx.Screen;
+
 public class InputHandler implements KeyListener, MouseListener, MouseMotionListener, MouseWheelListener{
 	
 	Game game;
@@ -34,8 +36,6 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
 		public int scrolled;
 		public int x;
 		public int y;
-		public int xMap;
-		public int yMap;
 		
 		public boolean isPressed(){
 			return pressed;
@@ -50,6 +50,14 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
 			return i;
 		}
 		
+		public int getMapX() {
+			return x/Screen.MAP_SCALE/Screen.MAP_ZOOM+Game.screen.xOffset;
+		}
+		
+		public int getMapY() {
+			return y/Screen.MAP_SCALE/Screen.MAP_ZOOM+Game.screen.yOffset;
+		}
+		
 		public void refresh(){
 			setPos(x,y);
 		}
@@ -57,10 +65,6 @@ public class InputHandler implements KeyListener, MouseListener, MouseMotionList
 		public void setPos(int x, int y){
 			this.x = x;
 			this.y = y;
-			try{
-				xMap = x/Game.SCALE+Game.screen.xOffset;
-				yMap = y/Game.SCALE+Game.screen.yOffset;
-			}catch(NullPointerException e){}
 		}
 		
 		public void toggle(boolean isPressed){

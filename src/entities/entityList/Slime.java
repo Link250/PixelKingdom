@@ -34,7 +34,7 @@ public class Slime extends Mob {
 	}
 
 	public void render() {
-		Game.screen.drawTile(x-xOffset, y-yOffset, 0, 0, sheet, 0);
+		Game.screen.drawMapTile(x-xOffset, y-yOffset, 0, 0, sheet, 0);
 	}
 	
 }

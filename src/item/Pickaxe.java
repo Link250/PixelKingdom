@@ -39,7 +39,7 @@ public abstract class Pickaxe extends Tool{
 			if(input.mousel.isPressed()){
 				for(int x = -size; x <= size; x++){
 					for(int y = -size; y <= size; y++){
-						int X = input.mouse.x/Game.SCALE+screen.xOffset+x, Y = input.mouse.y/Game.SCALE+screen.yOffset+y;
+						int X = input.mouse.getMapX()+x, Y = input.mouse.getMapY()+y;
 						if(Math.sqrt(x*x+y*y) < r & Math.sqrt((plr.x-X)*(plr.x-X)+(plr.y-Y)*(plr.y-Y)) <= range){
 							m = PixelList.GetMat(map.getID(X,Y,Map.LAYER_FRONT));
 							if(m.ID!=0 && m.usePickaxe() <= strength && m.usePickaxe()>0){
@@ -52,7 +52,7 @@ public abstract class Pickaxe extends Tool{
 			}else{
 				for(int x = -size; x <= size; x++){
 					for(int y = -size; y <= size; y++){
-						int X = input.mouse.x/Game.SCALE+screen.xOffset+x, Y = input.mouse.y/Game.SCALE+screen.yOffset+y;
+						int X = input.mouse.getMapX()+x, Y = input.mouse.getMapY()+y;
 						if(Math.sqrt(x*x+y*y) < r & Math.sqrt((plr.x-X)*(plr.x-X)+(plr.y-Y)*(plr.y-Y)) <= range){
 							m = PixelList.GetMat(map.getID(X,Y,Map.LAYER_BACK));
 							if(m.ID!=0 && m.usePickaxe() <= strength && m.usePickaxe()>0

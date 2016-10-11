@@ -27,12 +27,13 @@ public class OptionScreen implements GameMenu{
 		this.visuals = new Visuals(this);
 		this.controls = new Controls(this);
 		
-		back = new Button(10, 10, 20, 20);
+		int bWidth = 300, bHeight = 60, bYOff = 250, bNr = 0;
+		back = new Button(50, 50, 60, 60);
 		back.gfxData(new SpriteSheet("/Buttons/back.png"), true);
-		visualsButton = new Button(Game.WIDTH/Game.SCALE/2-50,110,100,20);
-		visualsButton.TextData("Visuals", false, 0, 0);
-		controlsButton = new Button(Game.WIDTH/Game.SCALE/2-50,140,100,20);
-		controlsButton.TextData("Controls", false, 0, 0);
+		visualsButton = new Button(Game.WIDTH/2,bYOff + (int)(bHeight*bNr++*1.5),bWidth,bHeight);
+		visualsButton.TextData("Visuals", false);
+		controlsButton = new Button(Game.WIDTH/2,bYOff + (int)(bHeight*bNr++*1.5),bWidth,bHeight);
+		controlsButton.TextData("Controls", false);
 	}
 	
 	public void resetMenu() {
@@ -75,7 +76,7 @@ public class OptionScreen implements GameMenu{
 			break;
 		case MAIN:
 		default:
-			Game.font.render(Game.screen.width/Game.SCALE/2-30, 10, "Options", 0, 0xff000000, Game.screen);
+			Game.font.render(Game.screen.width/2, 50, "Options", 0, 0xff000000, Game.screen);
 			back.render();
 			this.visualsButton.render();
 			this.controlsButton.render();

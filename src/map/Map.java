@@ -172,8 +172,8 @@ public class Map {
 		short light;
 
 		for(int l = Map.LAYER_BACK; l <= Map.LAYER_LIGHT; l++){
-			for(int y = 0; y <screen.height/3; y++){
-				for(int x = 0; x <screen.width/3; x++){
+			for(int y = 0; y <screen.height/Screen.MAP_SCALE/Screen.MAP_ZOOM; y++){
+				for(int x = 0; x <screen.width/Screen.MAP_SCALE/Screen.MAP_ZOOM; x++){
 					X=x+screen.xOffset;Y=y+screen.yOffset;
 					
 					light = (byte) ((MAX_LIGHT-getlight(X,Y)));

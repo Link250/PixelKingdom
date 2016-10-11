@@ -1,8 +1,10 @@
 package item;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import entities.Player;
+import gameFields.BagInv;
 import gfx.Mouse;
 import gfx.Screen;
 import main.InputHandler;
@@ -184,6 +186,12 @@ public abstract class Bag<ItemType extends Item> extends Item {
 	
 	public byte getItemPriority() {
 		return this.itemPriority;
+	}
+	
+	public void createFields(List<BagInv.BagItemField> fields) {
+		for(int i = 0; i < inventory.size(); i++) {
+			fields.add(new BagInv.BagItemField().linkToBag(this, i));
+		}
 	}
 	
 	public void save(ArrayList<Byte> file) {

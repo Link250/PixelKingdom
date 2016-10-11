@@ -1,28 +1,45 @@
 package gameFields;
 
 import gfx.Mouse;
-import gfx.Screen;
 import gfx.SpriteSheet;
 import item.Item;
 import main.Game;
 import main.PArea;
 
 public class ItemField {
-	private static SpriteSheet back = new SpriteSheet("/Items/field.png");
+	protected static SpriteSheet back = new SpriteSheet("/Items/field.png");
 	
-	private PArea field;
-	public Item item;
+	protected PArea field;
+	protected Item item;
 	
-	public ItemField(PArea field) {
-		this.field = field;
+	public ItemField() {
+		this.field = new PArea(0,0,36,36);
+	}
+	
+	public ItemField(int x, int y) {
+		this.field = new PArea(x,y,36,36);
+	}
+	
+	public void setPosition(int x, int y) {
+		this.setPosition(x, y, true, true);
+	}
+	
+	public void setPosition(int x, int y, boolean centeredX, boolean centeredY) {
+		this.field.x = centeredX ? x - field.width/2 : x;
+		this.field.y = centeredY ? y - field.height/2 : y;
+	}
+	
+	public PArea getField() {
+		return this.field;
 	}
 	
 	public Item getItem() {
 		return item;
 	}
 
-	public void setItem(Item item) {
+	public boolean setItem(Item item) {
 		this.item = item;
+		return true;
 	}
 	
 	public void mouseClick() {
@@ -35,8 +52,8 @@ public class ItemField {
 		Game.logInfo("mouseover");
 	}
 	
-	public void render(Screen screen) {
+	public void render() {
 		Game.screen.drawGUITile(field.x, field.y, 0, 0, back, 0);
-		if(this.item != null)this.item.render(screen, field.x, field.y, true);
+		if(this.item != null)this.item.render(Game.screen, field.x+2, field.y+2, true);
 	}
 }

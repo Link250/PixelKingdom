@@ -18,8 +18,8 @@ public abstract class GameField {
 	
 	public GameField(GameFields savefile) {
 		Point p = MainConfig.fieldPos.get(savefile);
-		field = new PArea(p.x,p.y,30,10);
-		fieldTop = new PArea(p.x,p.y,30,10);
+		field = new PArea(p.x,p.y,100,32);
+		fieldTop = new PArea(p.x,p.y,100,32);
 		grab = new Point();
 		this.savefile = savefile;
 	}
@@ -27,79 +27,75 @@ public abstract class GameField {
 	public GameField(int w, int h, GameFields savefile){
 		Point p = MainConfig.fieldPos.get(savefile);
 		field = new PArea(p.x,p.y,w,h);
-		fieldTop = new PArea(p.x,p.y,w,10);
+		fieldTop = new PArea(p.x,p.y,w,32);
 		grab = new Point();
 		this.savefile = savefile;
 		constructBackground();
 	}
 	
+	/**
+	 * sets the size of the bottom field (the top field will only change his width but always have the same height -> 32)
+	 * @param width
+	 * @param height
+	 */
 	protected void setSize(int width, int height) {
-		field.setSize(width, height);
-		fieldTop.setSize(width, 10);
+		field.setSize(width, height+32);
+		fieldTop.setSize(width, 32);
 		constructBackground();
 	}
 	
 	private void constructBackground() {
-		int[] pixelscaled = new int[field.width * field.height * 9];
 		int[] pixels = new int[field.width * field.height];
 		this.background = new SpriteSheet();
-		this.background.setPixels(pixelscaled, field.width*3, field.height*3, field.width*3, field.height*3);
+		this.background.setPixels(pixels, field.width, field.height, field.width, field.height);
 		for(int x = 0; x < field.width; x++){
 			for(int y = 0; y < field.height; y++){
 				pixels[y*field.width+x] = y < (fieldTop.height)?
-						((x == 0 || y == 0 || x == fieldTop.width-1 || y == fieldTop.height-1)? 0xff404040 : 0xff808080):
-						((x == 0 || y == 0 || x == field.width-1 || y == field.height-1)? 0x80404040 : 0x40808080);
-			}
-		}
-		for(int x = 0; x < field.width*3; x++){
-			for(int y = 0; y < field.height*3; y++){
-				pixelscaled[y*field.width*3+x] = pixels[(y/3)*field.width+x/3];
+						((x < 2 || y < 2 || x >= fieldTop.width-2 || y >= fieldTop.height-2)? 0xff404040 : 0xff808080):
+						((x < 2 || y < 2 || x >= field.width-2 || y >= field.height-2)? 0x80404040 : 0x40808080);
 			}
 		}
 	}
 	
 	public abstract void tick();
 	
-	public void Drag(){
-		if(fieldTop.contains(Game.input.mouse.x/Game.SCALE, Game.input.mouse.y/Game.SCALE)){
+	public boolean Drag(){
+		if(fieldTop.contains(Game.input.mouse.x, Game.input.mouse.y)){
 			if(Game.input.mousel.click()){
-				grab.x = Game.input.mousel.x/Game.SCALE-field.x;
-				grab.y = Game.input.mousel.y/Game.SCALE-field.y;
+				grab.x = Game.input.mousel.x-field.x;
+				grab.y = Game.input.mousel.y-field.y;
 				grabing = true;
 			}
 		}
 		if(grabing & Game.input.mousel.isPressed()){
-			field.x = Game.input.mouse.x/Game.SCALE - grab.x;
-			field.y = Game.input.mouse.y/Game.SCALE - grab.y;
+			field.x = Game.input.mouse.x - grab.x;
+			field.y = Game.input.mouse.y - grab.y;
 			if(field.x < 0)field.x = 0;
 			if(field.x > Game.screen.width-field.width)field.x = Game.screen.width-field.width;
 			if(field.y < 0)field.y = 0;
 			if(field.y > Game.screen.height-field.height)field.y = Game.screen.height-field.height;
 			fieldTop.x = field.x;
 			fieldTop.y = field.y;
+			return true;
 		}else{
-			grabing = false;
-			save();
+			if(grabing) {
+				grabing = false;
+				save();
+			}
+			if(field.x < 0)field.x = 0;
+			if(field.x > Game.screen.width-field.width)field.x = Game.screen.width-field.width;
+			if(field.y < 0)field.y = 0;
+			if(field.y > Game.screen.height-field.height)field.y = Game.screen.height-field.height;
+			fieldTop.x = field.x;
+			fieldTop.y = field.y;
+			return false;
 		}
 	}
 	
 	public abstract void render();
 	
 	protected void renderfield(){
-//		long t = System.nanoTime();
-		Game.screen.drawGUITile(field.x+Game.screen.xOffset, field.y+Game.screen.yOffset, 0, 0, background, 0);
-//		for(int x = 0; x < field.width; x++){
-//			for(int y = 0; y < field.height; y++){
-//				if(y < fieldTop.height){
-//					if(x == 0 | y == 0 | x == fieldTop.width-1 | y == fieldTop.height-1)Game.screen.drawGUIScaled(Game.screen.xOffset+field.x+x, Game.screen.yOffset+field.y+y, 0xff404040);
-//					else Game.screen.drawGUIScaled(Game.screen.xOffset+field.x+x, Game.screen.yOffset+field.y+y, 0xff808080);
-//				}else{
-//					if(x == 0 | y == 0 | x == field.width-1 | y == field.height-1)Game.screen.drawGUIScaled(Game.screen.xOffset+field.x+x, Game.screen.yOffset+field.y+y, 0x80404040);
-//					else Game.screen.drawGUIScaled(Game.screen.xOffset+field.x+x, Game.screen.yOffset+field.y+y, 0x40808080);
-//				}
-//			}
-//		}
-//		System.out.println(System.nanoTime()-t);
+		Game.screen.drawGUITile(field.x, field.y, 0, 0, background, 0);
 	}
 	
 	public void save(){

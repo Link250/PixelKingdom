@@ -19,7 +19,6 @@ public class MainConfig {
 	public static Map<GameFields, Point> fieldPos = new EnumMap<>(MainConfig.GameFields.class);
 	public static int PlrCol;
 	public static int resX,resY;
-	public static int stacktype;
 	
 	private static ConfigFile configFile = new ConfigFile(Game.GAME_PATH+"Options.optn");
 
@@ -30,7 +29,6 @@ public class MainConfig {
 		PlrCol = 0xff02e707;
 		resX = 320*3;
 		resY = resX/12*9;
-		stacktype = 1;
 		//TODO don't override already existing Configs (override only the broken ones)
 		save();
 	}
@@ -46,7 +44,6 @@ public class MainConfig {
 			PlrCol = configFile.getConfig("PlayerColor");
 			resX = configFile.getConfig("ResolutionX");
 			resY = configFile.getConfig("ResolutionY");
-			stacktype = configFile.getConfig("Stacktype");
 		}catch(ClassCastException | NoConfigFoundException e){
 			Game.logInfo("New Main Configs created ");
 			setDefaults();
@@ -61,7 +58,6 @@ public class MainConfig {
 		configFile.setConfig("PlayerColor", PlrCol);
 		configFile.setConfig("ResolutionX", resX);
 		configFile.setConfig("ResolutionY", resY);
-		configFile.setConfig("Stacktype", stacktype);
 		configFile.save();
 	}
 }

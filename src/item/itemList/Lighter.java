@@ -29,10 +29,10 @@ public class Lighter extends Tool{
 
 	public void useItem(InputHandler input, Player plr, Map map, Screen screen) {
 		if((input.mousel.isPressed()|input.mouser.isPressed())){
-			int X = input.mouse.xMap, Y = input.mouse.yMap, L = Map.LAYER_FRONT;
+			int X = input.mouse.getMapX(), Y = input.mouse.getMapY(), L = Map.LAYER_FRONT;
 			if(!input.mousel.isPressed()){L=Map.LAYER_BACK;}
 			byte burntime = PixelList.GetMat(X, Y, map, L).burnable;
-			if(burntime>0 && Math.sqrt(Math.pow(input.mouse.xMap-plr.x, 2)+Math.pow(input.mouse.yMap-plr.y, 2))<20){
+			if(burntime>0 && Math.sqrt(Math.pow(input.mouse.getMapX()-plr.x, 2)+Math.pow(input.mouse.getMapY()-plr.y, 2))<20){
 				map.setID(X, Y, L, 32);
 				((Fire)PixelList.GetMat(X, Y, map, L)).setTime(X, Y, L, burntime, map);
 				stack--;

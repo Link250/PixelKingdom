@@ -41,8 +41,8 @@ public class SinglePlayer {
 			create();
 			save();
 		}
-		screen.xOffset= player.x-Game.WIDTH/3/2;
-		screen.yOffset= player.y-Game.HEIGHT/3/2;
+		screen.xOffset= player.x-Game.WIDTH/Screen.MAP_SCALE/Screen.MAP_ZOOM/2;
+		screen.yOffset= player.y-Game.HEIGHT/Screen.MAP_SCALE/Screen.MAP_ZOOM/2;
 	}
 	
 	public void tick(int tickCount){
@@ -65,17 +65,17 @@ public class SinglePlayer {
 			if(Game.devmode)Game.devmode = false;
 			else Game.devmode = true;
 		}
-		if(Keys.MENU.isPressed()){
+		if(Keys.MENU.click()){
 			map.save();
 			this.save();
 			Game.reset = true;
 		}
-		screen.xOffset= player.x-Game.WIDTH/3/2;
-		screen.yOffset= player.y-Game.HEIGHT/3/2;
+		screen.xOffset= player.x-Game.WIDTH/Screen.MAP_SCALE/Screen.MAP_ZOOM/2;
+		screen.yOffset= player.y-Game.HEIGHT/Screen.MAP_SCALE/Screen.MAP_ZOOM/2;
 
 		if(debuginfo){
 			if(Game.devmode&&Keys.DEBUGPXL.click()) {
-				int X = Game.input.mouse.x/Game.SCALE+Game.screen.xOffset, Y = Game.input.mouse.y/Game.SCALE+Game.screen.yOffset;
+				int X = Game.input.mouse.getMapX(), Y = Game.input.mouse.getMapY();
 				Game.logInfo(X+" "+Y+" id{"
 						+map.getID(X, Y, Map.LAYER_BACK)+","
 						+map.getID(X, Y, Map.LAYER_LIQUID)+","
@@ -105,11 +105,11 @@ public class SinglePlayer {
 		player.render();
 		
 		if(debuginfo){
-			Game.sfont.render(10+screen.xOffset, 10+screen.yOffset, "FPS:" + Integer.toString(Game.fps), 0, 0xff000000, screen);
-			Game.sfont.render(10+screen.xOffset, 20+screen.yOffset, "X:" + Integer.toString(player.x), 0, 0xff000000, screen);
-			Game.sfont.render(10+screen.xOffset, 30+screen.yOffset, "Y:" + Integer.toString(player.y), 0, 0xff000000, screen);
-			Game.sfont.render(10+screen.xOffset, 40+screen.yOffset, "sX:" + Integer.toString(player.getspeedX()), 0, 0xff000000, screen);
-			Game.sfont.render(10+screen.xOffset, 50+screen.yOffset, "sY:" + Integer.toString(player.getspeedY()), 0, 0xff000000, screen);
+			Game.sfont.render(10, 10, "FPS:" + Integer.toString(Game.fps), 0, 0xff000000, screen);
+			Game.sfont.render(10, 20, "X:" + Integer.toString(player.x), 0, 0xff000000, screen);
+			Game.sfont.render(10, 30, "Y:" + Integer.toString(player.y), 0, 0xff000000, screen);
+			Game.sfont.render(10, 40, "sX:" + Integer.toString(player.getspeedX()), 0, 0xff000000, screen);
+			Game.sfont.render(10, 50, "sY:" + Integer.toString(player.getspeedY()), 0, 0xff000000, screen);
 		}
 	}
 	

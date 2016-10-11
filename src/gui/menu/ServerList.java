@@ -29,22 +29,28 @@ public class ServerList implements GameMenu{
 	private Button  back,add,del,join,scrollUP,scrollDOWN,start;
 	private int selected = 0;
 	private NewServerWindow newServerWindow;
-	
+	/** should always be uneven or else the delete and play buttons dont lign up */
+	private int maxButtonsOnScreen = 1;
+
 	public ServerList(Game game) {
 		this.game = game;
-		back = new Button(10, 10, 20, 20);
+		int buttonSize = 60;
+		maxButtonsOnScreen = (int) ((Game.screen.height-buttonSize*3)/(buttonSize*1.5));
+		//makes it uneven
+		maxButtonsOnScreen -= maxButtonsOnScreen%2==0 ? 1 : 0;
+		back = new Button(50, 50, buttonSize, buttonSize);
 		back.gfxData(new SpriteSheet("/Buttons/back.png"), true);
-		add = new Button(Game.screen.width/Game.SCALE-30, 10, 20, 20);
+		add = new Button(Game.screen.width-50, 50, buttonSize, buttonSize);
 		add.gfxData(new SpriteSheet("/Buttons/add_server.png"), true);
-		start = new Button(Game.screen.width/Game.SCALE-30, Game.screen.height/Game.SCALE-30, 20, 20);
+		start = new Button(Game.screen.width-50, Game.screen.height-50, buttonSize, buttonSize);
 		start.gfxData(new SpriteSheet("/Buttons/new_server.png"), true);
-		del = new Button(Game.screen.width/Game.SCALE/2-80, 100, 20, 20);
+		del = new Button(Game.screen.width/2-240, Game.screen.height/2, buttonSize, buttonSize);
 		del.gfxData(new SpriteSheet("/Buttons/delete.png"), true);
-		join = new Button(Game.screen.width/Game.SCALE/2+60, 100, 20, 20);
+		join = new Button(Game.screen.width/2+240, Game.screen.height/2, buttonSize, buttonSize);
 		join.gfxData(new SpriteSheet("/Buttons/play.png"), true);
-		scrollUP = new Button(Game.screen.width/Game.SCALE/2-10, 40, 20, 20);
+		scrollUP = new Button(Game.screen.width/2, Game.screen.height/2-(maxButtonsOnScreen/2+1)*buttonSize*3/2, buttonSize, buttonSize);
 		scrollUP.gfxData(new SpriteSheet("/Buttons/ArrowDown.png"), 0x01, false);
-		scrollDOWN = new Button(Game.screen.width/Game.SCALE/2-10, 160, 20, 20);
+		scrollDOWN = new Button(Game.screen.width/2, Game.screen.height/2+(maxButtonsOnScreen/2+1)*buttonSize*3/2, buttonSize, buttonSize);
 		scrollDOWN.gfxData(new SpriteSheet("/Buttons/ArrowDown.png"), false);
 		LoadServers(false);
 	}
@@ -67,8 +73,8 @@ public class ServerList implements GameMenu{
 			for(String s : serverlist){
 				if(turn) {
 					name.add(s);
-					ButtonList.add(new Button(Game.WIDTH/Game.SCALE/2-50, 1, 100, 20));
-					ButtonList.get(ButtonList.size()-1).TextData( s, true, 0, 0);
+					ButtonList.add(new Button(0, 0, 300, 60));
+					ButtonList.get(ButtonList.size()-1).TextData( s, true);
 				}else{
 					adress.add(s);
 				}
@@ -136,31 +142,32 @@ public class ServerList implements GameMenu{
 		back.tick();
 		add.tick();
 		del.tick();
+		int scroll = Game.input.mouse.getScroll();
 		if(game.server==null)start.tick();
 		if(ButtonList.size()!=0)join.tick();
 		if(selected > 0)scrollUP.tick();
-		if(scrollUP.isclicked && selected > 0)selected--;
+		if((scrollUP.isclicked || scroll<0) && selected > 0)selected--;
 		if(selected < ButtonList.size()-1)scrollDOWN.tick();
-		if(scrollDOWN.isclicked && selected < ButtonList.size()-1)selected++;
+		if((scrollDOWN.isclicked || scroll>0) && selected < ButtonList.size()-1)selected++;
 		if(selected > ButtonList.size()-1 && ButtonList.size()!=0)selected = ButtonList.size()-1;
 	}
 	
 	public void render(){
-		for(int i = -1; i < 2; i++){
+		for(int i = -maxButtonsOnScreen/2; i <= maxButtonsOnScreen/2; i++){
 			try{
-				ButtonList.get(selected+i).SetPos(Game.WIDTH/Game.SCALE/2-50, 100+(i*30));
+				ButtonList.get(selected+i).SetPos(Game.WIDTH/2, Game.screen.height/2+(i*90));
 				ButtonList.get(selected+i).render();
 			}catch(ArrayIndexOutOfBoundsException e){}catch(IndexOutOfBoundsException e){}
 		}
 		back.render();
 		add.render();
 		if(game.server==null)start.render();
-		else Game.font.render(Game.screen.width/Game.SCALE/2-65, Game.screen.height/Game.SCALE-20, "ServerRunning", 0, 0xff000000, Game.screen);
+		else Game.font.render(Game.screen.width/2-65, Game.screen.height-20, "ServerRunning", 0, 0xff000000, Game.screen);
 		if(ButtonList.size()!=0)del.render();
 		if(ButtonList.size()!=0)join.render();
 		if(selected > 0)scrollUP.render();
 		if(selected < ButtonList.size()-1)scrollDOWN.render();
-		Game.font.render(Game.screen.width/Game.SCALE/2-50, 10, "Multiplayer", 0, 0xff000000, Game.screen);
+		Game.font.render(Game.screen.width/2, 50, "Multiplayer", 0, 0xff000000, Game.screen);
 	}
 	
 	public void addServer(String name, String adress) {

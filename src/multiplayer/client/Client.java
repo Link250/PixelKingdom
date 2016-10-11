@@ -5,7 +5,6 @@ import entities.Player;
 import gfx.Screen;
 import gfx.SpriteSheet;
 import main.Game;
-import main.InputHandler;
 import main.Keys;
 import map.Chunk;
 import map.Map;
@@ -32,7 +31,6 @@ public class Client {
 	
 	private Screen screen;
 	private BufferedImage back;
-	private InputHandler input;
 	private Map map;
 	private MapManager mapManager;
 	
@@ -49,7 +47,6 @@ public class Client {
 		
 		try {back = ImageIO.read(SpriteSheet.class.getResourceAsStream("/NormalBack.png"));} catch (IOException e) {e.printStackTrace();back=null;}
 		this.screen = Game.screen;
-		this.input = Game.input;
 		this.files = files;
 		
 		this.map = new Map(null, screen);
@@ -121,11 +118,11 @@ public class Client {
 		for(MPlayer p : players)p.render();
 		
 		if(debuginfo){
-			Game.sfont.render(10+screen.xOffset, 10+screen.yOffset, "FPS:" + Integer.toString(Game.fps), 0, 0xff000000, screen);
-			Game.sfont.render(10+screen.xOffset, 20+screen.yOffset, "cX:" + Integer.toString(player.x/Chunk.width), 0, 0xff000000, screen);
-			Game.sfont.render(10+screen.xOffset, 30+screen.yOffset, "cY:" + Integer.toString(player.y/Chunk.height), 0, 0xff000000, screen);
-			Game.sfont.render(10+screen.xOffset, 40+screen.yOffset, "rX:" + Integer.toString(player.x%Chunk.width), 0, 0xff000000, screen);
-			Game.sfont.render(10+screen.xOffset, 50+screen.yOffset, "rY:" + Integer.toString(player.y%Chunk.height), 0, 0xff000000, screen);
+			Game.sfont.render(10, 10, "FPS:" + Integer.toString(Game.fps), 0, 0xff000000, screen);
+			Game.sfont.render(10, 20, "cX:" + Integer.toString(player.x/Chunk.width), 0, 0xff000000, screen);
+			Game.sfont.render(10, 30, "cY:" + Integer.toString(player.y/Chunk.height), 0, 0xff000000, screen);
+			Game.sfont.render(10, 40, "rX:" + Integer.toString(player.x%Chunk.width), 0, 0xff000000, screen);
+			Game.sfont.render(10, 50, "rY:" + Integer.toString(player.y%Chunk.height), 0, 0xff000000, screen);
 		}
 	}
 	

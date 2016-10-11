@@ -33,7 +33,7 @@ public class PArea {
 	public void showArea(Screen s){
 		for(int X = 0; X < width; X++){
 			for(int Y = 0; Y < height; Y++){
-				s.drawPixelScaled(X+x+s.xOffset, Y+y+s.yOffset, 0x80ff0000);
+				s.drawGUIPixel(X+x+s.xOffset, Y+y+s.yOffset, 0x80ff0000);
 			}
 		}
 	}

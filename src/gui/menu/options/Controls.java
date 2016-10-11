@@ -26,21 +26,21 @@ public class Controls {
 	
 	public Controls(OptionScreen mainMenu) {
 		this.mainMenu = mainMenu;
-		this.back = new Button(10, 10, 20, 20);
+		this.back = new Button(50, 50, 60, 60);
 		this.back.gfxData(new SpriteSheet("/Buttons/back.png"), true);
 		this.lOffset = 0;
 		this.lVisibleEntries = 5;
-		this.lFieldTop = Game.screen.height/Game.SCALE/10*3;
-		this.lFieldBottom = Game.screen.height/Game.SCALE-30;
+		this.lFieldTop = Game.screen.height/10*3;
+		this.lFieldBottom = Game.screen.height-90;
 		this.lFieldSize = this.lFieldBottom-this.lFieldTop;
 		
 		this.buttonValues = new HashMap<>();
 		this.keyConfigs = new ArrayList<>();
 		this.resetKeyButtons();
 		
-		this.scrollUP = new Button(Game.screen.width/Game.SCALE/2-10, this.lFieldTop-20, 20, 20);
+		this.scrollUP = new Button(Game.screen.width/2, this.lFieldTop-30, 60, 60);
 		this.scrollUP.gfxData(new SpriteSheet("/Buttons/ArrowDown.png"), 0x01, false);
-		this.scrollDOWN = new Button(Game.screen.width/Game.SCALE/2-10, this.lFieldBottom, 20, 20);
+		this.scrollDOWN = new Button(Game.screen.width/2, this.lFieldBottom+30, 60, 60);
 		this.scrollDOWN.gfxData(new SpriteSheet("/Buttons/ArrowDown.png"), false);
 	}
 	
@@ -54,11 +54,11 @@ public class Controls {
 	}
 	
 	private void addKeyButton(String name, Keys key) {
-		Button button = new Button(100, 100, 100, 20);
+		Button button = new Button(100, 100, 300, 60);
 		for (Entry<Integer, Keys> entry : keyMapping.entrySet()) {
 			if(key.equals(entry.getValue())) {
 				buttonValues.put(button, entry.getKey());
-				button.TextData(KeyEvent.getKeyText(entry.getKey()), false, 5, 0);
+				button.TextData(KeyEvent.getKeyText(entry.getKey()), false);
 				break;
 			}
 		}
@@ -69,7 +69,7 @@ public class Controls {
 		int buttonHeight = keyConfigs.get(0).button.getHeight();
 		int gapHeight = (this.lFieldSize-(buttonHeight*this.lVisibleEntries))/(this.lVisibleEntries+1);
 		for(int i = 0; i < this.lVisibleEntries; i++) {
-			keyConfigs.get(i+this.lOffset).button.SetPos(Game.screen.width/Game.SCALE/2, this.lFieldTop+(i+1)*gapHeight+i*buttonHeight);
+			keyConfigs.get(i+this.lOffset).button.SetPos(Game.screen.width/2, this.lFieldTop+(i+1)*gapHeight+i*buttonHeight, false, false);
 			keyConfigs.get(i+this.lOffset).height = this.lFieldTop+(i+1)*gapHeight+i*buttonHeight;
 		}
 	}
@@ -109,10 +109,9 @@ public class Controls {
 	
 	public void render(){
 		back.render();
+		Game.font.render(Game.screen.width/2, 50, "Controls", 0, 0xff000000, Game.screen);
 		if(this.lOffset > 0)scrollUP.render();
 		if(this.lOffset < keyConfigs.size()-this.lVisibleEntries)scrollDOWN.render();
-//		Game.font.render(Game.screen.width/Game.SCALE/2-30, 10, "Controls", 0, 0xff000000, Game.screen);
-//		Game.font.render(Game.screen.width/Game.SCALE/2-50, Game.screen.height/Game.SCALE/2, "COMING-SOON", 0, 0xff000000, Game.screen);
 		for(int i = this.lOffset; i < this.lOffset+this.lVisibleEntries; i++) {
 			keyConfigs.get(i).render();
 		}
@@ -138,7 +137,7 @@ public class Controls {
 		}
 		
 		public void render(){
-			Game.font.render(Game.screen.height/Game.SCALE/4, height, text, 0, 0xff000000, Game.screen);
+			Game.font.render(Game.screen.height/3, height, true, false, text, 0, 0xff000000, Game.screen);
 			button.render();
 		}
 	}

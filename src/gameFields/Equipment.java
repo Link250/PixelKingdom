@@ -8,48 +8,46 @@ import gfx.SpriteSheet;
 import item.*;
 import main.MainConfig.GameFields;
 import main.Game;
-import main.PArea;
 
 public class Equipment extends GameField {
 	
 	private SpriteSheet Background = new SpriteSheet("/Equipment.png");
 	
-	private EnumMap<BAG, PArea> bagAreas;
-	private EnumMap<BAG, Bag<?>> bags;
-	private Player player;
+	private EnumMap<BAG, EquipItemField> itemFields;
 	
 	public Equipment(Player player, EnumMap<BAG, Bag<?>> bags){
-		super(70,59, GameFields.Field_Equipment);
-		this.player = player;
-		this.bags = bags;
-		this.bagAreas = new EnumMap<>(BAG.class);
+		super(210,177, GameFields.Field_Equipment);
+		this.itemFields = new EnumMap<>(BAG.class);
+		this.itemFields.put(BAG.TOOL_1, new EquipItemField(bags, BAG.TOOL_1, player));
+		this.itemFields.put(BAG.MAT_1, new EquipItemField(bags, BAG.MAT_1, player));
+		this.itemFields.put(BAG.MAT_2, new EquipItemField(bags, BAG.MAT_2, player));
+		this.itemFields.put(BAG.BELT_1, new EquipItemField(bags, BAG.BELT_1, player));
+		this.itemFields.put(BAG.ITEM_1, new EquipItemField(bags, BAG.ITEM_1, player));
+		this.itemFields.put(BAG.ITEM_2, new EquipItemField(bags, BAG.ITEM_2, player));
 //		this.bagAreas.put(BAG.ARMOR_HEAD, new PArea(30,12,10,10));
 //		this.bagAreas.put(BAG.ARMOR_BODY, new PArea(30,24,10,10));
 //		this.bagAreas.put(BAG.ARMOR_LEGS, new PArea(30,36,10,10));
 //		this.bagAreas.put(BAG.ARMOR_FEET, new PArea(30,48,10,10));
-		this.bagAreas.put(BAG.TOOL_1, new PArea(15,18,10,10));
-		this.bagAreas.put(BAG.MAT_1, new PArea(15,30,10,10));
-		this.bagAreas.put(BAG.MAT_2, new PArea(15,42,10,10));
-		this.bagAreas.put(BAG.BELT_1, new PArea(45,18,10,10));
-		this.bagAreas.put(BAG.ITEM_1, new PArea(45,30,10,10));
-		this.bagAreas.put(BAG.ITEM_2, new PArea(45,42,10,10));
+		allignFields();
+	}
+	
+	private void allignFields() {
+		this.itemFields.get(BAG.TOOL_1).setPosition(field.x+field.width/4,field.y+field.height/2+fieldTop.height/2-38);
+		this.itemFields.get(BAG.MAT_1).setPosition(field.x+field.width/4,field.y+field.height/2+fieldTop.height/2);
+		this.itemFields.get(BAG.MAT_2).setPosition(field.x+field.width/4,field.y+field.height/2+fieldTop.height/2+38);
+		this.itemFields.get(BAG.BELT_1).setPosition(field.x+field.width/4*3,field.y+field.height/2+fieldTop.height/2-38);
+		this.itemFields.get(BAG.ITEM_1).setPosition(field.x+field.width/4*3,field.y+field.height/2+fieldTop.height/2);
+		this.itemFields.get(BAG.ITEM_2).setPosition(field.x+field.width/4*3,field.y+field.height/2+fieldTop.height/2+38);
 	}
 	
 	public void tick() {
-		Drag();
-		if(mouseover(Game.input.mouse.x/Game.SCALE, Game.input.mouse.y/Game.SCALE)){
+		if(Drag())allignFields();
+		if(mouseover(Game.input.mouse.x, Game.input.mouse.y)){
 			Mouse.mousetype=0;
 			if(Game.input.mousel.click()){
-				int mx = Game.input.mousel.x/Game.SCALE, my = Game.input.mousel.y/Game.SCALE;
 				for (BAG bag : BAG.values()) {
-					if(this.bagAreas.get(bag).contains(mx, my)) {
-						if(Mouse.Item==null) {
-							Mouse.Item = player.unequipItem(bag);
-						}else {
-							if(player.equipItem(bag, Mouse.Item)) {
-								Mouse.Item=null;
-							}
-						}
+					if(this.itemFields.get(bag).getField().contains(Game.input.mousel.x, Game.input.mousel.y)) {
+						this.itemFields.get(bag).mouseClick();
 						break;
 					}
 				}
@@ -59,14 +57,51 @@ public class Equipment extends GameField {
 	
 	public void render() {
 		renderfield();
-		Game.screen.drawGUITile(Game.screen.xOffset+field.x, Game.screen.yOffset+field.y, 0, 0, Background, 0xff000000);
-		Game.sfont.render(Game.screen.xOffset+field.x+2, Game.screen.yOffset+field.y+1, "Equipment", 0, 0xff000000, Game.screen);
+		Game.screen.drawGUITile(field.x+87, field.y+33, 0, 0, Background, 0xff000000);
+		Game.sfont.render(field.x+field.width/2, field.y+fieldTop.height/2, "Equipment", 0, 0xff000000, Game.screen);
 		
-		for (BAG bag : Player.BAG.values()) {
-			if(this.bags.containsKey(bag)) {
-				this.bags.get(bag).render(Game.screen, Game.screen.xOffset+this.bagAreas.get(bag).x+field.x, Game.screen.yOffset+this.bagAreas.get(bag).y+field.y);
+		for (EquipItemField field : itemFields.values()) {
+			field.render();
+		}
+	}
+	
+	public static class EquipItemField extends ItemField{
+		private BAG bagEnum;
+		private EnumMap<BAG, Bag<?>> bags;
+		private Player plr;
+		
+		public EquipItemField(EnumMap<BAG, Bag<?>> bags, BAG bagIndex, Player plr) {
+			super();
+			this.bags = bags;
+			this.bagEnum = bagIndex;
+			this.plr = plr;
+		}
+		
+		public Item getItem() {
+			return bags.get(bagEnum);
+		}
+		
+		public boolean setItem(Item item) {
+			return plr.equipItem(bagEnum, item);
+		}
+		
+		public void mouseClick() {
+			if(Mouse.Item!=null) {
+				Item tempItem;
+				tempItem = plr.unequipItem(bagEnum);
+				if(plr.equipItem(bagEnum, Mouse.Item)) Mouse.Item = tempItem;
+				else plr.equipItem(bagEnum, tempItem);
+			}else {
+				Mouse.Item = plr.unequipItem(bagEnum);
+			}
+		}
+		
+		public void render() {
+			Game.screen.drawGUITile(field.x, field.y, 0, 0, back, 0);
+			if(bags.containsKey(bagEnum)) {
+				bags.get(bagEnum).render(Game.screen, field.x+2, field.y+2, true);
 			}else{
-				Game.screen.drawGUITile(Game.screen.xOffset+this.bagAreas.get(bag).x+field.x, Game.screen.yOffset+this.bagAreas.get(bag).y+field.y, 0, 0, bag.defaultSprite, 0);
+				Game.screen.drawGUITile(field.x+2, field.y+2, 0, 0, bagEnum.defaultSprite, 0);
 			}
 		}
 	}

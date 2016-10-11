@@ -43,7 +43,7 @@ public class Fire extends Material<FireAD>{
 	
 	public void render(int x, int y, int l, Map map, Screen screen) {
 		try {
-			screen.drawPixelScaled(x, y, 0xffff0000 | (((byte)(map.<FireAD>getAD(x, y, l).burntime*2+Math.random()*55))<<8));
+			screen.drawMapPixelScaled(x, y, 0xffff0000 | (((byte)(map.<FireAD>getAD(x, y, l).burntime*2+Math.random()*55))<<8));
 		}catch(NullPointerException e) {
 			System.out.println("Fire.render()");
 			//can happen if the AD is changed while this pixel is being rendered

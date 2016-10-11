@@ -3,6 +3,7 @@ package gui.menu;
 import gfx.SpriteSheet;
 import gui.Button;
 import main.Game;
+import main.Keys;
 
 public class MainMenu implements GameMenu{
 	
@@ -15,13 +16,14 @@ public class MainMenu implements GameMenu{
 	
 	public MainMenu(Game game) {
 		this.game = game;
-		SP = new Button(Game.WIDTH/Game.SCALE/2-50,110,100,20);
+		int bWidth = 300, bHeight = 60, bYOff = 250, bNr = 0;
+		SP = new Button((Game.WIDTH)/2,bYOff + (int)(bHeight*bNr++*1.5),bWidth,bHeight);
 		SP.gfxData(new SpriteSheet("/Buttons/SP.png"), true);
-		MP = new Button(Game.WIDTH/Game.SCALE/2-50,140,100,20);
+		MP = new Button((Game.WIDTH)/2,bYOff + (int)(bHeight*bNr++*1.5),bWidth,bHeight);
 		MP.gfxData(new SpriteSheet("/Buttons/MP.png"), true);
-		OP = new Button(Game.WIDTH/Game.SCALE/2-50,170,100,20);
+		OP = new Button((Game.WIDTH)/2,bYOff + (int)(bHeight*bNr++*1.5),bWidth,bHeight);
 		OP.gfxData(new SpriteSheet("/Buttons/OP.png"), true);
-		QT = new Button(Game.WIDTH/Game.SCALE/2-50,200,100,20);
+		QT = new Button((Game.WIDTH)/2,bYOff + (int)(bHeight*bNr++*1.5),bWidth,bHeight);
 		QT.gfxData(new SpriteSheet("/Buttons/QT.png"), true);
 	}
 	
@@ -75,7 +77,7 @@ public class MainMenu implements GameMenu{
 				subMenu = Menu.Options;
 			}
 			QT.tick();
-			if(QT.isclicked){
+			if(QT.isclicked || Keys.MENU.click()){
 				game.stop();
 			}
 			break;

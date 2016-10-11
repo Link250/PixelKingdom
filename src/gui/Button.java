@@ -19,10 +19,17 @@ public class Button {
 	public boolean isclicked = false;
 	
 	public Button(int x, int y, int width, int height){
-		this.x = x;
-		this.y = y;
 		this.height = height;
 		this.width = width;
+		this.x = x-this.width/2;
+		this.y = y-this.height/2;
+	}
+
+	public Button(int x, int y, int width, int height, boolean centeredX, boolean centeredY){
+		this.height = height;
+		this.width = width;
+		this.x = x - (centeredX ? this.width/2 : 0);
+		this.y = y - (centeredY ? this.height/2 : 0);
 	}
 
 	public void TextData(String Text, boolean limit, int ToffX, int ToffY){
@@ -30,6 +37,13 @@ public class Button {
 		this.uselimit = limit;
 		this.ToffX = ToffX;
 		this.ToffY = ToffY;
+	}
+	
+	public void TextData(String Text, boolean limit){
+		this.Text = Text;
+		this.uselimit = limit;
+		this.ToffX = this.width/2;
+		this.ToffY = this.height/2;
 	}
 	
 	public void gfxData(SpriteSheet gfx, boolean background){
@@ -44,13 +58,17 @@ public class Button {
 	}
 
 	public void SetPos(int x, int y){
-		this.x = x;
-		this.y = y;
+		SetPos(x, y, true, true);
+	}
+	
+	public void SetPos(int x, int y, boolean centeredX, boolean centeredY){
+		this.x = x - (centeredX ? this.width/2 : 0);
+		this.y = y - (centeredY ? this.height/2 : 0);
 	}
 	
 	public void tick(){
 //		System.out.println(input.mouse.x + " " + input.mouse.y);
-		if(Game.input.mouse.x/Game.SCALE >= x && Game.input.mouse.x/Game.SCALE <= x+width-1 && Game.input.mouse.y/Game.SCALE >= y && Game.input.mouse.y/Game.SCALE <= y+height-1) mouseover = true;
+		if(Game.input.mouse.x >= x && Game.input.mouse.x <= x+width-1 && Game.input.mouse.y >= y && Game.input.mouse.y <= y+height-1) mouseover = true;
 		else  mouseover = false;
 		if(mouseover){
 			isclicked = Game.input.mousel.click();
@@ -64,19 +82,19 @@ public class Button {
 			for(int i = 0; i < height; i++){
 				for(int j = 0; j < width; j++){
 					if(mouseover){
-						if(i==0 || i==height-1 || j==0 || j==width-1)Game.screen.drawPixelScaled(x+j, y+i, 0xffC0C0C0);
-						else Game.screen.drawPixelScaled(x+j, y+i, 0xff606060);
+						if(i==0 || i==height-1 || j==0 || j==width-1)Game.screen.drawGUIPixel(x+j, y+i, 0xffC0C0C0);
+						else Game.screen.drawGUIPixel(x+j, y+i, 0xff606060);
 					}
 					else{
-						if(i==0 || i==height-1 || j==0 || j==width-1)Game.screen.drawPixelScaled(x+j, y+i, 0xffC0C0C0);
-						else Game.screen.drawPixelScaled(x+j, y+i, 0xffA0A0A0);
+						if(i==0 || i==height-1 || j==0 || j==width-1)Game.screen.drawGUIPixel(x+j, y+i, 0xffC0C0C0);
+						else Game.screen.drawGUIPixel(x+j, y+i, 0xffA0A0A0);
 					}
 				}
 			}
 		}
 		if(gfx != null){
-			gfx.tileWidth=width*Game.SCALE;
-			gfx.tileHeight=height*Game.SCALE;
+			gfx.tileWidth=width;
+			gfx.tileHeight=height;
 //debug			System.out.println(gfx.tileWidth);
 			if(mouseover){
 				Game.screen.drawGUITile(x, y, 1, mirrorXY, gfx, 0);

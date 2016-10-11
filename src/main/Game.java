@@ -41,7 +41,6 @@ public class Game extends Canvas implements Runnable{
 
 	public static int WIDTH;
 	public static int HEIGHT;
-	public static final int SCALE = 3;
 	public static final String NAME = "Pixel Kingdom - the number of Commits is over 100 !";
 	public static final String GAME_PATH = System.getenv("APPDATA") + "\\PixelKingdom\\";
 	public static final int PORT = 7777;
@@ -60,9 +59,9 @@ public class Game extends Canvas implements Runnable{
 	public static GameMode gamemode = GameMode.Menu;
 	public static MainMenu menu;
 	
-	private BufferedImage image = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
+	private BufferedImage image = new BufferedImage(WIDTH/Screen.MAP_ZOOM, HEIGHT/Screen.MAP_ZOOM, BufferedImage.TYPE_INT_ARGB);
 	private int[] pxsMain = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
-	private BufferedImage shadow = new BufferedImage(WIDTH/3, HEIGHT/3, BufferedImage.TYPE_INT_ARGB);
+	private BufferedImage shadow = new BufferedImage(WIDTH/Screen.SHADOW_SCALE/Screen.MAP_ZOOM, HEIGHT/Screen.SHADOW_SCALE/Screen.MAP_ZOOM, BufferedImage.TYPE_INT_ARGB);
 	private int[] pxsShadow = ((DataBufferInt)shadow.getRaster().getDataBuffer()).getData();
 	private BufferedImage GUI = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
 	private int[] pxsGUI = ((DataBufferInt)GUI.getRaster().getDataBuffer()).getData();
@@ -120,9 +119,9 @@ public class Game extends Canvas implements Runnable{
 		try {windowIcon = ImageIO.read(SpriteSheet.class.getResourceAsStream("/WindowIcon.png"));} catch (IOException e) {e.printStackTrace();}
 		frame.setIconImage(windowIcon);
 		input = new InputHandler(this);
-		mfont = new PxlFont(new SpriteSheet("/StackFont.png"), "1234567890", 12, 15);
-		sfont = new PxlFont(new SpriteSheet("/8x8Font.png"), " !\"# %&´()* ,-./0123456789:; = ? ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{ }~",24,24);
-		font = new PxlFont(new SpriteSheet("/Font.png"), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 1234567890!\",;%&/()=?ß+-.",45,60);
+		mfont = new PxlFont(new SpriteSheet("/StackFont.png"), "1234567890", 12, 15, -2);
+		sfont = new PxlFont(new SpriteSheet("/8x8Font.png"), " !\"# %&´()* ,-./0123456789:; = ? ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{ }~",24,24, 1);
+		font = new PxlFont(new SpriteSheet("/Font.png"), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 1234567890!\",;%&/()=?ß+-.",45,60, 2);
 		screen = new Screen(WIDTH, HEIGHT, csheetf, csheetm, csheetb);
 		menu = new MainMenu(this);
 		
@@ -141,10 +140,8 @@ public class Game extends Canvas implements Runnable{
 		Mouse.Item = null;
 		Mouse.mousetype=0;
 		if(client!=null)client.reset();
-		for(int y = 0; y < screen.height/3; y++){
-			for(int x = 0; x < screen.width/3; x++){
-				screen.shadow[x + y * screen.width/3] = 0;
-			}
+		for (int xy = 0; xy < screen.lengthShadow; xy++) {
+			screen.shadow[xy] = 0;
 		}
 		reset = false;
 	}
@@ -247,8 +244,10 @@ public class Game extends Canvas implements Runnable{
 		Mouse.render();
 		
 		for(int xy = 0; xy < screen.length; xy++){
-			pxsMain[xy] = screen.pixels[xy];
 			pxsGUI[xy] = screen.GUI[xy];
+		}
+		for(int xy = 0; xy < screen.lengthMap; xy++){
+			pxsMain[xy] = screen.pixels[xy];
 		}
 		for(int xy = 0; xy < screen.lengthShadow; xy++){
 			pxsShadow[xy] = screen.shadow[xy];

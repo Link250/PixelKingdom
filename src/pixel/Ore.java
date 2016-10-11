@@ -36,7 +36,7 @@ public abstract class Ore<OreADType extends OreAD> extends Material<OreADType>{
 		ad = map.getAD(x, y, l);
 		if(melt>0 && ad!=null && ad.heat>0){
 			int r = (int) (ad.heat/(((double)melt)/250));if(r>255)r=255;
-			screen.drawPixelScaled(x, y, 0x00ff0000 | (r<<24));
+			screen.drawMapPixelScaled(x, y, 0x00ff0000 | (r<<24));
 		}
 	}
 }

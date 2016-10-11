@@ -78,6 +78,6 @@ public class Oven extends Material<OvenAD>{
 	public void render(int x, int y, int l, Map map, Screen screen) {
 		screen.drawMaterial(x, y, ID, l);
 		int r = (int) (map.<OvenAD>getAD(x, y, l).heat/(((double)maxHeat)/127));if(r>255)r=255;
-		screen.drawPixelScaled(x, y, 0x00ff0000 | (r<<24));
+		screen.drawMapPixelScaled(x, y, 0x00ff0000 | (r<<24));
 	}
 }

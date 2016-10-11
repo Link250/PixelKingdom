@@ -26,7 +26,7 @@ public class Bucket extends Item {
 	public void useItem(InputHandler input, Player plr, Map map, Screen screen) {
 		input.mouse.refresh();
 		if((input.mousel.isPressed()|input.mouser.isPressed())){
-			int X = input.mouse.xMap, Y = input.mouse.yMap;
+			int X = input.mouse.getMapX(), Y = input.mouse.getMapY();
 			for(int y = -buildsize+1; y < buildsize; y++){
 				for(int x = -buildsize+1; x < buildsize; x++){
 					if((input.mousel.isPressed())){
