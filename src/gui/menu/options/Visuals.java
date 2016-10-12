@@ -1,6 +1,8 @@
 package gui.menu.options;
 
+import java.awt.Point;
 import java.util.ArrayList;
+import java.util.List;
 
 import static main.MainConfig.PlrCol;
 import gfx.SpriteSheet;
@@ -24,6 +26,8 @@ public class Visuals {
 		this.back.gfxData(new SpriteSheet("/Buttons/back.png"), true);
 		options.add(new PlayerColorOption());
 		options.add(new MapZoomOption());
+		options.add(new ResolutionOption());
+		options.add(new FullscreenOption());
 //		a = new ItemField(100,300); a.setItem(new MatStack());
 //		b = new ItemField(100,350); b.setItem(new MatStack());
 //		c = new ItemField(100,400); c.setItem(new MatStack());
@@ -140,6 +144,97 @@ public class Visuals {
 		public void setHeight(int height) {
 			super.setHeight(height);
 			value.SetPos(Game.screen.width/2, height);
+		}
+	}
+	
+	private class ResolutionOption extends GFXOption{
+		private List<Point> resolutions = new ArrayList<>();
+		private int currentRes = -1;
+		private Button arrowLeft, arrowRight;
+		
+		public ResolutionOption() {
+			arrowLeft = new Button(0, 0, 60, 60);
+			arrowLeft.gfxData(new SpriteSheet("/Buttons/ArrowRight.png"), 0x10, false);
+			arrowRight = new Button(0, 0, 60, 60);
+			arrowRight.gfxData(new SpriteSheet("/Buttons/ArrowRight.png"), 0x00, false);
+			resolutions.add(new Point(960,720));
+			resolutions.add(new Point(1024,768));
+			resolutions.add(new Point(1200,900));
+			resolutions.add(new Point(1280,720));
+			resolutions.add(new Point(1280,1024));
+			resolutions.add(new Point(1368,768));
+			resolutions.add(new Point(1440,900));
+			resolutions.add(new Point(1600,900));
+			resolutions.add(new Point(1600,1200));
+			resolutions.add(new Point(1680,1050));
+			resolutions.add(new Point(1920,1080));
+			resolutions.add(new Point(1920,1200));
+			resolutions.add(new Point(2560,1440));
+			resolutions.add(new Point(2560,1600));
+			for(int i = 0; i < resolutions.size(); i++) {
+				if(MainConfig.resX == resolutions.get(i).getX() && MainConfig.resY == resolutions.get(i).getY())currentRes = i;
+			}if(currentRes == -1)currentRes = 1;
+		}
+		
+		public void tick() {
+			arrowLeft.tick();
+			if(arrowLeft.isclicked) {
+				if(currentRes>0) {
+					currentRes--;
+					setResolution();
+				}
+			}
+			arrowRight.tick();
+			if(arrowRight.isclicked) {
+				if(currentRes<resolutions.size()-1) {
+					currentRes++;
+					setResolution();
+				}
+			}
+		}
+		
+		private void setResolution() {
+			MainConfig.resX = resolutions.get(currentRes).x;
+			MainConfig.resY = resolutions.get(currentRes).y;
+		}
+
+		public void render() {
+			Game.font.render(Game.screen.width/2-300, height, "Resolution", 0, 0xff000000, Game.screen);
+			Game.sfont.render(Game.screen.width/2+180, height, MainConfig.resX+"x"+MainConfig.resY, 0, 0xff000000, Game.screen);
+			arrowLeft.render();
+			arrowRight.render();
+		}
+
+		public void setHeight(int height) {
+			super.setHeight(height);
+			arrowLeft.SetPos(Game.screen.width/2+30, height);
+			arrowRight.SetPos(Game.screen.width/2+330, height);
+		}
+	}
+	
+	private class FullscreenOption extends GFXOption{
+		private Button fullscreen;
+		
+		public FullscreenOption() {
+			fullscreen = new Button(0, 0, 500, 60);
+			fullscreen.TextData("Fullscreen: " + (MainConfig.fullscreen ? "ON" : "OFF"), false);
+		}
+		
+		public void tick() {
+			fullscreen.tick();
+			if(fullscreen.isclicked) {
+				MainConfig.fullscreen = !MainConfig.fullscreen;
+				fullscreen.TextData("Fullscreen: " + (MainConfig.fullscreen ? "ON" : "OFF"), false);
+			}
+		}
+
+		public void render() {
+			fullscreen.render();
+		}
+
+		public void setHeight(int height) {
+			super.setHeight(height);
+			fullscreen.SetPos(Game.screen.width/2, height);
 		}
 	}
 }

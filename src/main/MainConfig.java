@@ -20,6 +20,7 @@ public class MainConfig {
 	public static int PlrCol;
 	public static int resX,resY;
 	public static int mapZoom;
+	public static boolean fullscreen;
 	
 	private static ConfigFile configFile = new ConfigFile(Game.GAME_PATH+"Options.optn");
 
@@ -44,6 +45,7 @@ public class MainConfig {
 		resX = loadConfig("ResolutionX",320*3);
 		resY = loadConfig("ResolutionY",320*3/12*9);
 		mapZoom = loadConfig("MapZoom",2);
+		fullscreen = loadConfig("Fullscreen",false);
 	}
 	
 	public static void save(){
@@ -55,6 +57,7 @@ public class MainConfig {
 		configFile.setConfig("ResolutionX", resX);
 		configFile.setConfig("ResolutionY", resY);
 		configFile.setConfig("MapZoom", mapZoom);
+		configFile.setConfig("Fullscreen", fullscreen);
 		configFile.save();
 	}
 }

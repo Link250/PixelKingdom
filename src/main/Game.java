@@ -60,12 +60,12 @@ public class Game extends Canvas implements Runnable{
 	public static GameMode gamemode = GameMode.Menu;
 	public static MainMenu menu;
 	
-	private BufferedImage image = new BufferedImage(WIDTH/Screen.MAP_ZOOM, HEIGHT/Screen.MAP_ZOOM, BufferedImage.TYPE_INT_ARGB);
-	private int[] pxsMain = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
-	private BufferedImage shadow = new BufferedImage(WIDTH/Screen.SHADOW_SCALE/Screen.MAP_ZOOM, HEIGHT/Screen.SHADOW_SCALE/Screen.MAP_ZOOM, BufferedImage.TYPE_INT_ARGB);
-	private int[] pxsShadow = ((DataBufferInt)shadow.getRaster().getDataBuffer()).getData();
-	private BufferedImage GUI = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
-	private int[] pxsGUI = ((DataBufferInt)GUI.getRaster().getDataBuffer()).getData();
+	private BufferedImage image;
+	private int[] pxsMain;
+	private BufferedImage shadow;
+	private int[] pxsShadow;
+	private BufferedImage GUI;
+	private int[] pxsGUI;
 	
 	public static ItemList itemlist;
 	public static PixelList pixellist;
@@ -84,22 +84,28 @@ public class Game extends Canvas implements Runnable{
 	public Server server;
 	
 	public Game(){
-		setMinimumSize(new Dimension(WIDTH-12, HEIGHT-12));
-		setMaximumSize(new Dimension(WIDTH-12, HEIGHT-12));
-		setPreferredSize(new Dimension(WIDTH-12, HEIGHT-12));
-		
 		frame = new JFrame(NAME);
+		if(MainConfig.fullscreen) {
+			frame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+			frame.setUndecorated(true);
+		}
 		
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(new BorderLayout());
-		
-		frame.add(this, BorderLayout.CENTER);
-		frame.pack();
-		
 		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 		
+		Game.WIDTH = MainConfig.fullscreen ? frame.getWidth() : MainConfig.resX;
+		Game.HEIGHT = MainConfig.fullscreen ? frame.getHeight() : MainConfig.resY;
+		
+		setMinimumSize(new Dimension(WIDTH, HEIGHT));
+		setMaximumSize(new Dimension(WIDTH, HEIGHT));
+		setPreferredSize(new Dimension(WIDTH, HEIGHT));
+		
+		frame.add(this, BorderLayout.CENTER);
+		frame.pack();
+		frame.setLocationRelativeTo(null);
 		frame.addWindowListener(new java.awt.event.WindowAdapter(){
 			@Override
 			public void windowClosing(java.awt.event.WindowEvent windowEvent){
@@ -113,9 +119,17 @@ public class Game extends Canvas implements Runnable{
 		setCursor(cursor);
 		
 		System.setProperty("sun.java2d.opengl","True");
+		
 	}
 	
 	public void init(){
+		image = new BufferedImage(WIDTH/Screen.MAP_ZOOM, HEIGHT/Screen.MAP_ZOOM, BufferedImage.TYPE_INT_ARGB);
+		pxsMain = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
+		shadow = new BufferedImage(WIDTH/Screen.SHADOW_SCALE/Screen.MAP_ZOOM, HEIGHT/Screen.SHADOW_SCALE/Screen.MAP_ZOOM, BufferedImage.TYPE_INT_ARGB);
+		pxsShadow = ((DataBufferInt)shadow.getRaster().getDataBuffer()).getData();
+		GUI = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
+		pxsGUI = ((DataBufferInt)GUI.getRaster().getDataBuffer()).getData();
+		
 		try {back = ImageIO.read(SpriteSheet.class.getResourceAsStream("/Back.png"));} catch (IOException e) {e.printStackTrace();}
 		try {windowIcon = ImageIO.read(SpriteSheet.class.getResourceAsStream("/WindowIcon.png"));} catch (IOException e) {e.printStackTrace();}
 		frame.setIconImage(windowIcon);
@@ -303,10 +317,6 @@ public class Game extends Canvas implements Runnable{
 		if(!gameDir.isDirectory()) {gameDir.mkdirs();Game.logInfo("Created PixelKingdom Path");}
 		MainConfig.load();
 		KeyConfig.load();
-//		Game.WIDTH = MainConfig.resX;
-//		Game.HEIGHT = MainConfig.resY;
-		Game.WIDTH = 320*3;
-		Game.HEIGHT = WIDTH/12*9;
 		Screen.MAP_ZOOM = MainConfig.mapZoom;
 		for(String s : args){
 			Game.logInfo(s);
