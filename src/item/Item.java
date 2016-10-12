@@ -1,10 +1,13 @@
 package item;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import entities.Player;
+import gfx.Mouse;
 import gfx.Screen;
 import gfx.SpriteSheet;
+import gfx.Mouse.MouseType;
 import main.Game;
 import main.InputHandler;
 import map.Map;
@@ -14,6 +17,7 @@ public abstract class Item {
 	protected int ID;
 	protected String name;
 	protected String displayName;
+	protected List<String> tooltip = new ArrayList<>();
 	protected int stack;
 	protected int stackMax;
 	protected SpriteSheet gfx;
@@ -26,6 +30,17 @@ public abstract class Item {
 	
 	public String getDisplayName(){
 		return displayName;
+	}
+	
+	/**
+	 * 
+	 * @return displayName +  all tooltips as a List
+	 */
+	public List<String> getTooltip() {
+		List<String> tempList = new ArrayList<>();
+		tempList.add(displayName!=null ? displayName : (name != null ? name : "null"));
+		tempList.addAll(tooltip);
+		return tempList;
 	}
 
 	public String getName(){
@@ -123,8 +138,10 @@ public abstract class Item {
 
 	public abstract void useItem(InputHandler input, Player plr, Map map, Screen screen);
 
-	public abstract void setMouse();
-
+	public void setMouse() {
+		Mouse.mouseType=MouseType.DEFAULT;
+	}
+	
 	public abstract void save(ArrayList<Byte> file);
 
 	public abstract void load(ArrayList<Byte> file);

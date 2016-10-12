@@ -5,6 +5,7 @@ import gfx.PxlFont;
 import gfx.Mouse;
 import gfx.Screen;
 import gfx.SpriteSheet;
+import gfx.Mouse.MouseType;
 import gui.menu.MainMenu;
 import gui.menu.Menu;
 import item.ItemList;
@@ -138,7 +139,7 @@ public class Game extends Canvas implements Runnable{
 		screen.xOffset=0;
 		screen.yOffset=0;
 		Mouse.Item = null;
-		Mouse.mousetype=0;
+		Mouse.mouseType=MouseType.DEFAULT;
 		if(client!=null)client.reset();
 		for (int xy = 0; xy < screen.lengthShadow; xy++) {
 			screen.shadow[xy] = 0;
@@ -302,8 +303,10 @@ public class Game extends Canvas implements Runnable{
 		if(!gameDir.isDirectory()) {gameDir.mkdirs();Game.logInfo("Created PixelKingdom Path");}
 		MainConfig.load();
 		KeyConfig.load();
-		Game.WIDTH = 320*3;//configs.resX;
-		Game.HEIGHT = WIDTH/12*9;//configs.resY;
+//		Game.WIDTH = MainConfig.resX;
+//		Game.HEIGHT = MainConfig.resY;
+		Game.WIDTH = 320*3;
+		Game.HEIGHT = WIDTH/12*9;
 		Screen.MAP_ZOOM = MainConfig.mapZoom;
 		for(String s : args){
 			Game.logInfo(s);

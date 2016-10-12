@@ -3,7 +3,6 @@ package item.itemList;
 import java.util.ArrayList;
 
 import entities.Player;
-import gfx.Mouse;
 import gfx.Screen;
 import gfx.SpriteSheet;
 import item.Tool;
@@ -18,6 +17,7 @@ public class Lighter extends Tool{
 	public Lighter(){
 		ID = 400;
 		name = "Lighter";
+		displayName = "Lighter";
 		stack  = 1;
 		stackMax  = 100;
 		gfx = new SpriteSheet("/Items/Lighter.png");
@@ -43,10 +43,6 @@ public class Lighter extends Tool{
 		}
 	}
 	
-	public void setMouse() {
-		Mouse.mousetype=0;
-	}
-
 	public void save(ArrayList<Byte> file) {
 		ConvertData.I2B(file, ID);
 		ConvertData.I2B(file, stack);

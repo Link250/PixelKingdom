@@ -9,6 +9,7 @@ public class Planks extends Material<AD>{
 		super(null);
 		ID = 6;
 		name = "Planks";
+		displayName = "Planks";
 		usePickaxe = 1;
 		tick = false;
 		burnable = 15;

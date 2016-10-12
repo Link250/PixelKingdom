@@ -12,7 +12,8 @@ public abstract class Material<ADType extends AD> {
 	 * 100 -> max burning
 	 */
 	public byte burnable = 0;
-	public String name = "Unnamed";
+	public String name = "unnamed";
+	public String displayName = "unnamed";
 	/**
 	 * 0 -> Can't be mined
 	 */
@@ -35,6 +36,10 @@ public abstract class Material<ADType extends AD> {
 
 	public final String getName(){
 		return name;
+	}
+	
+	public final String getDisplayName(){
+		return displayName;
 	}
 	
 	/**

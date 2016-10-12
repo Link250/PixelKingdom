@@ -12,6 +12,7 @@ public class Fire extends Material<FireAD>{
 		super(new FireAD());
 		ID = 32;
 		name = "Fire";
+		displayName = "Fire";
 		tick = true;
 		solid = false;
 	}

@@ -9,6 +9,7 @@ public class Leaf extends Material<AD>{
 		super(null);
 		ID = 5;
 		name = "Leaf";
+		displayName = "Leaf";
 		usePickaxe = 1;
 		burnable = 10;
 		tick = false;

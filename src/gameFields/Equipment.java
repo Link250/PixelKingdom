@@ -5,6 +5,7 @@ import entities.Player;
 import entities.Player.BAG;
 import gfx.Mouse;
 import gfx.SpriteSheet;
+import gfx.Mouse.MouseType;
 import item.*;
 import main.MainConfig.GameFields;
 import main.Game;
@@ -43,13 +44,15 @@ public class Equipment extends GameField {
 	public void tick() {
 		if(Drag())allignFields();
 		if(mouseover(Game.input.mouse.x, Game.input.mouse.y)){
-			Mouse.mousetype=0;
-			if(Game.input.mousel.click()){
-				for (BAG bag : BAG.values()) {
-					if(this.itemFields.get(bag).getField().contains(Game.input.mousel.x, Game.input.mousel.y)) {
+		Mouse.mouseType=MouseType.DEFAULT;
+			for (BAG bag : BAG.values()) {
+				if(this.itemFields.get(bag).getField().contains(Game.input.mouse.x, Game.input.mouse.y)) {
+					if(Game.input.mousel.click()){
 						this.itemFields.get(bag).mouseClick();
-						break;
+					}else {
+						this.itemFields.get(bag).mouseOver();
 					}
+					break;
 				}
 			}
 		}
@@ -94,6 +97,10 @@ public class Equipment extends GameField {
 			}else {
 				Mouse.Item = plr.unequipItem(bagEnum);
 			}
+		}
+		
+		public void mouseOver() {
+			if(getItem()!=null)Mouse.setText(getItem().getTooltip());
 		}
 		
 		public void render() {

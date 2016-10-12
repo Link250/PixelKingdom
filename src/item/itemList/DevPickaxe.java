@@ -8,6 +8,7 @@ public class DevPickaxe extends Pickaxe{
 		super();
 		ID = 333;
 		name = "DevPickaxe";
+		displayName = "Developer Pickaxe";
 		col = 0xffff00ff;
 		strength = 333;
 		size = 8;

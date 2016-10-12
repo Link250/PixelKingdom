@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import entities.Player;
 import gfx.Mouse;
 import gfx.SpriteSheet;
+import gfx.Mouse.MouseType;
 import item.Bag;
 import item.Item;
 import main.Game;
@@ -43,12 +44,14 @@ public class BagInv extends GameField {
 	public void tick() {
 		if(Drag())this.allignFields();
 		if(mouseover(Game.input.mouse.x, Game.input.mouse.y)){
-			Mouse.mousetype=0;
-			if(Game.input.mousel.click()){
-				int mouseX = (Game.input.mousel.x-field.x), mouseY = (Game.input.mousel.y-field.y-32);
-				int index = mouseX/38 + mouseY/38*this.width;
-				if(mouseX%38 <= 36 && mouseY%38 <= 36 && index >= 0 && index < this.itemFields.size()) {
+			Mouse.mouseType=MouseType.DEFAULT;
+			int mouseX = (Game.input.mouse.x-field.x), mouseY = (Game.input.mouse.y-field.y-32);
+			int index = mouseX/38 + mouseY/38*this.width;
+			if(mouseX%38 >= 0 && mouseY%38 >= 0 && mouseX%38 <= 36 && mouseY%38 <= 36 && index >= 0 && index < this.itemFields.size()) {
+				if(Game.input.mousel.click()){
 					this.itemFields.get(index).mouseClick();
+				}else {
+					this.itemFields.get(index).mouseOver();
 				}
 			}
 		}
@@ -78,6 +81,10 @@ public class BagInv extends GameField {
 
 		public boolean setItem(Item item) {
 			return bag.setItem(index, item);
+		}
+		
+		public void mouseOver() {
+			if(getItem()!=null)Mouse.setText(getItem().getTooltip());
 		}
 		
 		public void mouseClick() {

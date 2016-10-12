@@ -9,6 +9,7 @@ public class Stone extends Material<AD>{
 		super(null);
 		ID = 1;
 		name = "Stone";
+		displayName = "Stone";
 		usePickaxe = 1.5;
 		tick = false;
 	}

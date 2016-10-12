@@ -9,6 +9,7 @@ public class Air extends Material<AD>{
 		super(null);
 		ID = 0;
 		name = "Air";
+		displayName = "Air";
 		usePickaxe = 0;
 		tick = false;
 	}

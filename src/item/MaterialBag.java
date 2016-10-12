@@ -6,6 +6,6 @@ public abstract class MaterialBag extends Bag<MatStack> {
 	
 	public MaterialBag(int size){
 		super(MatStack.class, size);
-		this.displayName = "MaterialBag";
+		this.displayName = "Material Bag";
 	}
 }

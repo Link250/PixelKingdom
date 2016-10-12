@@ -6,6 +6,7 @@ import entities.Player;
 import gfx.Mouse;
 import gfx.Screen;
 import gfx.SpriteSheet;
+import gfx.Mouse.MouseType;
 import item.Item;
 import main.Game;
 import main.InputHandler;
@@ -19,6 +20,7 @@ public class MatStack extends Item{
 	public MatStack(){
 		ID = 1;
 		name = PixelList.GetMat((byte)ID).getName();
+		displayName = PixelList.GetMat((byte)ID).getDisplayName();
 		stack  = 1;
 		stackMax  = 1024;
 		gfx = new SpriteSheet("/Items/Material.png");
@@ -40,7 +42,7 @@ public class MatStack extends Item{
 					}
 					if(stack==0){
 						plr.delItem(this);
-						Mouse.mousetype=0;
+						Mouse.mouseType=MouseType.DEFAULT;
 					}
 				}
 			}
@@ -56,11 +58,12 @@ public class MatStack extends Item{
 	public void setMat(int mat){
 		ID = mat;
 		name = PixelList.GetMat((byte)ID).getName();
+		displayName = PixelList.GetMat((byte)ID).getDisplayName();
 		col = Game.csheetf.pixels[ID];
 	}
 
 	public void setMouse() {
-		Mouse.mousetype=2;
+		Mouse.mouseType=MouseType.BUILDING;
 		Mouse.mousesize=buildsize;
 	}
 

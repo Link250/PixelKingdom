@@ -45,23 +45,26 @@ public class PxlFont {
 		render(x, y, true, true, msg, limit, color, screen);
 	}
 	
+	public int renderLength(String msg, int limit) {
+		int xOff = 0;
+		for(int i = 0; i < msg.length(); i++){
+			int charIndex = chars.indexOf(msg.charAt(i));
+			if(charIndex > -1){
+				if(limit==0 || xOff < limit-pointSize) {
+					xOff += size[charIndex]+(size[charIndex]>0 ? letterDistance : sheet.tileWidth/2);
+				}else {
+					break;
+				}
+			}
+		}
+		return xOff;
+	}
+	
 	public void render(int x, int y, boolean centeredX, boolean centeredY, String msg, int limit, int color, Screen screen){
 		if(msg == null) return;
 		int yOff = centeredY ? sheet.tileHeight/2 : 0;
 		int xOff = 0;
-		if(centeredX) {
-			for(int i = 0; i < msg.length(); i++){
-				int charIndex = chars.indexOf(msg.charAt(i));
-				if(charIndex > -1){
-					if(limit==0 || xOff < limit-pointSize) {
-						xOff += size[charIndex]+(size[charIndex]>0 ? letterDistance : sheet.tileWidth/2);
-					}else {
-						break;
-					}
-				}
-			}
-			xOff/=2;
-		}
+		if(centeredX) xOff = renderLength(msg, limit)/2;
 		if(limit!=0)limit+=x;
 		for(int i = 0; i < msg.length(); i++){
 			int charIndex = chars.indexOf(msg.charAt(i));

@@ -28,8 +28,8 @@ public class Screen {
 		this.width = width;
 		this.height = height;
 		this.length = width*height;
-		this.lengthMap = width/MAP_ZOOM*height/MAP_ZOOM;
-		this.lengthShadow = this.lengthMap/(SHADOW_SCALE*SHADOW_SCALE);
+		this.lengthMap = (width/MAP_ZOOM)*(height/MAP_ZOOM);
+		this.lengthShadow = (width/MAP_ZOOM/SHADOW_SCALE)*(height/MAP_ZOOM/SHADOW_SCALE);
 		csheets[Map.LAYER_BACK] = b;
 		csheets[Map.LAYER_LIQUID] = l;
 		csheets[Map.LAYER_FRONT] = f;
@@ -52,7 +52,7 @@ public class Screen {
 	public void drawShadow(int xPos, int yPos, int color){
 		xPos -= xOffset;
 		yPos -= yOffset;
-		shadow[xPos + yPos * width/SHADOW_SCALE/MAP_ZOOM] = color;
+		shadow[xPos + yPos * (width/SHADOW_SCALE/MAP_ZOOM)] = color;
 	}
 	
 	/**
@@ -101,27 +101,19 @@ public class Screen {
 	 * @param color
 	 */
 	public void drawGUIPixelScaled(int xPos, int yPos, int color){
-		xPos -= xOffset;
-		yPos -= yOffset;
 		xPos*=MAP_SCALE*MAP_ZOOM;yPos*=MAP_SCALE*MAP_ZOOM;
 		drawPixelArea(xPos,yPos,MAP_SCALE*MAP_ZOOM,MAP_SCALE*MAP_ZOOM,color,true);
 	}
 
 	public void drawGUIPixel(int xPos, int yPos, int color){
-		xPos -= xOffset;
-		yPos -= yOffset;
 		drawPixel(xPos,yPos,color,true);
 	}
 
 	public void drawGUIPixelArea(int xPos, int yPos, int width, int height, int color){
-		xPos -= xOffset;
-		yPos -= yOffset;
 		drawPixelArea(xPos,yPos,width,height,color,true);
 	}
 
 	public void drawGUIPixelBorder(int xPos, int yPos, int width, int height, int thickness, int color){
-		xPos -= xOffset;
-		yPos -= yOffset;
 		drawPixelArea(xPos					,yPos					,width		,thickness			,color,true);
 		drawPixelArea(xPos					,yPos+height-thickness	,width		,thickness			,color,true);
 		drawPixelArea(xPos					,yPos+thickness			,thickness	,height-thickness*2	,color,true);

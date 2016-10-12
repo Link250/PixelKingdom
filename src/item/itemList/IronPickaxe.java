@@ -8,6 +8,7 @@ public class IronPickaxe extends Pickaxe{
 		super();
 		ID = 302;
 		name = "IronPickaxe";
+		displayName = "Iron Pickaxe";
 		col = 0xffA0A0A0;
 		strength = 3;
 		size = 5;

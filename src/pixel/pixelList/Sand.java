@@ -10,6 +10,7 @@ public class Sand extends Material<AD>{
 		super(null);
 		ID = 8;
 		name = "Sand";
+		displayName = "Sand";
 		usePickaxe = 1;
 		tick = true;
 	}

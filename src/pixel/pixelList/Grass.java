@@ -10,6 +10,7 @@ public class Grass extends Material<AD>{
 		super(null);
 		ID = 3;
 		name = "Grass";
+		displayName = "Grass";
 		usePickaxe = 1;
 		tick = true;
 	}

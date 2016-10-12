@@ -11,6 +11,7 @@ public class Ore_Gold extends Ore<OreAD>{
 		ID = 18;
 		ingot = 34;
 		name = "GoldOre";
+		displayName = "Gold Ore";
 		usePickaxe = 2.0;
 		tick = false;
 	}

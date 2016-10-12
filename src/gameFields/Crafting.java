@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import entities.Player;
 import gfx.Mouse;
 import gfx.SpriteSheet;
+import gfx.Mouse.MouseType;
 import item.*;
 import item.itemList.MatStack;
 import main.MainConfig.GameFields;
@@ -39,7 +40,7 @@ public class Crafting extends GameField {
 	public void tick() {
 		Drag();
 		if(mouseover(Game.input.mouse.x, Game.input.mouse.y)){
-			Mouse.mousetype=0;
+			Mouse.mouseType=MouseType.DEFAULT;
 			if(Game.input.mousel.click()){
 				int mx = Game.input.mousel.x, my = Game.input.mousel.y;
 				int x = field.x, y = field.y;

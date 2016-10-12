@@ -10,6 +10,7 @@ public class Lava extends Liquid<LavaAD>{
 		super(new LavaAD());
 		ID = 2;
 		name = "Lava";
+		displayName = "Lava";
 		viscosity = 10;
 	}
 	

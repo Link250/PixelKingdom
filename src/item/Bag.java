@@ -5,7 +5,6 @@ import java.util.List;
 
 import entities.Player;
 import gameFields.BagInv;
-import gfx.Mouse;
 import gfx.Screen;
 import main.InputHandler;
 import main.conversion.ConvertData;
@@ -55,10 +54,6 @@ public abstract class Bag<ItemType extends Item> extends Item {
 	}
 	
 	public abstract void useItem(InputHandler input, Player plr, Map map, Screen screen);
-	
-	public void setMouse() {
-		Mouse.mousetype=0;
-	}
 	
 	/**
 	 * 

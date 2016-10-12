@@ -10,6 +10,7 @@ public class Water extends Liquid<AD>{
 		super(null);
 		ID = 1;
 		name = "Water";
+		displayName = "Water";
 		viscosity = 1000;
 	}
 	

@@ -22,6 +22,7 @@ public class Oven extends Material<OvenAD>{
 		super(new OvenAD());
 		ID = 64;
 		name = "Oven";
+		displayName = "Oven";
 		usePickaxe = 1;
 		tick = true;
 	}

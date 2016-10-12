@@ -13,6 +13,7 @@ public class SmallBeltBag extends BeltBag {
 		super(8);
 		ID = 476;
 		name = "SmallBeltBag";
+		displayName = "Small Belt Bag";
 		gfx = new SpriteSheet("/Items/NormalBeltBag.png");
 	}
 

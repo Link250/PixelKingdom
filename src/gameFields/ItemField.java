@@ -49,7 +49,7 @@ public class ItemField {
 	}
 
 	public void mouseOver() {
-		Game.logInfo("mouseover");
+		Mouse.setText(item.getTooltip());
 	}
 	
 	public void render() {

@@ -15,6 +15,7 @@ public class Torch extends Material<AD>{
 		usePickaxe=1;
 		ID = 48;
 		name = "Torch";
+		displayName = "Torch";
 		tick = true;
 		solid = false;
 	}

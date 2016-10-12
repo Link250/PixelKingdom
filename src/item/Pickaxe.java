@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import entities.Player;
 import gfx.Mouse;
+import gfx.Mouse.MouseType;
 import gfx.Screen;
 import gfx.SpriteSheet;
 import main.Game;
@@ -19,6 +20,7 @@ public abstract class Pickaxe extends Tool{
 	public Pickaxe(){
 		type = 1;
 		name = "Pickaxe";
+		displayName = "Pickaxe";
 		stack  = 1;
 		stackMax  = 1;
 		gfx = new SpriteSheet("/Items/Pickaxe.png");
@@ -82,7 +84,7 @@ public abstract class Pickaxe extends Tool{
 	}
 	
 	public void setMouse(){
-		Mouse.mousetype=1;
+		Mouse.mouseType=MouseType.MINING;
 		Mouse.mousesize=(byte)size;
 	}
 

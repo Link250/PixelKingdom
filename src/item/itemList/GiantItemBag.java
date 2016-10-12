@@ -13,6 +13,7 @@ public class GiantItemBag extends ItemBag {
 		super(30);
 		ID = 403;
 		name = "GiantItemBag";
+		displayName = "Giant Item Bag";
 		gfx = new SpriteSheet("/Items/NormalItemBag.png");
 	}
 

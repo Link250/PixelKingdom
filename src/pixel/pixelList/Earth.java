@@ -9,6 +9,7 @@ public class Earth extends Material<AD>{
 		super(null);
 		ID = 2;
 		name = "Earth";
+		displayName = "Earth";
 		usePickaxe = 1;
 		tick = false;
 	}

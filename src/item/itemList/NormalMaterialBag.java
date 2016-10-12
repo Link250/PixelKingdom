@@ -13,6 +13,7 @@ public class NormalMaterialBag extends MaterialBag {
 		super(12);
 		ID = 451;
 		name = "NormalMaterialBag";
+		displayName = "Normal Material Bag";
 		gfx = new SpriteSheet("/Items/NormalMaterialBag.png");
 	}
 

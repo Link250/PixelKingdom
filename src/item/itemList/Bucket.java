@@ -18,6 +18,7 @@ public class Bucket extends Item {
 	public Bucket() {
 		ID = 332;
 		name = "Bucket";
+		displayName = "Bucket";
 		stack  = 1;
 		stackMax  = 0;
 		gfx = new SpriteSheet("/Items/Bucket.png");
@@ -43,10 +44,6 @@ public class Bucket extends Item {
 			if(buildsize > 10)buildsize = 10;
 			Mouse.mousesize=buildsize;
 		}
-	}
-	
-	public void setMouse() {
-		Mouse.mousetype=0;
 	}
 	
 	public void save(ArrayList<Byte> file) {

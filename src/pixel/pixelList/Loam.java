@@ -9,6 +9,7 @@ public class Loam extends Material<AD>{
 		super(null);
 		ID = 7;
 		name = "Loam";
+		displayName = "Loam";
 		usePickaxe = 1.5;
 		tick = false;
 	}
