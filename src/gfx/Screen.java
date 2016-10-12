@@ -101,6 +101,8 @@ public class Screen {
 	 * @param color
 	 */
 	public void drawGUIPixelScaled(int xPos, int yPos, int color){
+		xPos -= xOffset;
+		yPos -= yOffset;
 		xPos*=MAP_SCALE*MAP_ZOOM;yPos*=MAP_SCALE*MAP_ZOOM;
 		drawPixelArea(xPos,yPos,MAP_SCALE*MAP_ZOOM,MAP_SCALE*MAP_ZOOM,color,true);
 	}
