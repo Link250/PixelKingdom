@@ -304,6 +304,7 @@ public class Game extends Canvas implements Runnable{
 		KeyConfig.load();
 		Game.WIDTH = 320*3;//configs.resX;
 		Game.HEIGHT = WIDTH/12*9;//configs.resY;
+		Screen.MAP_ZOOM = MainConfig.mapZoom;
 		for(String s : args){
 			Game.logInfo(s);
 		}

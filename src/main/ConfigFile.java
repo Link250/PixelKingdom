@@ -83,6 +83,10 @@ public class ConfigFile{
 			}
 		}
 		
+		public boolean hasConfig(String config) {
+			return this.configs.containsKey(config);
+		}
+		
 		public ConfigFile setConfig(String config, Object value) {
 			this.configs.put(config, value);
 			return this;

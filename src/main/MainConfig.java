@@ -19,35 +19,31 @@ public class MainConfig {
 	public static Map<GameFields, Point> fieldPos = new EnumMap<>(MainConfig.GameFields.class);
 	public static int PlrCol;
 	public static int resX,resY;
+	public static int mapZoom;
 	
 	private static ConfigFile configFile = new ConfigFile(Game.GAME_PATH+"Options.optn");
 
-	public static void setDefaults(){
-		for(GameFields gameField : MainConfig.GameFields.values()) {
-			fieldPos.put(gameField, new Point(10,10));
-		}
-		PlrCol = 0xff02e707;
-		resX = 320*3;
-		resY = resX/12*9;
-		//TODO don't override already existing Configs (override only the broken ones)
-		save();
+	private static <T>T loadConfig(String config, T defaultValue) {
+		if(configFile.hasConfig(config))
+			try {
+				return configFile.getConfig(config);
+			} catch (NoConfigFoundException | ClassCastException e) {
+				Game.logError(config + " config was corrupted ! setting Default Value");
+			}
+		return (T) defaultValue;
 	}
 	
 	public static void load(){
 		configFile.load();
-		try{
-			for(GameFields gameField : MainConfig.GameFields.values()) {
-				int x = configFile.getConfig(gameField.toString()+"_PosX");
-				int y = configFile.getConfig(gameField.toString()+"_PosY");
-				fieldPos.put(gameField, new Point(x,y));
-			}
-			PlrCol = configFile.getConfig("PlayerColor");
-			resX = configFile.getConfig("ResolutionX");
-			resY = configFile.getConfig("ResolutionY");
-		}catch(ClassCastException | NoConfigFoundException e){
-			Game.logInfo("New Main Configs created ");
-			setDefaults();
+		for(GameFields gameField : MainConfig.GameFields.values()) {
+			int x = loadConfig(gameField.toString()+"_PosX",10);
+			int y = loadConfig(gameField.toString()+"_PosY",10);
+			fieldPos.put(gameField, new Point(x,y));
 		}
+		PlrCol = loadConfig("PlayerColor",0xff02e707);
+		resX = loadConfig("ResolutionX",320*3);
+		resY = loadConfig("ResolutionY",320*3/12*9);
+		mapZoom = loadConfig("MapZoom",2);
 	}
 	
 	public static void save(){
@@ -58,6 +54,7 @@ public class MainConfig {
 		configFile.setConfig("PlayerColor", PlrCol);
 		configFile.setConfig("ResolutionX", resX);
 		configFile.setConfig("ResolutionY", resY);
+		configFile.setConfig("MapZoom", mapZoom);
 		configFile.save();
 	}
 }

@@ -8,6 +8,7 @@ import gui.Button;
 import gui.menu.OptionScreen;
 import main.Game;
 import main.Keys;
+import main.MainConfig;
 import main.PArea;
 
 public class Visuals {
@@ -22,6 +23,7 @@ public class Visuals {
 		this.back = new Button(50, 50, 60, 60);
 		this.back.gfxData(new SpriteSheet("/Buttons/back.png"), true);
 		options.add(new PlayerColorOption());
+		options.add(new MapZoomOption());
 //		a = new ItemField(100,300); a.setItem(new MatStack());
 //		b = new ItemField(100,350); b.setItem(new MatStack());
 //		c = new ItemField(100,400); c.setItem(new MatStack());
@@ -110,10 +112,34 @@ public class Visuals {
 			Game.screen.drawGUIPixelBorder(Game.screen.width/2+270, height-15, 34, 34, 2, 0xff404040);
 			Game.screen.drawGUIPixelArea(Game.screen.width/2+272, height-13, 30, 30, PlrCol);
 		}
+	}
+	
+	private class MapZoomOption extends GFXOption{
+		private Button value;
+		
+		public MapZoomOption() {
+			value = new Button(0,0, 80, 60);
+			value.TextData("x"+MainConfig.mapZoom, false);
+		}
+		
+		public void tick() {
+			value.tick();
+			if(value.isclicked) {
+				MainConfig.mapZoom++;
+				if(MainConfig.mapZoom > 5) MainConfig.mapZoom = 1;
+				value.TextData("x"+MainConfig.mapZoom, false);
+			}
+		}
+
+		public void render() {
+			Game.font.render(Game.screen.width/4, height, "Map Zoom", 0, 0xff000000, Game.screen);
+			Game.sfont.render(Game.screen.width/4*3, height, "(needs a restart)", 0, 0xff000000, Game.screen);
+			value.render();
+		}
 
 		public void setHeight(int height) {
 			super.setHeight(height);
+			value.SetPos(Game.screen.width/2, height);
 		}
-		
 	}
 }
