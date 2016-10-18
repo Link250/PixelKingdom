@@ -167,7 +167,7 @@ public class Map {
 	
 	public void render(){
 		int ID;
-		Material<?> m;
+//		Material<?> m;
 		int X,Y;
 		short light;
 
@@ -187,8 +187,7 @@ public class Map {
 							screen.drawShadow(X, Y, 0xff000000);
 						}else{
 							if(ID!=0){
-								m=PixelList.GetPixel(ID, l);
-								m.render(X, Y, l, this,screen);
+								PixelList.GetPixel(ID, l).render(X, Y, l, this,screen);
 							}
 							if(l==Map.LAYER_LIGHT)screen.drawShadow(X, Y, ((MAX_LIGHT-getlight(X,Y))<<26));
 						}
