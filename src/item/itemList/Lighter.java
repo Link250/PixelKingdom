@@ -2,12 +2,12 @@ package item.itemList;
 
 import java.util.ArrayList;
 
+import dataUtils.conversion.ConvertData;
 import entities.Player;
 import gfx.Screen;
 import gfx.SpriteSheet;
 import item.Tool;
 import main.InputHandler;
-import main.conversion.ConvertData;
 import map.Map;
 import pixel.PixelList;
 import pixel.pixelList.Fire;

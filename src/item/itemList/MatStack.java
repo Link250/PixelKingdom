@@ -2,6 +2,7 @@ package item.itemList;
 
 import java.util.ArrayList;
 
+import dataUtils.conversion.ConvertData;
 import entities.Player;
 import gfx.Mouse;
 import gfx.Screen;
@@ -10,7 +11,6 @@ import gfx.Mouse.MouseType;
 import item.Item;
 import main.Game;
 import main.InputHandler;
-import main.conversion.ConvertData;
 import map.Map;
 import pixel.PixelList;
 

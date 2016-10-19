@@ -3,9 +3,9 @@ package gfx;
 import java.util.ArrayList;
 import java.util.List;
 
+import dataUtils.PArea;
 import item.*;
 import main.Game;
-import main.PArea;
 
 public class Mouse {
 	public static enum MouseType{

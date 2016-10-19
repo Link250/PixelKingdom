@@ -1,10 +1,10 @@
 package gameFields;
 
+import dataUtils.PArea;
 import gfx.Mouse;
 import gfx.SpriteSheet;
 import item.Item;
 import main.Game;
-import main.PArea;
 
 public class ItemField {
 	protected static SpriteSheet back = new SpriteSheet("/Items/field.png");

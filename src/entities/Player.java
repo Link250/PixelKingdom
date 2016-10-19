@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.EnumMap;
 
+import dataUtils.conversion.ConvertData;
 import gfx.Screen;
 import gfx.SpriteSheet;
 import item.*;
@@ -12,7 +13,6 @@ import main.MainConfig.GameFields;
 import main.Game;
 import main.Keys;
 import main.MainConfig;
-import main.conversion.ConvertData;
 import map.Map;
 import gameFields.*;
 

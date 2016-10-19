@@ -2,13 +2,13 @@ package item.itemList;
 
 import java.util.ArrayList;
 
+import dataUtils.conversion.ConvertData;
 import entities.Player;
 import gfx.Mouse;
 import gfx.Screen;
 import gfx.SpriteSheet;
 import item.Item;
 import main.InputHandler;
-import main.conversion.ConvertData;
 import map.Map;
 
 public class Bucket extends Item {

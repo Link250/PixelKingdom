@@ -1,4 +1,4 @@
-package main;
+package dataUtils;
 
 import java.io.File;
 import java.io.IOException;

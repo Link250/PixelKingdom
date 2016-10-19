@@ -8,12 +8,12 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import dataUtils.conversion.ConverterInStream;
+import dataUtils.conversion.ConverterOutStream;
+import dataUtils.conversion.ConverterQueue;
 import entities.MPlayer;
 import main.Game;
 import main.MainConfig;
-import main.conversion.ConverterInStream;
-import main.conversion.ConverterQueue;
-import main.conversion.ConverterOutStream;
 import multiplayer.ConnectionManager;
 import multiplayer.MapUpdater.UpdateList;
 import multiplayer.Request;

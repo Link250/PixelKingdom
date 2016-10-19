@@ -50,9 +50,6 @@ public class Map {
 		this.chunkMaganer = chunkManager;
 		return chunkManager;
 	}
-	public void setChunkManager(ClientManager manager){
-//		this.chunkMaganer = new ChunkManagerC(this, chunks, manager);
-	}
 	
 	public void tick(int tickCount){
 		Material<?> m;

@@ -5,14 +5,14 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import dataUtils.conversion.ConverterInStream;
+import dataUtils.conversion.ConverterOutStream;
+import dataUtils.conversion.ConverterQueue;
 import entities.Player;
 
 import static main.Game.*;
 
 import main.MainConfig;
-import main.conversion.ConverterInStream;
-import main.conversion.ConverterQueue;
-import main.conversion.ConverterOutStream;
 import multiplayer.ConnectionManager;
 import multiplayer.MapUpdater.UpdateList;
 import multiplayer.Request;

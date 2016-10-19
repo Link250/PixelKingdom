@@ -3,11 +3,11 @@ package item;
 import java.util.ArrayList;
 import java.util.List;
 
+import dataUtils.conversion.ConvertData;
 import entities.Player;
 import gameFields.BagInv;
 import gfx.Screen;
 import main.InputHandler;
-import main.conversion.ConvertData;
 import map.Map;
 
 public abstract class Bag<ItemType extends Item> extends Item {

@@ -4,6 +4,8 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
+import dataUtils.PArea;
+
 import static main.MainConfig.PlrCol;
 import gfx.SpriteSheet;
 import gui.Button;
@@ -11,7 +13,6 @@ import gui.menu.OptionScreen;
 import main.Game;
 import main.Keys;
 import main.MainConfig;
-import main.PArea;
 
 public class Visuals {
 	private OptionScreen mainMenu;

@@ -2,6 +2,7 @@ package gameFields;
 
 import java.util.ArrayList;
 
+import dataUtils.PArea;
 import entities.Player;
 import gfx.Mouse;
 import gfx.SpriteSheet;
@@ -10,7 +11,6 @@ import item.*;
 import item.itemList.MatStack;
 import main.MainConfig.GameFields;
 import main.Game;
-import main.PArea;
 
 public class Crafting extends GameField {
 	

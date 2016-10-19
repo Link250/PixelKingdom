@@ -2,11 +2,11 @@ package gameFields;
 
 import java.awt.Point;
 
+import dataUtils.PArea;
 import gfx.SpriteSheet;
 import main.MainConfig.GameFields;
 import main.Game;
 import main.MainConfig;
-import main.PArea;
 
 public abstract class GameField {
 	protected PArea field;

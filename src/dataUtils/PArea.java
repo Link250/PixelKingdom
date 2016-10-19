@@ -1,4 +1,4 @@
-package main;
+package dataUtils;
 
 import gfx.Screen;
 

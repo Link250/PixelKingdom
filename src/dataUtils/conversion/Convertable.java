@@ -1,4 +1,4 @@
-package main.conversion;
+package dataUtils.conversion;
 
 public interface Convertable {
 
