@@ -4,7 +4,7 @@ import entities.Player;
 import gfx.Screen;
 import gfx.SpriteSheet;
 import item.*;
-import main.InputHandler;
+import main.InputHandler_OLD;
 import map.Map;
 
 public class GiantItemBag extends ItemBag {
@@ -17,6 +17,6 @@ public class GiantItemBag extends ItemBag {
 		gfx = new SpriteSheet("/Items/NormalItemBag.png");
 	}
 
-	public void useItem(InputHandler input, Player plr, Map map, Screen screen) {
+	public void useItem(InputHandler_OLD input, Player plr, Map map, Screen screen) {
 	}
 }

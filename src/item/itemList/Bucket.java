@@ -8,7 +8,7 @@ import gfx.Mouse;
 import gfx.Screen;
 import gfx.SpriteSheet;
 import item.Item;
-import main.InputHandler;
+import main.InputHandler_OLD;
 import map.Map;
 
 public class Bucket extends Item {
@@ -24,7 +24,7 @@ public class Bucket extends Item {
 		gfx = new SpriteSheet("/Items/Bucket.png");
 	}
 	
-	public void useItem(InputHandler input, Player plr, Map map, Screen screen) {
+	public void useItem(InputHandler_OLD input, Player plr, Map map, Screen screen) {
 		input.mouse.refresh();
 		if((input.mousel.isPressed()|input.mouser.isPressed())){
 			int X = input.mouse.getMapX(), Y = input.mouse.getMapY();

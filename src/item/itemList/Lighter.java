@@ -7,7 +7,7 @@ import entities.Player;
 import gfx.Screen;
 import gfx.SpriteSheet;
 import item.Tool;
-import main.InputHandler;
+import main.InputHandler_OLD;
 import map.Map;
 import pixel.PixelList;
 import pixel.pixelList.Fire;
@@ -27,7 +27,7 @@ public class Lighter extends Tool{
 		range = 10;
 	}
 
-	public void useItem(InputHandler input, Player plr, Map map, Screen screen) {
+	public void useItem(InputHandler_OLD input, Player plr, Map map, Screen screen) {
 		if((input.mousel.isPressed()|input.mouser.isPressed())){
 			int X = input.mouse.getMapX(), Y = input.mouse.getMapY(), L = Map.LAYER_FRONT;
 			if(!input.mousel.isPressed()){L=Map.LAYER_BACK;}

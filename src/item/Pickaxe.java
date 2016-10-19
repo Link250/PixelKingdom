@@ -9,7 +9,7 @@ import gfx.Mouse.MouseType;
 import gfx.Screen;
 import gfx.SpriteSheet;
 import main.Game;
-import main.InputHandler;
+import main.InputHandler_OLD;
 import map.Map;
 import pixel.Material;
 import pixel.PixelList;
@@ -27,7 +27,7 @@ public abstract class Pickaxe extends Tool{
 		gfxs = new SpriteSheet("/Items/Pickaxeh.png");
 	}
 	
-	public void useItem(InputHandler input, Player plr, Map map, Screen screen) {
+	public void useItem(InputHandler_OLD input, Player plr, Map map, Screen screen) {
 	anim = 0;
 	
 	if((input.mousel.isPressed() | input.mouser.isPressed()) && !plr.iscrouching && !plr.isinair){

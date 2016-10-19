@@ -10,7 +10,7 @@ import gfx.SpriteSheet;
 import gfx.Mouse.MouseType;
 import item.Item;
 import main.Game;
-import main.InputHandler;
+import main.InputHandler_OLD;
 import map.Map;
 import pixel.PixelList;
 
@@ -28,7 +28,7 @@ public class MatStack extends Item{
 		col = Game.csheetf.pixels[ID];
 	}
 
-	public void useItem(InputHandler input, Player plr, Map map, Screen screen) {
+	public void useItem(InputHandler_OLD input, Player plr, Map map, Screen screen) {
 		input.mouse.refresh();
 		anim = 12;
 		int l = Map.LAYER_FRONT;if(!input.mousel.isPressed())l = Map.LAYER_BACK;

@@ -9,7 +9,7 @@ import gfx.Screen;
 import gfx.SpriteSheet;
 import gfx.Mouse.MouseType;
 import main.Game;
-import main.InputHandler;
+import main.InputHandler_OLD;
 import map.Map;
 
 public abstract class Item {
@@ -136,7 +136,7 @@ public abstract class Item {
 		return anim;
 	}
 
-	public abstract void useItem(InputHandler input, Player plr, Map map, Screen screen);
+	public abstract void useItem(InputHandler_OLD input, Player plr, Map map, Screen screen);
 
 	public void setMouse() {
 		Mouse.mouseType=MouseType.DEFAULT;

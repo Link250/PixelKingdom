@@ -6,14 +6,17 @@ import gfx.Mouse;
 import gfx.Screen;
 import gfx.SpriteSheet;
 import gfx.Mouse.MouseType;
+import gui.Window;
 import gui.menu.MainMenu;
 import gui.menu.Menu;
 import item.ItemList;
-import main.InputHandler;
+import main.InputHandler_OLD;
 import map.BiomeList;
 import multiplayer.client.Client;
 import multiplayer.server.Server;
 import pixel.PixelList;
+
+import static org.lwjgl.glfw.GLFW.glfwInit;
 
 import java.awt.BorderLayout;
 import java.awt.Canvas;
@@ -50,6 +53,7 @@ public class Game extends Canvas implements Runnable{
 	public static int frames = 0;
 	public static int fps = 0;
 	
+	private Window window;
 	private JFrame frame;
 	private Image windowIcon;
 	
@@ -74,7 +78,7 @@ public class Game extends Canvas implements Runnable{
 	public static ColorSheet csheetm = new ColorSheet("/Mat_Mid.png");
 	public static ColorSheet csheetb = new ColorSheet("/Mat_Back.png");
 	public static Screen screen;
-	public static InputHandler input;
+	public static InputHandler_OLD input;
 	public static PxlFont font;
 	public static PxlFont sfont;
 	public static PxlFont mfont;
@@ -84,6 +88,9 @@ public class Game extends Canvas implements Runnable{
 	public Server server;
 	
 	public Game(){
+		Game.WIDTH = MainConfig.fullscreen ? frame.getWidth() : MainConfig.resX;
+		Game.HEIGHT = MainConfig.fullscreen ? frame.getHeight() : MainConfig.resY;
+		
 		frame = new JFrame(NAME);
 		if(MainConfig.fullscreen) {
 			frame.setExtendedState(JFrame.MAXIMIZED_BOTH); 
@@ -95,9 +102,6 @@ public class Game extends Canvas implements Runnable{
 		frame.setResizable(false);
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
-		
-		Game.WIDTH = MainConfig.fullscreen ? frame.getWidth() : MainConfig.resX;
-		Game.HEIGHT = MainConfig.fullscreen ? frame.getHeight() : MainConfig.resY;
 		
 		setMinimumSize(new Dimension(WIDTH, HEIGHT));
 		setMaximumSize(new Dimension(WIDTH, HEIGHT));
@@ -123,6 +127,18 @@ public class Game extends Canvas implements Runnable{
 	}
 	
 	public void init(){
+		Window.setCallbacks();
+		
+		if(!glfwInit()) {
+			System.err.println("GLFW Failed to initialize!");
+			System.exit(1);
+		}
+		window = new Window(WIDTH, HEIGHT, false, "Pixel Kingdom");
+		
+		window.init();
+		new KeyInput(window.getWindow());
+		new MouseInput(window.getWindow());
+		
 		image = new BufferedImage(WIDTH/Screen.MAP_ZOOM, HEIGHT/Screen.MAP_ZOOM, BufferedImage.TYPE_INT_ARGB);
 		pxsMain = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
 		shadow = new BufferedImage(WIDTH/Screen.SHADOW_SCALE/Screen.MAP_ZOOM, HEIGHT/Screen.SHADOW_SCALE/Screen.MAP_ZOOM, BufferedImage.TYPE_INT_ARGB);
@@ -133,7 +149,7 @@ public class Game extends Canvas implements Runnable{
 		try {back = ImageIO.read(SpriteSheet.class.getResourceAsStream("/Back.png"));} catch (IOException e) {e.printStackTrace();}
 		try {windowIcon = ImageIO.read(SpriteSheet.class.getResourceAsStream("/WindowIcon.png"));} catch (IOException e) {e.printStackTrace();}
 		frame.setIconImage(windowIcon);
-		input = new InputHandler(this);
+		input = new InputHandler_OLD(this);
 		mfont = new PxlFont(new SpriteSheet("/StackFont.png"), "1234567890", 12, 15, -2);
 		sfont = new PxlFont(new SpriteSheet("/8x8Font.png"), " !\"# %&´()* ,-./0123456789:; = ? ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{ }~",24,24, 1);
 		font = new PxlFont(new SpriteSheet("/Font.png"), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 1234567890!\",;%&/()=?ß+-.",45,60, 2);
@@ -184,16 +200,15 @@ public class Game extends Canvas implements Runnable{
 			long now = System.nanoTime();
 			delta += (now - lastTime) / nsPerTick;
 			lastTime = now;
-			boolean shouldRender = true;
 			
 			while(delta >= 1){
 				ticks ++;
 				tick();
+				window.update();
 				delta -= 1;
-				shouldRender = true;
 			}
 			
-			if(shouldRender){
+			if(true){
 				frames ++;
 				render();
 			}

@@ -11,26 +11,30 @@ import java.awt.event.MouseWheelListener;
 
 import gfx.Screen;
 
-public class InputHandler implements KeyListener, MouseListener, MouseMotionListener, MouseWheelListener{
+public class InputHandler_OLD implements KeyListener, MouseListener, MouseMotionListener, MouseWheelListener{
 	
 	Game game;
 	
 	public int lastKeyCode = 0;
 	
-	public Mouse mouse = new Mouse();
-	public Mouse mousel = new Mouse();
-	public Mouse mouser = new Mouse();
-	public Mouse mousem = new Mouse();
+	public MouseInput.Mouse mouse = new Mouse();
+	public MouseInput.Mouse mousel = new Mouse();
+	public MouseInput.Mouse mouser = new Mouse();
+	public MouseInput.Mouse mousem = new Mouse();
 	
-	public InputHandler(Game game){
+	public InputHandler_OLD(Game game){
 		this.game = game;
 		game.addKeyListener(this);
 		game.addMouseListener(this);
 		game.addMouseMotionListener(this);
 		game.addMouseWheelListener(this);
+		mouse = MouseInput.mouse;
+		mousel = MouseInput.mousel;
+		mousem = MouseInput.mousem;
+		mouser = MouseInput.mouser;
 	}
 	
-	public class Mouse{
+	public class Mouse extends MouseInput.Mouse{
 		private boolean pressed = false;
 		private boolean clickable = true;
 		public int scrolled;
