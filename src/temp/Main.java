@@ -17,7 +17,7 @@ public class Main {
 	public Main() {
 		Window.setCallbacks();
 		
-		int tileSize = 64;
+		int tileSize = 128;
 		
 		if(!glfwInit()) {
 			System.err.println("GLFW Failed to initialize!");
@@ -42,21 +42,21 @@ public class Main {
 //		TileRenderer tiles = new TileRenderer();
 		Shader shader = new Shader("shader");
 		
-		Screen screen = new Screen();
+		Screen screen = new Screen(width, height);
 		
 		Matrix4f world;
 		world = new Matrix4f().setTranslation(new Vector3f(0));
 //		world.scale(scale);
 
-		int[] ids1 = new int[(width/tileSize) * (height/tileSize)];
+		int[] ids1 = new int[(width/tileSize+1) * (height/tileSize+1)];
 		for (int i = 0; i < ids1.length; i++) {
 			ids1[i] = Screen.genTexture(tileSize, tileSize);
 		}
 		int[] posX = new int[1000];
-		for(int i = 0; i < posX.length; i++) {posX[i] = (int)(Math.random()*width);}
+		for(int i = 0; i < posX.length; i++) {posX[i] = (int)(Math.random()*width)-width/2;}
 		int[] posY = new int[1000];
-		for(int i = 0; i < posY.length; i++) {posY[i] = (int)(Math.random()*height);}
-		int id2 = Screen.genTexture(50, 50);
+		for(int i = 0; i < posY.length; i++) {posY[i] = (int)(Math.random()*height)-height/2;}
+		int id2 = Screen.genTexture(50, 100);
 		
 		double frame_cap = 1000000000/60;
 		
@@ -67,6 +67,7 @@ public class Main {
 		double time = System.nanoTime();
 		double unprocessed = 0;
 		
+		int n = 0;
 		while(!window.shouldClose()) {
 			boolean can_render = true;
 			
@@ -85,12 +86,9 @@ public class Main {
 				ticks++;
 //				id2 = Screen.genTexture(width, height);
 				//world update
-				int i = (int)(Math.random()*(ids1.length-5));
-				ids1[i] = Screen.genTexture(tileSize, tileSize);
-				ids1[i+1] = Screen.genTexture(tileSize, tileSize);
-				ids1[i+2] = Screen.genTexture(tileSize, tileSize);
-				ids1[i+3] = Screen.genTexture(tileSize, tileSize);
-				ids1[i+4] = Screen.genTexture(tileSize, tileSize);
+				for (int i = 0; i < 10; i++) {
+					ids1[(n++)%ids1.length] = Screen.genTexture(tileSize, tileSize);
+				}
 			}
 			window.update();
 			if(frame_time >= 1000000000) {
@@ -99,13 +97,14 @@ public class Main {
 				frames = 0;
 				System.out.println("ticks: " + ticks);
 				ticks = 0;
+//				camera.setPosition(new Vector3f((float)(Math.random()*width/2),(float)(Math.random()*height/2),0));
 			}
 			
 			if(can_render) {
 				glClear(GL_COLOR_BUFFER_BIT);
-				screen.renderMap(tileSize, tileSize, width, height, shader, world, camera, ids1);
+				screen.renderMap(tileSize, tileSize, width, height, shader, ids1);
 				for (int i = 0; i < 100; i++) {
-					screen.renderTile(posX[i], posY[i], 50, 50, shader, world, camera, id2);
+					screen.renderTile(posX[i], posY[i], 50, 100, shader, id2);
 				}
 				//world.render(tiles, shader, camera, window);
 //				screen.renderTile(0, 0, width, height, shader, world, camera, id2);

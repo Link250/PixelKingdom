@@ -15,6 +15,8 @@ public class SpriteSheet {
 	
 	public int pixels[];
 	
+	private int textureID;
+	
 	public SpriteSheet() {
 		this.width = 1;
 		this.height = 1;
@@ -61,5 +63,9 @@ public class SpriteSheet {
 			int Blue = 		(pixels[i] & 0xff);
 			System.out.println(pixels[i] + " = A " + Alpha + " ; R " + Red + " ; G " + Green + " ; B " + Blue);
 		}*/
+	}
+	
+	public int getID() {
+		return textureID;
 	}
 }

@@ -1,5 +1,13 @@
 package gfx;
 
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.glBindTexture;
+import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
+import static org.lwjgl.opengl.GL13.glActiveTexture;
+
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+
 import map.Map;
 
 public class Screen {
@@ -24,6 +32,10 @@ public class Screen {
 	
 	public ColorSheet[] csheets = new ColorSheet[3];
 	
+	private Shader shader = new Shader("shader");
+	private Matrix4f projection;
+	private Model tileModel = new Model();
+	
 	public Screen(int width, int height, ColorSheet f, ColorSheet l, ColorSheet b){
 		this.width = width;
 		this.height = height;
@@ -37,7 +49,8 @@ public class Screen {
 		GUI = new int[this.length];
 		pixels = new int[this.lengthMap];
 		shadow = new int[this.lengthShadow];
-
+		
+		projection = new Matrix4f().setOrtho2D(-width, width, -height, height);
 	}
 	
 	/**
@@ -249,5 +262,21 @@ public class Screen {
 				}	
 			}
 		}
+	}
+	
+	public void drawTileOGL(float xPos, float yPos, int tile, SpriteSheet sheet){
+		shader.bind();
+		
+		glActiveTexture(GL_TEXTURE0 + 0);
+		glBindTexture(GL_TEXTURE_2D, sheet.getID());
+		
+		Matrix4f target = projection.mul(new Matrix4f().translate(new Vector3f(xPos*2, yPos*2, 0)), new Matrix4f());
+		if(sheet.width!=sheet.height)target.mul(new Matrix4f().ortho2D(-(sheet.height/sheet.width), (sheet.height/sheet.width), -1, 1));
+		target.scale(sheet.width);
+		
+		shader.setUniform("sampler", 0);
+		shader.setUniform("projection", target);
+		
+		tileModel.render();
 	}
 }

@@ -27,8 +27,10 @@ public class Screen {
 		
 		private int color = 0;
 		int textureID = 0;
+		private Matrix4f proj;
 		
-		public Screen() {
+		public Screen(int width, int height) {
+			proj = new Matrix4f().setOrtho2D(-width/2, width/2, -height/2, height/2);
 			float[] vertices = new float[] {
 					-1f, 1f, 0, //TOP LEFT     0
 					1f, 1f, 0,  //TOP RIGHT    1
@@ -51,16 +53,14 @@ public class Screen {
 			tileModel = new Model(vertices, texture, indices);
 		}
 		
-		public void renderTile(float x, float y, int w, int h, Shader shader, Matrix4f world, Camera cam, int id) {
+		public void renderTile(float x, float y, int w, int h, Shader shader, int id) {
 			shader.bind();
 			
 			glActiveTexture(GL_TEXTURE0 + 0);
 			glBindTexture(GL_TEXTURE_2D, id);
 			
-			Matrix4f target = cam.getProjection().mul(world);
-			Matrix4f tile_pos = new Matrix4f().translate(new Vector3f(x*2, y*2, 0));
-			
-			target.mul(tile_pos);
+			Matrix4f target = proj.mul(new Matrix4f().translate(new Vector3f(x, y, 0)), new Matrix4f());
+			if(h!=w)target.mul(new Matrix4f().ortho2D(-(h/w), (h/w), -1, 1));
 			target.scale(w);
 			
 			shader.setUniform("sampler", 0);
@@ -69,20 +69,18 @@ public class Screen {
 			tileModel.render();
 		}
 		
-		public void renderMap(int w, int h, int screenW, int screenH, Shader shader, Matrix4f world, Camera cam, int[] ids) {
+		public void renderMap(int w, int h, int screenW, int screenH, Shader shader, int[] ids) {
 			shader.bind();
 			int i = 0;
 			
 			glActiveTexture(GL_TEXTURE0 + 0);
 			
-			for (int x = -screenW/2; x < screenW/2; x+=w) {
-				for (int y = -screenH/2; y < screenH/2; y+=h) {
+			for (int x = -screenW/2; x < screenW/2+128; x+=w) {
+				for (int y = -screenH/2; y < screenH/2+128; y+=h) {
 					glBindTexture(GL_TEXTURE_2D, ids[i]);
-					Matrix4f target = cam.getProjection().mul(world);
-					Matrix4f tile_pos = new Matrix4f().translate(new Vector3f(x*2, y*2, 0));
 					
-					target.mul(tile_pos);
-					target.scale(w);
+					Matrix4f target = proj.mul(new Matrix4f().translate(new Vector3f(x, y, 0)), new Matrix4f());
+					target.scale(w/2);
 					
 					shader.setUniform("sampler", 0);
 					shader.setUniform("projection", target);
