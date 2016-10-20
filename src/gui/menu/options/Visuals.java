@@ -24,7 +24,7 @@ public class Visuals {
 	public Visuals(OptionScreen mainMenu) {
 		this.mainMenu = mainMenu;
 		this.back = new Button(50, 50, 60, 60);
-		this.back.gfxData(new SpriteSheet("/Buttons/back.png"), true);
+		this.back.gfxData("/Buttons/back.png", true);
 		options.add(new PlayerColorOption());
 		options.add(new MapZoomOption());
 		options.add(new ResolutionOption());
@@ -155,9 +155,9 @@ public class Visuals {
 		
 		public ResolutionOption() {
 			arrowLeft = new Button(0, 0, 60, 60);
-			arrowLeft.gfxData(new SpriteSheet("/Buttons/ArrowRight.png"), 0x10, false);
+			arrowLeft.gfxData("/Buttons/ArrowRight.png", 0x10, false);
 			arrowRight = new Button(0, 0, 60, 60);
-			arrowRight.gfxData(new SpriteSheet("/Buttons/ArrowRight.png"), 0x00, false);
+			arrowRight.gfxData("/Buttons/ArrowRight.png", 0x00, false);
 			resolutions.add(new Point(960,720));
 			resolutions.add(new Point(1024,768));
 			resolutions.add(new Point(1200,900));

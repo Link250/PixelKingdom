@@ -1,17 +1,32 @@
 package map;
 
+import static org.lwjgl.opengl.GL11.GL_NEAREST;
+import static org.lwjgl.opengl.GL11.GL_RGBA;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_MAG_FILTER;
+import static org.lwjgl.opengl.GL11.GL_TEXTURE_MIN_FILTER;
+import static org.lwjgl.opengl.GL11.GL_UNSIGNED_BYTE;
+import static org.lwjgl.opengl.GL11.glBindTexture;
+import static org.lwjgl.opengl.GL11.glDeleteTextures;
+import static org.lwjgl.opengl.GL11.glGenTextures;
+import static org.lwjgl.opengl.GL11.glTexImage2D;
+import static org.lwjgl.opengl.GL11.glTexParameterf;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.lwjgl.BufferUtils;
 import org.tukaani.xz.XZInputStream;
 
 import dataUtils.conversion.ConverterQueue;
+import gfx.Screen;
 import main.Game;
 import pixel.AD;
 import pixel.Material;
@@ -39,6 +54,8 @@ public class Chunk{
 	private HashMap<Integer,AD> AD = new HashMap<>();
 	private boolean[][][] updating = new boolean[width][height][Map.LAYER_ALL.length];
 	private Map map;
+	
+	private int[][] textureChunks;
 	
 	private boolean finishedLoading = false;
 	
@@ -310,5 +327,30 @@ public class Chunk{
 	
 	public boolean finishedLoading() {
 		return this.finishedLoading;
+	}
+	
+	private void genTextures(int[] pixels, int xPos, int yPos){
+		if(this.textureChunks[xPos][yPos]>0) {
+			glDeleteTextures(this.textureChunks[xPos][yPos]);
+		}
+		ByteBuffer pixelBuffer = BufferUtils.createByteBuffer(Screen.RENDER_CHUNK_SIZE * Screen.RENDER_CHUNK_SIZE * 4);
+		for (int y = 0; y < Screen.RENDER_CHUNK_SIZE; y++) {
+			for (int x = 0; x < Screen.RENDER_CHUNK_SIZE; x++) {
+				int pixel = pixels[(y+yPos*Screen.RENDER_CHUNK_SIZE)*width + x+xPos*Screen.RENDER_CHUNK_SIZE];
+				pixelBuffer.put((byte)((pixel >> 16) & 0xFF)); //RED
+				pixelBuffer.put((byte)((pixel >> 8) & 0xFF));  //GREEN
+				pixelBuffer.put((byte)(pixel & 0xFF));		  //BLUE
+				pixelBuffer.put((byte)((pixel >> 24) & 0xFF)); //ALPHA
+			}
+		}
+		pixelBuffer.flip();
+		this.textureChunks[xPos][yPos] = glGenTextures();
+		
+		glBindTexture(GL_TEXTURE_2D, this.textureChunks[xPos][yPos]);
+		
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Screen.RENDER_CHUNK_SIZE, Screen.RENDER_CHUNK_SIZE, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixelBuffer);
 	}
 }

@@ -15,6 +15,8 @@ public class Screen {
 	public static final int SHADOW_SCALE = 2;
 	public static final int MAP_SCALE = 2;
 	public static int MAP_ZOOM = 2;
+	
+	public static int RENDER_CHUNK_SIZE = 128;
 
 	public int[] pixels;
 	public int[] shadow;
@@ -264,16 +266,21 @@ public class Screen {
 		}
 	}*/
 	
+	public void drawTileOGLMap(float xPos, float yPos, int tile, SpriteSheet sheet){
+		drawTileOGL(xPos-xOffset, yPos-yOffset, tile, sheet);
+	}
+	
 	public void drawTileOGL(float xPos, float yPos, int tile, SpriteSheet sheet){
 		shader.bind();
-		
+		yPos += sheet.getHeight()/2;
+		yPos = height - yPos;
+		xPos += sheet.getWidth()/2;
 		glActiveTexture(GL_TEXTURE0 + 0);
 		glBindTexture(GL_TEXTURE_2D, sheet.getID(tile));
-		
-		Matrix4f target = projection.mul(new Matrix4f().translate(new Vector3f(xPos*2, yPos*2, 0)), new Matrix4f());
-		if(sheet.getWidth()!=sheet.getHeight())target.mul(new Matrix4f().ortho2D(-(sheet.getHeight()/sheet.getWidth()), (sheet.getHeight()/sheet.getWidth()), -1, 1));
-		target.scale(sheet.getWidth());
-		
+		 
+		Matrix4f target = projection.mul(new Matrix4f().translate(new Vector3f(xPos*2-this.width, yPos*2-this.height, 0)), new Matrix4f());
+		if(sheet.getWidth()!=sheet.getHeight())target.mul(new Matrix4f().ortho2D(-(((float)sheet.getHeight())/((float)sheet.getWidth())), (((float)sheet.getHeight())/((float)sheet.getWidth())), -1, 1));
+		target.scale(sheet.getHeight());
 		shader.setUniform("sampler", 0);
 		shader.setUniform("projection", target);
 		

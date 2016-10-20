@@ -110,7 +110,8 @@ public abstract class Item {
 	}
 
 	public void render(Screen screen, int x, int y, boolean showstack){
-		screen.drawGUITile(x, y, 0, 0x00, gfx, col);
+		screen.drawTileOGL(x, y, 0, gfx);
+//		screen.drawGUITile(x, y, 0, 0x00, gfx, col);
 		if(showstack & stackMax != 1){
 			if(stack>=2000){Game.mfont.render(x, y+17, false, false, Integer.toString(stack), 0, 0xff000000, screen);}
 			if(stack>=1000){Game.mfont.render(x-5, y+17, false, false, Integer.toString(stack), 0, 0xff000000, screen);}
@@ -121,15 +122,18 @@ public abstract class Item {
 	}
 	
 	public void render(Screen screen, int x, int y){
-		screen.drawGUITile(x, y, 0, 0x00, gfx, col);
+		screen.drawTileOGL(x, y, 0, gfx);
+//		screen.drawGUITile(x, y, 0, 0x00, gfx, col);
 	}
 
 	public void render(Screen screen, int x, int y, byte alpha){
-		screen.drawGUITile(x, y, 0, alpha, gfx, col);
+		screen.drawTileOGL(x, y, 0, gfx);
+//		screen.drawGUITile(x, y, 0, alpha, gfx, col);
 	}
 
 	public void renderOnMap(Screen screen, int x, int y, int mirror){
-		screen.drawMapTile(x, y, 0, mirror, gfxs, col);
+		screen.drawTileOGL(x, y, 0, gfx);
+//		screen.drawMapTile(x, y, 0, mirror, gfxs, col);
 	}
 
 	public int getAnim(){

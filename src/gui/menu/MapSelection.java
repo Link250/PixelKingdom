@@ -33,17 +33,17 @@ public class MapSelection implements GameMenu{
 		//makes it uneven
 		maxButtonsOnScreen -= maxButtonsOnScreen%2==0 ? 1 : 0;
 		back = new Button(50, 50, buttonSize, buttonSize);
-		back.gfxData(new SpriteSheet("/Buttons/back.png"), true);
+		back.gfxData("/Buttons/back.png", true);
 		genmap = new Button(Game.screen.width-50, 50, buttonSize, buttonSize);
-		genmap.gfxData(new SpriteSheet("/Buttons/new.png"), true);
+		genmap.gfxData("/Buttons/new.png", true);
 		del = new Button(Game.screen.width/2-240, Game.screen.height/2, buttonSize, buttonSize);
-		del.gfxData(new SpriteSheet("/Buttons/delete.png"), true);
+		del.gfxData("/Buttons/delete.png", true);
 		start = new Button(Game.screen.width/2+240, Game.screen.height/2, buttonSize, buttonSize);
-		start.gfxData(new SpriteSheet("/Buttons/play.png"), true);
+		start.gfxData("/Buttons/play.png", true);
 		scrollUP = new Button(Game.screen.width/2, Game.screen.height/2-(maxButtonsOnScreen/2+1)*buttonSize*3/2, buttonSize, buttonSize);
-		scrollUP.gfxData(new SpriteSheet("/Buttons/ArrowDown.png"), 0x01, false);
+		scrollUP.gfxData("/Buttons/ArrowDown.png", 0x01, false);
 		scrollDOWN = new Button(Game.screen.width/2, Game.screen.height/2+(maxButtonsOnScreen/2+1)*buttonSize*3/2, buttonSize, buttonSize);
-		scrollDOWN.gfxData(new SpriteSheet("/Buttons/ArrowDown.png"), false);
+		scrollDOWN.gfxData("/Buttons/ArrowDown.png", false);
 		LoadFiles();
 	}
 	

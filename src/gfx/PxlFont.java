@@ -14,7 +14,6 @@ public class PxlFont {
 		this.letterDistance = letterDistance;
 		size = new int[chars.length()];
 		sizel = new int[chars.length()];
-		System.out.println(chars.length());
 		for(int i = 0; i < this.chars.length(); i++){
 			int xs,xe;
 			int pixelfound = 0;

@@ -14,7 +14,9 @@ public class Button {
 	private int ToffY;
 	private SpriteSheet gfx;
 	private int mirrorXY=0;
-	private boolean background = true;
+	private SpriteSheet bg_on = null;
+	private SpriteSheet bg_off = null;
+	private boolean background = false;
 	public boolean mouseover = false;
 	public boolean isclicked = false;
 	
@@ -46,17 +48,38 @@ public class Button {
 		this.ToffY = this.height/2;
 	}
 	
-	public void gfxData(SpriteSheet gfx, boolean background){
-		this.gfx = gfx;
+	public void gfxData(String gfxPath, boolean background){
+		this.gfx = new SpriteSheet(gfxPath, this.width, this.height);
 		this.background = background;
+		if(background)constructBackground();
 	}
 	
-	public void gfxData(SpriteSheet gfx, int mirrorXY, boolean background){
-		this.gfx = gfx;
+	public void gfxData(String gfxPath, int mirrorXY, boolean background){
+		this.gfx = new SpriteSheet(gfxPath, this.width, this.height);
 		this.mirrorXY = mirrorXY;
 		this.background = background;
+		if(background)constructBackground();
 	}
 
+	private void constructBackground() {
+		this.bg_on = new SpriteSheet();
+		this.bg_off = new SpriteSheet();
+		int[] pixels = new int[width * height];
+		for(int x = 0; x < width; x++){
+			for(int y = 0; y < height; y++){
+				pixels[y*width+x] = ((x < 2 || y < 2 || x >= width-2 || y >= height-2)? 0xffC0C0C0 : 0xff606060);
+			}
+		}
+		this.bg_on.setPixels(pixels, width, height, width, height);
+		
+		for(int x = 0; x < width; x++){
+			for(int y = 0; y < height; y++){
+				pixels[y*width+x] = ((x < 2 || y < 2 || x >= width-2 || y >= height-2)? 0xffC0C0C0 : 0xffA0A0A0);
+			}
+		}
+		this.bg_off.setPixels(pixels, width, height, width, height);
+	}
+	
 	public void SetPos(int x, int y){
 		SetPos(x, y, true, true);
 	}
@@ -79,25 +102,26 @@ public class Button {
 
 	public void render(){
 		if(background){
-			for(int i = 0; i < height; i++){
-				for(int j = 0; j < width; j++){
-					if(mouseover){
-						if(i==0 || i==height-1 || j==0 || j==width-1)Game.screen.drawGUIPixel(x+j, y+i, 0xffC0C0C0);
-						else Game.screen.drawGUIPixel(x+j, y+i, 0xff606060);
-					}
-					else{
-						if(i==0 || i==height-1 || j==0 || j==width-1)Game.screen.drawGUIPixel(x+j, y+i, 0xffC0C0C0);
-						else Game.screen.drawGUIPixel(x+j, y+i, 0xffA0A0A0);
-					}
-				}
-			}
+			Game.screen.drawTileOGL(x, y, 0, mouseover ? bg_on : bg_off);
+//			for(int i = 0; i < height; i++){
+//				for(int j = 0; j < width; j++){
+//					if(mouseover){
+//						if(i==0 || i==height-1 || j==0 || j==width-1)Game.screen.drawGUIPixel(x+j, y+i, 0xffC0C0C0);
+//						else Game.screen.drawGUIPixel(x+j, y+i, 0xff606060);
+//					}
+//					else{
+//						if(i==0 || i==height-1 || j==0 || j==width-1)Game.screen.drawGUIPixel(x+j, y+i, 0xffC0C0C0);
+//						else Game.screen.drawGUIPixel(x+j, y+i, 0xffA0A0A0);
+//					}
+//				}
+//			}
 		}
 		if(gfx != null){
 //			gfx.tileWidth=width;
 //			gfx.tileHeight=height;
 //debug			System.out.println(gfx.tileWidth);
 			if(mouseover){
-				Game.screen.drawTileOGL(x, y, 0, gfx);
+				Game.screen.drawTileOGL(x, y, 1, gfx);
 //				Game.screen.drawGUITile(x, y, 1, mirrorXY, gfx, 0);
 			}else{
 				Game.screen.drawTileOGL(x, y, 0, gfx);

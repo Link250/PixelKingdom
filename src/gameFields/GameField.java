@@ -46,8 +46,6 @@ public abstract class GameField {
 	
 	private void constructBackground() {
 		int[] pixels = new int[field.width * field.height];
-		this.background = new SpriteSheet();
-		this.background.setPixels(pixels, field.width, field.height, field.width, field.height);
 		for(int x = 0; x < field.width; x++){
 			for(int y = 0; y < field.height; y++){
 				pixels[y*field.width+x] = y < (fieldTop.height)?
@@ -55,6 +53,8 @@ public abstract class GameField {
 						((x < 2 || y < 2 || x >= field.width-2 || y >= field.height-2)? 0x80404040 : 0x40808080);
 			}
 		}
+		this.background = new SpriteSheet();
+		this.background.setPixels(pixels, field.width, field.height, field.width, field.height);
 	}
 	
 	public abstract void tick();
@@ -95,7 +95,8 @@ public abstract class GameField {
 	public abstract void render();
 	
 	protected void renderfield(){
-		Game.screen.drawGUITile(field.x, field.y, 0, 0, background, 0);
+		Game.screen.drawTileOGL(field.x, field.y, 0, background);
+//		Game.screen.drawGUITile(field.x, field.y, 0, 0, background, 0);
 	}
 	
 	public void save(){

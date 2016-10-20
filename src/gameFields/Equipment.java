@@ -60,7 +60,8 @@ public class Equipment extends GameField {
 	
 	public void render() {
 		renderfield();
-		Game.screen.drawGUITile(field.x+87, field.y+33, 0, 0, Background, 0xff000000);
+		Game.screen.drawTileOGL(field.x+87, field.y+33, 0, Background);
+//		Game.screen.drawGUITile(field.x+87, field.y+33, 0, 0, Background, 0xff000000);
 		Game.sfont.render(field.x+field.width/2, field.y+fieldTop.height/2, "Equipment", 0, 0xff000000, Game.screen);
 		
 		for (EquipItemField field : itemFields.values()) {
@@ -104,11 +105,13 @@ public class Equipment extends GameField {
 		}
 		
 		public void render() {
-			Game.screen.drawGUITile(field.x, field.y, 0, 0, back, 0);
+			Game.screen.drawTileOGL(field.x, field.y, 0, back);
+//			Game.screen.drawGUITile(field.x, field.y, 0, 0, back, 0);
 			if(bags.containsKey(bagEnum)) {
 				bags.get(bagEnum).render(Game.screen, field.x+2, field.y+2, true);
 			}else{
-				Game.screen.drawGUITile(field.x+2, field.y+2, 0, 0, bagEnum.defaultSprite, 0);
+				Game.screen.drawTileOGL(field.x+2, field.y+2, 0, bagEnum.defaultSprite);
+//				Game.screen.drawGUITile(field.x+2, field.y+2, 0, 0, bagEnum.defaultSprite, 0);
 			}
 		}
 	}

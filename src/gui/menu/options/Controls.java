@@ -27,7 +27,7 @@ public class Controls {
 	public Controls(OptionScreen mainMenu) {
 		this.mainMenu = mainMenu;
 		this.back = new Button(50, 50, 60, 60);
-		this.back.gfxData(new SpriteSheet("/Buttons/back.png"), true);
+		this.back.gfxData("/Buttons/back.png", true);
 		this.lOffset = 0;
 		this.lVisibleEntries = 5;
 		this.lFieldTop = Game.screen.height/10*3;
@@ -39,9 +39,9 @@ public class Controls {
 		this.resetKeyButtons();
 		
 		this.scrollUP = new Button(Game.screen.width/2, this.lFieldTop-30, 60, 60);
-		this.scrollUP.gfxData(new SpriteSheet("/Buttons/ArrowDown.png"), 0x01, false);
+		this.scrollUP.gfxData("/Buttons/ArrowDown.png", 0x01, false);
 		this.scrollDOWN = new Button(Game.screen.width/2, this.lFieldBottom+30, 60, 60);
-		this.scrollDOWN.gfxData(new SpriteSheet("/Buttons/ArrowDown.png"), false);
+		this.scrollDOWN.gfxData("/Buttons/ArrowDown.png", false);
 	}
 	
 	private void resetKeyButtons() {

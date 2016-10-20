@@ -29,7 +29,7 @@ public class OptionScreen implements GameMenu{
 		
 		int bWidth = 300, bHeight = 60, bYOff = 250, bNr = 0;
 		back = new Button(50, 50, 60, 60);
-		back.gfxData(new SpriteSheet("/Buttons/back.png"), true);
+		back.gfxData("/Buttons/back.png", true);
 		visualsButton = new Button(Game.WIDTH/2,bYOff + (int)(bHeight*bNr++*1.5),bWidth,bHeight);
 		visualsButton.TextData("Visuals", false);
 		controlsButton = new Button(Game.WIDTH/2,bYOff + (int)(bHeight*bNr++*1.5),bWidth,bHeight);

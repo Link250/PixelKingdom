@@ -39,19 +39,19 @@ public class ServerList implements GameMenu{
 		//makes it uneven
 		maxButtonsOnScreen -= maxButtonsOnScreen%2==0 ? 1 : 0;
 		back = new Button(50, 50, buttonSize, buttonSize);
-		back.gfxData(new SpriteSheet("/Buttons/back.png"), true);
+		back.gfxData("/Buttons/back.png", true);
 		add = new Button(Game.screen.width-50, 50, buttonSize, buttonSize);
-		add.gfxData(new SpriteSheet("/Buttons/add_server.png"), true);
+		add.gfxData("/Buttons/add_server.png", true);
 		start = new Button(Game.screen.width-50, Game.screen.height-50, buttonSize, buttonSize);
-		start.gfxData(new SpriteSheet("/Buttons/new_server.png"), true);
+		start.gfxData("/Buttons/new_server.png", true);
 		del = new Button(Game.screen.width/2-240, Game.screen.height/2, buttonSize, buttonSize);
-		del.gfxData(new SpriteSheet("/Buttons/delete.png"), true);
+		del.gfxData("/Buttons/delete.png", true);
 		join = new Button(Game.screen.width/2+240, Game.screen.height/2, buttonSize, buttonSize);
-		join.gfxData(new SpriteSheet("/Buttons/play.png"), true);
+		join.gfxData("/Buttons/play.png", true);
 		scrollUP = new Button(Game.screen.width/2, Game.screen.height/2-(maxButtonsOnScreen/2+1)*buttonSize*3/2, buttonSize, buttonSize);
-		scrollUP.gfxData(new SpriteSheet("/Buttons/ArrowDown.png"), 0x01, false);
+		scrollUP.gfxData("/Buttons/ArrowDown.png", 0x01, false);
 		scrollDOWN = new Button(Game.screen.width/2, Game.screen.height/2+(maxButtonsOnScreen/2+1)*buttonSize*3/2, buttonSize, buttonSize);
-		scrollDOWN.gfxData(new SpriteSheet("/Buttons/ArrowDown.png"), false);
+		scrollDOWN.gfxData("/Buttons/ArrowDown.png", false);
 		LoadServers(false);
 	}
 	

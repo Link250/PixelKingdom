@@ -58,7 +58,6 @@ public class SpriteSheet {
 		this.tileHeight = tileHeight;
 		int width = image.getWidth();
 		int height = image.getHeight();
-		
 		genTextures(image.getRGB(0, 0, width, height, null, 0, width), width, height);
 	}
 	
@@ -75,13 +74,12 @@ public class SpriteSheet {
 		this.textureIDs = new int[(width/tileWidth)*(height/tileHeight)];
 		this.pixels = new int[this.textureIDs.length][tileWidth*tileHeight];
 		int texIndex = 0;
-		for (int tileX = 0; tileX < width/tileWidth; tileX++) {
-			for (int tileY = 0; tileY < height/tileHeight; tileY++) {
+		for (int tileY = 0; tileY < height/tileHeight; tileY++) {
+			for (int tileX = 0; tileX < width/tileWidth; tileX++) {
 				ByteBuffer pixelBuffer = BufferUtils.createByteBuffer(tileWidth * tileHeight * 4);
-				
-				for (int x = 0; x < tileWidth; x++) {
-					for (int y = 0; y < tileHeight; y++) {
-						int pixel = pixels[(y+tileY*tileHeight)*tileWidth + x+tileX];
+				for (int y = 0; y < tileHeight; y++) {
+					for (int x = 0; x < tileWidth; x++) {
+						int pixel = pixels[(y+tileY*tileHeight)*width + x+tileX*tileWidth];
 						pixelBuffer.put((byte)((pixel >> 16) & 0xFF)); //RED
 						pixelBuffer.put((byte)((pixel >> 8) & 0xFF));  //GREEN
 						pixelBuffer.put((byte)(pixel & 0xFF));		  //BLUE
@@ -96,7 +94,7 @@ public class SpriteSheet {
 				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 				
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tileWidth, tileHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixelBuffer);
 				texIndex++;
 			}
 		}

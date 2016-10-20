@@ -18,13 +18,13 @@ public class MainMenu implements GameMenu{
 		this.game = game;
 		int bWidth = 300, bHeight = 60, bYOff = 250, bNr = 0;
 		SP = new Button((Game.WIDTH)/2,bYOff + (int)(bHeight*bNr++*1.5),bWidth,bHeight);
-		SP.gfxData(new SpriteSheet("/Buttons/SP.png"), true);
+		SP.gfxData("/Buttons/SP.png", true);
 		MP = new Button((Game.WIDTH)/2,bYOff + (int)(bHeight*bNr++*1.5),bWidth,bHeight);
-		MP.gfxData(new SpriteSheet("/Buttons/MP.png"), true);
+		MP.gfxData("/Buttons/MP.png", true);
 		OP = new Button((Game.WIDTH)/2,bYOff + (int)(bHeight*bNr++*1.5),bWidth,bHeight);
-		OP.gfxData(new SpriteSheet("/Buttons/OP.png"), true);
+		OP.gfxData("/Buttons/OP.png", true);
 		QT = new Button((Game.WIDTH)/2,bYOff + (int)(bHeight*bNr++*1.5),bWidth,bHeight);
-		QT.gfxData(new SpriteSheet("/Buttons/QT.png"), true);
+		QT.gfxData("/Buttons/QT.png", true);
 	}
 	
 	public void render() {
