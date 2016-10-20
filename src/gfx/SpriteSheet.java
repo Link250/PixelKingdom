@@ -26,7 +26,7 @@ public class SpriteSheet {
 		this.tileHeight = tileHeight;
 	}
 	
-	public SpriteSheet(String path, int tileWidth, int tileHeight){
+	public SpriteSheet(String path){
 		BufferedImage image = null;
 		
 		try {
@@ -38,11 +38,31 @@ public class SpriteSheet {
 		
 		int width = image.getWidth();
 		int height = image.getHeight();
+		this.tileWidth = width;
+		this.tileHeight = height;
+		
+		genTextures(image.getRGB(0, 0, width, height, null, 0, width), width, height);
+	}
+	
+	public SpriteSheet(String path, int tileWidth, int tileHeight){
+		BufferedImage image = null;
+		
+		try {
+			image = ImageIO.read(SpriteSheet.class.getResourceAsStream(path));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		if(image == null){ return;}
+		
 		this.tileWidth = tileWidth;
 		this.tileHeight = tileHeight;
+		int width = image.getWidth();
+		int height = image.getHeight();
 		
-		int[] pixels = image.getRGB(0, 0, width, height, null, 0, width);
-		
+		genTextures(image.getRGB(0, 0, width, height, null, 0, width), tileWidth, tileHeight);
+	}
+	
+	private void genTextures(int[] pixels, int width, int height){
 		for (int tileX = 0; tileX < width/tileWidth; tileX++) {
 			for (int tileY = 0; tileY < height/tileHeight; tileY++) {
 				ByteBuffer pixelBuffer = BufferUtils.createByteBuffer(tileWidth * tileHeight * 4);

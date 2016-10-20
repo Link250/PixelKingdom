@@ -93,8 +93,8 @@ public class Button {
 			}
 		}
 		if(gfx != null){
-			gfx.tileWidth=width;
-			gfx.tileHeight=height;
+//			gfx.tileWidth=width;
+//			gfx.tileHeight=height;
 //debug			System.out.println(gfx.tileWidth);
 			if(mouseover){
 				Game.screen.drawGUITile(x, y, 1, mirrorXY, gfx, 0);

@@ -150,9 +150,9 @@ public class Game extends Canvas implements Runnable{
 		try {windowIcon = ImageIO.read(SpriteSheet.class.getResourceAsStream("/WindowIcon.png"));} catch (IOException e) {e.printStackTrace();}
 		frame.setIconImage(windowIcon);
 		input = new InputHandler_OLD(this);
-		mfont = new PxlFont(new SpriteSheet("/StackFont.png"), "1234567890", 12, 15, -2);
-		sfont = new PxlFont(new SpriteSheet("/8x8Font.png"), " !\"# %&´()* ,-./0123456789:; = ? ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{ }~",24,24, 1);
-		font = new PxlFont(new SpriteSheet("/Font.png"), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 1234567890!\",;%&/()=?ß+-.",45,60, 2);
+		mfont = new PxlFont(new SpriteSheet("/StackFont.png", 12, 15), "1234567890", 12, 15, -2);
+		sfont = new PxlFont(new SpriteSheet("/8x8Font.png", 24, 24), " !\"# %&ï¿½()* ,-./0123456789:; = ? ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{ }~",24,24, 1);
+		font = new PxlFont(new SpriteSheet("/Font.png", 45, 60), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 1234567890!\",;%&/()=?ï¿½+-.",45,60, 2);
 		screen = new Screen(WIDTH, HEIGHT, csheetf, csheetm, csheetb);
 		menu = new MainMenu(this);
 		
