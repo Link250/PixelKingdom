@@ -17,6 +17,8 @@ import multiplayer.server.Server;
 import pixel.PixelList;
 
 import static org.lwjgl.glfw.GLFW.glfwInit;
+import static org.lwjgl.opengl.GL11.GL_COLOR_BUFFER_BIT;
+import static org.lwjgl.opengl.GL11.glClear;
 
 import java.awt.BorderLayout;
 import java.awt.Canvas;
@@ -151,8 +153,8 @@ public class Game extends Canvas implements Runnable{
 		frame.setIconImage(windowIcon);
 		input = new InputHandler_OLD(this);
 		mfont = new PxlFont(new SpriteSheet("/StackFont.png", 12, 15), "1234567890", 12, 15, -2);
-		sfont = new PxlFont(new SpriteSheet("/8x8Font.png", 24, 24), " !\"# %&�()* ,-./0123456789:; = ? ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{ }~",24,24, 1);
-		font = new PxlFont(new SpriteSheet("/Font.png", 45, 60), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 1234567890!\",;%&/()=?�+-.",45,60, 2);
+		sfont = new PxlFont(new SpriteSheet("/8x8Font.png", 24, 24), " !\"# %&'()* ,-./0123456789:; = ? ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{ }~",24,24, 1);
+		font = new PxlFont(new SpriteSheet("/Font.png", 45, 60), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 1234567890!\",;%&/()=?'+-.",45,60, 2);
 		screen = new Screen(WIDTH, HEIGHT, csheetf, csheetm, csheetb);
 		menu = new MainMenu(this);
 		
@@ -247,6 +249,8 @@ public class Game extends Canvas implements Runnable{
 	}
 	
 	public void render(){
+		glClear(GL_COLOR_BUFFER_BIT);
+
 		BufferStrategy bs = getBufferStrategy();
 		if(bs == null){
 			createBufferStrategy(2);
@@ -288,6 +292,7 @@ public class Game extends Canvas implements Runnable{
 		g.drawImage(GUI, 0, 0, WIDTH, HEIGHT, null);
 		g.dispose();
 		bs.show();
+		window.swapBuffers();
 	}
 	
 	public static void logError(Object text) {

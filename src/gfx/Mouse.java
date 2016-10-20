@@ -70,10 +70,10 @@ public class Mouse {
 			Item.render(Game.screen, Game.input.mouse.x-5, Game.input.mouse.y-5);
 			break;
 		case TEXT:
-			int x = Game.input.mouse.x+mouseN.width+2;
+			int x = Game.input.mouse.x+mouseN.getWidth()+2;
 			int y = Game.input.mouse.y;
-			if(x+textField.width>Game.screen.width) x -= textField.width+mouseN.width*2;
-			if(y+textField.height>Game.screen.height) y -= textField.height-mouseN.height;
+			if(x+textField.width>Game.screen.width) x -= textField.width+mouseN.getWidth()*2;
+			if(y+textField.height>Game.screen.height) y -= textField.height-mouseN.getHeight();
 			Game.screen.drawGUIPixelBorder(x, y, textField.width, textField.height, 2, 0xff000000);
 			Game.screen.drawGUIPixelArea(x+2, y+2, textField.width-4, textField.height-4, 0xffa0a0a0);
 			for (String string : textList) {
@@ -83,7 +83,8 @@ public class Mouse {
 			textActive = false;
 		case DEFAULT:
 		default:
-			Game.screen.drawGUITile(Game.input.mouse.x, Game.input.mouse.y, 0, 0x00, mouseN, 0);
+			Game.screen.drawTileOGL(Game.input.mouse.x, Game.input.mouse.y, 0, mouseN);
+//			Game.screen.drawGUITile(Game.input.mouse.x, Game.input.mouse.y, 0, 0x00, mouseN, 0);
 			break;
 		}
 	}

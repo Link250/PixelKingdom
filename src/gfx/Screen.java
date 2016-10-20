@@ -223,9 +223,9 @@ public class Screen {
 	 * @param sheet
 	 * @param color
 	 */
-	public void drawGUITile(int xPos, int yPos, int tile, int mirrorXY, SpriteSheet sheet, int color){
-		drawTile(xPos,yPos,tile,mirrorXY,sheet,color,true);
-	}
+//	public void drawGUITile(int xPos, int yPos, int tile, int mirrorXY, SpriteSheet sheet, int color){
+//		drawTile(xPos,yPos,tile,mirrorXY,sheet,color,true);
+//	}
 	
 	/**
 	 * 
@@ -236,11 +236,11 @@ public class Screen {
 	 * @param sheet
 	 * @param color
 	 */
-	public void drawMapTile(int xPos, int yPos, int tile, int mirrorXY, SpriteSheet sheet, int color){
-		drawTile(xPos-xOffset,yPos-yOffset,tile,mirrorXY,sheet,color,false);
-	}
+//	public void drawMapTile(int xPos, int yPos, int tile, int mirrorXY, SpriteSheet sheet, int color){
+//		drawTile(xPos-xOffset,yPos-yOffset,tile,mirrorXY,sheet,color,false);
+//	}
 
-	private void drawTile(int xPos, int yPos, int tile, int mirrorXY, SpriteSheet sheet, int color, boolean GUI){
+/*	private void drawTile(int xPos, int yPos, int tile, int mirrorXY, SpriteSheet sheet, int color, boolean GUI){
 		if(!GUI) {xPos*=MAP_SCALE;yPos*=MAP_SCALE;}
 		int xTile = tile % (sheet.width/sheet.tileWidth);
 		int yTile = tile / (sheet.width/sheet.tileWidth);
@@ -262,17 +262,17 @@ public class Screen {
 				}	
 			}
 		}
-	}
+	}*/
 	
 	public void drawTileOGL(float xPos, float yPos, int tile, SpriteSheet sheet){
 		shader.bind();
 		
 		glActiveTexture(GL_TEXTURE0 + 0);
-		glBindTexture(GL_TEXTURE_2D, sheet.getID());
+		glBindTexture(GL_TEXTURE_2D, sheet.getID(tile));
 		
 		Matrix4f target = projection.mul(new Matrix4f().translate(new Vector3f(xPos*2, yPos*2, 0)), new Matrix4f());
-		if(sheet.width!=sheet.height)target.mul(new Matrix4f().ortho2D(-(sheet.height/sheet.width), (sheet.height/sheet.width), -1, 1));
-		target.scale(sheet.width);
+		if(sheet.getWidth()!=sheet.getHeight())target.mul(new Matrix4f().ortho2D(-(sheet.getHeight()/sheet.getWidth()), (sheet.getHeight()/sheet.getWidth()), -1, 1));
+		target.scale(sheet.getWidth());
 		
 		shader.setUniform("sampler", 0);
 		shader.setUniform("projection", target);

@@ -12,25 +12,24 @@ public class PxlFont {
 		this.sheet = sheet;
 		this.chars = chars;
 		this.letterDistance = letterDistance;
-		sheet.tileWidth = sizex;
-		sheet.tileHeight = sizey;
 		size = new int[chars.length()];
 		sizel = new int[chars.length()];
+		System.out.println(chars.length());
 		for(int i = 0; i < this.chars.length(); i++){
 			int xs,xe;
 			int pixelfound = 0;
-			for(xs = 0; xs < sheet.tileWidth && (pixelfound == 0); xs++){
+			for(xs = 0; xs < sheet.getWidth() && (pixelfound == 0); xs++){
 				pixelfound = 0;
-				for(int y = 0; y < sheet.tileHeight; y++){
-					if((sheet.pixels[((i%(sheet.width/sheet.tileWidth))*sheet.tileWidth+xs) + ((i/(sheet.width/sheet.tileWidth))*sheet.tileHeight+y)*sheet.width] & 0xffffff)!= 0x000000){
+				for(int y = 0; y < sheet.getHeight(); y++){
+					if((sheet.getPixels(i)[xs + y*sheet.getWidth()] & 0xffffff)!= 0x000000){
 						pixelfound++;
 					}
 				}
 			}
-			for(xe = xs; xe < sheet.tileWidth && (pixelfound > 0); xe++){
+			for(xe = xs; xe < sheet.getWidth() && (pixelfound > 0); xe++){
 				pixelfound = 0;
-				for(int y = 0; y < sheet.tileHeight; y++){
-					if((sheet.pixels[((i%(sheet.width/sheet.tileWidth))*sheet.tileWidth+xe) + ((i/(sheet.width/sheet.tileWidth))*sheet.tileHeight+y)*sheet.width] & 0xffffff)!= 0x000000){
+				for(int y = 0; y < sheet.getHeight(); y++){
+					if((sheet.getPixels(i)[xe + y*sheet.getWidth()] & 0xffffff)!= 0x000000){
 						pixelfound++;
 					}
 				}
@@ -51,7 +50,7 @@ public class PxlFont {
 			int charIndex = chars.indexOf(msg.charAt(i));
 			if(charIndex > -1){
 				if(limit==0 || xOff < limit-pointSize) {
-					xOff += size[charIndex]+(size[charIndex]>0 ? letterDistance : sheet.tileWidth/2);
+					xOff += size[charIndex]+(size[charIndex]>0 ? letterDistance : sheet.getWidth()/2);
 				}else {
 					break;
 				}
@@ -62,7 +61,7 @@ public class PxlFont {
 	
 	public void render(int x, int y, boolean centeredX, boolean centeredY, String msg, int limit, int color, Screen screen){
 		if(msg == null) return;
-		int yOff = centeredY ? sheet.tileHeight/2 : 0;
+		int yOff = centeredY ? sheet.getHeight()/2 : 0;
 		int xOff = 0;
 		if(centeredX) xOff = renderLength(msg, limit)/2;
 		if(limit!=0)limit+=x;
@@ -70,10 +69,12 @@ public class PxlFont {
 			int charIndex = chars.indexOf(msg.charAt(i));
 			if(charIndex >= 0){
 				if(limit==0 || x < limit-pointSize){
-					screen.drawGUITile(x-sizel[charIndex]-xOff, y-yOff, charIndex, 0x00, sheet, color);
-					x += size[charIndex]+(size[charIndex]>0 ? letterDistance : sheet.tileWidth/2);
+					screen.drawTileOGL(x-sizel[charIndex]-xOff, y-yOff, charIndex, sheet);
+//					screen.drawGUITile(x-sizel[charIndex]-xOff, y-yOff, charIndex, 0x00, sheet, color);
+					x += size[charIndex]+(size[charIndex]>0 ? letterDistance : sheet.getWidth()/2);
 				}else{
-					if(pointSize > 0)screen.drawGUITile(x-sizel[charIndex]-xOff, y-yOff, chars.indexOf('.'), 0x00, sheet, color);
+					if(pointSize > 0)screen.drawTileOGL(x-sizel[charIndex]-xOff, y-yOff, chars.indexOf('.'), sheet);
+//					if(pointSize > 0)screen.drawGUITile(x-sizel[charIndex]-xOff, y-yOff, chars.indexOf('.'), 0x00, sheet, color);
 					break;
 				}
 			}
