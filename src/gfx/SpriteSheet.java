@@ -1,39 +1,32 @@
 package gfx;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 import javax.imageio.ImageIO;
+
+import org.lwjgl.BufferUtils;
 
 
 public class SpriteSheet {
 
-	public String path;
-	public int width;
-	public int height;
-	public int tileWidth;
-	public int tileHeight;
+	private int tileWidth;
+	private int tileHeight;
 	
-	public int pixels[];
-	
-	private int textureID;
+	private int textureIDs[];
 	
 	public SpriteSheet() {
-		this.width = 1;
-		this.height = 1;
-		this.tileWidth = 1;
-		this.tileHeight = 1;
-		this.pixels = new int[1];
+		this.tileWidth = 0;
+		this.tileHeight = 0;
+		
 	}
 	
 	public void setPixels(int[] pixels, int width, int height, int tileWidth, int tileHeight) {
-		this.pixels = pixels;
-		this.width = width;
-		this.height = height;
 		this.tileWidth = tileWidth;
 		this.tileHeight = tileHeight;
 	}
 	
-	public SpriteSheet(String path){
+	public SpriteSheet(String path, int tileWidth, int tileHeight){
 		BufferedImage image = null;
 		
 		try {
@@ -41,31 +34,42 @@ public class SpriteSheet {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
 		if(image == null){ return;}
 		
-		this.path = path;
-		this.width = image.getWidth();
-		this.height = image.getHeight();
-		this.tileWidth = image.getWidth();
-		this.tileHeight = image.getHeight();
+		int width = image.getWidth();
+		int height = image.getHeight();
+		this.tileWidth = tileWidth;
+		this.tileHeight = tileHeight;
 		
-		pixels = image.getRGB(0, 0, width, height, null, 0, width);
+		int[] pixels = image.getRGB(0, 0, width, height, null, 0, width);
 		
-/*		for(int i = 0; i < pixels.length; i ++){
-			pixels[i] = (pixels[i] & 0xffffffff);
-		}
+		for (int tileX = 0; tileX < width/tileWidth; tileX++) {
+			for (int tileY = 0; tileY < height/tileHeight; tileY++) {
+				ByteBuffer pixelBuffer = BufferUtils.createByteBuffer(tileWidth * tileHeight * 4);
 				
-		for (int i = 0; i < 10; i++){
-			int Alpha =		(pixels[i] & 0xff000000)/16777216;		if(Alpha <0) Alpha = 256+Alpha;
-			int Red = 		(pixels[i] & 0xff0000)/65536;
-			int Green = 	(pixels[i] & 0xff00)/256;
-			int Blue = 		(pixels[i] & 0xff);
-			System.out.println(pixels[i] + " = A " + Alpha + " ; R " + Red + " ; G " + Green + " ; B " + Blue);
-		}*/
+				for (int x = 0; x < tileWidth; x++) {
+					for (int y = 0; y < tileHeight; y++) {
+						int pixel = pixels[(y+tileY*tileHeight)*tileWidth + x+tileX];
+						pixelBuffer.put((byte)((pixel >> 16) & 0xFF)); //RED
+						pixelBuffer.put((byte)((pixel >> 8) & 0xFF));  //GREEN
+						pixelBuffer.put((byte)(pixel & 0xFF));		  //BLUE
+						pixelBuffer.put((byte)((pixel >> 24) & 0xFF)); //ALPHA
+					}
+				}
+				pixelBuffer.flip();
+			}
+		}
 	}
 	
-	public int getID() {
-		return textureID;
+	public int getID(int tile) {
+		return textureIDs[tile];
+	}
+	
+	public int getWidth() {
+		return this.tileWidth;
+	}
+	
+	public int getHeight() {
+		return this.tileHeight;
 	}
 }
