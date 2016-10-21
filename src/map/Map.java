@@ -1,6 +1,7 @@
 package map;
 
 import gfx.Screen;
+import main.Game;
 import multiplayer.MapUpdater;
 import multiplayer.client.ChunkManagerC;
 import multiplayer.client.ServerManager;
@@ -168,7 +169,7 @@ public class Map {
 		int X,Y;
 		short light;
 
-		for(int l = Map.LAYER_BACK; l <= Map.LAYER_LIGHT; l++){
+/*		for(int l = Map.LAYER_BACK; l <= Map.LAYER_LIGHT; l++){
 			for(int y = 0; y <screen.height/Screen.MAP_SCALE/Screen.MAP_ZOOM; y++){
 				for(int x = 0; x <screen.width/Screen.MAP_SCALE/Screen.MAP_ZOOM; x++){
 					X=x+screen.xOffset;Y=y+screen.yOffset;
@@ -191,7 +192,8 @@ public class Map {
 					}
 				}
 			}
-		}
+		}*/
+		Game.screen.drawMapOGL(this);
 	}
 	
 	public void loadChunk(int cx, int cy){
@@ -291,7 +293,17 @@ public class Map {
 		if(getID(x, y, Map.LAYER_FRONT)!=0 && PixelList.GetMat(getID(x, y, Map.LAYER_FRONT)).solid)return true;
 		else return false;
 	}
-
+	
+	public int getRenderChunk(int x, int y, int l) {
+		int cx = x/1024,cy = y/1024;
+		if(chunks[cx][cy]!=null){
+			return chunks[cx][cy].getRenderChunk(x%1024, y%1024, l);
+		}else {
+			loadChunk(cx, cy);
+			return 0;
+		}
+	}
+	
 	public void save(){
 		for(int x = 0; x < Map.widthh; x++){
 			for(int y = 0; y < Map.heighth; y++){
@@ -303,7 +315,7 @@ public class Map {
 	public byte[] compressedChunk(int x, int y) {
 		try {
 			return chunks[x][y].compress();
-		} catch (IOException e) {/*dont worry, this should never ever happen C: */}
+		} catch (IOException e) {e.printStackTrace();/*dont worry, this should never ever happen C: */}
 		return null;
 	}
 	

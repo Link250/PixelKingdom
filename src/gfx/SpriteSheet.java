@@ -80,6 +80,7 @@ public class SpriteSheet {
 				for (int y = 0; y < tileHeight; y++) {
 					for (int x = 0; x < tileWidth; x++) {
 						int pixel = pixels[(y+tileY*tileHeight)*width + x+tileX*tileWidth];
+						this.pixels[tileX+tileY*(width/tileWidth)][x+y*tileWidth] = pixel;
 						pixelBuffer.put((byte)((pixel >> 16) & 0xFF)); //RED
 						pixelBuffer.put((byte)((pixel >> 8) & 0xFF));  //GREEN
 						pixelBuffer.put((byte)(pixel & 0xFF));		  //BLUE

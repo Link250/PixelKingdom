@@ -55,7 +55,8 @@ public class Chunk{
 	private boolean[][][] updating = new boolean[width][height][Map.LAYER_ALL.length];
 	private Map map;
 	
-	private int[][] textureChunks;
+	private int[][][] textureChunks;
+	private boolean[][][] textureUpdates;
 	
 	private boolean finishedLoading = false;
 	
@@ -64,6 +65,8 @@ public class Chunk{
 		this.x = x;
 		this.y = y;
 		this.map = map;
+		this.textureChunks = new int[width/Screen.RENDER_CHUNK_SIZE][height/Screen.RENDER_CHUNK_SIZE][Map.LAYER_ALL.length];
+		this.textureUpdates = new boolean[width/Screen.RENDER_CHUNK_SIZE][height/Screen.RENDER_CHUNK_SIZE][Map.LAYER_ALL.length];
 	}
 	
 	public int getID(int x, int y, int layer){
@@ -88,8 +91,9 @@ public class Chunk{
 	}
 	
 	public boolean setUpdating(int x, int y, int l){
-		if(!updating[x%width][y%height][l]){
-			updating[x%width][y%height][l]=true;
+		if(!updating[x][y][l]){
+			updating[x][y][l]=true;
+			textureUpdates[x/Screen.RENDER_CHUNK_SIZE][y/Screen.RENDER_CHUNK_SIZE][l] = true;
 			return true;
 		}else{
 			return false;
@@ -329,28 +333,53 @@ public class Chunk{
 		return this.finishedLoading;
 	}
 	
-	private void genTextures(int[] pixels, int xPos, int yPos){
-		if(this.textureChunks[xPos][yPos]>0) {
-			glDeleteTextures(this.textureChunks[xPos][yPos]);
+	public int getRenderChunk(int x, int y, int l) {
+		x/=Screen.RENDER_CHUNK_SIZE;y/=Screen.RENDER_CHUNK_SIZE;
+		int i = this.textureChunks[x][y][l];
+		if(i == 0 || this.textureUpdates[x][y][l])genTextures(x,y,l);
+		return i;
+	}
+	
+	private void genTextures(int xPos, int yPos, int l){
+		if(this.textureChunks[xPos][yPos][l]>0) {
+			glDeleteTextures(this.textureChunks[xPos][yPos][l]);
 		}
+		int ID;
+		int X,Y;
+		int pixel;
+		short lightP;
 		ByteBuffer pixelBuffer = BufferUtils.createByteBuffer(Screen.RENDER_CHUNK_SIZE * Screen.RENDER_CHUNK_SIZE * 4);
 		for (int y = 0; y < Screen.RENDER_CHUNK_SIZE; y++) {
 			for (int x = 0; x < Screen.RENDER_CHUNK_SIZE; x++) {
-				int pixel = pixels[(y+yPos*Screen.RENDER_CHUNK_SIZE)*width + x+xPos*Screen.RENDER_CHUNK_SIZE];
-				pixelBuffer.put((byte)((pixel >> 16) & 0xFF)); //RED
-				pixelBuffer.put((byte)((pixel >> 8) & 0xFF));  //GREEN
-				pixelBuffer.put((byte)(pixel & 0xFF));		  //BLUE
-				pixelBuffer.put((byte)((pixel >> 24) & 0xFF)); //ALPHA
+				X=x+xPos*Screen.RENDER_CHUNK_SIZE;Y=y+yPos*Screen.RENDER_CHUNK_SIZE;
+				if(l==Map.LAYER_LIGHT) {
+					lightP = (light[X+Y*width]);
+					pixelBuffer.put((byte)0); //RED
+					pixelBuffer.put((byte)0);  //GREEN
+					pixelBuffer.put((byte)0);		  //BLUE
+					pixelBuffer.put((byte)(lightP == 0 ? 0xff : (Map.MAX_LIGHT-lightP)<<2)); //ALPHA
+//					System.out.println(Map.MAX_LIGHT-this.light[x+y*width]);
+				}else {
+					ID = getID(X,Y,l);
+					if(ID>=0){
+						pixel = ID == 0 ? 0 : Game.screen.getMaterialPixel(ID, l);
+						pixelBuffer.put((byte)((pixel >> 16) & 0xFF)); //RED
+						pixelBuffer.put((byte)((pixel >> 8) & 0xFF));  //GREEN
+						pixelBuffer.put((byte)(pixel & 0xFF));		  //BLUE
+						pixelBuffer.put((byte)((pixel >> 24) & 0xFF)); //ALPHA
+					}
+				}
 			}
 		}
 		pixelBuffer.flip();
-		this.textureChunks[xPos][yPos] = glGenTextures();
+		this.textureChunks[xPos][yPos][l] = glGenTextures();
 		
-		glBindTexture(GL_TEXTURE_2D, this.textureChunks[xPos][yPos]);
+		glBindTexture(GL_TEXTURE_2D, this.textureChunks[xPos][yPos][l]);
 		
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Screen.RENDER_CHUNK_SIZE, Screen.RENDER_CHUNK_SIZE, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixelBuffer);
+		this.textureUpdates[xPos][yPos][l] = false;
 	}
 }

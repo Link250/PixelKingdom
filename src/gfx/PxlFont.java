@@ -37,6 +37,12 @@ public class PxlFont {
 			sizel[i] = (xs);
 		}
 		if(chars.indexOf('.') > -1)pointSize = size[chars.indexOf('.')];
+		for (int i : size) {
+			System.out.println(i);
+		}
+		for (int i : sizel) {
+			System.out.println(i);
+		}
 	}
 	
 	public void render(int x, int y, String msg, int limit, int color, Screen screen){

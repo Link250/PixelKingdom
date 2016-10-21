@@ -108,8 +108,8 @@ public class Client {
 		screen.yOffset= player.y-Game.HEIGHT/3/2;
 	}
 	
-	public void render(Graphics g) {
-		g.drawImage(back, 0, 0, Game.WIDTH, Game.HEIGHT, null);
+	public void render() {
+//		g.drawImage(back, 0, 0, Game.WIDTH, Game.HEIGHT, null);
 		
 		map.render();
 		

@@ -142,7 +142,7 @@ public class Game extends Canvas implements Runnable{
 		new KeyInput(window.getWindow());
 		new MouseInput(window.getWindow());
 		
-		background = new SpriteSheet("/Back.png", 960, 702);
+		background = new SpriteSheet("/Back.png");
 		
 		image = new BufferedImage(WIDTH/Screen.MAP_ZOOM, HEIGHT/Screen.MAP_ZOOM, BufferedImage.TYPE_INT_ARGB);
 		pxsMain = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
@@ -254,18 +254,18 @@ public class Game extends Canvas implements Runnable{
 	public void render(){
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		BufferStrategy bs = getBufferStrategy();
-		if(bs == null){
-			createBufferStrategy(2);
-			return;
-		}
-		Graphics2D g = (Graphics2D) bs.getDrawGraphics();
+//		BufferStrategy bs = getBufferStrategy();
+//		if(bs == null){
+//			createBufferStrategy(2);
+//			return;
+//		}
+//		Graphics2D g = (Graphics2D) bs.getDrawGraphics();
 
-		screen.resetPixelAll();
+//		screen.resetPixelAll();
 		
 		switch (gamemode){
 		case Menu :
-			g.drawImage(back, 0, 0, WIDTH, HEIGHT, null);
+//			g.drawImage(back, 0, 0, WIDTH, HEIGHT, null);
 			screen.drawTileOGL(0, 0, 0, background);
 //			  7,292E-1  0,000E+0 -0,000E+0 -2,708E-1
 //			  0,000E+0  9,722E-1 -0,000E+0  2,778E-2
@@ -279,31 +279,31 @@ public class Game extends Canvas implements Runnable{
 			menu.render();
 			break;
 		case SinglePlayer :
-			SinglePlayer.render(g);
+			SinglePlayer.render();
 			break;
 		case MultiPlayer :
-			client.render(g);
+			client.render();
 			break;
 		default : break;
 		}
 		
 		Mouse.render();
 		
-		for(int xy = 0; xy < screen.length; xy++){
-			pxsGUI[xy] = screen.GUI[xy];
-		}
-		for(int xy = 0; xy < screen.lengthMap; xy++){
-			pxsMain[xy] = screen.pixels[xy];
-		}
-		for(int xy = 0; xy < screen.lengthShadow; xy++){
-			pxsShadow[xy] = screen.shadow[xy];
-		}
-		
-		g.drawImage(image, 0, 0, WIDTH, HEIGHT, null);
-		g.drawImage(shadow, 0, 0, WIDTH, HEIGHT, null);
-		g.drawImage(GUI, 0, 0, WIDTH, HEIGHT, null);
-		g.dispose();
-		bs.show();
+//		for(int xy = 0; xy < screen.length; xy++){
+//			pxsGUI[xy] = screen.GUI[xy];
+//		}
+//		for(int xy = 0; xy < screen.lengthMap; xy++){
+//			pxsMain[xy] = screen.pixels[xy];
+//		}
+//		for(int xy = 0; xy < screen.lengthShadow; xy++){
+//			pxsShadow[xy] = screen.shadow[xy];
+//		}
+//		
+//		g.drawImage(image, 0, 0, WIDTH, HEIGHT, null);
+//		g.drawImage(shadow, 0, 0, WIDTH, HEIGHT, null);
+//		g.drawImage(GUI, 0, 0, WIDTH, HEIGHT, null);
+//		g.dispose();
+//		bs.show();
 		window.swapBuffers();
 	}
 	
