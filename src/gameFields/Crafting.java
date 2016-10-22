@@ -120,24 +120,24 @@ public class Crafting extends GameField {
 		if(select_type == 0){
 			y += 33;
 			for(SpriteSheet gfx : gfxs){
-				Screen.drawTileOGL(x, y, 0, Background);
-				Screen.drawTileOGL(x+1, y+1, 0, gfx);
+				Screen.drawGUISprite(x, y, Background);
+				Screen.drawGUISprite(x+1, y+1, gfx);
 				x += 39;
 			}	
 		}else{
 //			for(int X = 0; X < field.width; X++){for(int Y = 0; Y < 36; Y++){Game.screen.drawGUIPixel(x+X, y+Y+72, 0x30808080);}}
 			y += 33;
-			Screen.drawTileOGL(x, y, 0, Background);
-			Screen.drawTileOGL(x+1, y+1, 0, BackButton); x+= 78;
-			Screen.drawTileOGL(x, y, 0, Background);
-			Screen.drawTileOGL(x+1, y+1, 0, gfxs.get(select_type-1)); x+= 78;
-			Screen.drawTileOGL(x, y, 0, Background);
-			Screen.drawTileOGL(x+1, y+1, 0, Search);
+			Screen.drawGUISprite(x, y, Background);
+			Screen.drawGUISprite(x+1, y+1, BackButton); x+= 78;
+			Screen.drawGUISprite(x, y, Background);
+			Screen.drawGUISprite(x+1, y+1, gfxs.get(select_type-1)); x+= 78;
+			Screen.drawGUISprite(x, y, Background);
+			Screen.drawGUISprite(x+1, y+1, Search);
 			if(recipelist.size()!=0){
-				Screen.drawTileOGL(x-78, y+114, 0, Craft);
+				Screen.drawGUISprite(x-78, y+114, Craft, 0);
 				x -= 78; y += 39;
 				for(int i = -2; i <= 2; i ++){
-					if(i == 0)Screen.drawTileOGL(x+i*39, y, 0, Background);
+					if(i == 0)Screen.drawGUISprite(x+i*39, y, Background);
 					try{
 						ItemList.GetItem(recipelist.get(i+select_recipe).products.get(0).ID).render(Game.screen, x+i*39+1, y+1);
 					}catch(IndexOutOfBoundsException e){}
@@ -146,8 +146,8 @@ public class Crafting extends GameField {
 				n = recipelist.get(select_recipe).educts.size();
 				if(n<3)if(n>1)y+=15;else y+=33;
 				
-				if(select_educt>0)Screen.drawTileOGL(x+33, y, 0, scroll);
-				if(select_educt<recipelist.get(select_recipe).educts.size()-3)Screen.drawTileOGL(x+33, y+2*33+15, 0, scroll);
+				if(select_educt>0)Screen.drawGUISprite(x+33, y, scroll);
+				if(select_educt<recipelist.get(select_recipe).educts.size()-3)Screen.drawGUISprite(x+33, y+2*33+15, scroll);
 				
 				for(int i = 0; i < 3; i ++){
 					try{
@@ -159,8 +159,8 @@ public class Crafting extends GameField {
 				n = recipelist.get(select_recipe).products.size();
 				if(n<3)if(n>1)y+=15;else y+=33;
 				
-				if(select_product>0)Screen.drawTileOGL(x-12, y, 0, scroll);
-				if(select_product<recipelist.get(select_recipe).products.size()-3)Screen.drawTileOGL(x-12, y+2*33+15, 0, scroll);
+				if(select_product>0)Screen.drawGUISprite(x-12, y, scroll);
+				if(select_product<recipelist.get(select_recipe).products.size()-3)Screen.drawGUISprite(x-12, y+2*33+15, scroll);
 				
 				for(int i = 0; i < 3; i ++){
 					try{

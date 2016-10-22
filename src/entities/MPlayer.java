@@ -2,7 +2,6 @@ package entities;
 
 import gfx.Screen;
 import gfx.SpriteSheet;
-import main.Game;
 
 public class MPlayer extends Mob {
 
@@ -27,7 +26,6 @@ public class MPlayer extends Mob {
 	public void tick(int numTick) {}
 	
 	public void render() {
-//		Game.screen.drawTileOGLMap(x-xOffset, y-yOffset, anim, movingDir*16, sheet, color);
-		Game.screen.drawTileOGLMap(x-xOffset, y-yOffset, anim, sheet);
+		Screen.drawMapSprite(x-xOffset, y-yOffset, sheet, anim, movingDir==1, false, color);
 	}
 }

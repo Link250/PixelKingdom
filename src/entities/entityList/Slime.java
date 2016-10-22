@@ -3,8 +3,8 @@ package entities.entityList;
 import entities.Colision;
 import entities.Hitbox;
 import entities.Mob;
+import gfx.Screen;
 import gfx.SpriteSheet;
-import main.Game;
 import map.Map;
 
 public class Slime extends Mob {
@@ -32,7 +32,7 @@ public class Slime extends Mob {
 	}
 
 	public void render() {
-		Game.screen.drawTileOGLMap(x-xOffset, y-yOffset, 0, sheet);
+		Screen.drawMapSprite(x-xOffset, y-yOffset, sheet);
 	}
 	
 }

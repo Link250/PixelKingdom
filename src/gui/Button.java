@@ -1,5 +1,6 @@
 package gui;
 
+import gfx.Screen;
 import gfx.SpriteSheet;
 import main.Game;
 import main.MouseInput;
@@ -14,7 +15,7 @@ public class Button {
 	private int ToffX;
 	private int ToffY;
 	private SpriteSheet gfx;
-	private int mirrorXY=0;
+	private boolean mirrorX=false, mirrorY = false;
 	private SpriteSheet bg_on = null;
 	private SpriteSheet bg_off = null;
 	private boolean background = false;
@@ -55,9 +56,10 @@ public class Button {
 		if(background)constructBackground();
 	}
 	
-	public void gfxData(String gfxPath, int mirrorXY, boolean background){
+	public void gfxData(String gfxPath, boolean mirrorX, boolean mirrorY, boolean background){
 		this.gfx = new SpriteSheet(gfxPath, this.width, this.height);
-		this.mirrorXY = mirrorXY;
+		this.mirrorX = mirrorX;
+		this.mirrorY = mirrorY;
 		this.background = background;
 		if(background)constructBackground();
 	}
@@ -101,7 +103,7 @@ public class Button {
 
 	public void render(){
 		if(background){
-			Game.screen.drawTileOGL(x, y, 0, mouseover ? bg_on : bg_off);
+			Screen.drawGUISprite(x, y, mouseover ? bg_on : bg_off);
 //			for(int i = 0; i < height; i++){
 //				for(int j = 0; j < width; j++){
 //					if(mouseover){
@@ -120,10 +122,10 @@ public class Button {
 //			gfx.tileHeight=height;
 //debug			System.out.println(gfx.tileWidth);
 			if(mouseover){
-				Game.screen.drawTileOGL(x, y, 1, gfx);
+				Screen.drawGUISprite(x, y, gfx, 1, mirrorX, mirrorY);
 //				Game.screen.drawGUITile(x, y, 1, mirrorXY, gfx, 0);
 			}else{
-				Game.screen.drawTileOGL(x, y, 0, gfx);
+				Screen.drawGUISprite(x, y, gfx, 0, mirrorX, mirrorY);
 //				Game.screen.drawGUITile(x, y, 0, mirrorXY, gfx, 0);
 			}
 		}

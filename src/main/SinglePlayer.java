@@ -1,7 +1,5 @@
 package main;
 
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -9,11 +7,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import javax.imageio.ImageIO;
-
 import entities.Mob;
 import entities.Player;
-import entities.entityList.Slime;
 import gfx.Screen;
 import gfx.SpriteSheet;
 import map.Map;
@@ -41,8 +36,8 @@ public class SinglePlayer {
 			create();
 			save();
 		}
-		screen.xOffset= player.x-Game.WIDTH/Screen.MAP_SCALE/Screen.MAP_ZOOM/2;
-		screen.yOffset= player.y-Game.HEIGHT/Screen.MAP_SCALE/Screen.MAP_ZOOM/2;
+		Screen.xOffset= player.x-Game.WIDTH/Screen.MAP_SCALE/Screen.MAP_ZOOM/2;
+		Screen.yOffset= player.y-Game.HEIGHT/Screen.MAP_SCALE/Screen.MAP_ZOOM/2;
 	}
 	
 	public void tick(int tickCount){
@@ -70,8 +65,8 @@ public class SinglePlayer {
 			this.save();
 			Game.reset = true;
 		}
-		screen.xOffset= player.x-Game.WIDTH/Screen.MAP_SCALE/Screen.MAP_ZOOM/2;
-		screen.yOffset= player.y-Game.HEIGHT/Screen.MAP_SCALE/Screen.MAP_ZOOM/2;
+		Screen.xOffset= player.x-Game.WIDTH/Screen.MAP_SCALE/Screen.MAP_ZOOM/2;
+		Screen.yOffset= player.y-Game.HEIGHT/Screen.MAP_SCALE/Screen.MAP_ZOOM/2;
 
 		if(debuginfo){
 			if(Game.devmode&&Keys.DEBUGPXL.click()) {
@@ -100,7 +95,7 @@ public class SinglePlayer {
 	public void render(){
 		
 //		g.drawImage(back, 0, 0, Game.WIDTH, Game.HEIGHT, null);
-		Game.screen.drawTileOGL(0, 0, 0, back);
+		Screen.drawGUISprite(0, 0, back);
 		
 		map.render();
 		for (Mob mob : mobList) {mob.render();}

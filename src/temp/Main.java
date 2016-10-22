@@ -6,9 +6,6 @@ import static org.lwjgl.glfw.GLFW.glfwSwapInterval;
 import static org.lwjgl.glfw.GLFW.glfwTerminate;
 import static org.lwjgl.opengl.GL11.*;
 
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
-import org.joml.Vector4f;
 import org.lwjgl.opengl.GL;
 
 
@@ -36,7 +33,7 @@ public class Main {
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		
-		Camera camera = new Camera(window.getWidth(), window.getHeight());
+//		Camera camera = new Camera(window.getWidth(), window.getHeight());
 		glEnable(GL_TEXTURE_2D);
 		
 //		TileRenderer tiles = new TileRenderer();
@@ -44,8 +41,8 @@ public class Main {
 		
 		Screen screen = new Screen(width, height);
 		
-		Matrix4f world;
-		world = new Matrix4f().setTranslation(new Vector3f(0));
+//		Matrix4f world;
+//		world = new Matrix4f().setTranslation(new Vector3f(0));
 //		world.scale(scale);
 
 		int[] ids1 = new int[(width/tileSize+1) * (height/tileSize+1)];

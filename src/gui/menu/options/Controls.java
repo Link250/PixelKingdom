@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import gfx.SpriteSheet;
+import gfx.Screen;
 import gui.Button;
 import gui.menu.OptionScreen;
 import main.Game;
@@ -32,17 +32,17 @@ public class Controls {
 		this.back.gfxData("/Buttons/back.png", true);
 		this.lOffset = 0;
 		this.lVisibleEntries = 5;
-		this.lFieldTop = Game.screen.height/10*3;
-		this.lFieldBottom = Game.screen.height-90;
+		this.lFieldTop = Screen.height/10*3;
+		this.lFieldBottom = Screen.height-90;
 		this.lFieldSize = this.lFieldBottom-this.lFieldTop;
 		
 		this.buttonValues = new HashMap<>();
 		this.keyConfigs = new ArrayList<>();
 		this.resetKeyButtons();
 		
-		this.scrollUP = new Button(Game.screen.width/2, this.lFieldTop-30, 60, 60);
-		this.scrollUP.gfxData("/Buttons/ArrowDown.png", 0x01, false);
-		this.scrollDOWN = new Button(Game.screen.width/2, this.lFieldBottom+30, 60, 60);
+		this.scrollUP = new Button(Screen.width/2, this.lFieldTop-30, 60, 60);
+		this.scrollUP.gfxData("/Buttons/ArrowDown.png", false, true, false);
+		this.scrollDOWN = new Button(Screen.width/2, this.lFieldBottom+30, 60, 60);
 		this.scrollDOWN.gfxData("/Buttons/ArrowDown.png", false);
 	}
 	
@@ -71,7 +71,7 @@ public class Controls {
 		int buttonHeight = keyConfigs.get(0).button.getHeight();
 		int gapHeight = (this.lFieldSize-(buttonHeight*this.lVisibleEntries))/(this.lVisibleEntries+1);
 		for(int i = 0; i < this.lVisibleEntries; i++) {
-			keyConfigs.get(i+this.lOffset).button.SetPos(Game.screen.width/2, this.lFieldTop+(i+1)*gapHeight+i*buttonHeight, false, false);
+			keyConfigs.get(i+this.lOffset).button.SetPos(Screen.width/2, this.lFieldTop+(i+1)*gapHeight+i*buttonHeight, false, false);
 			keyConfigs.get(i+this.lOffset).height = this.lFieldTop+(i+1)*gapHeight+i*buttonHeight;
 		}
 	}
@@ -111,7 +111,7 @@ public class Controls {
 	
 	public void render(){
 		back.render();
-		Game.font.render(Game.screen.width/2, 50, "Controls", 0, 0xff000000, Game.screen);
+		Game.font.render(Screen.width/2, 50, "Controls", 0, 0xff000000, Game.screen);
 		if(this.lOffset > 0)scrollUP.render();
 		if(this.lOffset < keyConfigs.size()-this.lVisibleEntries)scrollDOWN.render();
 		for(int i = this.lOffset; i < this.lOffset+this.lVisibleEntries; i++) {
@@ -139,7 +139,7 @@ public class Controls {
 		}
 		
 		public void render(){
-			Game.font.render(Game.screen.height/3, height, true, false, text, 0, 0xff000000);
+			Game.font.render(Screen.height/3, height, true, false, text, 0, 0xff000000);
 			button.render();
 		}
 	}

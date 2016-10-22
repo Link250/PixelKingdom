@@ -1,11 +1,9 @@
 package map;
 
 import gfx.Screen;
-import main.Game;
 import multiplayer.MapUpdater;
 import multiplayer.client.ChunkManagerC;
 import multiplayer.client.ServerManager;
-import multiplayer.server.ClientManager;
 import pixel.AD;
 import pixel.Material;
 import pixel.PixelList;
@@ -164,36 +162,7 @@ public class Map {
 	}
 	
 	public void render(){
-		int ID;
-//		Material<?> m;
-		int X,Y;
-		short light;
-
-/*		for(int l = Map.LAYER_BACK; l <= Map.LAYER_LIGHT; l++){
-			for(int y = 0; y <screen.height/Screen.MAP_SCALE/Screen.MAP_ZOOM; y++){
-				for(int x = 0; x <screen.width/Screen.MAP_SCALE/Screen.MAP_ZOOM; x++){
-					X=x+screen.xOffset;Y=y+screen.yOffset;
-					
-					light = (byte) ((MAX_LIGHT-getlight(X,Y)));
-					ID = getID(X,Y,l);
-					if(ID==-1){
-						loadChunk(X/1024,Y/1024);
-//						try{ID = cloaders.get(0).chunk.getID(X%1024, Y%1024, l);}catch(NullPointerException|IndexOutOfBoundsException e) {}
-//						light = 0;
-					}else {
-						if(light == MAX_LIGHT){
-							screen.drawShadow(X, Y, 0xff000000);
-						}else{
-							if(ID!=0){
-								PixelList.GetPixel(ID, l).render(X, Y, l, this,screen);
-							}
-							if(l==Map.LAYER_LIGHT)screen.drawShadow(X, Y, ((MAX_LIGHT-getlight(X,Y))<<26));
-						}
-					}
-				}
-			}
-		}*/
-		Game.screen.drawMapOGL(this);
+		Screen.drawMap(this);
 	}
 	
 	public void loadChunk(int cx, int cy){

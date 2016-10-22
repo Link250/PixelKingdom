@@ -7,7 +7,6 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-
 import map.Map;
 
 public class Screen {
@@ -30,7 +29,8 @@ public class Screen {
 	
 	public static ColorSheet[] csheets = new ColorSheet[3];
 	
-	private static Shader shader;
+	private static Shader default_shader;
+	private static Shader colored_shader;
 	private static Matrix4f projection;
 	private static Model tileModel;
 	
@@ -42,7 +42,8 @@ public class Screen {
 		csheets[Map.LAYER_FRONT] = f;
 	
 		projection = new Matrix4f().setOrtho2D(-width, width, -height, height);
-		shader = new Shader("shader");
+		default_shader = new Shader("default_shader");
+		colored_shader = new Shader("colored_shader");
 		tileModel = new Model();
 	}
 	
@@ -180,51 +181,85 @@ public class Screen {
 		}
 	}*/
 	
-	public static void drawTileOGLMap(float xPos, float yPos, int tile, SpriteSheet sheet){
-		shader.bind();
-		yPos = (yPos-yOffset)*MAP_SCALE*MAP_ZOOM +sheet.getHeight()/2;
+	public static void drawMapSprite(int xPos, int yPos, SpriteSheet sheet, int tile, boolean mirrorX, boolean mirrorY, int color){
+		drawSprite(xPos, yPos, sheet, tile, mirrorX, mirrorY, color, true);
+	}
+	
+	public static void drawMapSprite(int xPos, int yPos, SpriteSheet sheet, int tile, boolean mirrorX, boolean mirrorY){
+		drawSprite(xPos, yPos, sheet, tile, mirrorX, mirrorY, 0, true);
+	}
+	
+	public static void drawMapSprite(int xPos, int yPos, SpriteSheet sheet, int tile){
+		drawSprite(xPos, yPos, sheet, tile, false, false, 0, true);
+	}
+	
+	public static void drawMapSprite(int xPos, int yPos, SpriteSheet sheet){
+		drawSprite(xPos, yPos, sheet, 0, false, false, 0, true);
+	}
+	
+	public static void drawGUISprite(int xPos, int yPos, SpriteSheet sheet, int tile, boolean mirrorX, boolean mirrorY, int color){
+		drawSprite(xPos, yPos, sheet, tile, mirrorX, mirrorY, color, false);
+	}
+	
+	public static void drawGUISprite(int xPos, int yPos, SpriteSheet sheet, int tile, boolean mirrorX, boolean mirrorY){
+		drawSprite(xPos, yPos, sheet, tile, mirrorX, mirrorY, 0, false);
+	}
+	
+	public static void drawGUISprite(int xPos, int yPos, SpriteSheet sheet, int tile){
+		drawSprite(xPos, yPos, sheet, tile, false, false, 0, false);
+	}
+	
+	public static void drawGUISprite(int xPos, int yPos, SpriteSheet sheet){
+		drawSprite(xPos, yPos, sheet, 0, false, false, 0, false);
+	}
+	
+	public static void drawSprite(float xPos, float yPos, SpriteSheet sheet, int tile, boolean mirrorX, boolean mirrorY, int color, boolean onMap){
+		if(onMap) {
+			xPos-=xOffset;xPos*=MAP_SCALE*MAP_ZOOM;
+			yPos-=yOffset;yPos*=MAP_SCALE*MAP_ZOOM;
+			xPos += sheet.getWidth()/2f*MAP_ZOOM;
+			yPos += sheet.getHeight()/2f*MAP_ZOOM;
+		}else {
+			xPos += sheet.getWidth()/2f;
+			yPos += sheet.getHeight()/2f;
+		}
 		yPos = height - yPos;
-		xPos = (xPos-xOffset)*MAP_SCALE*MAP_ZOOM +sheet.getWidth()/2;
+		
 		glActiveTexture(GL_TEXTURE0 + 0);
 		glBindTexture(GL_TEXTURE_2D, sheet.getID(tile));
-		 
 		Matrix4f target = projection.mul(new Matrix4f().translate(new Vector3f(xPos*2-width, yPos*2-height, 0)), new Matrix4f());
-		if(sheet.getWidth()!=sheet.getHeight())target.mul(new Matrix4f().ortho2D(-(((float)sheet.getHeight())/((float)sheet.getWidth())), (((float)sheet.getHeight())/((float)sheet.getWidth())), -1, 1));
-		target.scale(sheet.getHeight()*MAP_ZOOM);
-		shader.setUniform("sampler", 0);
-		shader.setUniform("projection", target);
 		
+		float ratio = (((float)sheet.getHeight())/((float)sheet.getWidth()));
+		target.mul(new Matrix4f().ortho2D(ratio*(mirrorX ? 1.0f : -1.0f), ratio*(mirrorX ? -1.0f : 1.0f), (mirrorY ? 1.0f : -1.0f), (mirrorY ? -1.0f : 1.0f)));
+		target.scale(sheet.getHeight()*(onMap ? MAP_ZOOM : 1));
+		if(color!=0) {
+			colored_shader.bind();
+			colored_shader.setUniform("color",
+					((color>>24)&0xff)/255.0f,
+					((color>>16)&0xff)/255.0f,
+					((color>>8 )&0xff)/255.0f,
+					((color    )&0xff)/255.0f);
+			colored_shader.setUniform("sampler", 0);
+			colored_shader.setUniform("projection", target);
+		}else {
+			default_shader.bind();
+			default_shader.setUniform("sampler", 0);
+			default_shader.setUniform("projection", target);
+		}
 		tileModel.render();
 	}
 	
-	public static void drawTileOGL(float xPos, float yPos, int tile, SpriteSheet sheet){
-		shader.bind();
-		yPos += sheet.getHeight()/2;
-		yPos = height - yPos;
-		xPos += sheet.getWidth()/2;
-		glActiveTexture(GL_TEXTURE0 + 0);
-		glBindTexture(GL_TEXTURE_2D, sheet.getID(tile));
-		 
-		Matrix4f target = projection.mul(new Matrix4f().translate(new Vector3f(xPos*2-width, yPos*2-height, 0)), new Matrix4f());
-		if(sheet.getWidth()!=sheet.getHeight())target.mul(new Matrix4f().ortho2D(-(((float)sheet.getHeight())/((float)sheet.getWidth())), (((float)sheet.getHeight())/((float)sheet.getWidth())), -1, 1));
-		target.scale(sheet.getHeight());
-		shader.setUniform("sampler", 0);
-		shader.setUniform("projection", target);
-		
-		tileModel.render();
-	}
-	
-	public static void drawMapOGL(Map map){
+	public static void drawMap(Map map){
 		int textures[] = new int[4];
 		Matrix4f target;
-		int X, Y;
-		shader.bind();
+		float X, Y;
+		default_shader.bind();
 		glActiveTexture(GL_TEXTURE0 + 0);
 
-		for (int x = -width/2-RENDER_CHUNK_SIZE; x < width/2+RENDER_CHUNK_SIZE; x+=RENDER_CHUNK_SIZE) {
-			for (int y = -height/2-RENDER_CHUNK_SIZE; y < height/2+RENDER_CHUNK_SIZE; y+=RENDER_CHUNK_SIZE) {
+		for (float x = -width/2-RENDER_CHUNK_SIZE; x < width/2+RENDER_CHUNK_SIZE; x+=RENDER_CHUNK_SIZE) {
+			for (float y = -height/2-RENDER_CHUNK_SIZE; y < height/2+RENDER_CHUNK_SIZE; y+=RENDER_CHUNK_SIZE) {
 				for (int l : Map.LAYER_ALL) {
-					textures[l] = map.getRenderChunk(x+xOffset, y+yOffset, l);
+					textures[l] = map.getRenderChunk((int)(x+xOffset), (int)(y+yOffset), l);
 				}
 				X = x;
 				Y = y;
@@ -237,8 +272,8 @@ public class Screen {
 				Y = height - Y;
 				target = projection.mul(new Matrix4f().translate(new Vector3f(X*2-width, Y*2-height, 0)), new Matrix4f());
 				target.scale(RENDER_CHUNK_SIZE*MAP_SCALE*MAP_ZOOM);
-				shader.setUniform("sampler", 0);
-				shader.setUniform("projection", target);
+				default_shader.setUniform("sampler", 0);
+				default_shader.setUniform("projection", target);
 				
 				for (int l : Map.LAYER_ALL) {
 					if(textures[l] == 0)continue;

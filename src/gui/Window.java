@@ -14,8 +14,6 @@ import org.lwjgl.glfw.GLFWErrorCallbackI;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 
-import main.Game;
-
 public class Window {
 	private long window;
 	

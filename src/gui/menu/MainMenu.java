@@ -1,6 +1,5 @@
 package gui.menu;
 
-import gfx.SpriteSheet;
 import gui.Button;
 import main.Game;
 import main.Keys;

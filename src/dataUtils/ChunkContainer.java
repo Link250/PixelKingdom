@@ -10,7 +10,9 @@ public class ChunkContainer <T>{
 	private int width, height;
 	private int modXOff, modYOff;
 	private int absXOff, absYOff;
+	@SuppressWarnings("unused")
 	private Function<T,Boolean> unload;
+	@SuppressWarnings("unused")
 	private Function<Point,T> load;
 	
 	@SuppressWarnings("unchecked")

@@ -1,16 +1,6 @@
 package map;
 
-import static org.lwjgl.opengl.GL11.GL_NEAREST;
-import static org.lwjgl.opengl.GL11.GL_RGBA;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_MAG_FILTER;
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_MIN_FILTER;
-import static org.lwjgl.opengl.GL11.GL_UNSIGNED_BYTE;
-import static org.lwjgl.opengl.GL11.glBindTexture;
-import static org.lwjgl.opengl.GL11.glDeleteTextures;
-import static org.lwjgl.opengl.GL11.glGenTextures;
-import static org.lwjgl.opengl.GL11.glTexImage2D;
-import static org.lwjgl.opengl.GL11.glTexParameterf;
+import static org.lwjgl.opengl.GL11.*;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -358,11 +348,10 @@ public class Chunk{
 					pixelBuffer.put((byte)0);  //GREEN
 					pixelBuffer.put((byte)0);		  //BLUE
 					pixelBuffer.put((byte)(lightP == 0 ? 0xff : (Map.MAX_LIGHT-lightP)<<2)); //ALPHA
-//					System.out.println(Map.MAX_LIGHT-this.light[x+y*width]);
 				}else {
 					ID = getID(X,Y,l);
 					if(ID>=0){
-						pixel = ID == 0 ? 0 : Screen.getMaterialPixel(ID, l);
+						pixel = ID == 0 ? 0 : PixelList.GetPixel(ID, l).render(X+this.x*Chunk.width, Y+this.y*Chunk.height, l, map);
 						pixelBuffer.put((byte)((pixel >> 16) & 0xFF)); //RED
 						pixelBuffer.put((byte)((pixel >> 8) & 0xFF));  //GREEN
 						pixelBuffer.put((byte)(pixel & 0xFF));		  //BLUE
@@ -376,6 +365,8 @@ public class Chunk{
 		
 		glBindTexture(GL_TEXTURE_2D, this.textureChunks[xPos][yPos][l]);
 		
+//		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, l==Map.LAYER_LIGHT ? GL_LINEAR : GL_NEAREST);
+//		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, l==Map.LAYER_LIGHT ? GL_LINEAR : GL_NEAREST);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		

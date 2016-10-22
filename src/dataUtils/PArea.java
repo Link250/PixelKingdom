@@ -33,6 +33,6 @@ public class PArea {
 	}
 	
 	public void showArea(){
-		Screen.drawTileOGL(x, y, 0, back);
+		Screen.drawGUISprite(x, y, back);
 	}
 }

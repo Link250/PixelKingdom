@@ -45,11 +45,11 @@ public class Mouse {
 		switch(mouseType){
 		case MINING:
 			if(mouseType.sheet==null || (mouseType.sheet.getWidth()-1)/2 != mousesize)genMouseTexture(mouseType);
-			Screen.drawTileOGLMap(MouseInput.mouse.getMapX()-mousesize, MouseInput.mouse.getMapY()-mousesize, 0, mouseType.sheet);
+			Screen.drawMapSprite(MouseInput.mouse.getMapX()-mousesize, MouseInput.mouse.getMapY()-mousesize, mouseType.sheet);
 			break;
 		case BUILDING:
 			if(mouseType.sheet==null || (mouseType.sheet.getWidth()-3)/2 != mousesize)genMouseTexture(mouseType);
-			Screen.drawTileOGLMap(MouseInput.mouse.getMapX()-mousesize-1, MouseInput.mouse.getMapY()-mousesize-1, 0, mouseType.sheet);
+			Screen.drawMapSprite(MouseInput.mouse.getMapX()-mousesize-1, MouseInput.mouse.getMapY()-mousesize-1, mouseType.sheet);
 			break;
 		case ITEM:
 			if(Item==null)mouseType = MouseType.DEFAULT;
@@ -70,8 +70,7 @@ public class Mouse {
 		case DEFAULT:
 		default:
 			if(mouseType.sheet==null)genMouseTexture(MouseType.DEFAULT);
-			Screen.drawTileOGL(MouseInput.mouse.x, MouseInput.mouse.y, 0, MouseType.DEFAULT.sheet);
-//			Game.screen.drawGUITile(Game.input.mouse.x, Game.input.mouse.y, 0, 0x00, mouseN, 0);
+			Screen.drawGUISprite(MouseInput.mouse.x, MouseInput.mouse.y, MouseType.DEFAULT.sheet);
 			break;
 		}
 	}
@@ -80,7 +79,7 @@ public class Mouse {
 		int width;
 		int[] pixels;
 		int[] pixelsScaled;
-		int s = Screen.MAP_SCALE*Screen.MAP_ZOOM;
+		int s = Screen.MAP_SCALE;
 		switch(type){
 		case MINING:
 			width = 2*mousesize+1;
@@ -92,7 +91,7 @@ public class Mouse {
 					}
 				}
 			}
-			pixelsScaled = new int[pixels.length*9];
+			pixelsScaled = new int[pixels.length*s*s];
 			for (int x = 0; x < width*s; x++) {
 				for (int y = 0; y < width*s; y++) {
 					pixelsScaled[x+y*width*s] = pixels[(int)(x/s)+((int)(y/s))*width];
@@ -114,7 +113,7 @@ public class Mouse {
 			pixels[mousesize+1+(mousesize*2+2)*width] = 0xa0ff0000;
 			pixels[0+(mousesize+1)*width] = 0xa0ff0000;
 			pixels[(mousesize*2+2)+(mousesize+1)*width] = 0xa0ff0000;
-			pixelsScaled = new int[pixels.length*9];
+			pixelsScaled = new int[pixels.length*s*s];
 			for (int x = 0; x < width*s; x++) {
 				for (int y = 0; y < width*s; y++) {
 					pixelsScaled[x+y*width*s] = pixels[(int)(x/s)+((int)(y/s))*width];

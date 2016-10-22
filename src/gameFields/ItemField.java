@@ -2,6 +2,7 @@ package gameFields;
 
 import dataUtils.PArea;
 import gfx.Mouse;
+import gfx.Screen;
 import gfx.SpriteSheet;
 import item.Item;
 import main.Game;
@@ -53,8 +54,7 @@ public class ItemField {
 	}
 	
 	public void render() {
-		Game.screen.drawTileOGL(field.x, field.y, 0, back);
-//		Game.screen.drawGUITile(field.x, field.y, 0, 0, back, 0);
+		Screen.drawGUISprite(field.x, field.y, back);
 		if(this.item != null)this.item.render(Game.screen, field.x+2, field.y+2, true);
 	}
 }

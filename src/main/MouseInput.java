@@ -89,11 +89,11 @@ public class MouseInput{
 		}
 		
 		public int getMapX() {
-			return x/Screen.MAP_SCALE/Screen.MAP_ZOOM+Game.screen.xOffset;
+			return x/Screen.MAP_SCALE/Screen.MAP_ZOOM+Screen.xOffset;
 		}
 		
 		public int getMapY() {
-			return y/Screen.MAP_SCALE/Screen.MAP_ZOOM+Game.screen.yOffset;
+			return y/Screen.MAP_SCALE/Screen.MAP_ZOOM+Screen.yOffset;
 		}
 		
 		public void refresh(){

@@ -142,7 +142,7 @@ public class Game extends Canvas implements Runnable{
 		itemlist = new ItemList();
 		biomelist = new BiomeList();
 		
-		/*		TESTING AREA		*/
+		//TODO		TESTING AREA
 	}
 	
 	public void reset(){
@@ -230,28 +230,9 @@ public class Game extends Canvas implements Runnable{
 	public void render(){
 		glClear(GL_COLOR_BUFFER_BIT);
 
-//		BufferStrategy bs = getBufferStrategy();
-//		if(bs == null){
-//			createBufferStrategy(2);
-//			return;
-//		}
-//		Graphics2D g = (Graphics2D) bs.getDrawGraphics();
-
-//		screen.resetPixelAll();
-		
 		switch (gamemode){
 		case Menu :
-//			g.drawImage(back, 0, 0, WIDTH, HEIGHT, null);
-			Screen.drawTileOGL(0, 0, 0, background);
-//			  7,292E-1  0,000E+0 -0,000E+0 -2,708E-1
-//			  0,000E+0  9,722E-1 -0,000E+0  2,778E-2
-//			  0,000E+0  0,000E+0  7,000E+2  0,000E+0
-//			  0,000E+0  0,000E+0  0,000E+0  1,000E+0
-//			?  0,000E+0 -0,000E+0?
-//					?  9,736E-1 -0,000E+0?
-//					?  0,000E+0  7,010E+2?
-//					  0,000E+0  0,000E+0  0,000E+0  1,000E+0
-//			g.drawImage(back, AffineTransform.getRotateInstance(Math.PI, back.getWidth()/2, back.getHeight()/2), null);
+			Screen.drawGUISprite(0, 0, background);
 			menu.render();
 			break;
 		case SinglePlayer :
@@ -265,21 +246,6 @@ public class Game extends Canvas implements Runnable{
 		
 		Mouse.render();
 		
-//		for(int xy = 0; xy < screen.length; xy++){
-//			pxsGUI[xy] = screen.GUI[xy];
-//		}
-//		for(int xy = 0; xy < screen.lengthMap; xy++){
-//			pxsMain[xy] = screen.pixels[xy];
-//		}
-//		for(int xy = 0; xy < screen.lengthShadow; xy++){
-//			pxsShadow[xy] = screen.shadow[xy];
-//		}
-//		
-//		g.drawImage(image, 0, 0, WIDTH, HEIGHT, null);
-//		g.drawImage(shadow, 0, 0, WIDTH, HEIGHT, null);
-//		g.drawImage(GUI, 0, 0, WIDTH, HEIGHT, null);
-//		g.dispose();
-//		bs.show();
 		window.swapBuffers();
 	}
 	

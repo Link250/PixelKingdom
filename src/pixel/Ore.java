@@ -1,6 +1,5 @@
 package pixel;
 
-import gfx.Screen;
 import map.Map;
 import pixel.ads.OreAD;
 import pixel.pixelList.Lava;
@@ -31,12 +30,13 @@ public abstract class Ore<OreADType extends OreAD> extends Material<OreADType>{
 		}
 	}
 	
-	public void render(int x, int y, int l, Map map, Screen screen) {
-		screen.drawMaterial(x, y, ID, l);
+	public int render(int x, int y, int l, Map map) {
+		int color = super.render(x, y, l, map);
 		ad = map.getAD(x, y, l);
 		if(melt>0 && ad!=null && ad.heat>0){
-			int r = (int) (ad.heat/(((double)melt)/250));if(r>255)r=255;
-			screen.drawMapPixelScaled(x, y, 0x00ff0000 | (r<<24));
+			int r = (ad.heat*8/melt);if(r>7)r=7;
+//			color = 0xff000000 | 1;
 		}
+		return color;
 	}
 }

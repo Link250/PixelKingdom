@@ -1,7 +1,6 @@
 package main;
 
 import static org.lwjgl.glfw.GLFW.*;
-import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.Map;
 

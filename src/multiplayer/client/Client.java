@@ -3,7 +3,6 @@ package multiplayer.client;
 import entities.MPlayer;
 import entities.Player;
 import gfx.Screen;
-import gfx.SpriteSheet;
 import main.Game;
 import main.Keys;
 import map.Chunk;
@@ -11,8 +10,6 @@ import map.Map;
 import multiplayer.MapManager;
 import multiplayer.MapUpdater;
 
-import java.awt.Graphics;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -22,15 +19,12 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 
-import javax.imageio.ImageIO;
-
 public class Client {
 
 	private Socket serverConnection = null;
 	private ServerManager serverManager;
 	
 	private Screen screen;
-	private BufferedImage back;
 	private Map map;
 	private MapManager mapManager;
 	
@@ -45,7 +39,6 @@ public class Client {
 		serverConnection = new Socket(IP, Game.PORT);
 		Game.logInfo("connected so Server");
 		
-		try {back = ImageIO.read(SpriteSheet.class.getResourceAsStream("/NormalBack.png"));} catch (IOException e) {e.printStackTrace();back=null;}
 		this.screen = Game.screen;
 		this.files = files;
 		
@@ -59,8 +52,8 @@ public class Client {
 			create();
 			save();
 		}
-		screen.xOffset= player.x-Game.WIDTH/3/2;
-		screen.yOffset= player.y-Game.HEIGHT/3/2;
+		Screen.xOffset= player.x-Game.WIDTH/3/2;
+		Screen.yOffset= player.y-Game.HEIGHT/3/2;
 		this.players = new ArrayList<MPlayer>();
 		
 		serverManager = new ServerManager(this,serverConnection);
@@ -104,8 +97,8 @@ public class Client {
 				map.updateCountLight=0;
 			}
 		}
-		screen.xOffset= player.x-Game.WIDTH/3/2;
-		screen.yOffset= player.y-Game.HEIGHT/3/2;
+		Screen.xOffset= player.x-Game.WIDTH/3/2;
+		Screen.yOffset= player.y-Game.HEIGHT/3/2;
 	}
 	
 	public void render() {

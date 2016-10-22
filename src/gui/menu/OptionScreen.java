@@ -1,6 +1,6 @@
 package gui.menu;
 
-import gfx.SpriteSheet;
+import gfx.Screen;
 import gui.Button;
 import gui.menu.options.Controls;
 import gui.menu.options.Visuals;
@@ -76,7 +76,7 @@ public class OptionScreen implements GameMenu{
 			break;
 		case MAIN:
 		default:
-			Game.font.render(Game.screen.width/2, 50, "Options", 0, 0xff000000, Game.screen);
+			Game.font.render(Screen.width/2, 50, "Options", 0, 0xff000000, Game.screen);
 			back.render();
 			this.visualsButton.render();
 			this.controlsButton.render();

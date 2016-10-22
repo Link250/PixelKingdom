@@ -12,12 +12,7 @@ import static org.lwjgl.opengl.GL11.glTexParameterf;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
-import java.io.File;
 import java.nio.ByteBuffer;
-import java.util.HashMap;
-
-import javax.imageio.ImageIO;
-
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
@@ -25,7 +20,6 @@ import org.lwjgl.BufferUtils;
 public class Screen {
 		private Model tileModel;
 		
-		private int color = 0;
 		int textureID = 0;
 		private Matrix4f proj;
 		

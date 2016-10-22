@@ -3,10 +3,10 @@ package gameFields;
 import java.awt.Point;
 
 import dataUtils.PArea;
+import gfx.Screen;
 import gfx.SpriteSheet;
 import main.MainConfig.GameFields;
 import main.MouseInput;
-import main.Game;
 import main.MainConfig;
 
 public abstract class GameField {
@@ -72,9 +72,9 @@ public abstract class GameField {
 			field.x = MouseInput.mouse.x - grab.x;
 			field.y = MouseInput.mouse.y - grab.y;
 			if(field.x < 0)field.x = 0;
-			if(field.x > Game.screen.width-field.width)field.x = Game.screen.width-field.width;
+			if(field.x > Screen.width-field.width)field.x = Screen.width-field.width;
 			if(field.y < 0)field.y = 0;
-			if(field.y > Game.screen.height-field.height)field.y = Game.screen.height-field.height;
+			if(field.y > Screen.height-field.height)field.y = Screen.height-field.height;
 			fieldTop.x = field.x;
 			fieldTop.y = field.y;
 			return true;
@@ -84,9 +84,9 @@ public abstract class GameField {
 				save();
 			}
 			if(field.x < 0)field.x = 0;
-			if(field.x > Game.screen.width-field.width)field.x = Game.screen.width-field.width;
+			if(field.x > Screen.width-field.width)field.x = Screen.width-field.width;
 			if(field.y < 0)field.y = 0;
-			if(field.y > Game.screen.height-field.height)field.y = Game.screen.height-field.height;
+			if(field.y > Screen.height-field.height)field.y = Screen.height-field.height;
 			fieldTop.x = field.x;
 			fieldTop.y = field.y;
 			return false;
@@ -96,7 +96,7 @@ public abstract class GameField {
 	public abstract void render();
 	
 	protected void renderfield(){
-		Game.screen.drawTileOGL(field.x, field.y, 0, background);
+		Screen.drawGUISprite(field.x, field.y, background);
 //		Game.screen.drawGUITile(field.x, field.y, 0, 0, background, 0);
 	}
 	

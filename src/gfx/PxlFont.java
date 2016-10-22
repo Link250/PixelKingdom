@@ -68,11 +68,11 @@ public class PxlFont {
 			int charIndex = chars.indexOf(msg.charAt(i));
 			if(charIndex >= 0){
 				if(limit==0 || x < limit-pointSize){
-					Screen.drawTileOGL(x-sizel[charIndex]-xOff, y-yOff, charIndex, sheet);
+					Screen.drawGUISprite(x-sizel[charIndex]-xOff, y-yOff, sheet, charIndex, false, false, color);
 //					screen.drawGUITile(x-sizel[charIndex]-xOff, y-yOff, charIndex, 0x00, sheet, color);
 					x += size[charIndex]+(size[charIndex]>0 ? letterDistance : sheet.getWidth()/2);
 				}else{
-					if(pointSize > 0)Screen.drawTileOGL(x-sizel[charIndex]-xOff, y-yOff, chars.indexOf('.'), sheet);
+					if(pointSize > 0)Screen.drawGUISprite(x-sizel[charIndex]-xOff, y-yOff, sheet, chars.indexOf('.'), false, false, color);
 //					if(pointSize > 0)screen.drawGUITile(x-sizel[charIndex]-xOff, y-yOff, chars.indexOf('.'), 0x00, sheet, color);
 					break;
 				}

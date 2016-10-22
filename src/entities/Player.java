@@ -351,7 +351,7 @@ public class Player extends Mob{
 	}
 	
 	public void render() {
-		Game.screen.drawTileOGLMap(x-xOffset, y-yOffset, anim, sheet);
+		Screen.drawMapSprite(x-xOffset, y-yOffset, sheet, anim, movingDir==1, false, color);
 //		Game.screen.drawMapTile(x-xOffset, y-yOffset, anim, movingDir*16, sheet, color);
 		
 		if((anim == 10 || anim == 11) & this.bags.get(BAG.BELT_1) != null){
@@ -382,15 +382,15 @@ public class Player extends Mob{
 		if(openHotBar != 0){
 			if(this.bags.get(BAG.BELT_1) != null){
 				for(int i = 0; i < this.bags.get(BAG.BELT_1).invSize(); i ++){
-					Game.screen.drawTileOGL(
+					Screen.drawGUISprite(
 							hotBar.x+(int)(openHotBar*Math.sin((i+0.5)*Math.PI*2/this.bags.get(BAG.BELT_1).invSize()))-18
 							,hotBar.y+(int)(-openHotBar*Math.cos((i+0.5)*Math.PI*2/this.bags.get(BAG.BELT_1).invSize()))-18
-							, 0, itemBackground);
+							, itemBackground);
 					if(i == selected){
-						Game.screen.drawTileOGL(
+						Screen.drawGUISprite(
 								hotBar.x+(int)(openHotBar*Math.sin((selected+0.5)*Math.PI*2/this.bags.get(BAG.BELT_1).invSize()))-18
 								,hotBar.y+(int)(-openHotBar*Math.cos((selected+0.5)*Math.PI*2/this.bags.get(BAG.BELT_1).invSize()))-18
-								, 0, itemBackgrounds);
+								, itemBackgrounds);
 					}
 					try{
 						this.bags.get(BAG.BELT_1).getItem(i).render(Game.screen

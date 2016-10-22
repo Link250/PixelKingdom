@@ -1,6 +1,6 @@
 package gui.menu;
 
-import gfx.SpriteSheet;
+import gfx.Screen;
 import gui.Button;
 import gui.NewMapWindow;
 import main.Game;
@@ -30,20 +30,20 @@ public class MapSelection implements GameMenu{
 	public MapSelection(Game game) {
 		this.game = game;
 		int buttonSize = 60;
-		maxButtonsOnScreen = (int) ((Game.screen.height-buttonSize*3)/(buttonSize*1.5));
+		maxButtonsOnScreen = (int) ((Screen.height-buttonSize*3)/(buttonSize*1.5));
 		//makes it uneven
 		maxButtonsOnScreen -= maxButtonsOnScreen%2==0 ? 1 : 0;
 		back = new Button(50, 50, buttonSize, buttonSize);
 		back.gfxData("/Buttons/back.png", true);
-		genmap = new Button(Game.screen.width-50, 50, buttonSize, buttonSize);
+		genmap = new Button(Screen.width-50, 50, buttonSize, buttonSize);
 		genmap.gfxData("/Buttons/new.png", true);
-		del = new Button(Game.screen.width/2-240, Game.screen.height/2, buttonSize, buttonSize);
+		del = new Button(Screen.width/2-240, Screen.height/2, buttonSize, buttonSize);
 		del.gfxData("/Buttons/delete.png", true);
-		start = new Button(Game.screen.width/2+240, Game.screen.height/2, buttonSize, buttonSize);
+		start = new Button(Screen.width/2+240, Screen.height/2, buttonSize, buttonSize);
 		start.gfxData("/Buttons/play.png", true);
-		scrollUP = new Button(Game.screen.width/2, Game.screen.height/2-(maxButtonsOnScreen/2+1)*buttonSize*3/2, buttonSize, buttonSize);
-		scrollUP.gfxData("/Buttons/ArrowDown.png", 0x01, false);
-		scrollDOWN = new Button(Game.screen.width/2, Game.screen.height/2+(maxButtonsOnScreen/2+1)*buttonSize*3/2, buttonSize, buttonSize);
+		scrollUP = new Button(Screen.width/2, Screen.height/2-(maxButtonsOnScreen/2+1)*buttonSize*3/2, buttonSize, buttonSize);
+		scrollUP.gfxData("/Buttons/ArrowDown.png", false, true, false);
+		scrollDOWN = new Button(Screen.width/2, Screen.height/2+(maxButtonsOnScreen/2+1)*buttonSize*3/2, buttonSize, buttonSize);
 		scrollDOWN.gfxData("/Buttons/ArrowDown.png", false);
 		LoadFiles();
 	}
@@ -132,7 +132,7 @@ public class MapSelection implements GameMenu{
 	public void render(){
 		for(int i = -maxButtonsOnScreen/2; i <= maxButtonsOnScreen/2; i++){
 			try{
-				ButtonList.get(selected+i).SetPos(Game.WIDTH/2, Game.screen.height/2+(i*90));
+				ButtonList.get(selected+i).SetPos(Game.WIDTH/2, Screen.height/2+(i*90));
 				ButtonList.get(selected+i).render();
 			}catch(ArrayIndexOutOfBoundsException e){}catch(IndexOutOfBoundsException e){}
 		}
@@ -142,6 +142,6 @@ public class MapSelection implements GameMenu{
 		if(ButtonList.size()!=0)start.render();
 		if(selected > 0)scrollUP.render();
 		if(selected < ButtonList.size()-1)scrollDOWN.render();
-		Game.font.render(Game.screen.width/2, 50, "Map Selection", 0, 0xff000000, Game.screen);
+		Game.font.render(Screen.width/2, 50, "Map Selection", 0, 0xff000000, Game.screen);
 	}
 }

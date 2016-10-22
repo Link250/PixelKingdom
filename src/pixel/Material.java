@@ -79,7 +79,7 @@ public abstract class Material<ADType extends AD> {
 	
 	public boolean tick(int x, int y, int l, int numTick, Map map){return false;}
 	
-	public void render(int x, int y, int l, Map map, Screen screen) {
-		screen.drawMaterial(x, y, ID, l);
+	public int render(int x, int y, int l, Map map) {
+		return Screen.getMaterialPixel(ID, l);
 	}
 }

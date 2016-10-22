@@ -9,7 +9,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-import gfx.SpriteSheet;
+import gfx.Screen;
 import gui.Button;
 import gui.NewServerWindow;
 import main.Game;
@@ -36,22 +36,22 @@ public class ServerList implements GameMenu{
 	public ServerList(Game game) {
 		this.game = game;
 		int buttonSize = 60;
-		maxButtonsOnScreen = (int) ((Game.screen.height-buttonSize*3)/(buttonSize*1.5));
+		maxButtonsOnScreen = (int) ((Screen.height-buttonSize*3)/(buttonSize*1.5));
 		//makes it uneven
 		maxButtonsOnScreen -= maxButtonsOnScreen%2==0 ? 1 : 0;
 		back = new Button(50, 50, buttonSize, buttonSize);
 		back.gfxData("/Buttons/back.png", true);
-		add = new Button(Game.screen.width-50, 50, buttonSize, buttonSize);
+		add = new Button(Screen.width-50, 50, buttonSize, buttonSize);
 		add.gfxData("/Buttons/add_server.png", true);
-		start = new Button(Game.screen.width-50, Game.screen.height-50, buttonSize, buttonSize);
+		start = new Button(Screen.width-50, Screen.height-50, buttonSize, buttonSize);
 		start.gfxData("/Buttons/new_server.png", true);
-		del = new Button(Game.screen.width/2-240, Game.screen.height/2, buttonSize, buttonSize);
+		del = new Button(Screen.width/2-240, Screen.height/2, buttonSize, buttonSize);
 		del.gfxData("/Buttons/delete.png", true);
-		join = new Button(Game.screen.width/2+240, Game.screen.height/2, buttonSize, buttonSize);
+		join = new Button(Screen.width/2+240, Screen.height/2, buttonSize, buttonSize);
 		join.gfxData("/Buttons/play.png", true);
-		scrollUP = new Button(Game.screen.width/2, Game.screen.height/2-(maxButtonsOnScreen/2+1)*buttonSize*3/2, buttonSize, buttonSize);
-		scrollUP.gfxData("/Buttons/ArrowDown.png", 0x01, false);
-		scrollDOWN = new Button(Game.screen.width/2, Game.screen.height/2+(maxButtonsOnScreen/2+1)*buttonSize*3/2, buttonSize, buttonSize);
+		scrollUP = new Button(Screen.width/2, Screen.height/2-(maxButtonsOnScreen/2+1)*buttonSize*3/2, buttonSize, buttonSize);
+		scrollUP.gfxData("/Buttons/ArrowDown.png", false, true, false);
+		scrollDOWN = new Button(Screen.width/2, Screen.height/2+(maxButtonsOnScreen/2+1)*buttonSize*3/2, buttonSize, buttonSize);
 		scrollDOWN.gfxData("/Buttons/ArrowDown.png", false);
 		LoadServers(false);
 	}
@@ -156,19 +156,19 @@ public class ServerList implements GameMenu{
 	public void render(){
 		for(int i = -maxButtonsOnScreen/2; i <= maxButtonsOnScreen/2; i++){
 			try{
-				ButtonList.get(selected+i).SetPos(Game.WIDTH/2, Game.screen.height/2+(i*90));
+				ButtonList.get(selected+i).SetPos(Game.WIDTH/2, Screen.height/2+(i*90));
 				ButtonList.get(selected+i).render();
 			}catch(ArrayIndexOutOfBoundsException e){}catch(IndexOutOfBoundsException e){}
 		}
 		back.render();
 		add.render();
 		if(game.server==null)start.render();
-		else Game.font.render(Game.screen.width/2-65, Game.screen.height-20, "ServerRunning", 0, 0xff000000, Game.screen);
+		else Game.font.render(Screen.width/2-65, Screen.height-20, "ServerRunning", 0, 0xff000000, Game.screen);
 		if(ButtonList.size()!=0)del.render();
 		if(ButtonList.size()!=0)join.render();
 		if(selected > 0)scrollUP.render();
 		if(selected < ButtonList.size()-1)scrollDOWN.render();
-		Game.font.render(Game.screen.width/2, 50, "Multiplayer", 0, 0xff000000, Game.screen);
+		Game.font.render(Screen.width/2, 50, "Multiplayer", 0, 0xff000000, Game.screen);
 	}
 	
 	public void addServer(String name, String adress) {

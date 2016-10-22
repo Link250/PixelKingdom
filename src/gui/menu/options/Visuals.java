@@ -81,7 +81,10 @@ public class Visuals {
 	}
 	
 	private class PlayerColorOption extends GFXOption{
-		private SpriteSheet sliders, color, marker;
+		private SpriteSheet 
+		sliders = new SpriteSheet("/Menu/Options/Visuals/PlayerColor_Sliders.png"),
+		preview = new SpriteSheet("/Menu/Options/Visuals/PlayerColor_Preview.png"),
+		marker = new SpriteSheet("/Menu/Options/Visuals/PlayerColor_Marker.png");
 
 		public void tick() {
 			if(MouseInput.mousel.isPressed()){
@@ -101,37 +104,14 @@ public class Visuals {
 
 		public void render() {
 			Game.font.render(Screen.width/4, height, "Player Color", 0, 0xff000000, Game.screen);
-			if(sliders!=null) {
-				Screen.drawTileOGL(xPos, yPos, 0, sliders);
-			}else {
-				int[] pixels = new int[2];
-				Game.screen.drawGUIPixelBorder(Screen.width/2-2, height-21, 260, 14, 2, 0xff404040);
-				Game.screen.drawGUIPixelBorder(Screen.width/2-2, height-5, 260, 14, 2, 0xff404040);
-				Game.screen.drawGUIPixelBorder(Screen.width/2-2, height+11, 260, 14, 2, 0xff404040);
-				for(int c = 0; c < 256; c++){
-					for(int i = 0; i < 10; i++){
-						Game.screen.drawGUIPixel(Screen.width/2+c, height-19+i, 0xff000000|(c<<16));
-						Game.screen.drawGUIPixel(Screen.width/2+c, height-3+i, 0xff000000|(c<<8));
-						Game.screen.drawGUIPixel(Screen.width/2+c, height+13+i, 0xff000000|c);
-					}
-				}
-			}
-			if(marker!=null) {
-				
-			}else {
-				int c = (PlrCol&0x00ff0000)>>16;
-						Game.screen.drawGUIPixelArea(Screen.width/2+c-1, height-20, 3, 12, 0xff000000 + ((255-c)<<16) + ((255-c)<<8) + (255-c));
-						c = (PlrCol&0x0000ff00)>>8;
-						Game.screen.drawGUIPixelArea(Screen.width/2+c-1, height-4, 3, 12, 0xff000000 + ((255-c)<<16) + ((255-c)<<8) + (255-c));
-						c = PlrCol&0x000000ff;
-						Game.screen.drawGUIPixelArea(Screen.width/2+c-1, height+12, 3, 12, 0xff000000 + ((255-c)<<16) + ((255-c)<<8) + (255-c));
-			}
-			if(color!=null) {
-				
-			}else {
-				Game.screen.drawGUIPixelBorder(Screen.width/2+270, height-15, 34, 34, 2, 0xff404040);
-				Game.screen.drawGUIPixelArea(Screen.width/2+272, height-13, 30, 30, PlrCol);
-			}
+			Screen.drawGUISprite(Screen.width/2-2, height-21, sliders);
+			int c = (PlrCol&0x00ff0000)>>16;
+			Screen.drawGUISprite(Screen.width/2+c-1, height-20, marker);
+			c = (PlrCol&0x0000ff00)>>8;
+			Screen.drawGUISprite(Screen.width/2+c-1, height-4, marker);
+			c = PlrCol&0x000000ff;
+			Screen.drawGUISprite(Screen.width/2+c-1, height+12, marker);
+			Screen.drawGUISprite(Screen.width/2+270, height-15, preview, 0, false, false, PlrCol);
 		}
 	}
 	
@@ -171,9 +151,9 @@ public class Visuals {
 		
 		public ResolutionOption() {
 			arrowLeft = new Button(0, 0, 60, 60);
-			arrowLeft.gfxData("/Buttons/ArrowRight.png", 0x10, false);
+			arrowLeft.gfxData("/Buttons/ArrowRight.png", true, false, false);
 			arrowRight = new Button(0, 0, 60, 60);
-			arrowRight.gfxData("/Buttons/ArrowRight.png", 0x00, false);
+			arrowRight.gfxData("/Buttons/ArrowRight.png", false);
 			resolutions.add(new Point(960,720));
 			resolutions.add(new Point(1024,768));
 			resolutions.add(new Point(1200,900));

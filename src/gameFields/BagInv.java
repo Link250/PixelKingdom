@@ -6,6 +6,7 @@ import entities.Player;
 import gfx.Mouse;
 import gfx.SpriteSheet;
 import gfx.Mouse.MouseType;
+import gfx.Screen;
 import item.Bag;
 import item.Item;
 import main.Game;
@@ -97,8 +98,7 @@ public class BagInv extends GameField {
 		}
 
 		public void render() {
-			Game.screen.drawTileOGL(field.x, field.y, 0, back);
-//			Game.screen.drawGUITile(field.x, field.y, 0, 0, back, 0);
+			Screen.drawGUISprite(field.x, field.y, back);
 			if(bag.getItem(index)!=null) bag.getItem(index).render(Game.screen, field.x+2, field.y+2, true);
 		}
 	}
