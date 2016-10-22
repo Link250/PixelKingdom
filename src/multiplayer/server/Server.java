@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import main.Game;
 import main.Keys;
+import main.MouseInput;
 import map.Map;
 import multiplayer.MapManager;
 import multiplayer.MapUpdater;
@@ -70,7 +71,7 @@ public class Server implements Runnable{
 		}
 		
 		if(Game.devmode&&Keys.DEBUGPXL.click()) {
-			int X = Game.input.mouse.getMapX(), Y = Game.input.mouse.getMapY();
+			int X = MouseInput.mouse.getMapX(), Y = MouseInput.mouse.getMapY();
 			Game.logInfo(X+" "+Y+" id{"+map.getID(X, Y, 1)		+","+map.getID(X, Y, 2)		+","+map.getID(X, Y, 3)		+"}");
 			Game.logInfo(X+" "+Y+" up{"+map.isUpdating(X, Y, 0)	+","+map.isUpdating(X, Y, 0)+","+map.isUpdating(X, Y, 0)+"}");
 			map.addPixelUpdate(X, Y, 1);

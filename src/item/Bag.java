@@ -7,7 +7,6 @@ import dataUtils.conversion.ConvertData;
 import entities.Player;
 import gameFields.BagInv;
 import gfx.Screen;
-import main.InputHandler_OLD;
 import map.Map;
 
 public abstract class Bag<ItemType extends Item> extends Item {
@@ -53,7 +52,7 @@ public abstract class Bag<ItemType extends Item> extends Item {
 		for (int i = 0; i < this.invSize; i++) {this.inventory.add(null);}
 	}
 	
-	public abstract void useItem(InputHandler_OLD input, Player plr, Map map, Screen screen);
+	public abstract void useItem(Player plr, Map map, Screen screen);
 	
 	/**
 	 * 

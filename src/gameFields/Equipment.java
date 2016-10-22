@@ -8,6 +8,7 @@ import gfx.SpriteSheet;
 import gfx.Mouse.MouseType;
 import item.*;
 import main.MainConfig.GameFields;
+import main.MouseInput;
 import main.Game;
 
 public class Equipment extends GameField {
@@ -43,11 +44,11 @@ public class Equipment extends GameField {
 	
 	public void tick() {
 		if(Drag())allignFields();
-		if(mouseover(Game.input.mouse.x, Game.input.mouse.y)){
+		if(mouseover(MouseInput.mouse.x, MouseInput.mouse.y)){
 		Mouse.mouseType=MouseType.DEFAULT;
 			for (BAG bag : BAG.values()) {
-				if(this.itemFields.get(bag).getField().contains(Game.input.mouse.x, Game.input.mouse.y)) {
-					if(Game.input.mousel.click()){
+				if(this.itemFields.get(bag).getField().contains(MouseInput.mouse.x, MouseInput.mouse.y)) {
+					if(MouseInput.mousel.click()){
 						this.itemFields.get(bag).mouseClick();
 					}else {
 						this.itemFields.get(bag).mouseOver();

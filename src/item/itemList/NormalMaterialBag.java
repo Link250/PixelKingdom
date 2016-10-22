@@ -4,7 +4,6 @@ import entities.Player;
 import gfx.Screen;
 import gfx.SpriteSheet;
 import item.*;
-import main.InputHandler_OLD;
 import map.Map;
 
 public class NormalMaterialBag extends MaterialBag {
@@ -17,6 +16,6 @@ public class NormalMaterialBag extends MaterialBag {
 		gfx = new SpriteSheet("/Items/NormalMaterialBag.png");
 	}
 
-	public void useItem(InputHandler_OLD input, Player plr, Map map, Screen screen) {
+	public void useItem(Player plr, Map map, Screen screen) {
 	}
 }

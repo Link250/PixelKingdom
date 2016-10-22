@@ -11,7 +11,9 @@ import gfx.SpriteSheet;
 import gui.Button;
 import gui.menu.OptionScreen;
 import main.Game;
+import main.KeyInput;
 import main.Keys;
+import main.MouseInput;
 
 public class Controls {
 	private OptionScreen mainMenu;
@@ -78,7 +80,7 @@ public class Controls {
 		int keyCode = 0;
 		int keyCodeOld = this.buttonValues.get(keyConfig.button);
 		Keys key = keyMapping.get(keyCodeOld);
-		while((keyCode=Game.input.lastKeyCode)==0) {try{Thread.sleep(10);} catch (InterruptedException e) {}}
+		while((keyCode=KeyInput.lastKeyCode)==0) {try{Thread.sleep(10);} catch (InterruptedException e) {}}
 		//check if this key is unused
 		for (Integer code : keyMapping.keySet()) {
 			if(keyCode==code)return;
@@ -96,7 +98,7 @@ public class Controls {
 		if(back.isclicked || Keys.MENU.click()){
 			this.mainMenu.resetMenu();
 		}
-		int scroll = Game.input.mouse.getScroll();
+		int scroll = MouseInput.mouse.getScroll();
 		if(this.lOffset > 0)scrollUP.tick();
 		if((scrollUP.isclicked || scroll<0) && this.lOffset > 0) {this.lOffset--;this.setButtonPositions();}
 		if(this.lOffset < keyConfigs.size()-this.lVisibleEntries)scrollDOWN.tick();
@@ -137,7 +139,7 @@ public class Controls {
 		}
 		
 		public void render(){
-			Game.font.render(Game.screen.height/3, height, true, false, text, 0, 0xff000000, Game.screen);
+			Game.font.render(Game.screen.height/3, height, true, false, text, 0, 0xff000000);
 			button.render();
 		}
 	}

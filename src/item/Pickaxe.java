@@ -9,7 +9,7 @@ import gfx.Mouse.MouseType;
 import gfx.Screen;
 import gfx.SpriteSheet;
 import main.Game;
-import main.InputHandler_OLD;
+import main.MouseInput;
 import map.Map;
 import pixel.Material;
 import pixel.PixelList;
@@ -27,10 +27,10 @@ public abstract class Pickaxe extends Tool{
 		gfxs = new SpriteSheet("/Items/Pickaxeh.png");
 	}
 	
-	public void useItem(InputHandler_OLD input, Player plr, Map map, Screen screen) {
+	public void useItem(Player plr, Map map, Screen screen) {
 	anim = 0;
 	
-	if((input.mousel.isPressed() | input.mouser.isPressed()) && !plr.iscrouching && !plr.isinair){
+	if((MouseInput.mousel.isPressed() | MouseInput.mouser.isPressed()) && !plr.iscrouching && !plr.isinair){
 		if(npxs <= 0)npxs += ((double)size*strength)/4;
 		double r = 0;
 		while(npxs > 0){
@@ -38,10 +38,10 @@ public abstract class Pickaxe extends Tool{
 			int pX = 0, pY = 0;
 			Material<?> m = null;
 			int l = Map.LAYER_FRONT;
-			if(input.mousel.isPressed()){
+			if(MouseInput.mousel.isPressed()){
 				for(int x = -size; x <= size; x++){
 					for(int y = -size; y <= size; y++){
-						int X = input.mouse.getMapX()+x, Y = input.mouse.getMapY()+y;
+						int X = MouseInput.mouse.getMapX()+x, Y = MouseInput.mouse.getMapY()+y;
 						if(Math.sqrt(x*x+y*y) < r & Math.sqrt((plr.x-X)*(plr.x-X)+(plr.y-Y)*(plr.y-Y)) <= range){
 							m = PixelList.GetMat(map.getID(X,Y,Map.LAYER_FRONT));
 							if(m.ID!=0 && m.usePickaxe() <= strength && m.usePickaxe()>0){
@@ -54,7 +54,7 @@ public abstract class Pickaxe extends Tool{
 			}else{
 				for(int x = -size; x <= size; x++){
 					for(int y = -size; y <= size; y++){
-						int X = input.mouse.getMapX()+x, Y = input.mouse.getMapY()+y;
+						int X = MouseInput.mouse.getMapX()+x, Y = MouseInput.mouse.getMapY()+y;
 						if(Math.sqrt(x*x+y*y) < r & Math.sqrt((plr.x-X)*(plr.x-X)+(plr.y-Y)*(plr.y-Y)) <= range){
 							m = PixelList.GetMat(map.getID(X,Y,Map.LAYER_BACK));
 							if(m.ID!=0 && m.usePickaxe() <= strength && m.usePickaxe()>0

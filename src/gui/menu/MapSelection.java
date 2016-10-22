@@ -5,6 +5,7 @@ import gui.Button;
 import gui.NewMapWindow;
 import main.Game;
 import main.Keys;
+import main.MouseInput;
 import main.SinglePlayer;
 
 import java.io.File;
@@ -119,7 +120,7 @@ public class MapSelection implements GameMenu{
 		back.tick();
 		genmap.tick();
 		del.tick();
-		int scroll = Game.input.mouse.getScroll();
+		int scroll = MouseInput.mouse.getScroll();
 		if(ButtonList.size()!=0)start.tick();
 		if(selected > 0)scrollUP.tick();
 		if((scrollUP.isclicked || scroll<0) && selected > 0)selected--;

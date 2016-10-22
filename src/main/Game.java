@@ -10,7 +10,6 @@ import gui.Window;
 import gui.menu.MainMenu;
 import gui.menu.Menu;
 import item.ItemList;
-import main.InputHandler_OLD;
 import map.BiomeList;
 import multiplayer.client.Client;
 import multiplayer.server.Server;
@@ -24,13 +23,9 @@ import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
-import java.awt.image.BufferStrategy;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferInt;
 import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
@@ -66,13 +61,6 @@ public class Game extends Canvas implements Runnable{
 	public static GameMode gamemode = GameMode.Menu;
 	public static MainMenu menu;
 	
-	private BufferedImage image;
-	private int[] pxsMain;
-	private BufferedImage shadow;
-	private int[] pxsShadow;
-	private BufferedImage GUI;
-	private int[] pxsGUI;
-	
 	public static ItemList itemlist;
 	public static PixelList pixellist;
 	public static BiomeList biomelist;
@@ -80,11 +68,9 @@ public class Game extends Canvas implements Runnable{
 	public static ColorSheet csheetm = new ColorSheet("/Mat_Mid.png");
 	public static ColorSheet csheetb = new ColorSheet("/Mat_Back.png");
 	public static Screen screen;
-	public static InputHandler_OLD input;
 	public static PxlFont font;
 	public static PxlFont sfont;
 	public static PxlFont mfont;
-	private BufferedImage back = null;
 	private SpriteSheet background;
 	public SinglePlayer SinglePlayer;
 	public Client client;
@@ -144,21 +130,12 @@ public class Game extends Canvas implements Runnable{
 		
 		background = new SpriteSheet("/Back.png");
 		
-		image = new BufferedImage(WIDTH/Screen.MAP_ZOOM, HEIGHT/Screen.MAP_ZOOM, BufferedImage.TYPE_INT_ARGB);
-		pxsMain = ((DataBufferInt)image.getRaster().getDataBuffer()).getData();
-		shadow = new BufferedImage(WIDTH/Screen.SHADOW_SCALE/Screen.MAP_ZOOM, HEIGHT/Screen.SHADOW_SCALE/Screen.MAP_ZOOM, BufferedImage.TYPE_INT_ARGB);
-		pxsShadow = ((DataBufferInt)shadow.getRaster().getDataBuffer()).getData();
-		GUI = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
-		pxsGUI = ((DataBufferInt)GUI.getRaster().getDataBuffer()).getData();
-		
-		try {back = ImageIO.read(SpriteSheet.class.getResourceAsStream("/Back.png"));} catch (IOException e) {e.printStackTrace();}
 		try {windowIcon = ImageIO.read(SpriteSheet.class.getResourceAsStream("/WindowIcon.png"));} catch (IOException e) {e.printStackTrace();}
 		frame.setIconImage(windowIcon);
-		input = new InputHandler_OLD(this);
 		mfont = new PxlFont(new SpriteSheet("/StackFont.png", 12, 15), "1234567890", 12, 15, -2);
 		sfont = new PxlFont(new SpriteSheet("/8x8Font.png", 24, 24), " !\"# %&'()* ,-./0123456789:; = ? ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{ }~",24,24, 1);
 		font = new PxlFont(new SpriteSheet("/Font.png", 45, 60), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 1234567890!\",;%&/()=?'+-.",45,60, 2);
-		screen = new Screen(WIDTH, HEIGHT, csheetf, csheetm, csheetb);
+		Screen.initialize(WIDTH, HEIGHT, csheetf, csheetm, csheetb);
 		menu = new MainMenu(this);
 		
 		pixellist = new PixelList();
@@ -171,14 +148,11 @@ public class Game extends Canvas implements Runnable{
 	public void reset(){
 		gamemode = GameMode.Menu;
 		menu.subMenu = Menu.MainMenu;
-		screen.xOffset=0;
-		screen.yOffset=0;
+		Screen.xOffset=0;
+		Screen.yOffset=0;
 		Mouse.Item = null;
 		Mouse.mouseType=MouseType.DEFAULT;
 		if(client!=null)client.reset();
-		for (int xy = 0; xy < screen.lengthShadow; xy++) {
-			screen.shadow[xy] = 0;
-		}
 		reset = false;
 	}
 	
@@ -201,7 +175,7 @@ public class Game extends Canvas implements Runnable{
 		
 		init();
 		
-		while(running){
+		while(running && !window.shouldClose()){
 			long now = System.nanoTime();
 			delta += (now - lastTime) / nsPerTick;
 			lastTime = now;
@@ -226,6 +200,8 @@ public class Game extends Canvas implements Runnable{
 				ticks = 0;
 			}
 		}
+		if(gamemode == GameMode.SinglePlayer)SinglePlayer.map.save();
+		if(server!=null)server.save();
 		MainConfig.save();
 		KeyConfig.save();
 		Game.logInfo("Game shut down by User "+System.getProperty("user.name")+". ~Thanks 4 playing");
@@ -266,7 +242,7 @@ public class Game extends Canvas implements Runnable{
 		switch (gamemode){
 		case Menu :
 //			g.drawImage(back, 0, 0, WIDTH, HEIGHT, null);
-			screen.drawTileOGL(0, 0, 0, background);
+			Screen.drawTileOGL(0, 0, 0, background);
 //			  7,292E-1  0,000E+0 -0,000E+0 -2,708E-1
 //			  0,000E+0  9,722E-1 -0,000E+0  2,778E-2
 //			  0,000E+0  0,000E+0  7,000E+2  0,000E+0

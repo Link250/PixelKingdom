@@ -10,6 +10,7 @@ import gfx.SpriteSheet;
 import item.*;
 import item.Recipe.component;
 import main.MainConfig.GameFields;
+import main.MouseInput;
 import main.Game;
 import main.Keys;
 import main.MainConfig;
@@ -280,10 +281,10 @@ public class Player extends Mob{
 		}
 		
 		/*		HOTBAR		*/
-		if(Game.input.mousem.click() || Keys.HOTBAR.click()){
+		if(MouseInput.mousem.click() || Keys.HOTBAR.click()){
 			if(openHotBar == 0) {
-				hotBar.x = Game.input.mouse.x;
-				hotBar.y = Game.input.mouse.y;
+				hotBar.x = MouseInput.mouse.x;
+				hotBar.y = MouseInput.mouse.y;
 				openHotBar++;
 			}else
 				openHotBar=0;
@@ -291,8 +292,8 @@ public class Player extends Mob{
 		if(openHotBar != 0){
 			if(this.bags.get(BAG.BELT_1) != null){
 				if(openHotBar < 60+this.bags.get(BAG.BELT_1).invSize())openHotBar +=5;
-				if(Math.sqrt(Math.pow((Game.input.mouse.x-hotBar.x), 2)+Math.pow((Game.input.mouse.y-hotBar.y), 2)) >= 20+this.bags.get(BAG.BELT_1).invSize()){
-					selected = (byte)(this.bags.get(BAG.BELT_1).invSize()/2-Math.atan2(Game.input.mouse.x-hotBar.x, Game.input.mouse.y-hotBar.y)/(Math.PI*2/this.bags.get(BAG.BELT_1).invSize()));
+				if(Math.sqrt(Math.pow((MouseInput.mouse.x-hotBar.x), 2)+Math.pow((MouseInput.mouse.y-hotBar.y), 2)) >= 20+this.bags.get(BAG.BELT_1).invSize()){
+					selected = (byte)(this.bags.get(BAG.BELT_1).invSize()/2-Math.atan2(MouseInput.mouse.x-hotBar.x, MouseInput.mouse.y-hotBar.y)/(Math.PI*2/this.bags.get(BAG.BELT_1).invSize()));
 				}
 			}
 		}
@@ -319,10 +320,10 @@ public class Player extends Mob{
 			}
 		}
 
-		if(this.bags.containsKey(BAG.BELT_1) && this.bags.get(BAG.BELT_1).getItem(selected)!=null && Game.input.mousel.isClickable()) {
-			this.bags.get(BAG.BELT_1).getItem(selected).useItem(Game.input, this, map, Game.screen);
+		if(this.bags.containsKey(BAG.BELT_1) && this.bags.get(BAG.BELT_1).getItem(selected)!=null && MouseInput.mousel.isClickable()) {
+			this.bags.get(BAG.BELT_1).getItem(selected).useItem(this, map, Game.screen);
 		}else{
-			Game.input.mousel.click();
+			MouseInput.mousel.click();
 		}
 
 		
@@ -398,7 +399,7 @@ public class Player extends Mob{
 								,true);
 					}catch(NullPointerException e){}
 				}
-				try{Game.font.render(Game.input.mouse.x, Game.input.mouse.y, (this.bags.get(BAG.BELT_1).getItem(selected).getName()), 0, 0xff000000, Game.screen);}
+				try{Game.font.render(MouseInput.mouse.x, MouseInput.mouse.y, (this.bags.get(BAG.BELT_1).getItem(selected).getName()), 0, 0xff000000, Game.screen);}
 			catch(NullPointerException e){}
 			}
 		}

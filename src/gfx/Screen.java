@@ -18,125 +18,35 @@ public class Screen {
 	
 	public static int RENDER_CHUNK_SIZE = 128;
 
-	public int[] pixels;
-	public int[] shadow;
-	public int[] GUI;
+	public static int xOffset = 0;
+	public static int yOffset = 0;
 	
-	public int xOffset = 0;
-	public int yOffset = 0;
-	
-	public int width;
-	public int height;
+	public static int width;
+	public static int height;
 	/**== width*height*/
 	public int length;
 	public int lengthMap;
 	public int lengthShadow;
 	
-	public ColorSheet[] csheets = new ColorSheet[3];
+	public static ColorSheet[] csheets = new ColorSheet[3];
 	
-	private Shader shader = new Shader("shader");
-	private Matrix4f projection;
-	private Model tileModel = new Model();
+	private static Shader shader;
+	private static Matrix4f projection;
+	private static Model tileModel;
 	
-	public Screen(int width, int height, ColorSheet f, ColorSheet l, ColorSheet b){
-		this.width = width;
-		this.height = height;
-		this.length = width*height;
-		this.lengthMap = (width/MAP_ZOOM)*(height/MAP_ZOOM);
-		this.lengthShadow = (width/MAP_ZOOM/SHADOW_SCALE)*(height/MAP_ZOOM/SHADOW_SCALE);
+	public static void initialize(int width, int height, ColorSheet f, ColorSheet l, ColorSheet b) {
+		Screen.width = width;
+		Screen.height = height;
 		csheets[Map.LAYER_BACK] = b;
 		csheets[Map.LAYER_LIQUID] = l;
 		csheets[Map.LAYER_FRONT] = f;
 	
-		GUI = new int[this.length];
-		pixels = new int[this.lengthMap];
-		shadow = new int[this.lengthShadow];
-		
 		projection = new Matrix4f().setOrtho2D(-width, width, -height, height);
+		shader = new Shader("shader");
+		tileModel = new Model();
 	}
 	
-	/**
-	 * Draws a Pixel into the Shadow Layer
-	 * 
-	 * @param xPos 		<u>Map</u> X Position of the Pixel
-	 * @param yPos 		<u>Map</u> Y Position of the Pixel
-	 * @param color 	Color of the Shadow Pixel.
-	 * 		<sub>		normally this is only a black Color with an Alpha Value,
-	 * 					but the Shadow <i>could</i> be colored, too
-	 */
-	public void drawShadow(int xPos, int yPos, int color){
-		xPos -= xOffset;
-		yPos -= yOffset;
-		shadow[xPos + yPos * (width/SHADOW_SCALE/MAP_ZOOM)] = color;
-	}
-	
-	/**
-	 * Resets the Pixel on <b>(X,Y)</b> of the Main and GUI Layers
-	 */
-	public void resetPixel(int xPos, int yPos){
-		pixels[xPos + yPos * width] = 0;
-		GUI[xPos + yPos * width] = 0;
-	}
-	
-	public void resetPixelArea(int xPos, int yPos, int width, int height){
-		for (int x = 0; x < width; x++) {
-			for (int y = 0; y < height; y++) {
-				pixels[xPos+x + (yPos+y) * this.width] = 0;
-				GUI[xPos+x + (yPos+y) * this.width] = 0;
-			}
-		}
-	}
-
-	public void resetPixelAll(){
-		for (int xy = 0; xy < this.lengthMap; xy++) {
-			pixels[xy] = 0;
-		}
-		for (int xy = 0; xy < this.length; xy++) {
-			GUI[xy] = 0;
-		}
-	}
-
-	public void drawMapPixelScaled(int xPos, int yPos, int color){
-		xPos -= xOffset;
-		yPos -= yOffset;
-		xPos*=MAP_SCALE;yPos*=MAP_SCALE;
-		drawPixelArea(xPos,yPos,MAP_SCALE,MAP_SCALE,color,false);
-	}
-
-	public void drawMapPixel(int xPos, int yPos, int color){
-		xPos -= xOffset;
-		yPos -= yOffset;
-		drawPixel(xPos,yPos,color,false);
-	}
-
-	/**
-	 * This Mehtod should be used if you want to draw a Pixel relative to the Map and with the zoomlevel of the Map
-	 * @param xPos
-	 * @param yPos
-	 * @param color
-	 */
-	public void drawGUIPixelScaled(int xPos, int yPos, int color){
-		xPos -= xOffset;
-		yPos -= yOffset;
-		xPos*=MAP_SCALE*MAP_ZOOM;yPos*=MAP_SCALE*MAP_ZOOM;
-		drawPixelArea(xPos,yPos,MAP_SCALE*MAP_ZOOM,MAP_SCALE*MAP_ZOOM,color,true);
-	}
-
-	public void drawGUIPixel(int xPos, int yPos, int color){
-		drawPixel(xPos,yPos,color,true);
-	}
-
-	public void drawGUIPixelArea(int xPos, int yPos, int width, int height, int color){
-		drawPixelArea(xPos,yPos,width,height,color,true);
-	}
-
-	public void drawGUIPixelBorder(int xPos, int yPos, int width, int height, int thickness, int color){
-		drawPixelArea(xPos					,yPos					,width		,thickness			,color,true);
-		drawPixelArea(xPos					,yPos+height-thickness	,width		,thickness			,color,true);
-		drawPixelArea(xPos					,yPos+thickness			,thickness	,height-thickness*2	,color,true);
-		drawPixelArea(xPos+width-thickness	,yPos+thickness			,thickness	,height-thickness*2	,color,true);
-	}
-
+	/*
 	private void drawPixelArea(int xPos, int yPos, int xSize, int ySize, int color, boolean gui){
 		int width = this.width;
 		int height = this.height;
@@ -214,9 +124,9 @@ public class Screen {
 	public void drawMaterial(int xPos, int yPos, int tile, int layer){
 		int col = csheets[layer].pixels[tile];
 		drawMapPixelScaled(xPos, yPos, col);
-	}
+	}*/
 	
-	public int getMaterialPixel(int tile, int layer) {
+	public static int getMaterialPixel(int tile, int layer) {
 		return csheets[layer].pixels[tile];
 	}
 
@@ -270,7 +180,7 @@ public class Screen {
 		}
 	}*/
 	
-	public void drawTileOGLMap(float xPos, float yPos, int tile, SpriteSheet sheet){
+	public static void drawTileOGLMap(float xPos, float yPos, int tile, SpriteSheet sheet){
 		shader.bind();
 		yPos = (yPos-yOffset)*MAP_SCALE*MAP_ZOOM +sheet.getHeight()/2;
 		yPos = height - yPos;
@@ -278,7 +188,7 @@ public class Screen {
 		glActiveTexture(GL_TEXTURE0 + 0);
 		glBindTexture(GL_TEXTURE_2D, sheet.getID(tile));
 		 
-		Matrix4f target = projection.mul(new Matrix4f().translate(new Vector3f(xPos*2-this.width, yPos*2-this.height, 0)), new Matrix4f());
+		Matrix4f target = projection.mul(new Matrix4f().translate(new Vector3f(xPos*2-width, yPos*2-height, 0)), new Matrix4f());
 		if(sheet.getWidth()!=sheet.getHeight())target.mul(new Matrix4f().ortho2D(-(((float)sheet.getHeight())/((float)sheet.getWidth())), (((float)sheet.getHeight())/((float)sheet.getWidth())), -1, 1));
 		target.scale(sheet.getHeight()*MAP_ZOOM);
 		shader.setUniform("sampler", 0);
@@ -287,7 +197,7 @@ public class Screen {
 		tileModel.render();
 	}
 	
-	public void drawTileOGL(float xPos, float yPos, int tile, SpriteSheet sheet){
+	public static void drawTileOGL(float xPos, float yPos, int tile, SpriteSheet sheet){
 		shader.bind();
 		yPos += sheet.getHeight()/2;
 		yPos = height - yPos;
@@ -295,7 +205,7 @@ public class Screen {
 		glActiveTexture(GL_TEXTURE0 + 0);
 		glBindTexture(GL_TEXTURE_2D, sheet.getID(tile));
 		 
-		Matrix4f target = projection.mul(new Matrix4f().translate(new Vector3f(xPos*2-this.width, yPos*2-this.height, 0)), new Matrix4f());
+		Matrix4f target = projection.mul(new Matrix4f().translate(new Vector3f(xPos*2-width, yPos*2-height, 0)), new Matrix4f());
 		if(sheet.getWidth()!=sheet.getHeight())target.mul(new Matrix4f().ortho2D(-(((float)sheet.getHeight())/((float)sheet.getWidth())), (((float)sheet.getHeight())/((float)sheet.getWidth())), -1, 1));
 		target.scale(sheet.getHeight());
 		shader.setUniform("sampler", 0);
@@ -304,7 +214,7 @@ public class Screen {
 		tileModel.render();
 	}
 	
-	public void drawMapOGL(Map map){
+	public static void drawMapOGL(Map map){
 		int textures[] = new int[4];
 		Matrix4f target;
 		int X, Y;
@@ -325,7 +235,7 @@ public class Screen {
 				X*=MAP_SCALE*MAP_ZOOM;
 				Y*=MAP_SCALE*MAP_ZOOM;
 				Y = height - Y;
-				target = projection.mul(new Matrix4f().translate(new Vector3f(X*2-this.width, Y*2-this.height, 0)), new Matrix4f());
+				target = projection.mul(new Matrix4f().translate(new Vector3f(X*2-width, Y*2-height, 0)), new Matrix4f());
 				target.scale(RENDER_CHUNK_SIZE*MAP_SCALE*MAP_ZOOM);
 				shader.setUniform("sampler", 0);
 				shader.setUniform("projection", target);

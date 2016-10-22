@@ -58,8 +58,9 @@ public class MouseInput{
 	}
 	
 	public void invokeScroll(long window, double xoffset, double yoffset) {
-		System.out.println("xoffset"+xoffset);
-		System.out.println("yoffset"+yoffset+"\n");
+		mouse.scrolled = (int)-yoffset;
+//		System.out.println("xoffset"+xoffset);
+//		System.out.println("yoffset"+yoffset+"\n");
 	}
 	
 	public void invokeMove(long window, double xpos, double ypos) {

@@ -14,6 +14,7 @@ import gui.Button;
 import gui.NewServerWindow;
 import main.Game;
 import main.Keys;
+import main.MouseInput;
 import multiplayer.client.Client;
 import multiplayer.server.Server;
 
@@ -142,7 +143,7 @@ public class ServerList implements GameMenu{
 		back.tick();
 		add.tick();
 		del.tick();
-		int scroll = Game.input.mouse.getScroll();
+		int scroll = MouseInput.mouse.getScroll();
 		if(game.server==null)start.tick();
 		if(ButtonList.size()!=0)join.tick();
 		if(selected > 0)scrollUP.tick();

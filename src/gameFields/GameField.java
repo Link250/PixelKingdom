@@ -5,6 +5,7 @@ import java.awt.Point;
 import dataUtils.PArea;
 import gfx.SpriteSheet;
 import main.MainConfig.GameFields;
+import main.MouseInput;
 import main.Game;
 import main.MainConfig;
 
@@ -53,23 +54,23 @@ public abstract class GameField {
 						((x < 2 || y < 2 || x >= field.width-2 || y >= field.height-2)? 0x80404040 : 0x40808080);
 			}
 		}
-		this.background = new SpriteSheet();
-		this.background.setPixels(pixels, field.width, field.height, field.width, field.height);
+		System.out.println(field.width + " " + field.height);
+		this.background = new SpriteSheet(pixels, field.width, field.height, field.width, field.height);
 	}
 	
 	public abstract void tick();
 	
 	public boolean Drag(){
-		if(fieldTop.contains(Game.input.mouse.x, Game.input.mouse.y)){
-			if(Game.input.mousel.click()){
-				grab.x = Game.input.mousel.x-field.x;
-				grab.y = Game.input.mousel.y-field.y;
+		if(fieldTop.contains(MouseInput.mouse.x, MouseInput.mouse.y)){
+			if(MouseInput.mousel.click()){
+				grab.x = MouseInput.mousel.x-field.x;
+				grab.y = MouseInput.mousel.y-field.y;
 				grabing = true;
 			}
 		}
-		if(grabing & Game.input.mousel.isPressed()){
-			field.x = Game.input.mouse.x - grab.x;
-			field.y = Game.input.mouse.y - grab.y;
+		if(grabing & MouseInput.mousel.isPressed()){
+			field.x = MouseInput.mouse.x - grab.x;
+			field.y = MouseInput.mouse.y - grab.y;
 			if(field.x < 0)field.x = 0;
 			if(field.x > Game.screen.width-field.width)field.x = Game.screen.width-field.width;
 			if(field.y < 0)field.y = 0;

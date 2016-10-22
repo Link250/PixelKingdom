@@ -9,7 +9,6 @@ import gfx.Screen;
 import gfx.SpriteSheet;
 import gfx.Mouse.MouseType;
 import main.Game;
-import main.InputHandler_OLD;
 import map.Map;
 
 public abstract class Item {
@@ -113,11 +112,11 @@ public abstract class Item {
 		screen.drawTileOGL(x, y, 0, gfx);
 //		screen.drawGUITile(x, y, 0, 0x00, gfx, col);
 		if(showstack & stackMax != 1){
-			if(stack>=2000){Game.mfont.render(x, y+17, false, false, Integer.toString(stack), 0, 0xff000000, screen);}
-			if(stack>=1000){Game.mfont.render(x-5, y+17, false, false, Integer.toString(stack), 0, 0xff000000, screen);}
-			else if(stack>=100){Game.mfont.render(x+4, y+17, false, false, Integer.toString(stack), 0, 0xff000000, screen);}
-			else if(stack>=10){Game.mfont.render(x+13, y+17, false, false, Integer.toString(stack), 0, 0xff000000, screen);}
-			else if(stack>1){Game.mfont.render(x+22, y+17, false, false, Integer.toString(stack), 0, 0xff000000, screen);}
+			if(stack>=2000){Game.mfont.render(x, y+17, false, false, Integer.toString(stack), 0, 0xff000000);}
+			if(stack>=1000){Game.mfont.render(x-5, y+17, false, false, Integer.toString(stack), 0, 0xff000000);}
+			else if(stack>=100){Game.mfont.render(x+4, y+17, false, false, Integer.toString(stack), 0, 0xff000000);}
+			else if(stack>=10){Game.mfont.render(x+13, y+17, false, false, Integer.toString(stack), 0, 0xff000000);}
+			else if(stack>1){Game.mfont.render(x+22, y+17, false, false, Integer.toString(stack), 0, 0xff000000);}
 		}
 	}
 	
@@ -140,7 +139,7 @@ public abstract class Item {
 		return anim;
 	}
 
-	public abstract void useItem(InputHandler_OLD input, Player plr, Map map, Screen screen);
+	public abstract void useItem(Player plr, Map map, Screen screen);
 
 	public void setMouse() {
 		Mouse.mouseType=MouseType.DEFAULT;

@@ -362,7 +362,7 @@ public class Chunk{
 				}else {
 					ID = getID(X,Y,l);
 					if(ID>=0){
-						pixel = ID == 0 ? 0 : Game.screen.getMaterialPixel(ID, l);
+						pixel = ID == 0 ? 0 : Screen.getMaterialPixel(ID, l);
 						pixelBuffer.put((byte)((pixel >> 16) & 0xFF)); //RED
 						pixelBuffer.put((byte)((pixel >> 8) & 0xFF));  //GREEN
 						pixelBuffer.put((byte)(pixel & 0xFF));		  //BLUE

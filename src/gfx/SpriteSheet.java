@@ -19,13 +19,6 @@ public class SpriteSheet {
 	
 	private int[][] pixels;
 	
-	public SpriteSheet() {
-		this.tileWidth = 0;
-		this.tileHeight = 0;
-		this.textureIDs = null;
-		this.pixels = null;
-	}
-	
 	public SpriteSheet(String path){
 		BufferedImage image = null;
 		
@@ -61,6 +54,10 @@ public class SpriteSheet {
 		genTextures(image.getRGB(0, 0, width, height, null, 0, width), width, height);
 	}
 	
+	public SpriteSheet(int[] pixels, int width, int height, int tileWidth, int tileHeight) {
+		setPixels(pixels, width, height, tileWidth, tileHeight);
+	}
+
 	public void setPixels(int[] pixels, int width, int height, int tileWidth, int tileHeight) {
 		this.tileWidth = tileWidth;
 		this.tileHeight = tileHeight;
@@ -115,5 +112,12 @@ public class SpriteSheet {
 	
 	public int getHeight() {
 		return this.tileHeight;
+	}
+	
+	protected void finalize() throws Throwable {
+		if(this.textureIDs!=null && this.textureIDs.length>0) {
+			glDeleteTextures(textureIDs);
+		}
+		super.finalize();
 	}
 }

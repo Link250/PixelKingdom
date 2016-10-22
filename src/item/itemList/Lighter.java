@@ -7,7 +7,7 @@ import entities.Player;
 import gfx.Screen;
 import gfx.SpriteSheet;
 import item.Tool;
-import main.InputHandler_OLD;
+import main.MouseInput;
 import map.Map;
 import pixel.PixelList;
 import pixel.pixelList.Fire;
@@ -27,12 +27,12 @@ public class Lighter extends Tool{
 		range = 10;
 	}
 
-	public void useItem(InputHandler_OLD input, Player plr, Map map, Screen screen) {
-		if((input.mousel.isPressed()|input.mouser.isPressed())){
-			int X = input.mouse.getMapX(), Y = input.mouse.getMapY(), L = Map.LAYER_FRONT;
-			if(!input.mousel.isPressed()){L=Map.LAYER_BACK;}
+	public void useItem(Player plr, Map map, Screen screen) {
+		if((MouseInput.mousel.isPressed()|MouseInput.mouser.isPressed())){
+			int X = MouseInput.mouse.getMapX(), Y = MouseInput.mouse.getMapY(), L = Map.LAYER_FRONT;
+			if(!MouseInput.mousel.isPressed()){L=Map.LAYER_BACK;}
 			byte burntime = PixelList.GetMat(X, Y, map, L).burnable;
-			if(burntime>0 && Math.sqrt(Math.pow(input.mouse.getMapX()-plr.x, 2)+Math.pow(input.mouse.getMapY()-plr.y, 2))<20){
+			if(burntime>0 && Math.sqrt(Math.pow(MouseInput.mouse.getMapX()-plr.x, 2)+Math.pow(MouseInput.mouse.getMapY()-plr.y, 2))<20){
 				map.setID(X, Y, L, 32);
 				((Fire)PixelList.GetMat(X, Y, map, L)).setTime(X, Y, L, burntime, map);
 				stack--;

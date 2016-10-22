@@ -2,6 +2,7 @@ package gui;
 
 import gfx.SpriteSheet;
 import main.Game;
+import main.MouseInput;
 
 public class Button {
 	private int x;
@@ -62,22 +63,20 @@ public class Button {
 	}
 
 	private void constructBackground() {
-		this.bg_on = new SpriteSheet();
-		this.bg_off = new SpriteSheet();
 		int[] pixels = new int[width * height];
 		for(int x = 0; x < width; x++){
 			for(int y = 0; y < height; y++){
 				pixels[y*width+x] = ((x < 2 || y < 2 || x >= width-2 || y >= height-2)? 0xffC0C0C0 : 0xff606060);
 			}
 		}
-		this.bg_on.setPixels(pixels, width, height, width, height);
+		this.bg_on = new SpriteSheet(pixels, width, height, width, height);
 		
 		for(int x = 0; x < width; x++){
 			for(int y = 0; y < height; y++){
 				pixels[y*width+x] = ((x < 2 || y < 2 || x >= width-2 || y >= height-2)? 0xffC0C0C0 : 0xffA0A0A0);
 			}
 		}
-		this.bg_off.setPixels(pixels, width, height, width, height);
+		this.bg_off = new SpriteSheet(pixels, width, height, width, height);
 	}
 	
 	public void SetPos(int x, int y){
@@ -91,10 +90,10 @@ public class Button {
 	
 	public void tick(){
 //		System.out.println(input.mouse.x + " " + input.mouse.y);
-		if(Game.input.mouse.x >= x && Game.input.mouse.x <= x+width-1 && Game.input.mouse.y >= y && Game.input.mouse.y <= y+height-1) mouseover = true;
+		if(MouseInput.mouse.x >= x && MouseInput.mouse.x <= x+width-1 && MouseInput.mouse.y >= y && MouseInput.mouse.y <= y+height-1) mouseover = true;
 		else  mouseover = false;
 		if(mouseover){
-			isclicked = Game.input.mousel.click();
+			isclicked = MouseInput.mousel.click();
 		}else{
 			isclicked = false;
 		}

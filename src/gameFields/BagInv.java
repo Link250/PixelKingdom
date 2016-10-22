@@ -9,6 +9,7 @@ import gfx.Mouse.MouseType;
 import item.Bag;
 import item.Item;
 import main.Game;
+import main.MouseInput;
 
 public class BagInv extends GameField {
 	
@@ -43,12 +44,12 @@ public class BagInv extends GameField {
 	
 	public void tick() {
 		if(Drag())this.allignFields();
-		if(mouseover(Game.input.mouse.x, Game.input.mouse.y)){
+		if(mouseover(MouseInput.mouse.x, MouseInput.mouse.y)){
 			Mouse.mouseType=MouseType.DEFAULT;
-			int mouseX = (Game.input.mouse.x-field.x), mouseY = (Game.input.mouse.y-field.y-32);
+			int mouseX = (MouseInput.mouse.x-field.x), mouseY = (MouseInput.mouse.y-field.y-32);
 			int index = mouseX/38 + mouseY/38*this.width;
 			if(mouseX%38 >= 0 && mouseY%38 >= 0 && mouseX%38 <= 36 && mouseY%38 <= 36 && index >= 0 && index < this.itemFields.size()) {
-				if(Game.input.mousel.click()){
+				if(MouseInput.mousel.click()){
 					this.itemFields.get(index).mouseClick();
 				}else {
 					this.itemFields.get(index).mouseOver();
