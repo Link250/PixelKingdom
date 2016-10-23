@@ -11,4 +11,4 @@ Please check the LICENSE file for more information.
 
 Pixel Kingdom uses xz code written by Lasse Collin and/or Igor Pavlov.
 
-© 2014-2016 QuantumHero & ultrasn0w
+© 2014-2016 QuantumHero, ultrasn0w & Tingle
