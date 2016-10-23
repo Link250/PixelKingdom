@@ -1,6 +1,6 @@
-Tingle adden = NPC mit �berteuerten Preisen, verkauft Schatzkarten, aus den Funden kann man HalfLife 3 machen, pinke farbe f�r H舫ser
+Tingle adden = NPC mit überteuerten Preisen, verkauft Schatzkarten, aus den Funden kann man HalfLife 3 machen, pinke farbe für Häuser
 
-BiomeMaps, zusammenh舅gende Biome, gleiche Kanten f�r gute ﾜberg舅ge
+BiomeMaps, zusammenhängende Biome, gleiche Kanten für gute Übergänge
 
 Dynamische Lichtquelle (beim tragen einer Torch)
 
@@ -31,31 +31,31 @@ Anti-Iridium Schwert
 
 Eimer
 	- kann vorerst nur Wasser nehmen (wegen den ADs der Lava)
-	- kann sich auff�llen und eine bestimmte anzahl an Pixeln speichern (wird dann angezeigt als Zahl wie bei MatStacks)
+	- kann sich auffüllen und eine bestimmte anzahl an Pixeln speichern (wird dann angezeigt als Zahl wie bei MatStacks)
 	- rechtsklick aufsammelt, mit pickaxe algorythmen
 	- linksklick platzieren, mit MatStack algorythmen 
 	
-Loader class auch f�r andere Ladevorg舅ge verwenden
+Loader class auch für andere Ladevorgänge verwenden
 	->Materials, Recipes, etc
 	+ folge: einfacheres adden von content ins spiel, auch in die jar (...modding)
 
 Pflanzen
-	-> bestehen wie b舫me aus einzelnen pixeln, wachsen random weiter
-	-> droppen material f�r bags
+	-> bestehen wie bäume aus einzelnen pixeln, wachsen random weiter
+	-> droppen material für bags
 	-> Weizen, oder anderes essen etc.
 	kann mit speziellen Werkzeugen abgebaut werden
-		-> Sense, die wie Pickaxe funktioniert aber nur Pflanzenblke abbaut (Pflanzenblke trotzdem mit anderen Tools abbaubar, daf�r dann keine/weniger/seltenere Drops)
-	Riesen B舫me in Wald Biomen
+		-> Sense, die wie Pickaxe funktioniert aber nur Pflanzenblöke abbaut (Pflanzenblke trotzdem mit anderen Tools abbaubar, dafür dann keine/weniger/seltenere Drops)
+	Riesen Bäume in Wald Biomen
 
-Fehlende HD Texturen erg舅zen:
+Fehlende HD Texturen ergänzen:
 	- Bags
 	
 Geladene Items als Arrays, nicht als Liste laden -bessere performance ?
 
-maximaler Chunk bereich von 3*3 mit offsets f�r weniger ram und gleich bleibende performance
+maximaler Chunk bereich von 3*3 mit offsets für weniger ram und gleich bleibende performance
 
 Multiplayer
-	-nur die grafische darstellung wird vom spieler �bernommen
+	-nur die grafische darstellung wird vom spieler übernommen
 	-alles mit Updates macht der Server
 	-maps werden komprimiert
 	-kollektive updates (eine ID mit mehreren koordinaten, zb bei groﾟen wasser/feuer mengen)
