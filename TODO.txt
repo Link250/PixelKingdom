@@ -1,6 +1,6 @@
-Tingle adden = NPC mit überteuerten Preisen, verkauft Schatzkarten, aus den Funden kann man HalfLife 3 machen, pinke farbe für Häuser
+Tingle adden = NPC mit ï¿½berteuerten Preisen, verkauft Schatzkarten, aus den Funden kann man HalfLife 3 machen, pinke farbe fï¿½r Hèˆ«ser
 
-BiomeMaps, zusammenhängende Biome, gleiche Kanten für gute Übergänge
+BiomeMaps, zusammenhèˆ…gende Biome, gleiche Kanten fï¿½r gute ï¾œbergèˆ…ge
 
 Dynamische Lichtquelle (beim tragen einer Torch)
 
@@ -20,7 +20,7 @@ Interagieren mit Taste
 
 Kiste
 
-Biome:
+Biome: 
 -"Astro"Biome
 	-> Meteoriten, Iridium, weniger Gravitation
 
@@ -31,37 +31,113 @@ Anti-Iridium Schwert
 
 Eimer
 	- kann vorerst nur Wasser nehmen (wegen den ADs der Lava)
-	- kann sich auffüllen und eine bestimmte anzahl an Pixeln speichern (wird dann angezeigt als Zahl wie bei MatStacks)
+	- kann sich auffï¿½llen und eine bestimmte anzahl an Pixeln speichern (wird dann angezeigt als Zahl wie bei MatStacks)
 	- rechtsklick aufsammelt, mit pickaxe algorythmen
 	- linksklick platzieren, mit MatStack algorythmen 
 	
-Loader class auch für andere Ladevorgänge verwenden
+Loader class auch fï¿½r andere Ladevorgèˆ…ge verwenden
 	->Materials, Recipes, etc
 	+ folge: einfacheres adden von content ins spiel, auch in die jar (...modding)
 
 Pflanzen
-	-> bestehen wie bäume aus einzelnen pixeln, wachsen random weiter
-	-> droppen material für bags
+	-> bestehen wie bèˆ«me aus einzelnen pixeln, wachsen random weiter
+	-> droppen material fï¿½r bags
 	-> Weizen, oder anderes essen etc.
 	kann mit speziellen Werkzeugen abgebaut werden
-		-> Sense, die wie Pickaxe funktioniert aber nur Pflanzenblöcke abbaut (Pflanzenblöcke trotzdem mit anderen Tools abbaubar, dafür dann keine/weniger/seltenere Drops)
-	Riesen Bäume in Wald Biomen
+		-> Sense, die wie Pickaxe funktioniert aber nur Pflanzenblî’‹ke abbaut (Pflanzenblî’‹ke trotzdem mit anderen Tools abbaubar, dafï¿½r dann keine/weniger/seltenere Drops)
+	Riesen Bèˆ«me in Wald Biomen
 
-Fehlende HD Texturen ergänzen:
+Fehlende HD Texturen ergèˆ…zen:
 	- Bags
 	
 Geladene Items als Arrays, nicht als Liste laden -bessere performance ?
 
-maximaler Chunk bereich von 3*3 mit offsets für weniger ram und gleich bleibende performance
+maximaler Chunk bereich von 3*3 mit offsets fï¿½r weniger ram und gleich bleibende performance
 
 Multiplayer
-	-nur die grafische darstellung wird vom spieler übernommen
+	-nur die grafische darstellung wird vom spieler ï¿½bernommen
 	-alles mit Updates macht der Server
 	-maps werden komprimiert
-	-kollektive updates (eine ID mit mehreren koordinaten, zb bei großen wasser/feuer mengen)
+	-kollektive updates (eine ID mit mehreren koordinaten, zb bei groï¾Ÿen wasser/feuer mengen)
 
 Neues AD System
 	-jeder Pixel, der ADs besitzen kann, hat eine eignene Klasse davon in der PixelKlasse
 	-> bessere verwaltung der Daten
 
 Sounds
+
+
+
+
+
+Tingles rosy ideas:
+	Mainstuff der mir wichtig ist:
+		- Day evening night, ein jahreszeiten basierendes tag nacht system.
+		- je nach jahreszeit aendernde baumfarben usw.
+		- sprint
+		- verlangsamte gravitation/bei welterstellung gravitationsstaerke aussuchen maybe?
+		- waehrung (methan, ethan, andere than? oder rupees <3)
+		- cooking potte, kuechen, nanokuechen (koch und kochalchemiesystem das mit einem wahrscheinlichkeitssystem aber richtungen sachen herstellt)
+		- Zeile 1 verwirklicken (Don't let your dreams be dreams)
+		- Npc's und ein NPC der sich um Zinseszinsen kuemmert.
+		- musik (das mach ich wohl, wollt ich sowieso machen)
+		- skilltrees (rpg feeling)
+		- randomgenerierte und zufaellig auftauchende halbwegs vorgefertigte aber auch komplexere quests (starbound did it wrong) 
+		- Eine Karte.
+		- Biomes (Urwald, wueste, schneeplain, tundra, plains, berge, canyon, blumen, wald, sumpf, see, boeses biom)
+		- rare biomes (Ein Biom das anstatt eines anderen Biom mit einer ehh 25% chance erstellt wird, groÃŸe liste an ideen unten)
+		- Clever Biomes (Biome die von Klima in der naehe passen, kein Eis Biom neben einer Wueste.)
+		- GLASS!! Lichtdurchlaessige Bloecke und Lichterstellende bloecke
+		- electricity, velocity und andere city.
+		
+		
+	Inspirierende ideen und Hirnsouffles:
+		- ingame lua support fuer robo AI's. (+ tutorials)
+		- Einzelne Enemy hitboxen (hand, bein, brust, kops, schwanz, glibber, paprika)
+		- Professionelle soundeffekte erstellen.
+		- character creation, away with those pesky black people.
+		- Musikinstrumente
+		- Klassen (2 pro spielart, berserker und tank, magier und alchemist, doomguy und combat medic) 
+		- vertiefte damage ebenen (anstatt magie, ranged und meele, force/slash/pierce/elemental(feuer, gift usw) + ranged/meele/magic)
+		- werde besser in dem was du machst (rennen, schaden, mit npcs handeln, kraeuter verbrauen, prefixcraften und toll sein)
+		- meine waffensucht stillen
+		- mehr mehr meeehr mehr mehr mehr baubloecke. 
+		- selfmade bloecke in einem 3d drucker machen.
+		- dani darum bitten zu erklaeren was,wie, wo, warum und wozu ein anti-iridum schwert bitte gut ist und wie das ding ueberhaupt existiert.
+		- vehicle
+		- fischen (mehrere Fischminispielarten)
+		- events
+		- pets
+		
+	Cool, aber unwichtig (TODO in pixel kingdom nach dem full release):
+		- veglitcht/fehlgehauene aber trotzdem geniale waffen (1 in 500 chance eine Waffe zu craften dessen Werte ueberwitzig geaendert werden, bsp: anstatt einer
+		  langsamschieÃŸende revolver wird es evtl. eine schnellschieÃŸende megaungenaue etwas schwaechere revolver die aber 1/5 munition verbraucht, mehr damage 
+		  macht und die beim nachladen eine 1/10 chance hat zu explodieren und den Spieler ein bisschen zu schaden, oder ein langschwert dessen schlaganimation
+		  vierfach so weit dreht (anstatt 90 grad 360 grad), und das 3 mal so schnell (nicht 4 oder 2 mal, es muss ja strange bleiben), 25% mehr damage macht und force
+		  schaden verursacht anstatt slash.). Spere die sich waehrend des schlagens drehen, schusswaffen die ihren eigenen sprite schieÃŸen, magiewaffen die ihr 
+		  element alle 2 sekunden aendern, waffen die 10% mehr damage haben aber auch eine 2% chance einen gegner komplett zu heilen, waffen die keinen
+		  passenden sound beim schlag/schuss/zaubern zu machen sondern evtl. "shaun" schreien.
+		  Natuerlich ein Ziel das man erst vielleicht machen sollte wenn alles andere abgeklappert ist.
+		
+		- rare biome ideen: 
+			- Oase (ersetzt wueste)
+			- Fruchtreicher schoener wald (ersetzt blumenbeet)
+			- Ruinensteppe (ersetzt plains)
+			- lang abgebranter wald (ersetzt urwald)
+			- Glatteisbiom (Biom aus lichtdurchlaessigen eisbloecken und eisspitzen) (ersetzt tundra)
+			- Vulkan (ersetzt berg)
+			- death valley (ersetzt canyon)
+			- Schneeber (ersetzt schneeplains)
+			- Buntwald (viele verschieden Baeume, ersetzt wald)
+			- Kueste + meer (ersetzt see)
+		- superrare biome ideen:
+			- Korallenwald (ersetzt sumpf, seeehr selten)
+			- fairy Biom (ersetzt korrupte/boese biome, seeehr friggin selten)
+			- Ampere/Volt ruinensteppe (ersetz ruinensteppe) (elektrisch geladene alien fragmente und gegner)
+			- Staehlerne Berge (ersetzt vulkan) (sehr resistente Berge, spezieller stein, voller Eisen-verwandter Metalle aber irre resistente Gegner und metallischer himmel weil cool)
+			- Lost woods (ersetzt buntwald) (in jeden lost woods biom ist ein tolles Item drin oder so... was man nur dort kriegen kann)
+			- Glitch biom (ersetzt ehhh keine ahnung)
+			
+			  
+
+		
