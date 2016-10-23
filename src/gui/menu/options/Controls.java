@@ -1,7 +1,6 @@
 package gui.menu.options;
 
 import static main.KeyConfig.keyMapping;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -60,7 +59,7 @@ public class Controls {
 		for (Entry<Integer, Keys> entry : keyMapping.entrySet()) {
 			if(key.equals(entry.getValue())) {
 				buttonValues.put(button, entry.getKey());
-				button.TextData(KeyEvent.getKeyText(entry.getKey()), false);
+				button.TextData(main.KeyConfig.getKeyName(entry.getKey()), false);
 				break;
 			}
 		}
@@ -139,7 +138,7 @@ public class Controls {
 		}
 		
 		public void render(){
-			Game.font.render(Screen.height/3, height, true, false, text, 0, 0xff000000);
+			Game.font.render(Screen.width/2-400, height, false, false, text, 0, 0xff000000);
 			button.render();
 		}
 	}

@@ -11,7 +11,6 @@ public class Camera {
 	public Camera(int width, int height) {
 		position = new Vector3f(0,0,0);
 		projection = new Matrix4f().setOrtho2D(-width, width, -height, height);
-		System.out.println(projection);
 	}
 	
 	public void setPosition(Vector3f position) {

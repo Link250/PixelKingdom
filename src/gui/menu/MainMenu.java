@@ -1,5 +1,7 @@
 package gui.menu;
 
+import gfx.Screen;
+import gfx.SpriteSheet;
 import gui.Button;
 import main.Game;
 import main.Keys;
@@ -12,6 +14,7 @@ public class MainMenu implements GameMenu{
 	public MapSelection MapSelect;
 	public OptionScreen OptionScreen;
 	private Game game;
+	private SpriteSheet logo;
 	
 	public MainMenu(Game game) {
 		this.game = game;
@@ -24,6 +27,7 @@ public class MainMenu implements GameMenu{
 		OP.gfxData("/Buttons/OP.png", true);
 		QT = new Button((Game.WIDTH)/2,bYOff + (int)(bHeight*bNr++*1.5),bWidth,bHeight);
 		QT.gfxData("/Buttons/QT.png", true);
+		logo = new SpriteSheet("/Logo.png");
 	}
 	
 	public void render() {
@@ -39,6 +43,7 @@ public class MainMenu implements GameMenu{
 			break;
 		default:
 		case MainMenu:
+			Screen.drawGUISprite((Game.WIDTH-logo.getWidth())/2, 50, logo);
 			SP.render();
 			MP.render();
 			OP.render();

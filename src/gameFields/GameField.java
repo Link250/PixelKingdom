@@ -54,7 +54,6 @@ public abstract class GameField {
 						((x < 2 || y < 2 || x >= field.width-2 || y >= field.height-2)? 0x80404040 : 0x40808080);
 			}
 		}
-		System.out.println(field.width + " " + field.height);
 		this.background = new SpriteSheet(pixels, field.width, field.height, field.width, field.height);
 	}
 	

@@ -35,7 +35,6 @@ public class NewMapWindow extends JFrame {
 		
 		this.setTitle("Creating a new Map");
 		this.setAlwaysOnTop(true);
-		this.setLocationRelativeTo(game);
 		
 		this.addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent windowEvent){
