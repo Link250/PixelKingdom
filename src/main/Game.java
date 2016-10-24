@@ -64,6 +64,8 @@ public class Game implements Runnable{
 	public Client client;
 	public Server server;
 	
+	public SpriteSheet back;
+	
 	public TrueTypeFont font2;
 	
 	public void init(){
@@ -109,6 +111,7 @@ public class Game implements Runnable{
 		itemlist = new ItemList();
 		biomelist = new BiomeList();
 		
+		back = new SpriteSheet("/NormalBack.png");
 		//TODO		TESTING AREA
 	}
 	
@@ -202,6 +205,11 @@ public class Game implements Runnable{
 	public void render(){
 		glClear(GL_COLOR_BUFFER_BIT);
 
+		for (int x = 0; x < Screen.width; x+= back.getWidth()) {
+			for (int y = 0; y < Screen.height; y+= back.getHeight()) {
+				Screen.drawGUISprite(x, y, back);
+			}
+		}
 		switch (gamemode){
 		case Menu :
 			menu.render();

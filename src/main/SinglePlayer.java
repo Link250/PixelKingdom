@@ -20,11 +20,9 @@ public class SinglePlayer {
 	public static boolean debuginfo = false;
 	private String files;
 	public File plr;
-	private SpriteSheet back;
 	private ArrayList<Mob> mobList = new ArrayList<>();
 	
 	public SinglePlayer(String files){
-		back = new SpriteSheet("/NormalBack.png");
 		this.screen = Game.screen;
 		this.files = files;
 		map = new Map(files, screen);
@@ -93,9 +91,6 @@ public class SinglePlayer {
 	}
 	
 	public void render(){
-		
-//		g.drawImage(back, 0, 0, Game.WIDTH, Game.HEIGHT, null);
-		Screen.drawGUISprite(0, 0, back);
 		
 		map.render();
 		for (Mob mob : mobList) {mob.render();}
