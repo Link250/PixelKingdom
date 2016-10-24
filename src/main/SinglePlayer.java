@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import entities.Mob;
 import entities.Player;
 import gfx.Screen;
-import gfx.SpriteSheet;
 import map.Map;
 
 public class SinglePlayer {

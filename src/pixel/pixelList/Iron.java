@@ -12,5 +12,6 @@ public class Iron extends Material<AD>{
 		displayName = "Iron";
 		usePickaxe = 2;
 		tick = false;
+		loadTexture();
 	}
 }

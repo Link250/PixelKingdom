@@ -1,6 +1,11 @@
 package pixel;
 
-import gfx.Screen;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
+import gfx.SpriteSheet;
 import main.Game;
 import map.Map;
 
@@ -25,6 +30,10 @@ public abstract class Material<ADType extends AD> {
 	private ADType adtype = null;
 	
 	protected ADType ad = null;
+	
+	protected int[] texture = null;
+	protected int textureWidth;
+	protected int textureHeight;
 	
 	public Material(ADType ad){
 		this.adtype = ad;
@@ -74,12 +83,30 @@ public abstract class Material<ADType extends AD> {
 	public final AD createAD(){
 		return this.canHaveAD() ? this.getNewAD() : null;
 	}
+	
+	protected void loadTexture() {
+		loadTexture("/Map/"+name+".png");
+	}
 
+	protected void loadTexture(String path) {
+		BufferedImage image = null;
+		
+		try {
+			image = ImageIO.read(SpriteSheet.class.getResourceAsStream(path));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		if(image == null){ return;}
+		
+		texture = image.getRGB(0, 0, image.getWidth(), image.getHeight(), null, 0, image.getWidth());
+	}
+	
 	public byte tickLight(int x, int y, int l, Map map) {return 0;}
 	
 	public boolean tick(int x, int y, int l, int numTick, Map map){return false;}
 	
 	public int render(int x, int y, int l, Map map) {
-		return Screen.getMaterialPixel(ID, l);
+		return texture[x%textureWidth + (y%textureHeight)*textureWidth];
 	}
 }

@@ -14,6 +14,7 @@ public class Torch extends Material<AD>{
 		displayName = "Torch";
 		tick = true;
 		solid = false;
+		loadTexture();
 	}
 
 	public byte tickLight(int x, int y, int l, Map map) {

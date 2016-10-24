@@ -12,6 +12,7 @@ public class Air extends Material<AD>{
 		displayName = "Air";
 		usePickaxe = 0;
 		tick = false;
+		texture = new int[1];
 	}
 	
 }

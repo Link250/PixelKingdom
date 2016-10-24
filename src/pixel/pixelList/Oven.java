@@ -24,6 +24,7 @@ public class Oven extends Material<OvenAD>{
 		displayName = "Oven";
 		usePickaxe = 1;
 		tick = true;
+		loadTexture();
 	}
 	
 	public boolean tick(int x, int y, int l, int numTick, Map map) {

@@ -14,5 +14,6 @@ public class Ore_Gold extends Ore<OreAD>{
 		displayName = "Gold Ore";
 		usePickaxe = 2.0;
 		tick = false;
+		loadTexture();
 	}
 }

@@ -12,6 +12,7 @@ public class Earth extends Material<AD>{
 		displayName = "Earth";
 		usePickaxe = 1;
 		tick = false;
+		loadTexture();
 	}
 	
 }

@@ -12,5 +12,6 @@ public class Gold extends Material<AD>{
 		displayName = "Gold";
 		usePickaxe = 2.0;
 		tick = false;
+		loadTexture();
 	}
 }
