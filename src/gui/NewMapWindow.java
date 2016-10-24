@@ -68,7 +68,7 @@ public class NewMapWindow extends JFrame {
 		addButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 		        Map.newMap(MapSelection.FILE_DIR,nameField.getText());
-				mapSelection.LoadFiles();
+				mapSelection.refresh();
 				dispose();
 			}
 		});

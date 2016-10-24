@@ -16,8 +16,8 @@ public class Button {
 	private int ToffY;
 	private SpriteSheet gfx;
 	private boolean mirrorX=false, mirrorY = false;
-	private SpriteSheet bg_on = null;
-	private SpriteSheet bg_off = null;
+	private SpriteSheet bg_on;
+	private SpriteSheet bg_off;
 	private boolean background = false;
 	public boolean mouseover = false;
 	public boolean isclicked = false;
@@ -36,18 +36,22 @@ public class Button {
 		this.y = y - (centeredY ? this.height/2 : 0);
 	}
 
-	public void TextData(String Text, boolean limit, int ToffX, int ToffY){
+	public void TextData(String Text, boolean limit, int ToffX, int ToffY, boolean background){
 		this.Text = Text;
 		this.uselimit = limit;
 		this.ToffX = ToffX;
 		this.ToffY = ToffY;
+		this.background = background;
+		if(background)constructBackground();
 	}
 	
-	public void TextData(String Text, boolean limit){
+	public void TextData(String Text, boolean limit, boolean background){
 		this.Text = Text;
 		this.uselimit = limit;
 		this.ToffX = this.width/2;
 		this.ToffY = this.height/2;
+		this.background = background;
+		if(background)constructBackground();
 	}
 	
 	public void gfxData(String gfxPath, boolean background){
@@ -91,7 +95,6 @@ public class Button {
 	}
 	
 	public void tick(){
-//		System.out.println(input.mouse.x + " " + input.mouse.y);
 		if(MouseInput.mouse.x >= x && MouseInput.mouse.x <= x+width-1 && MouseInput.mouse.y >= y && MouseInput.mouse.y <= y+height-1) mouseover = true;
 		else  mouseover = false;
 		if(mouseover){
@@ -104,29 +107,12 @@ public class Button {
 	public void render(){
 		if(background){
 			Screen.drawGUISprite(x, y, mouseover ? bg_on : bg_off);
-//			for(int i = 0; i < height; i++){
-//				for(int j = 0; j < width; j++){
-//					if(mouseover){
-//						if(i==0 || i==height-1 || j==0 || j==width-1)Game.screen.drawGUIPixel(x+j, y+i, 0xffC0C0C0);
-//						else Game.screen.drawGUIPixel(x+j, y+i, 0xff606060);
-//					}
-//					else{
-//						if(i==0 || i==height-1 || j==0 || j==width-1)Game.screen.drawGUIPixel(x+j, y+i, 0xffC0C0C0);
-//						else Game.screen.drawGUIPixel(x+j, y+i, 0xffA0A0A0);
-//					}
-//				}
-//			}
 		}
 		if(gfx != null){
-//			gfx.tileWidth=width;
-//			gfx.tileHeight=height;
-//debug			System.out.println(gfx.tileWidth);
 			if(mouseover){
 				Screen.drawGUISprite(x, y, gfx, 1, mirrorX, mirrorY);
-//				Game.screen.drawGUITile(x, y, 1, mirrorXY, gfx, 0);
 			}else{
 				Screen.drawGUISprite(x, y, gfx, 0, mirrorX, mirrorY);
-//				Game.screen.drawGUITile(x, y, 0, mirrorXY, gfx, 0);
 			}
 		}
 		if(uselimit){

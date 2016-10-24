@@ -356,13 +356,13 @@ public class Player extends Mob{
 		
 		if((anim == 10 || anim == 11) & this.bags.get(BAG.BELT_1) != null){
 			try{
-				if(anim == 10)	this.bags.get(BAG.BELT_1).getItem(selected).renderOnMap(Game.screen, x+3-movingDir*10, y-5, movingDir*16);
-				if(anim == 11)	this.bags.get(BAG.BELT_1).getItem(selected).renderOnMap(Game.screen, x+4-movingDir*12, y-3, movingDir*16);
+				if(anim == 10)	this.bags.get(BAG.BELT_1).getItem(selected).renderOnMap(Game.screen, x+3-movingDir*10, y-5, movingDir==1, false);
+				if(anim == 11)	this.bags.get(BAG.BELT_1).getItem(selected).renderOnMap(Game.screen, x+4-movingDir*12, y-3, movingDir==1, false);
 			}catch(NullPointerException e){}
 		}
 		if(anim == 12 & this.bags.get(BAG.BELT_1) != null){
 			try{
-				this.bags.get(BAG.BELT_1).getItem(selected).renderOnMap(Game.screen, x+3-movingDir*8, y-2, movingDir*16);
+				this.bags.get(BAG.BELT_1).getItem(selected).renderOnMap(Game.screen, x+3-movingDir*8, y-2, movingDir==1, false);
 			}catch(NullPointerException e){}
 		}
 		/*		EQUIPMENT		*/

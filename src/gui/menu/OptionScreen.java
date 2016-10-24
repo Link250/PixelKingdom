@@ -31,9 +31,9 @@ public class OptionScreen implements GameMenu{
 		back = new Button(50, 50, 60, 60);
 		back.gfxData("/Buttons/back.png", true);
 		visualsButton = new Button(Game.WIDTH/2,bYOff + (int)(bHeight*bNr++*1.5),bWidth,bHeight);
-		visualsButton.TextData("Visuals", false);
+		visualsButton.TextData("Visuals", false, true);
 		controlsButton = new Button(Game.WIDTH/2,bYOff + (int)(bHeight*bNr++*1.5),bWidth,bHeight);
-		controlsButton.TextData("Controls", false);
+		controlsButton.TextData("Controls", false, true);
 	}
 	
 	public void resetMenu() {

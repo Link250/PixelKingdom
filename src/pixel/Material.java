@@ -5,7 +5,6 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import gfx.SpriteSheet;
 import main.Game;
 import map.Map;
 
@@ -85,21 +84,24 @@ public abstract class Material<ADType extends AD> {
 	}
 	
 	protected void loadTexture() {
-		loadTexture("/Map/"+name+".png");
+		loadTexture("/MapTextures/"+name+".png");
 	}
 
 	protected void loadTexture(String path) {
 		BufferedImage image = null;
 		
 		try {
-			image = ImageIO.read(SpriteSheet.class.getResourceAsStream(path));
+			image = ImageIO.read(Material.class.getResourceAsStream(path));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		
 		if(image == null){ return;}
 		
-		texture = image.getRGB(0, 0, image.getWidth(), image.getHeight(), null, 0, image.getWidth());
+		textureWidth = image.getWidth();
+		textureHeight = image.getHeight();
+
+		texture = image.getRGB(0, 0, textureWidth, textureHeight, null, 0, textureWidth);
 	}
 	
 	public byte tickLight(int x, int y, int l, Map map) {return 0;}

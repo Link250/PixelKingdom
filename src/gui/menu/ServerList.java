@@ -75,7 +75,7 @@ public class ServerList implements GameMenu{
 				if(turn) {
 					name.add(s);
 					ButtonList.add(new Button(0, 0, 300, 60));
-					ButtonList.get(ButtonList.size()-1).TextData( s, true);
+					ButtonList.get(ButtonList.size()-1).TextData( s, true, true);
 				}else{
 					adress.add(s);
 				}

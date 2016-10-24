@@ -12,6 +12,7 @@ public class Lava extends Liquid<LavaAD>{
 		name = "Lava";
 		displayName = "Lava";
 		viscosity = 10;
+		loadTexture();
 	}
 	
 	public boolean tick(int x, int y, int l, int numTick, Map map) {

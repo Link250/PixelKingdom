@@ -22,9 +22,17 @@ public class PArea {
 		this.width = w;
 		this.height = h;
 		int[] pixels = new int[w*h];
-		for (int i = 0; i < pixels.length; i++) {
-			pixels[i] = 0x80ff0000;
+		for (int x = 0; x < w; x++) {
+			for (int y = 0; y < h; y++) {
+				pixels[x+y*w] = x <= 1 || x>=w-2 || y <= 1 || y>=h-2 ? 0xff404040 : 0xff808080;
+			}
 		}
+		back = new SpriteSheet(pixels, w, h, w, h);
+	}
+	
+	public void setPosition(int x, int y){
+		this.x = x;
+		this.y = y;
 	}
 	
 	public boolean contains(int X, int Y){

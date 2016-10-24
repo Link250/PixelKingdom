@@ -59,7 +59,7 @@ public class Controls {
 		for (Entry<Integer, Keys> entry : keyMapping.entrySet()) {
 			if(key.equals(entry.getValue())) {
 				buttonValues.put(button, entry.getKey());
-				button.TextData(main.KeyConfig.getKeyName(entry.getKey()), false);
+				button.TextData(main.KeyConfig.getKeyName(entry.getKey()), false, true);
 				break;
 			}
 		}

@@ -31,6 +31,8 @@ public class Screen {
 	
 	private static Shader default_shader;
 	private static Shader colored_shader;
+	private static Shader map_shader;
+	
 	private static Matrix4f projection;
 	private static Model tileModel;
 	
@@ -44,6 +46,7 @@ public class Screen {
 		projection = new Matrix4f().setOrtho2D(-width, width, -height, height);
 		default_shader = new Shader("default_shader");
 		colored_shader = new Shader("colored_shader");
+		map_shader = new Shader("map_shader");
 		tileModel = new Model();
 	}
 	
@@ -251,36 +254,48 @@ public class Screen {
 	
 	public static void drawMap(Map map){
 		int textures[] = new int[4];
-		Matrix4f target;
+		Matrix4f target = null;
 		float X, Y;
-		default_shader.bind();
+		map_shader.bind();
+		map_shader.setUniform("sampler", 0);
 		glActiveTexture(GL_TEXTURE0 + 0);
 
+//		int nx = 0, ny = 0;
+//		float ox = 0, oy = 0;
 		for (float x = -width/2-RENDER_CHUNK_SIZE; x < width/2+RENDER_CHUNK_SIZE; x+=RENDER_CHUNK_SIZE) {
 			for (float y = -height/2-RENDER_CHUNK_SIZE; y < height/2+RENDER_CHUNK_SIZE; y+=RENDER_CHUNK_SIZE) {
 				for (int l : Map.LAYER_ALL) {
 					textures[l] = map.getRenderChunk((int)(x+xOffset), (int)(y+yOffset), l);
 				}
-				X = x;
-				Y = y;
-				X -= (X+xOffset)%RENDER_CHUNK_SIZE;
-				Y -= (Y+yOffset)%RENDER_CHUNK_SIZE;
-				Y+=RENDER_CHUNK_SIZE/2;
-				X+=RENDER_CHUNK_SIZE/2;
-				X*=MAP_SCALE*MAP_ZOOM;
-				Y*=MAP_SCALE*MAP_ZOOM;
-				Y = height - Y;
-				target = projection.mul(new Matrix4f().translate(new Vector3f(X*2-width, Y*2-height, 0)), new Matrix4f());
-				target.scale(RENDER_CHUNK_SIZE*MAP_SCALE*MAP_ZOOM);
-				default_shader.setUniform("sampler", 0);
-				default_shader.setUniform("projection", target);
+//				if(target == null) {
+					X = x;
+					Y = y;
+					X -= (X+xOffset)%RENDER_CHUNK_SIZE;
+					Y -= (Y+yOffset)%RENDER_CHUNK_SIZE;
+					Y+=RENDER_CHUNK_SIZE/2;
+					X+=RENDER_CHUNK_SIZE/2;
+					X*=MAP_SCALE*MAP_ZOOM;
+					Y*=MAP_SCALE*MAP_ZOOM;
+					Y = height - Y;
+					target = projection.mul(new Matrix4f().translate(new Vector3f(X*2-width, Y*2-height, 0)), new Matrix4f());
+					target.scale(RENDER_CHUNK_SIZE*MAP_SCALE*MAP_ZOOM);
+//					ox = target.m30();
+//					oy = target.m31();
+//				}
 				
+				map_shader.setUniform("projection", target);
 				for (int l : Map.LAYER_ALL) {
 					if(textures[l] == 0)continue;
+					map_shader.setUniform("layer", l);
 					glBindTexture(GL_TEXTURE_2D, textures[l]);
 					tileModel.render();
 				}
+//				ny++;
+//				target.m30(ox+target.m00()*2*nx);
+//				target.m31(oy-target.m11()*2*ny);
 			}
+//			nx++;
+//			ny=0;
 		}
 	}
 }

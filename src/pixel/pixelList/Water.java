@@ -12,6 +12,7 @@ public class Water extends Liquid<AD>{
 		name = "Water";
 		displayName = "Water";
 		viscosity = 1000;
+		loadTexture();
 	}
 	
 	public boolean tick(int x, int y, int l, int numTick, Map map) {

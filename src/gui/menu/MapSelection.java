@@ -27,6 +27,8 @@ public class MapSelection implements GameMenu{
 	
 	private NewMapWindow newMapWindow;
 	
+	boolean refresh = false;
+	
 	public MapSelection(Game game) {
 		this.game = game;
 		int buttonSize = 60;
@@ -46,6 +48,10 @@ public class MapSelection implements GameMenu{
 		scrollDOWN = new Button(Screen.width/2, Screen.height/2+(maxButtonsOnScreen/2+1)*buttonSize*3/2, buttonSize, buttonSize);
 		scrollDOWN.gfxData("/Buttons/ArrowDown.png", false);
 		LoadFiles();
+	}
+	
+	public void refresh() {
+		refresh = true;
 	}
 	
 	public void LoadFiles(){
@@ -69,7 +75,7 @@ public class MapSelection implements GameMenu{
 			if(new File(FILE_DIR + File.separator + list[i]).isDirectory()){
 				files[i] = FILE_DIR + File.separator + list[i];
 				ButtonList.add(new Button(0, 0, 300, 60));
-				ButtonList.get(i).TextData( list[i], true);
+				ButtonList.get(i).TextData( list[i], true, true);
 			}
 		}
 	}
@@ -88,6 +94,7 @@ public class MapSelection implements GameMenu{
 	}
 	
 	public void tick(){
+		if(refresh)LoadFiles();
 		for(Button button : ButtonList){
 			button.tick();
 		}

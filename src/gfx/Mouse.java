@@ -19,24 +19,23 @@ public class Mouse {
 	public static Item Item;
 	private static List<String> textList = new ArrayList<>();
 	private static boolean textActive;
-	private static PArea textField = new PArea(0,0,0,0);
+	private static PArea textField;
 	
 	public static void setText(List<String> list) {
 		if(!list.equals(textField)) {
+			textField = new PArea(0, 0, 1, 1);
 			textList = list;
-			textField = new PArea(0,0,0,0);
 			textList.forEach((s) -> {
 				if(Game.sfont.renderLength(s, 0) > textField.width) textField.width = Game.sfont.renderLength(s, 0);
 			});
-			textField.height = 26*textList.size() + 8;
-			textField.width += 6;
+			textField.setSize(textField.width+6, 26*textList.size() + 8);
 		}
 		textActive = true;
 	}
 	
 	public static void resetText() {
 		textList = new ArrayList<>();
-		textField = new PArea(0,0,0,0);
+		textField = new PArea(0,0,1,1);
 	}
 	
 	public static void render(){
@@ -56,17 +55,17 @@ public class Mouse {
 			Item.render(Game.screen, MouseInput.mouse.x-5, MouseInput.mouse.y-5);
 			break;
 		case TEXT:
-//			int x = MouseInput.mouse.x+mouseNormal.getWidth()+2;
-//			int y = MouseInput.mouse.y;
-//			if(x+textField.width>Screen.width) x -= textField.width+mouseNormal.getWidth()*2;
-//			if(y+textField.height>Screen.height) y -= textField.height-mouseNormal.getHeight();
-//			Game.screen.drawGUIPixelBorder(x, y, textField.width, textField.height, 2, 0xff000000);
-//			Game.screen.drawGUIPixelArea(x+2, y+2, textField.width-4, textField.height-4, 0xffa0a0a0);
-//			for (String string : textList) {
-//				Game.sfont.render(x+4, y+4, false, false, string, 0, 0xff000000, Game.screen);
-//				y+=26;
-//			}
-//			textActive = false;
+			int x = MouseInput.mouse.x+MouseType.DEFAULT.sheet.getWidth()+2;
+			int y = MouseInput.mouse.y;
+			if(x+textField.width>Screen.width) x -= textField.width+MouseType.DEFAULT.sheet.getWidth()*2;
+			if(y+textField.height>Screen.height) y -= textField.height-MouseType.DEFAULT.sheet.getHeight();
+			textField.setPosition(x, y);
+			textField.showArea();
+			for (String string : textList) {
+				Game.sfont.render(x+4, y+4, false, false, string, 0, 0xff000000);
+				y+=26;
+			}
+			textActive = false;
 		case DEFAULT:
 		default:
 			if(mouseType.sheet==null)genMouseTexture(MouseType.DEFAULT);
@@ -121,22 +120,10 @@ public class Mouse {
 			}
 			type.sheet = new SpriteSheet(pixelsScaled, width*s, width*s, width*s, width*s);
 			break;
-		case TEXT:
-//			int x = MouseInput.mouse.x+mouseNormal.getWidth()+2;
-//			int y = MouseInput.mouse.y;
-//			if(x+textField.width>Screen.width) x -= textField.width+mouseNormal.getWidth()*2;
-//			if(y+textField.height>Screen.height) y -= textField.height-mouseNormal.getHeight();
-//			Game.screen.drawGUIPixelBorder(x, y, textField.width, textField.height, 2, 0xff000000);
-//			Game.screen.drawGUIPixelArea(x+2, y+2, textField.width-4, textField.height-4, 0xffa0a0a0);
-//			for (String string : textList) {
-//				Game.sfont.render(x+4, y+4, false, false, string, 0, 0xff000000, Game.screen);
-//				y+=26;
-//			}
-//			textActive = false;
+		case TEXT:break;
 		case DEFAULT:
 		default:
 			MouseType.DEFAULT.sheet = new SpriteSheet("/Mouse.png");
-//			Game.screen.drawGUITile(Game.input.mouse.x, Game.input.mouse.y, 0, 0x00, mouseN, 0);
 			break;
 		}
 	}

@@ -120,7 +120,7 @@ public class Visuals {
 		
 		public MapZoomOption() {
 			value = new Button(0,0, 80, 60);
-			value.TextData("x"+MainConfig.mapZoom, false);
+			value.TextData("x"+MainConfig.mapZoom, false, true);
 		}
 		
 		public void tick() {
@@ -128,7 +128,7 @@ public class Visuals {
 			if(value.isclicked) {
 				MainConfig.mapZoom++;
 				if(MainConfig.mapZoom > 5) MainConfig.mapZoom = 1;
-				value.TextData("x"+MainConfig.mapZoom, false);
+				value.TextData("x"+MainConfig.mapZoom, false, true);
 			}
 		}
 
@@ -213,14 +213,14 @@ public class Visuals {
 		
 		public FullscreenOption() {
 			fullscreen = new Button(0, 0, 500, 60);
-			fullscreen.TextData("Fullscreen: " + (MainConfig.fullscreen ? "ON" : "OFF"), false);
+			fullscreen.TextData("Fullscreen: " + (MainConfig.fullscreen ? "ON" : "OFF"), false, true);
 		}
 		
 		public void tick() {
 			fullscreen.tick();
 			if(fullscreen.isclicked) {
 				MainConfig.fullscreen = !MainConfig.fullscreen;
-				fullscreen.TextData("Fullscreen: " + (MainConfig.fullscreen ? "ON" : "OFF"), false);
+				fullscreen.TextData("Fullscreen: " + (MainConfig.fullscreen ? "ON" : "OFF"), false, true);
 			}
 		}
 
