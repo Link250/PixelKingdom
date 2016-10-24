@@ -32,7 +32,8 @@ public class ServerList implements GameMenu{
 	private NewServerWindow newServerWindow;
 	/** should always be uneven or else the delete and play buttons dont lign up */
 	private int maxButtonsOnScreen = 1;
-
+	boolean refresh = false;
+	
 	public ServerList(Game game) {
 		this.game = game;
 		int buttonSize = 60;
@@ -98,6 +99,7 @@ public class ServerList implements GameMenu{
 	}
 	
 	public void tick(){
+		if(refresh)LoadServers(true);
 		for(Button button : ButtonList){
 			button.tick();
 		}
@@ -171,6 +173,10 @@ public class ServerList implements GameMenu{
 		Game.font.render(Screen.width/2, 50, "Multiplayer", 0, 0xff000000, Game.screen);
 	}
 	
+	public void refresh() {
+		refresh = true;
+	}
+	
 	public void addServer(String name, String adress) {
         this.name.add(name);
         this.adress.add(adress);
@@ -179,6 +185,6 @@ public class ServerList implements GameMenu{
         	dir.mkdirs();
         }
         new File(this.DATA_PATH+name).mkdir();
-		this.LoadServers(true);
+		this.refresh();
 	}
 }
