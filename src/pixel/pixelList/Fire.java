@@ -14,6 +14,8 @@ public class Fire extends Material<FireAD>{
 		displayName = "Fire";
 		tick = true;
 		solid = false;
+		frontLightReduction = 0;
+		backLightReduction = 0;
 	}
 	
 	public boolean tick(int x, int y, int l, int numTick, Map map) {
@@ -37,7 +39,7 @@ public class Fire extends Material<FireAD>{
 		return true;
 	}
 	
-	public byte tickLight(int x, int y, int l, Map map) {
+	public short tickLight(int x, int y, int l, Map map) {
 		return (byte) (map.<FireAD>getAD(x, y, l).burntime*Map.MAX_LIGHT/100);
 	}
 	

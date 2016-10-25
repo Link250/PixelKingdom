@@ -15,6 +15,8 @@ public class Air extends Material<AD>{
 		texture = new int[1];
 		textureWidth = 1;
 		textureHeight = 1;
+		frontLightReduction = 1;
+		backLightReduction = 0;
 	}
 	
 }

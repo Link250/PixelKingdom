@@ -14,10 +14,12 @@ public class Torch extends Material<AD>{
 		displayName = "Torch";
 		tick = true;
 		solid = false;
+		frontLightReduction = 0;
+		backLightReduction = 0;
 		loadTexture();
 	}
 
-	public byte tickLight(int x, int y, int l, Map map) {
+	public short tickLight(int x, int y, int l, Map map) {
 		return Map.MAX_LIGHT;
 	}
 }

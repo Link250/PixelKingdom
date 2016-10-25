@@ -14,8 +14,8 @@ import java.io.IOException;
 public class Map {
 
 	public static final byte LAYER_BACK=0, LAYER_LIQUID = 1, LAYER_FRONT = 2, LAYER_LIGHT = 3,
-			MAX_LIGHT=64,
 			GT_SP=0,GT_CLIENT=1,GT_SERVER=2;
+	public static final short MAX_LIGHT = 255;
 	public static final byte[] LAYER_ALL = {LAYER_BACK,LAYER_LIQUID,LAYER_FRONT,LAYER_LIGHT},
 			LAYER_ALL_PIXEL = {LAYER_BACK,LAYER_LIQUID,LAYER_FRONT},
 			LAYER_ALL_MATERIAL = {LAYER_BACK,LAYER_FRONT};
@@ -70,14 +70,16 @@ public class Map {
 			}
 			updateCountPixel++;
 		}
-		size = updatesLight.startUpdate();
-		for(int i = 0; i < size; i++){
-			int[] co = updatesLight.activate(i);
-			x=co[0];y=co[1];l=co[2];
-			if(getUpdate(x,y,l)) {
-				updateLight(x, y);
+		for (int n = 0; n < 10; n++) {
+			size = updatesLight.startUpdate();
+			for(int i = 0; i < size; i++){
+				int[] co = updatesLight.activate(i);
+				x=co[0];y=co[1];l=co[2];
+				if(getUpdate(x,y,l)) {
+					updateLight(x, y);
+				}
+				updateCountLight++;
 			}
-			updateCountLight++;
 		}
 	}
 	
@@ -142,23 +144,22 @@ public class Map {
 	}
 	
 	public void updateLight(int x, int y){
-		byte light,tempL,c;
+		short light,tempL,c;
 		if(getID(x,y,LAYER_BACK)==0){
-			light = (byte) MAX_LIGHT;
+			light = MAX_LIGHT;
 		}else{
-			light=0;
-			c = (byte) (getID(x,y,Map.LAYER_FRONT)==0 ? 1 : 2);
+			light=(short) (MAX_LIGHT-PixelList.GetMat(x, y, this, LAYER_BACK).backLightReduction());
 			for (int L= 0; L < LAYER_ALL_PIXEL.length; L++) {
 				tempL = PixelList.GetPixel(getID(x, y, L),L).tickLight(x, y, L, this);
 				if(tempL>light)light = tempL;
 			}
-			if((tempL = getlight(x+1,y))-c>light)light = (byte) (tempL-c);
-			if((tempL = getlight(x-1,y))-c>light)light = (byte) (tempL-c);
-			if((tempL = getlight(x,y+1))-c>light)light = (byte) (tempL-c);
-			if((tempL = getlight(x,y-1))-c>light)light = (byte) (tempL-c);
+			if((tempL = getlight(x+1,y))-(c=PixelList.GetMat(x, y, this, LAYER_FRONT).frontLightReduction())>light)light = (short) (tempL-c);
+			if((tempL = getlight(x-1,y))-(c=PixelList.GetMat(x, y, this, LAYER_FRONT).frontLightReduction())>light)light = (short) (tempL-c);
+			if((tempL = getlight(x,y+1))-(c=PixelList.GetMat(x, y, this, LAYER_FRONT).frontLightReduction())>light)light = (short) (tempL-c);
+			if((tempL = getlight(x,y-1))-(c=PixelList.GetMat(x, y, this, LAYER_FRONT).frontLightReduction())>light)light = (short) (tempL-c);
 			if(light<0)light = 0;
 		}
-		setlight(x,y,light);
+		setlight(x,y,(byte) light);
 	}
 	
 	public void render(){
@@ -234,11 +235,12 @@ public class Map {
 		}
 	}
 
-	public byte getlight(int x, int y){
+	public short getlight(int x, int y){
 		int cx = x/1024,cy = y/1024;
 		if(chunks[cx][cy]!=null){
 			x %= 1024;y %= 1024;
-			return chunks[cx][cy].light[x+y*1024];
+			short temp = chunks[cx][cy].light[x+y*1024];
+			return (short) (temp<0 ? temp+256 : temp);
 		}else{
 			return 0;
 		}
@@ -254,8 +256,8 @@ public class Map {
 		}
 	}
 
-	public void setlighter(int x, int y, byte b) {
-		if(getlight(x,y)<b)setlight(x, y, b);
+	public void setlighter(int x, int y, short b) {
+		if(getlight(x,y)<b)setlight(x, y, (byte)b);
 	}
 
 	public boolean isSolid(int x, int y){

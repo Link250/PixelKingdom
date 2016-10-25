@@ -72,7 +72,7 @@ public class Oven extends Material<OvenAD>{
 		return ad.heat>0;
 	}
 	
-	public byte tickLight(int x, int y, int l, Map map) {
+	public short tickLight(int x, int y, int l, Map map) {
 		return (byte) (map.<OvenAD>getAD(x, y, l).heat/(maxHeat/16));
 	}
 	

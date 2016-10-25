@@ -34,6 +34,9 @@ public abstract class Material<ADType extends AD> {
 	protected int textureWidth;
 	protected int textureHeight;
 	
+	protected short frontLightReduction = 8;
+	protected short backLightReduction = 255;
+	
 	public Material(ADType ad){
 		this.adtype = ad;
 	}
@@ -104,7 +107,11 @@ public abstract class Material<ADType extends AD> {
 		texture = image.getRGB(0, 0, textureWidth, textureHeight, null, 0, textureWidth);
 	}
 	
-	public byte tickLight(int x, int y, int l, Map map) {return 0;}
+	public short tickLight(int x, int y, int l, Map map) {return 0;}
+	
+	public short frontLightReduction(){return this.frontLightReduction;}
+	
+	public short backLightReduction(){return this.backLightReduction;}
 	
 	public boolean tick(int x, int y, int l, int numTick, Map map){return false;}
 	

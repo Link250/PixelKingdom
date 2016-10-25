@@ -12,6 +12,8 @@ public class Lava extends Liquid<LavaAD>{
 		name = "Lava";
 		displayName = "Lava";
 		viscosity = 10;
+		frontLightReduction = 0;
+		backLightReduction = 0;
 		loadTexture();
 	}
 	
@@ -42,7 +44,7 @@ public class Lava extends Liquid<LavaAD>{
 		return true;
 	}
 	
-	public byte tickLight(int x, int y, int l, Map map) {
+	public short tickLight(int x, int y, int l, Map map) {
 		return (byte) (Map.MAX_LIGHT*0.8);
 	}
 	
