@@ -343,7 +343,7 @@ public class Chunk{
 			for (int x = 0; x < Screen.RENDER_CHUNK_SIZE; x++) {
 				X=x+xPos*Screen.RENDER_CHUNK_SIZE;Y=y+yPos*Screen.RENDER_CHUNK_SIZE;
 				if(l==Map.LAYER_LIGHT) {
-					lightP = (light[X+Y*width]);
+					lightP = (light[X+Y*width]); //TODO +brightness constant, sodass zB 245->255 erhellt wird
 					pixelBuffer.put((byte)0); //RED
 					pixelBuffer.put((byte)0);  //GREEN
 					pixelBuffer.put((byte)0);		  //BLUE

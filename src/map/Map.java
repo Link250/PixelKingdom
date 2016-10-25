@@ -51,6 +51,7 @@ public class Map {
 	}
 	
 	public void tick(int tickCount){
+		
 		Material<?> m;
 		int x,y,l;
 		int ID;
@@ -70,7 +71,7 @@ public class Map {
 			}
 			updateCountPixel++;
 		}
-		for (int n = 0; n < 10; n++) {
+		for (int n = 0; n < 8; n++) {
 			size = updatesLight.startUpdate();
 			for(int i = 0; i < size; i++){
 				int[] co = updatesLight.activate(i);

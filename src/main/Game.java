@@ -98,6 +98,7 @@ public class Game implements Runnable{
 		new KeyInput(window.getWindow());
 		new MouseInput(window.getWindow());
 		glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+		glfwSetWindowSizeLimits(window.getWindow(), WIDTH, HEIGHT, WIDTH, HEIGHT);
 
 		Screen.MAP_ZOOM = MainConfig.mapZoom;
 		Screen.initialize(WIDTH, HEIGHT, csheetf, csheetm, csheetb);

@@ -1,6 +1,8 @@
 package gui.menu.options;
 
 import static main.KeyConfig.keyMapping;
+import static org.lwjgl.glfw.GLFW.glfwPollEvents;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -79,7 +81,11 @@ public class Controls {
 		int keyCode = 0;
 		int keyCodeOld = this.buttonValues.get(keyConfig.button);
 		Keys key = keyMapping.get(keyCodeOld);
-		while((keyCode=KeyInput.lastKeyCode)==0) {try{Thread.sleep(10);} catch (InterruptedException e) {}}
+		while((keyCode=KeyInput.lastKeyCode)==0) {
+			try{Thread.sleep(10);
+			} catch (InterruptedException e) {
+			}finally{glfwPollEvents();}
+		}
 		//check if this key is unused
 		for (Integer code : keyMapping.keySet()) {
 			if(keyCode==code)return;

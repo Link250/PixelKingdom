@@ -13,7 +13,7 @@ public class KeyInput implements GLFWKeyCallbackI{
 	}
 	
 	public void invoke(long window, int key, int scancode, int action, int mods) {
-		lastKeyCode = key;
+		lastKeyCode = action != 0 ? key : 0;
 		toggleKey(key, action != 0);
 	}
 	
