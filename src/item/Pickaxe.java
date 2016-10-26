@@ -23,7 +23,6 @@ public abstract class Pickaxe extends Tool{
 		displayName = "Pickaxe";
 		stack  = 1;
 		stackMax  = 1;
-		gfx = new SpriteSheet("/Items/Pickaxe.png");
 		gfxs = new SpriteSheet("/Items/Pickaxeh.png");
 	}
 	
