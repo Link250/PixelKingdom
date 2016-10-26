@@ -34,7 +34,6 @@ public class Map {
 	
 	private int regularUpdateX = -Screen.width/2-Screen.RENDER_CHUNK_SIZE;
 	private int regularUpdateY = -Screen.height/2-Screen.RENDER_CHUNK_SIZE;
-	private int regularUpdateL = 0;
 	
 	public Map(String path, Screen screen){
 		this.path = path;
@@ -92,16 +91,11 @@ public class Map {
 			if(regularUpdateY < Screen.height/2+Screen.RENDER_CHUNK_SIZE) {
 				regularUpdateY+=Screen.RENDER_CHUNK_SIZE;
 			}else {
-				if(regularUpdateL < LAYER_ALL.length-1) {
-					regularUpdateL++;
-				}else {
-					regularUpdateL = 0;
-				}
 				regularUpdateY = -Screen.height/2-Screen.RENDER_CHUNK_SIZE;
 			}
 			regularUpdateX = -Screen.width/2-Screen.RENDER_CHUNK_SIZE;
 		}
-		setTextureUpdating(regularUpdateX+Screen.xOffset, regularUpdateY+Screen.yOffset, regularUpdateL);
+		setTextureUpdating(regularUpdateX+Screen.xOffset, regularUpdateY+Screen.yOffset, Map.LAYER_LIGHT);
 	}
 	
 	public boolean isUpdating(int x, int y, int l){

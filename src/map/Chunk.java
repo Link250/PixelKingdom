@@ -351,7 +351,7 @@ public class Chunk{
 					pixelBuffer.put((byte)0); //RED
 					pixelBuffer.put((byte)0);  //GREEN
 					pixelBuffer.put((byte)0);		  //BLUE
-					pixelBuffer.put((byte)(this.getID(X, Y, Map.LAYER_BACK) == 0 ? 0 : (Map.MAX_LIGHT-lightP))); //ALPHA
+					pixelBuffer.put((byte)(Map.MAX_LIGHT-(getID(X, Y, Map.LAYER_BACK) == 0 ? 0 : lightP))); //ALPHA
 				}else {
 					ID = getID(X,Y,l);
 					if(ID>=0){
