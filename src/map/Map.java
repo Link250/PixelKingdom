@@ -92,7 +92,7 @@ public class Map {
 			if(regularUpdateY < Screen.height/2+Screen.RENDER_CHUNK_SIZE) {
 				regularUpdateY+=Screen.RENDER_CHUNK_SIZE;
 			}else {
-				if(regularUpdateL < LAYER_ALL.length) {
+				if(regularUpdateL < LAYER_ALL.length-1) {
 					regularUpdateL++;
 				}else {
 					regularUpdateL = 0;
