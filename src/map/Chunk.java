@@ -1,17 +1,23 @@
 package map;
 
+import static org.lwjgl.opengl.GL11.*;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import org.lwjgl.BufferUtils;
 import org.tukaani.xz.XZInputStream;
+
+import dataUtils.conversion.ConverterQueue;
+import gfx.Screen;
 import main.Game;
-import main.conversion.ConverterQueue;
 import pixel.AD;
 import pixel.Material;
 import pixel.PixelList;
@@ -39,6 +45,9 @@ public class Chunk{
 	private boolean[][][] updating = new boolean[width][height][Map.LAYER_ALL.length];
 	private Map map;
 	
+	private int[][][] textureChunks;
+	private boolean[][][] textureUpdates;
+	
 	private boolean finishedLoading = false;
 	
 	public Chunk(String path, int x, int y, Map map){
@@ -46,6 +55,8 @@ public class Chunk{
 		this.x = x;
 		this.y = y;
 		this.map = map;
+		this.textureChunks = new int[width/Screen.RENDER_CHUNK_SIZE][height/Screen.RENDER_CHUNK_SIZE][Map.LAYER_ALL.length];
+		this.textureUpdates = new boolean[width/Screen.RENDER_CHUNK_SIZE][height/Screen.RENDER_CHUNK_SIZE][Map.LAYER_ALL.length];
 	}
 	
 	public int getID(int x, int y, int layer){
@@ -70,12 +81,17 @@ public class Chunk{
 	}
 	
 	public boolean setUpdating(int x, int y, int l){
-		if(!updating[x%width][y%height][l]){
-			updating[x%width][y%height][l]=true;
+		if(!updating[x][y][l]){
+			updating[x][y][l]=true;
+			setTextureUpdating(x, y, l);
 			return true;
 		}else{
 			return false;
 		}
+	}
+	
+	public void setTextureUpdating(int x, int y, int l) {
+		textureUpdates[x/Screen.RENDER_CHUNK_SIZE][y/Screen.RENDER_CHUNK_SIZE][l] = true;
 	}
 	
 	public boolean getUpdate(int x, int y, int l){
@@ -309,5 +325,56 @@ public class Chunk{
 	
 	public boolean finishedLoading() {
 		return this.finishedLoading;
+	}
+	
+	public int getRenderChunk(int x, int y, int l) {
+		x/=Screen.RENDER_CHUNK_SIZE;y/=Screen.RENDER_CHUNK_SIZE;
+		int i = this.textureChunks[x][y][l];
+		if(i == 0 || this.textureUpdates[x][y][l])genTextures(x,y,l);
+		return i;
+	}
+	
+	private void genTextures(int xPos, int yPos, int l){
+		if(this.textureChunks[xPos][yPos][l]>0) {
+			glDeleteTextures(this.textureChunks[xPos][yPos][l]);
+		}
+		int ID;
+		int X,Y;
+		int pixel;
+		short lightP;
+		ByteBuffer pixelBuffer = BufferUtils.createByteBuffer(Screen.RENDER_CHUNK_SIZE * Screen.RENDER_CHUNK_SIZE * 4);
+		for (int y = 0; y < Screen.RENDER_CHUNK_SIZE; y++) {
+			for (int x = 0; x < Screen.RENDER_CHUNK_SIZE; x++) {
+				X=x+xPos*Screen.RENDER_CHUNK_SIZE;Y=y+yPos*Screen.RENDER_CHUNK_SIZE;
+				if(l==Map.LAYER_LIGHT) {
+					lightP = (light[X+Y*width]); //TODO +brightness constant, sodass zB 245->255 erhellt wird
+					pixelBuffer.put((byte)0); //RED
+					pixelBuffer.put((byte)0);  //GREEN
+					pixelBuffer.put((byte)0);		  //BLUE
+					pixelBuffer.put((byte)(Map.MAX_LIGHT-(getID(X, Y, Map.LAYER_BACK) == 0 ? 0 : lightP))); //ALPHA
+				}else {
+					ID = getID(X,Y,l);
+					if(ID>=0){
+						pixel = ID == 0 ? 0 : PixelList.GetPixel(ID, l).render(X+this.x*Chunk.width, Y+this.y*Chunk.height, l, map);
+						pixelBuffer.put((byte)((pixel >> 16) & 0xFF)); //RED
+						pixelBuffer.put((byte)((pixel >> 8) & 0xFF));  //GREEN
+						pixelBuffer.put((byte)(pixel & 0xFF));		  //BLUE
+						pixelBuffer.put((byte)((pixel >> 24) & 0xFF)); //ALPHA
+					}
+				}
+			}
+		}
+		pixelBuffer.flip();
+		this.textureChunks[xPos][yPos][l] = glGenTextures();
+		
+		glBindTexture(GL_TEXTURE_2D, this.textureChunks[xPos][yPos][l]);
+		
+//		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, l==Map.LAYER_LIGHT ? GL_LINEAR : GL_NEAREST);
+//		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, l==Map.LAYER_LIGHT ? GL_LINEAR : GL_NEAREST);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Screen.RENDER_CHUNK_SIZE, Screen.RENDER_CHUNK_SIZE, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixelBuffer);
+		this.textureUpdates[xPos][yPos][l] = false;
 	}
 }

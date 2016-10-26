@@ -35,7 +35,6 @@ public class NewMapWindow extends JFrame {
 		
 		this.setTitle("Creating a new Map");
 		this.setAlwaysOnTop(true);
-		this.setLocationRelativeTo(game);
 		
 		this.addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent windowEvent){
@@ -69,7 +68,7 @@ public class NewMapWindow extends JFrame {
 		addButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 		        Map.newMap(MapSelection.FILE_DIR,nameField.getText());
-				mapSelection.LoadFiles();
+				mapSelection.refresh();
 				dispose();
 			}
 		});

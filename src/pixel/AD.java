@@ -3,9 +3,9 @@ package pixel;
 import java.io.IOException;
 import java.lang.reflect.Field;
 
-import main.conversion.Convertable;
-import main.conversion.InConverter;
-import main.conversion.OutConverter;
+import dataUtils.conversion.Convertable;
+import dataUtils.conversion.InConverter;
+import dataUtils.conversion.OutConverter;
 
 /**
  * The universal data storage object for everything a pixel could need to store.

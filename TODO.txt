@@ -8,6 +8,20 @@ CUDA Berechnung -vielleicht
 
 Multiblock ADs
 
+Configs:
++brightness constant, sodass zB 245->255 erhellt wird (siehe Chunk.java TODO)
++framecap
++resizable window
++max light iterations
+
++++fix dynamic Oven/ore/fire texture
+
+Leitungen:
+-liquid/energy/item/signal etc.
+-keine pixel, sondern rein visuelle linien
+-kabel können nicht ewig lang sein und brauchen zB "lautungskästen" zwischendurch
+
+
 Kampf
 	Equipmentslot Waffe
 	Toggle Key Waffen

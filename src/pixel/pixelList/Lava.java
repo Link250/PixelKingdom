@@ -12,6 +12,9 @@ public class Lava extends Liquid<LavaAD>{
 		name = "Lava";
 		displayName = "Lava";
 		viscosity = 10;
+		frontLightReduction = 0;
+		backLightReduction = 0;
+		loadTexture();
 	}
 	
 	public boolean tick(int x, int y, int l, int numTick, Map map) {
@@ -41,8 +44,8 @@ public class Lava extends Liquid<LavaAD>{
 		return true;
 	}
 	
-	public byte tickLight(int x, int y, int l, Map map) {
-		return (byte) (Map.MAX_LIGHT*0.8);
+	public short tickLight(int x, int y, int l, Map map) {
+		return (short) (Map.MAX_LIGHT*0.6);
 	}
 	
 	public void setMat(int x, int y, int l, int ID, Map map){

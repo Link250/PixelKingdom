@@ -6,8 +6,10 @@ import entities.Player.BAG;
 import gfx.Mouse;
 import gfx.SpriteSheet;
 import gfx.Mouse.MouseType;
+import gfx.Screen;
 import item.*;
 import main.MainConfig.GameFields;
+import main.MouseInput;
 import main.Game;
 
 public class Equipment extends GameField {
@@ -43,11 +45,11 @@ public class Equipment extends GameField {
 	
 	public void tick() {
 		if(Drag())allignFields();
-		if(mouseover(Game.input.mouse.x, Game.input.mouse.y)){
+		if(mouseover(MouseInput.mouse.x, MouseInput.mouse.y)){
 		Mouse.mouseType=MouseType.DEFAULT;
 			for (BAG bag : BAG.values()) {
-				if(this.itemFields.get(bag).getField().contains(Game.input.mouse.x, Game.input.mouse.y)) {
-					if(Game.input.mousel.click()){
+				if(this.itemFields.get(bag).getField().contains(MouseInput.mouse.x, MouseInput.mouse.y)) {
+					if(MouseInput.mousel.click()){
 						this.itemFields.get(bag).mouseClick();
 					}else {
 						this.itemFields.get(bag).mouseOver();
@@ -60,7 +62,7 @@ public class Equipment extends GameField {
 	
 	public void render() {
 		renderfield();
-		Game.screen.drawGUITile(field.x+87, field.y+33, 0, 0, Background, 0xff000000);
+		Screen.drawGUISprite(field.x+87, field.y+33, Background);
 		Game.sfont.render(field.x+field.width/2, field.y+fieldTop.height/2, "Equipment", 0, 0xff000000, Game.screen);
 		
 		for (EquipItemField field : itemFields.values()) {
@@ -104,11 +106,12 @@ public class Equipment extends GameField {
 		}
 		
 		public void render() {
-			Game.screen.drawGUITile(field.x, field.y, 0, 0, back, 0);
+			Screen.drawGUISprite(field.x, field.y, back);
 			if(bags.containsKey(bagEnum)) {
 				bags.get(bagEnum).render(Game.screen, field.x+2, field.y+2, true);
 			}else{
-				Game.screen.drawGUITile(field.x+2, field.y+2, 0, 0, bagEnum.defaultSprite, 0);
+				Screen.drawGUISprite(field.x+2, field.y+2, bagEnum.defaultSprite, 0);
+//				Game.screen.drawGUITile(field.x+2, field.y+2, 0, 0, bagEnum.defaultSprite, 0);
 			}
 		}
 	}

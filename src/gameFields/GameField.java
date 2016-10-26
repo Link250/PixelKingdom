@@ -2,11 +2,12 @@ package gameFields;
 
 import java.awt.Point;
 
+import dataUtils.PArea;
+import gfx.Screen;
 import gfx.SpriteSheet;
 import main.MainConfig.GameFields;
-import main.Game;
+import main.MouseInput;
 import main.MainConfig;
-import main.PArea;
 
 public abstract class GameField {
 	protected PArea field;
@@ -46,8 +47,6 @@ public abstract class GameField {
 	
 	private void constructBackground() {
 		int[] pixels = new int[field.width * field.height];
-		this.background = new SpriteSheet();
-		this.background.setPixels(pixels, field.width, field.height, field.width, field.height);
 		for(int x = 0; x < field.width; x++){
 			for(int y = 0; y < field.height; y++){
 				pixels[y*field.width+x] = y < (fieldTop.height)?
@@ -55,25 +54,26 @@ public abstract class GameField {
 						((x < 2 || y < 2 || x >= field.width-2 || y >= field.height-2)? 0x80404040 : 0x40808080);
 			}
 		}
+		this.background = new SpriteSheet(pixels, field.width, field.height, field.width, field.height);
 	}
 	
 	public abstract void tick();
 	
 	public boolean Drag(){
-		if(fieldTop.contains(Game.input.mouse.x, Game.input.mouse.y)){
-			if(Game.input.mousel.click()){
-				grab.x = Game.input.mousel.x-field.x;
-				grab.y = Game.input.mousel.y-field.y;
+		if(fieldTop.contains(MouseInput.mouse.x, MouseInput.mouse.y)){
+			if(MouseInput.mousel.click()){
+				grab.x = MouseInput.mousel.x-field.x;
+				grab.y = MouseInput.mousel.y-field.y;
 				grabing = true;
 			}
 		}
-		if(grabing & Game.input.mousel.isPressed()){
-			field.x = Game.input.mouse.x - grab.x;
-			field.y = Game.input.mouse.y - grab.y;
+		if(grabing & MouseInput.mousel.isPressed()){
+			field.x = MouseInput.mouse.x - grab.x;
+			field.y = MouseInput.mouse.y - grab.y;
 			if(field.x < 0)field.x = 0;
-			if(field.x > Game.screen.width-field.width)field.x = Game.screen.width-field.width;
+			if(field.x > Screen.width-field.width)field.x = Screen.width-field.width;
 			if(field.y < 0)field.y = 0;
-			if(field.y > Game.screen.height-field.height)field.y = Game.screen.height-field.height;
+			if(field.y > Screen.height-field.height)field.y = Screen.height-field.height;
 			fieldTop.x = field.x;
 			fieldTop.y = field.y;
 			return true;
@@ -83,9 +83,9 @@ public abstract class GameField {
 				save();
 			}
 			if(field.x < 0)field.x = 0;
-			if(field.x > Game.screen.width-field.width)field.x = Game.screen.width-field.width;
+			if(field.x > Screen.width-field.width)field.x = Screen.width-field.width;
 			if(field.y < 0)field.y = 0;
-			if(field.y > Game.screen.height-field.height)field.y = Game.screen.height-field.height;
+			if(field.y > Screen.height-field.height)field.y = Screen.height-field.height;
 			fieldTop.x = field.x;
 			fieldTop.y = field.y;
 			return false;
@@ -95,7 +95,8 @@ public abstract class GameField {
 	public abstract void render();
 	
 	protected void renderfield(){
-		Game.screen.drawGUITile(field.x, field.y, 0, 0, background, 0);
+		Screen.drawGUISprite(field.x, field.y, background);
+//		Game.screen.drawGUITile(field.x, field.y, 0, 0, background, 0);
 	}
 	
 	public void save(){

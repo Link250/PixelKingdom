@@ -1,10 +1,11 @@
 package gui.menu;
 
-import gfx.SpriteSheet;
+import gfx.Screen;
 import gui.Button;
 import gui.NewMapWindow;
 import main.Game;
 import main.Keys;
+import main.MouseInput;
 import main.SinglePlayer;
 
 import java.io.File;
@@ -26,25 +27,31 @@ public class MapSelection implements GameMenu{
 	
 	private NewMapWindow newMapWindow;
 	
+	boolean refresh = false;
+	
 	public MapSelection(Game game) {
 		this.game = game;
 		int buttonSize = 60;
-		maxButtonsOnScreen = (int) ((Game.screen.height-buttonSize*3)/(buttonSize*1.5));
+		maxButtonsOnScreen = (int) ((Screen.height-buttonSize*3)/(buttonSize*1.5));
 		//makes it uneven
 		maxButtonsOnScreen -= maxButtonsOnScreen%2==0 ? 1 : 0;
 		back = new Button(50, 50, buttonSize, buttonSize);
-		back.gfxData(new SpriteSheet("/Buttons/back.png"), true);
-		genmap = new Button(Game.screen.width-50, 50, buttonSize, buttonSize);
-		genmap.gfxData(new SpriteSheet("/Buttons/new.png"), true);
-		del = new Button(Game.screen.width/2-240, Game.screen.height/2, buttonSize, buttonSize);
-		del.gfxData(new SpriteSheet("/Buttons/delete.png"), true);
-		start = new Button(Game.screen.width/2+240, Game.screen.height/2, buttonSize, buttonSize);
-		start.gfxData(new SpriteSheet("/Buttons/play.png"), true);
-		scrollUP = new Button(Game.screen.width/2, Game.screen.height/2-(maxButtonsOnScreen/2+1)*buttonSize*3/2, buttonSize, buttonSize);
-		scrollUP.gfxData(new SpriteSheet("/Buttons/ArrowDown.png"), 0x01, false);
-		scrollDOWN = new Button(Game.screen.width/2, Game.screen.height/2+(maxButtonsOnScreen/2+1)*buttonSize*3/2, buttonSize, buttonSize);
-		scrollDOWN.gfxData(new SpriteSheet("/Buttons/ArrowDown.png"), false);
+		back.gfxData("/Buttons/back.png", true);
+		genmap = new Button(Screen.width-50, 50, buttonSize, buttonSize);
+		genmap.gfxData("/Buttons/new.png", true);
+		del = new Button(Screen.width/2-240, Screen.height/2, buttonSize, buttonSize);
+		del.gfxData("/Buttons/delete.png", true);
+		start = new Button(Screen.width/2+240, Screen.height/2, buttonSize, buttonSize);
+		start.gfxData("/Buttons/play.png", true);
+		scrollUP = new Button(Screen.width/2, Screen.height/2-(maxButtonsOnScreen/2+1)*buttonSize*3/2, buttonSize, buttonSize);
+		scrollUP.gfxData("/Buttons/ArrowDown.png", false, true, false);
+		scrollDOWN = new Button(Screen.width/2, Screen.height/2+(maxButtonsOnScreen/2+1)*buttonSize*3/2, buttonSize, buttonSize);
+		scrollDOWN.gfxData("/Buttons/ArrowDown.png", false);
 		LoadFiles();
+	}
+	
+	public void refresh() {
+		refresh = true;
 	}
 	
 	public void LoadFiles(){
@@ -68,7 +75,7 @@ public class MapSelection implements GameMenu{
 			if(new File(FILE_DIR + File.separator + list[i]).isDirectory()){
 				files[i] = FILE_DIR + File.separator + list[i];
 				ButtonList.add(new Button(0, 0, 300, 60));
-				ButtonList.get(i).TextData( list[i], true);
+				ButtonList.get(i).TextData( list[i], true, true);
 			}
 		}
 	}
@@ -87,6 +94,7 @@ public class MapSelection implements GameMenu{
 	}
 	
 	public void tick(){
+		if(refresh)LoadFiles();
 		for(Button button : ButtonList){
 			button.tick();
 		}
@@ -119,7 +127,7 @@ public class MapSelection implements GameMenu{
 		back.tick();
 		genmap.tick();
 		del.tick();
-		int scroll = Game.input.mouse.getScroll();
+		int scroll = MouseInput.mouse.getScroll();
 		if(ButtonList.size()!=0)start.tick();
 		if(selected > 0)scrollUP.tick();
 		if((scrollUP.isclicked || scroll<0) && selected > 0)selected--;
@@ -131,7 +139,7 @@ public class MapSelection implements GameMenu{
 	public void render(){
 		for(int i = -maxButtonsOnScreen/2; i <= maxButtonsOnScreen/2; i++){
 			try{
-				ButtonList.get(selected+i).SetPos(Game.WIDTH/2, Game.screen.height/2+(i*90));
+				ButtonList.get(selected+i).SetPos(Game.WIDTH/2, Screen.height/2+(i*90));
 				ButtonList.get(selected+i).render();
 			}catch(ArrayIndexOutOfBoundsException e){}catch(IndexOutOfBoundsException e){}
 		}
@@ -141,6 +149,6 @@ public class MapSelection implements GameMenu{
 		if(ButtonList.size()!=0)start.render();
 		if(selected > 0)scrollUP.render();
 		if(selected < ButtonList.size()-1)scrollDOWN.render();
-		Game.font.render(Game.screen.width/2, 50, "Map Selection", 0, 0xff000000, Game.screen);
+		Game.font.render(Screen.width/2, 50, "Map Selection", 0, 0xff000000, Game.screen);
 	}
 }

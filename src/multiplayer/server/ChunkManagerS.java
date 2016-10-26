@@ -2,7 +2,7 @@ package multiplayer.server;
 
 import java.io.IOException;
 
-import main.conversion.InConverter;
+import dataUtils.conversion.InConverter;
 import map.Map;
 import multiplayer.Request;
 

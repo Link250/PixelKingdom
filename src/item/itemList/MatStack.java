@@ -2,6 +2,7 @@ package item.itemList;
 
 import java.util.ArrayList;
 
+import dataUtils.conversion.ConvertData;
 import entities.Player;
 import gfx.Mouse;
 import gfx.Screen;
@@ -9,8 +10,7 @@ import gfx.SpriteSheet;
 import gfx.Mouse.MouseType;
 import item.Item;
 import main.Game;
-import main.InputHandler;
-import main.conversion.ConvertData;
+import main.MouseInput;
 import map.Map;
 import pixel.PixelList;
 
@@ -28,16 +28,16 @@ public class MatStack extends Item{
 		col = Game.csheetf.pixels[ID];
 	}
 
-	public void useItem(InputHandler input, Player plr, Map map, Screen screen) {
-		input.mouse.refresh();
+	public void useItem(Player plr, Map map, Screen screen) {
+		MouseInput.mouse.refresh();
 		anim = 12;
-		int l = Map.LAYER_FRONT;if(!input.mousel.isPressed())l = Map.LAYER_BACK;
-		if((input.mousel.isPressed() | input.mouser.isPressed()) && !plr.iscrouching
-		&& Math.sqrt(Math.pow(plr.x-(input.mouse.getMapX()),2)+Math.pow(plr.y-(input.mouse.getMapY()), 2)) <= 25){
+		int l = Map.LAYER_FRONT;if(!MouseInput.mousel.isPressed())l = Map.LAYER_BACK;
+		if((MouseInput.mousel.isPressed() | MouseInput.mouser.isPressed()) && !plr.iscrouching
+		&& Math.sqrt(Math.pow(plr.x-(MouseInput.mouse.getMapX()),2)+Math.pow(plr.y-(MouseInput.mouse.getMapY()), 2)) <= 25){
 			for(int y = -buildsize+1; y < buildsize; y++){
 				for(int x = -buildsize+1; x < buildsize; x++){
-					if(stack>0 && map.getID(input.mouse.getMapX()+x, input.mouse.getMapY()+y,l)==0){
-						map.setID(input.mouse.getMapX()+x,input.mouse.getMapY()+y,l,ID);
+					if(stack>0 && map.getID(MouseInput.mouse.getMapX()+x, MouseInput.mouse.getMapY()+y,l)==0){
+						map.setID(MouseInput.mouse.getMapX()+x,MouseInput.mouse.getMapY()+y,l,ID);
 						stack--;
 					}
 					if(stack==0){
@@ -47,8 +47,8 @@ public class MatStack extends Item{
 				}
 			}
 		}
-		if(input.mouse.scrolled!=0){
-			buildsize -= input.mouse.getScroll();
+		if(MouseInput.mouse.scrolled!=0){
+			buildsize -= MouseInput.mouse.getScroll();
 			if(buildsize < 1)buildsize = 1;
 			if(buildsize > 10)buildsize = 10;
 			Mouse.mousesize=buildsize;

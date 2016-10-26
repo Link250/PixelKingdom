@@ -1,6 +1,10 @@
 package pixel;
 
-import gfx.Screen;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
 import main.Game;
 import map.Map;
 
@@ -25,6 +29,13 @@ public abstract class Material<ADType extends AD> {
 	private ADType adtype = null;
 	
 	protected ADType ad = null;
+	
+	protected int[] texture = null;
+	protected int textureWidth;
+	protected int textureHeight;
+	
+	protected short frontLightReduction = 8;
+	protected short backLightReduction = 255;
 	
 	public Material(ADType ad){
 		this.adtype = ad;
@@ -74,12 +85,37 @@ public abstract class Material<ADType extends AD> {
 	public final AD createAD(){
 		return this.canHaveAD() ? this.getNewAD() : null;
 	}
+	
+	protected void loadTexture() {
+		loadTexture("/MapTextures/"+name+".png");
+	}
 
-	public byte tickLight(int x, int y, int l, Map map) {return 0;}
+	protected void loadTexture(String path) {
+		BufferedImage image = null;
+		
+		try {
+			image = ImageIO.read(Material.class.getResourceAsStream(path));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		if(image == null){ return;}
+		
+		textureWidth = image.getWidth();
+		textureHeight = image.getHeight();
+
+		texture = image.getRGB(0, 0, textureWidth, textureHeight, null, 0, textureWidth);
+	}
+	
+	public short tickLight(int x, int y, int l, Map map) {return 0;}
+	
+	public short frontLightReduction(){return this.frontLightReduction;}
+	
+	public short backLightReduction(){return this.backLightReduction;}
 	
 	public boolean tick(int x, int y, int l, int numTick, Map map){return false;}
 	
-	public void render(int x, int y, int l, Map map, Screen screen) {
-		screen.drawMaterial(x, y, ID, l);
+	public int render(int x, int y, int l, Map map) {
+		return texture[x%textureWidth + (y%textureHeight)*textureWidth];
 	}
 }

@@ -4,15 +4,16 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.EnumMap;
 
+import dataUtils.conversion.ConvertData;
 import gfx.Screen;
 import gfx.SpriteSheet;
 import item.*;
 import item.Recipe.component;
 import main.MainConfig.GameFields;
+import main.MouseInput;
 import main.Game;
 import main.Keys;
 import main.MainConfig;
-import main.conversion.ConvertData;
 import map.Map;
 import gameFields.*;
 
@@ -69,7 +70,7 @@ public class Player extends Mob{
 	private SpriteSheet itemBackgrounds = new SpriteSheet("/Items/fields.png");
 
 	public Player(Map map) {
-		super(map ,"Player", 0, 0, new SpriteSheet("/Mobs/sprite_sheet_player.png"));
+		super(map ,"Player", 0, 0, new SpriteSheet("/Mobs/sprite_sheet_player.png",13*Screen.MAP_SCALE,16*Screen.MAP_SCALE));
 		this.bags = new EnumMap<>(BAG.class);
 		this.bagInvs = new EnumMap<>(BAG.class);
 		equipment = new Equipment(this, bags);
@@ -77,8 +78,8 @@ public class Player extends Mob{
 		color = MainConfig.PlrCol;
 		xOffset=6;
 		yOffset=9;
-		sheet.tileWidth = 13*Screen.MAP_SCALE;
-		sheet.tileHeight = 16*Screen.MAP_SCALE;
+//		sheet.tileWidth = 13*Screen.MAP_SCALE;
+//		sheet.tileHeight = 16*Screen.MAP_SCALE;
 		try{this.bags.get(BAG.BELT_1).getItem(selected).setMouse();}catch(NullPointerException e){}
 	}
 	
@@ -225,7 +226,6 @@ public class Player extends Mob{
 	}
 	
 	public void tick(int numTick) {
-		
 //		map.setlight(x, y, (byte) (64));map.addBlockUpdate(x, y,0); // just for testing lightsystem
 		if(Keys.JUMP.isPressed() && canJump){
 			speedY-= jumpspeed;
@@ -280,10 +280,10 @@ public class Player extends Mob{
 		}
 		
 		/*		HOTBAR		*/
-		if(Game.input.mousem.click() || Keys.HOTBAR.click()){
+		if(MouseInput.mousem.click() || Keys.HOTBAR.click()){
 			if(openHotBar == 0) {
-				hotBar.x = Game.input.mouse.x;
-				hotBar.y = Game.input.mouse.y;
+				hotBar.x = MouseInput.mouse.x;
+				hotBar.y = MouseInput.mouse.y;
 				openHotBar++;
 			}else
 				openHotBar=0;
@@ -291,8 +291,8 @@ public class Player extends Mob{
 		if(openHotBar != 0){
 			if(this.bags.get(BAG.BELT_1) != null){
 				if(openHotBar < 60+this.bags.get(BAG.BELT_1).invSize())openHotBar +=5;
-				if(Math.sqrt(Math.pow((Game.input.mouse.x-hotBar.x), 2)+Math.pow((Game.input.mouse.y-hotBar.y), 2)) >= 20+this.bags.get(BAG.BELT_1).invSize()){
-					selected = (byte)(this.bags.get(BAG.BELT_1).invSize()/2-Math.atan2(Game.input.mouse.x-hotBar.x, Game.input.mouse.y-hotBar.y)/(Math.PI*2/this.bags.get(BAG.BELT_1).invSize()));
+				if(Math.sqrt(Math.pow((MouseInput.mouse.x-hotBar.x), 2)+Math.pow((MouseInput.mouse.y-hotBar.y), 2)) >= 20+this.bags.get(BAG.BELT_1).invSize()){
+					selected = (byte)(this.bags.get(BAG.BELT_1).invSize()/2-Math.atan2(MouseInput.mouse.x-hotBar.x, MouseInput.mouse.y-hotBar.y)/(Math.PI*2/this.bags.get(BAG.BELT_1).invSize()));
 				}
 			}
 		}
@@ -319,10 +319,10 @@ public class Player extends Mob{
 			}
 		}
 
-		if(this.bags.containsKey(BAG.BELT_1) && this.bags.get(BAG.BELT_1).getItem(selected)!=null && Game.input.mousel.isClickable()) {
-			this.bags.get(BAG.BELT_1).getItem(selected).useItem(Game.input, this, map, Game.screen);
+		if(this.bags.containsKey(BAG.BELT_1) && this.bags.get(BAG.BELT_1).getItem(selected)!=null && MouseInput.mousel.isClickable()) {
+			this.bags.get(BAG.BELT_1).getItem(selected).useItem(this, map, Game.screen);
 		}else{
-			Game.input.mousel.click();
+			MouseInput.mousel.click();
 		}
 
 		
@@ -350,17 +350,18 @@ public class Player extends Mob{
 	}
 	
 	public void render() {
-		Game.screen.drawMapTile(x-xOffset, y-yOffset, anim, movingDir*16, sheet, color);
+		Screen.drawMapSprite(x-xOffset, y-yOffset, sheet, anim, movingDir==1, false, color);
+//		Game.screen.drawMapTile(x-xOffset, y-yOffset, anim, movingDir*16, sheet, color);
 		
 		if((anim == 10 || anim == 11) & this.bags.get(BAG.BELT_1) != null){
 			try{
-				if(anim == 10)	this.bags.get(BAG.BELT_1).getItem(selected).renderOnMap(Game.screen, x+3-movingDir*10, y-5, movingDir*16);
-				if(anim == 11)	this.bags.get(BAG.BELT_1).getItem(selected).renderOnMap(Game.screen, x+4-movingDir*12, y-3, movingDir*16);
+				if(anim == 10)	this.bags.get(BAG.BELT_1).getItem(selected).renderOnMap(Game.screen, x+3-movingDir*10, y-5, movingDir==1, false);
+				if(anim == 11)	this.bags.get(BAG.BELT_1).getItem(selected).renderOnMap(Game.screen, x+4-movingDir*12, y-3, movingDir==1, false);
 			}catch(NullPointerException e){}
 		}
 		if(anim == 12 & this.bags.get(BAG.BELT_1) != null){
 			try{
-				this.bags.get(BAG.BELT_1).getItem(selected).renderOnMap(Game.screen, x+3-movingDir*8, y-2, movingDir*16);
+				this.bags.get(BAG.BELT_1).getItem(selected).renderOnMap(Game.screen, x+3-movingDir*8, y-2, movingDir==1, false);
 			}catch(NullPointerException e){}
 		}
 		/*		EQUIPMENT		*/
@@ -380,15 +381,15 @@ public class Player extends Mob{
 		if(openHotBar != 0){
 			if(this.bags.get(BAG.BELT_1) != null){
 				for(int i = 0; i < this.bags.get(BAG.BELT_1).invSize(); i ++){
-					Game.screen.drawGUITile(
+					Screen.drawGUISprite(
 							hotBar.x+(int)(openHotBar*Math.sin((i+0.5)*Math.PI*2/this.bags.get(BAG.BELT_1).invSize()))-18
 							,hotBar.y+(int)(-openHotBar*Math.cos((i+0.5)*Math.PI*2/this.bags.get(BAG.BELT_1).invSize()))-18
-							, 0, 0, itemBackground, 0);
+							, itemBackground);
 					if(i == selected){
-						Game.screen.drawGUITile(
+						Screen.drawGUISprite(
 								hotBar.x+(int)(openHotBar*Math.sin((selected+0.5)*Math.PI*2/this.bags.get(BAG.BELT_1).invSize()))-18
 								,hotBar.y+(int)(-openHotBar*Math.cos((selected+0.5)*Math.PI*2/this.bags.get(BAG.BELT_1).invSize()))-18
-								, 0, 0, itemBackgrounds, 0);
+								, itemBackgrounds);
 					}
 					try{
 						this.bags.get(BAG.BELT_1).getItem(i).render(Game.screen
@@ -397,7 +398,7 @@ public class Player extends Mob{
 								,true);
 					}catch(NullPointerException e){}
 				}
-				try{Game.font.render(Game.input.mouse.x, Game.input.mouse.y, (this.bags.get(BAG.BELT_1).getItem(selected).getName()), 0, 0xff000000, Game.screen);}
+				try{Game.font.render(MouseInput.mouse.x, MouseInput.mouse.y, (this.bags.get(BAG.BELT_1).getItem(selected).getName()), 0, 0xff000000, Game.screen);}
 			catch(NullPointerException e){}
 			}
 		}

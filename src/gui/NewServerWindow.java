@@ -34,7 +34,6 @@ public class NewServerWindow extends JFrame {
 		
 		this.setTitle("Adding a new Server");
 		this.setAlwaysOnTop(true);
-		this.setLocationRelativeTo(game);
 		
 		this.addWindowListener(new WindowAdapter(){
 			public void windowClosing(WindowEvent windowEvent){

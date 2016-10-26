@@ -1,17 +1,20 @@
 package gui.menu.options;
 
 import static main.KeyConfig.keyMapping;
-import java.awt.event.KeyEvent;
+import static org.lwjgl.glfw.GLFW.glfwPollEvents;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import gfx.SpriteSheet;
+import gfx.Screen;
 import gui.Button;
 import gui.menu.OptionScreen;
 import main.Game;
+import main.KeyInput;
 import main.Keys;
+import main.MouseInput;
 
 public class Controls {
 	private OptionScreen mainMenu;
@@ -27,21 +30,21 @@ public class Controls {
 	public Controls(OptionScreen mainMenu) {
 		this.mainMenu = mainMenu;
 		this.back = new Button(50, 50, 60, 60);
-		this.back.gfxData(new SpriteSheet("/Buttons/back.png"), true);
+		this.back.gfxData("/Buttons/back.png", true);
 		this.lOffset = 0;
 		this.lVisibleEntries = 5;
-		this.lFieldTop = Game.screen.height/10*3;
-		this.lFieldBottom = Game.screen.height-90;
+		this.lFieldTop = Screen.height/10*3;
+		this.lFieldBottom = Screen.height-90;
 		this.lFieldSize = this.lFieldBottom-this.lFieldTop;
 		
 		this.buttonValues = new HashMap<>();
 		this.keyConfigs = new ArrayList<>();
 		this.resetKeyButtons();
 		
-		this.scrollUP = new Button(Game.screen.width/2, this.lFieldTop-30, 60, 60);
-		this.scrollUP.gfxData(new SpriteSheet("/Buttons/ArrowDown.png"), 0x01, false);
-		this.scrollDOWN = new Button(Game.screen.width/2, this.lFieldBottom+30, 60, 60);
-		this.scrollDOWN.gfxData(new SpriteSheet("/Buttons/ArrowDown.png"), false);
+		this.scrollUP = new Button(Screen.width/2, this.lFieldTop-30, 60, 60);
+		this.scrollUP.gfxData("/Buttons/ArrowDown.png", false, true, false);
+		this.scrollDOWN = new Button(Screen.width/2, this.lFieldBottom+30, 60, 60);
+		this.scrollDOWN.gfxData("/Buttons/ArrowDown.png", false);
 	}
 	
 	private void resetKeyButtons() {
@@ -58,7 +61,7 @@ public class Controls {
 		for (Entry<Integer, Keys> entry : keyMapping.entrySet()) {
 			if(key.equals(entry.getValue())) {
 				buttonValues.put(button, entry.getKey());
-				button.TextData(KeyEvent.getKeyText(entry.getKey()), false);
+				button.TextData(main.KeyConfig.getKeyName(entry.getKey()), false, true);
 				break;
 			}
 		}
@@ -69,7 +72,7 @@ public class Controls {
 		int buttonHeight = keyConfigs.get(0).button.getHeight();
 		int gapHeight = (this.lFieldSize-(buttonHeight*this.lVisibleEntries))/(this.lVisibleEntries+1);
 		for(int i = 0; i < this.lVisibleEntries; i++) {
-			keyConfigs.get(i+this.lOffset).button.SetPos(Game.screen.width/2, this.lFieldTop+(i+1)*gapHeight+i*buttonHeight, false, false);
+			keyConfigs.get(i+this.lOffset).button.SetPos(Screen.width/2, this.lFieldTop+(i+1)*gapHeight+i*buttonHeight, false, false);
 			keyConfigs.get(i+this.lOffset).height = this.lFieldTop+(i+1)*gapHeight+i*buttonHeight;
 		}
 	}
@@ -78,7 +81,11 @@ public class Controls {
 		int keyCode = 0;
 		int keyCodeOld = this.buttonValues.get(keyConfig.button);
 		Keys key = keyMapping.get(keyCodeOld);
-		while((keyCode=Game.input.lastKeyCode)==0) {try{Thread.sleep(10);} catch (InterruptedException e) {}}
+		while((keyCode=KeyInput.lastKeyCode)==0) {
+			try{Thread.sleep(10);
+			} catch (InterruptedException e) {
+			}finally{glfwPollEvents();}
+		}
 		//check if this key is unused
 		for (Integer code : keyMapping.keySet()) {
 			if(keyCode==code)return;
@@ -96,7 +103,7 @@ public class Controls {
 		if(back.isclicked || Keys.MENU.click()){
 			this.mainMenu.resetMenu();
 		}
-		int scroll = Game.input.mouse.getScroll();
+		int scroll = MouseInput.mouse.getScroll();
 		if(this.lOffset > 0)scrollUP.tick();
 		if((scrollUP.isclicked || scroll<0) && this.lOffset > 0) {this.lOffset--;this.setButtonPositions();}
 		if(this.lOffset < keyConfigs.size()-this.lVisibleEntries)scrollDOWN.tick();
@@ -109,7 +116,7 @@ public class Controls {
 	
 	public void render(){
 		back.render();
-		Game.font.render(Game.screen.width/2, 50, "Controls", 0, 0xff000000, Game.screen);
+		Game.font.render(Screen.width/2, 50, "Controls", 0, 0xff000000, Game.screen);
 		if(this.lOffset > 0)scrollUP.render();
 		if(this.lOffset < keyConfigs.size()-this.lVisibleEntries)scrollDOWN.render();
 		for(int i = this.lOffset; i < this.lOffset+this.lVisibleEntries; i++) {
@@ -137,7 +144,7 @@ public class Controls {
 		}
 		
 		public void render(){
-			Game.font.render(Game.screen.height/3, height, true, false, text, 0, 0xff000000, Game.screen);
+			Game.font.render(Screen.width/2-400, height, false, false, text, 0, 0xff000000);
 			button.render();
 		}
 	}

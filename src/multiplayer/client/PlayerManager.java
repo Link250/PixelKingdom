@@ -3,9 +3,9 @@ package multiplayer.client;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import dataUtils.conversion.InConverter;
 import entities.MPlayer;
 import main.Game;
-import main.conversion.InConverter;
 import multiplayer.Request;
 
 	public class PlayerManager implements InputReceiver{

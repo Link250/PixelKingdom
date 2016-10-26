@@ -1,6 +1,5 @@
 package pixel.pixelList;
 
-import gfx.Screen;
 import map.Map;
 import pixel.Material;
 import pixel.Ore;
@@ -25,6 +24,7 @@ public class Oven extends Material<OvenAD>{
 		displayName = "Oven";
 		usePickaxe = 1;
 		tick = true;
+		loadTexture();
 	}
 	
 	public boolean tick(int x, int y, int l, int numTick, Map map) {
@@ -72,13 +72,14 @@ public class Oven extends Material<OvenAD>{
 		return ad.heat>0;
 	}
 	
-	public byte tickLight(int x, int y, int l, Map map) {
-		return (byte) (map.<OvenAD>getAD(x, y, l).heat/(maxHeat/16));
+	public short tickLight(int x, int y, int l, Map map) {
+		return (short) (map.<OvenAD>getAD(x, y, l).heat/(maxHeat/16));
 	}
 	
-	public void render(int x, int y, int l, Map map, Screen screen) {
-		screen.drawMaterial(x, y, ID, l);
-		int r = (int) (map.<OvenAD>getAD(x, y, l).heat/(((double)maxHeat)/127));if(r>255)r=255;
-		screen.drawMapPixelScaled(x, y, 0x00ff0000 | (r<<24));
+	public int render(int x, int y, int l, Map map) {
+		return super.render(x, y, l, map);
+//		screen.drawMaterial(x, y, ID, l);
+//		int r = (int) (map.<OvenAD>getAD(x, y, l).heat/(((double)maxHeat)/127));if(r>255)r=255;
+//		screen.drawMapPixelScaled(x, y, 0x00ff0000 | (r<<24));
 	}
 }

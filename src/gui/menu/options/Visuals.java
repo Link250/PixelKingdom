@@ -4,14 +4,18 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
+import dataUtils.PArea;
+
 import static main.MainConfig.PlrCol;
+
+import gfx.Screen;
 import gfx.SpriteSheet;
 import gui.Button;
 import gui.menu.OptionScreen;
 import main.Game;
 import main.Keys;
 import main.MainConfig;
-import main.PArea;
+import main.MouseInput;
 
 public class Visuals {
 	private OptionScreen mainMenu;
@@ -23,7 +27,7 @@ public class Visuals {
 	public Visuals(OptionScreen mainMenu) {
 		this.mainMenu = mainMenu;
 		this.back = new Button(50, 50, 60, 60);
-		this.back.gfxData(new SpriteSheet("/Buttons/back.png"), true);
+		this.back.gfxData("/Buttons/back.png", true);
 		options.add(new PlayerColorOption());
 		options.add(new MapZoomOption());
 		options.add(new ResolutionOption());
@@ -39,10 +43,10 @@ public class Visuals {
 		if(back.isclicked || Keys.MENU.click()){
 			this.mainMenu.resetMenu();
 		}
-		int height = Game.screen.height/3;
+		int height = Screen.height/3;
 		for (GFXOption gfxOption : options) {
 			gfxOption.setHeight(height);
-			height += Game.screen.height/5;
+			height += Screen.height/5;
 			gfxOption.tick();
 		}
 //		a.getItem().addStack(1); if(a.getItem().getStack()>=10)a.getItem().setStack(1);
@@ -53,7 +57,7 @@ public class Visuals {
 	
 	public void render(){
 		back.render();
-		Game.font.render(Game.screen.width/2, 50, "Visuals", 0, 0xff000000, Game.screen);
+		Game.font.render(Screen.width/2, 50, "Visuals", 0, 0xff000000, Game.screen);
 		
 		for (GFXOption gfxOption : options) {
 			gfxOption.render();
@@ -77,44 +81,37 @@ public class Visuals {
 	}
 	
 	private class PlayerColorOption extends GFXOption{
+		private SpriteSheet 
+		sliders = new SpriteSheet("/Menu/Options/Visuals/PlayerColor_Sliders.png"),
+		preview = new SpriteSheet("/Menu/Options/Visuals/PlayerColor_Preview.png"),
+		marker = new SpriteSheet("/Menu/Options/Visuals/PlayerColor_Marker.png");
 
 		public void tick() {
-			if(Game.input.mousel.isPressed()){
-				int x = Game.input.mouse.x;
-				int y = Game.input.mouse.y;
-				if(new PArea(Game.screen.width/2,height-19,256,10).contains(x, y)){
-					PlrCol = ((PlrCol&0xff00ffff) + ((x-Game.screen.width/2)<<16)) | 0xff000000;
+			if(MouseInput.mousel.isPressed()){
+				int x = MouseInput.mouse.x;
+				int y = MouseInput.mouse.y;
+				if(new PArea(Screen.width/2,height-19,256,10).contains(x, y)){
+					PlrCol = ((PlrCol&0xff00ffff) + ((x-Screen.width/2)<<16)) | 0xff000000;
 				}
-				if(new PArea(Game.screen.width/2,height-3,256,10).contains(x, y)){
-					PlrCol = ((PlrCol&0xffff00ff) + ((x-Game.screen.width/2)<<8)) | 0xff000000;
+				if(new PArea(Screen.width/2,height-3,256,10).contains(x, y)){
+					PlrCol = ((PlrCol&0xffff00ff) + ((x-Screen.width/2)<<8)) | 0xff000000;
 				}
-				if(new PArea(Game.screen.width/2,height+13,256,10).contains(x, y)){
-					PlrCol = ((PlrCol&0xffffff00) + ((x-Game.screen.width/2))) | 0xff000000;
+				if(new PArea(Screen.width/2,height+13,256,10).contains(x, y)){
+					PlrCol = ((PlrCol&0xffffff00) + ((x-Screen.width/2))) | 0xff000000;
 				}
 			}
 		}
 
 		public void render() {
-			Game.font.render(Game.screen.width/4, height, "Player Color", 0, 0xff000000, Game.screen);
-			Game.screen.drawGUIPixelBorder(Game.screen.width/2-2, height-21, 260, 14, 2, 0xff404040);
-			Game.screen.drawGUIPixelBorder(Game.screen.width/2-2, height-5, 260, 14, 2, 0xff404040);
-			Game.screen.drawGUIPixelBorder(Game.screen.width/2-2, height+11, 260, 14, 2, 0xff404040);
-			for(int c = 0; c < 256; c++){
-				for(int i = 0; i < 10; i++){
-					Game.screen.drawGUIPixel(Game.screen.width/2+c, height-19+i, 0xff000000|(c<<16));
-					Game.screen.drawGUIPixel(Game.screen.width/2+c, height-3+i, 0xff000000|(c<<8));
-					Game.screen.drawGUIPixel(Game.screen.width/2+c, height+13+i, 0xff000000|c);
-				}
-			}
+			Game.font.render(Screen.width/2-200, height, "Player Color", 0, 0xff000000, Game.screen);
+			Screen.drawGUISprite(Screen.width/2-2, height-21, sliders);
 			int c = (PlrCol&0x00ff0000)>>16;
-			Game.screen.drawGUIPixelArea(Game.screen.width/2+c-1, height-20, 3, 12, 0xff000000 + ((255-c)<<16) + ((255-c)<<8) + (255-c));
+			Screen.drawGUISprite(Screen.width/2+c-1, height-20, marker);
 			c = (PlrCol&0x0000ff00)>>8;
-			Game.screen.drawGUIPixelArea(Game.screen.width/2+c-1, height-4, 3, 12, 0xff000000 + ((255-c)<<16) + ((255-c)<<8) + (255-c));
+			Screen.drawGUISprite(Screen.width/2+c-1, height-4, marker);
 			c = PlrCol&0x000000ff;
-			Game.screen.drawGUIPixelArea(Game.screen.width/2+c-1, height+12, 3, 12, 0xff000000 + ((255-c)<<16) + ((255-c)<<8) + (255-c));
-			
-			Game.screen.drawGUIPixelBorder(Game.screen.width/2+270, height-15, 34, 34, 2, 0xff404040);
-			Game.screen.drawGUIPixelArea(Game.screen.width/2+272, height-13, 30, 30, PlrCol);
+			Screen.drawGUISprite(Screen.width/2+c-1, height+12, marker);
+			Screen.drawGUISprite(Screen.width/2+270, height-15, preview, 0, false, false, PlrCol);
 		}
 	}
 	
@@ -123,7 +120,7 @@ public class Visuals {
 		
 		public MapZoomOption() {
 			value = new Button(0,0, 80, 60);
-			value.TextData("x"+MainConfig.mapZoom, false);
+			value.TextData("x"+MainConfig.mapZoom, false, true);
 		}
 		
 		public void tick() {
@@ -131,19 +128,18 @@ public class Visuals {
 			if(value.isclicked) {
 				MainConfig.mapZoom++;
 				if(MainConfig.mapZoom > 5) MainConfig.mapZoom = 1;
-				value.TextData("x"+MainConfig.mapZoom, false);
+				value.TextData("x"+MainConfig.mapZoom, false, true);
 			}
 		}
 
 		public void render() {
-			Game.font.render(Game.screen.width/4, height, "Map Zoom", 0, 0xff000000, Game.screen);
-			Game.sfont.render(Game.screen.width/4*3, height, "(needs a restart)", 0, 0xff000000, Game.screen);
+			Game.font.render(Screen.width/2-200, height, "Map Zoom", 0, 0xff000000, Game.screen);
 			value.render();
 		}
 
 		public void setHeight(int height) {
 			super.setHeight(height);
-			value.SetPos(Game.screen.width/2, height);
+			value.SetPos(Screen.width/2+180, height);
 		}
 	}
 	
@@ -154,9 +150,9 @@ public class Visuals {
 		
 		public ResolutionOption() {
 			arrowLeft = new Button(0, 0, 60, 60);
-			arrowLeft.gfxData(new SpriteSheet("/Buttons/ArrowRight.png"), 0x10, false);
+			arrowLeft.gfxData("/Buttons/ArrowRight.png", true, false, false);
 			arrowRight = new Button(0, 0, 60, 60);
-			arrowRight.gfxData(new SpriteSheet("/Buttons/ArrowRight.png"), 0x00, false);
+			arrowRight.gfxData("/Buttons/ArrowRight.png", false);
 			resolutions.add(new Point(960,720));
 			resolutions.add(new Point(1024,768));
 			resolutions.add(new Point(1200,900));
@@ -199,16 +195,16 @@ public class Visuals {
 		}
 
 		public void render() {
-			Game.font.render(Game.screen.width/2-300, height, "Resolution", 0, 0xff000000, Game.screen);
-			Game.sfont.render(Game.screen.width/2+180, height, MainConfig.resX+"x"+MainConfig.resY, 0, 0xff000000, Game.screen);
+			Game.font.render(Screen.width/2-200, height, "Resolution", 0, 0xff000000, Game.screen);
+			Game.sfont.render(Screen.width/2+180, height, MainConfig.resX+"x"+MainConfig.resY, 0, 0xff000000, Game.screen);
 			arrowLeft.render();
 			arrowRight.render();
 		}
 
 		public void setHeight(int height) {
 			super.setHeight(height);
-			arrowLeft.SetPos(Game.screen.width/2+30, height);
-			arrowRight.SetPos(Game.screen.width/2+330, height);
+			arrowLeft.SetPos(Screen.width/2+30, height);
+			arrowRight.SetPos(Screen.width/2+330, height);
 		}
 	}
 	
@@ -217,14 +213,14 @@ public class Visuals {
 		
 		public FullscreenOption() {
 			fullscreen = new Button(0, 0, 500, 60);
-			fullscreen.TextData("Fullscreen: " + (MainConfig.fullscreen ? "ON" : "OFF"), false);
+			fullscreen.TextData("Fullscreen: " + (MainConfig.fullscreen ? "ON" : "OFF"), false, true);
 		}
 		
 		public void tick() {
 			fullscreen.tick();
 			if(fullscreen.isclicked) {
 				MainConfig.fullscreen = !MainConfig.fullscreen;
-				fullscreen.TextData("Fullscreen: " + (MainConfig.fullscreen ? "ON" : "OFF"), false);
+				fullscreen.TextData("Fullscreen: " + (MainConfig.fullscreen ? "ON" : "OFF"), false, true);
 			}
 		}
 
@@ -234,7 +230,7 @@ public class Visuals {
 
 		public void setHeight(int height) {
 			super.setHeight(height);
-			fullscreen.SetPos(Game.screen.width/2, height);
+			fullscreen.SetPos(Screen.width/2, height);
 		}
 	}
 }

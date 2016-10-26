@@ -12,6 +12,7 @@ public class Loam extends Material<AD>{
 		displayName = "Loam";
 		usePickaxe = 1.5;
 		tick = false;
+		loadTexture();
 	}
 	
 }
