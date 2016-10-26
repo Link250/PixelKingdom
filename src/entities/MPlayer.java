@@ -2,6 +2,7 @@ package entities;
 
 import gfx.Screen;
 import gfx.SpriteSheet;
+import map.Map;
 
 public class MPlayer extends Mob {
 
@@ -10,7 +11,7 @@ public class MPlayer extends Mob {
 	public int anim;
 
 	public MPlayer(int n) {
-		super(null ,"MPlayer", 0, 0, new SpriteSheet("/sprite_sheet_player.png", 13*Screen.MAP_SCALE, 16*Screen.MAP_SCALE));
+		super(null ,"MPlayer", 0, 0, null);
 		this.number = n;
 		this.color = 0xffff00ff;
 		this.anim = 0;
@@ -26,6 +27,7 @@ public class MPlayer extends Mob {
 	public void tick(int numTick) {}
 	
 	public void render() {
+		if(this.sheet == null)this.sheet = new SpriteSheet("/sprite_sheet_player.png", 13*Screen.MAP_SCALE, 16*Screen.MAP_SCALE);
 		Screen.drawMapSprite(x-xOffset, y-yOffset, sheet, anim, movingDir==1, false, color);
 	}
 }

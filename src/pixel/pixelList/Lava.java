@@ -45,7 +45,7 @@ public class Lava extends Liquid<LavaAD>{
 	}
 	
 	public short tickLight(int x, int y, int l, Map map) {
-		return (byte) (Map.MAX_LIGHT*0.8);
+		return (short) (Map.MAX_LIGHT*0.6);
 	}
 	
 	public void setMat(int x, int y, int l, int ID, Map map){

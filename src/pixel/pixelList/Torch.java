@@ -20,6 +20,6 @@ public class Torch extends Material<AD>{
 	}
 
 	public short tickLight(int x, int y, int l, Map map) {
-		return 150;
+		return (short) (Map.MAX_LIGHT*0.6);
 	}
 }

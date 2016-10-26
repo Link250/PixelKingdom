@@ -83,11 +83,15 @@ public class Chunk{
 	public boolean setUpdating(int x, int y, int l){
 		if(!updating[x][y][l]){
 			updating[x][y][l]=true;
-			textureUpdates[x/Screen.RENDER_CHUNK_SIZE][y/Screen.RENDER_CHUNK_SIZE][l] = true;
+			setTextureUpdating(x, y, l);
 			return true;
 		}else{
 			return false;
 		}
+	}
+	
+	public void setTextureUpdating(int x, int y, int l) {
+		textureUpdates[x/Screen.RENDER_CHUNK_SIZE][y/Screen.RENDER_CHUNK_SIZE][l] = true;
 	}
 	
 	public boolean getUpdate(int x, int y, int l){

@@ -32,6 +32,10 @@ public class Map {
 
 	private Chunk[][] chunks = new Chunk[1024][1024];
 	
+	private int regularUpdateX = -Screen.width/2-Screen.RENDER_CHUNK_SIZE;
+	private int regularUpdateY = -Screen.height/2-Screen.RENDER_CHUNK_SIZE;
+	private int regularUpdateL = 0;
+	
 	public Map(String path, Screen screen){
 		this.path = path;
 		this.screen = screen;
@@ -82,6 +86,22 @@ public class Map {
 				updateCountLight++;
 			}
 		}
+		if( regularUpdateX < Screen.width/2+Screen.RENDER_CHUNK_SIZE) {
+			regularUpdateX+=Screen.RENDER_CHUNK_SIZE;
+		}else{
+			if(regularUpdateY < Screen.height/2+Screen.RENDER_CHUNK_SIZE) {
+				regularUpdateY+=Screen.RENDER_CHUNK_SIZE;
+			}else {
+				if(regularUpdateL < LAYER_ALL.length) {
+					regularUpdateL++;
+				}else {
+					regularUpdateL = 0;
+				}
+				regularUpdateY = -Screen.height/2-Screen.RENDER_CHUNK_SIZE;
+			}
+			regularUpdateX = -Screen.width/2-Screen.RENDER_CHUNK_SIZE;
+		}
+		setTextureUpdating(regularUpdateX+Screen.xOffset, regularUpdateY+Screen.yOffset, regularUpdateL);
 	}
 	
 	public boolean isUpdating(int x, int y, int l){
@@ -98,6 +118,13 @@ public class Map {
 			x %= 1024;y %= 1024;
 			return chunks[cx][cy].setUpdating(x, y, l);
 		}else return false;
+	}
+	
+	public void setTextureUpdating(int x, int y, int l) {
+		int cx = x/1024,cy = y/1024;
+		if(chunks[cx][cy]!=null){
+			chunks[cx][cy].setTextureUpdating(x%1024, y%1024, l);
+		}
 	}
 	
 	public boolean getUpdate(int x, int y, int l){
@@ -131,6 +158,9 @@ public class Map {
 				}else{
 					if(setUpdating(x+Sx*X-Sx, y+Sy*Y-Sy, Map.LAYER_LIGHT)) {
 						updatesLight.addUpdate(x+Sx*X-Sx, y+Sy*Y-Sy, Map.LAYER_LIGHT);
+					}
+					for (int L : LAYER_ALL_PIXEL) {
+						setTextureUpdating(x+Sx*X-Sx, y+Sy*Y-Sy, L);
 					}
 				}
 			}
