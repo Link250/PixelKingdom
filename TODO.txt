@@ -161,8 +161,7 @@ BiomeMaps, zusammenhängende Biome, gleiche Kanten für gute Übergänge
 
 - Dynamische Lichtquelle (beim tragen einer Torch)
 
-- CUDA Berechnung -vielleicht
-
+-!!! CUDA Berechnung /*-vielleicht*/
 - Multiblock ADs
 
 - Cool, aber unwichtig (TODO in pixel kingdom nach dem full release):
