@@ -15,9 +15,15 @@
 
 >>>>> PIXEL KINGDOM TODO LIST <<<<<
 
+!!!really important things
+###needed for next release
+#optional for next release
++planned for a later release
+-not yet planned
+
 ---------- ITEMS ----------
 
-- Eimer
+# Eimer
 	- kann vorerst nur Wasser nehmen (wegen den ADs der Lava)
 	- kann sich auffüllen und eine bestimmte anzahl an Pixeln speichern (wird dann angezeigt als Zahl wie bei MatStacks)
 	- rechtsklick aufsammelt, mit pickaxe algorythmen
@@ -25,7 +31,7 @@
 
 - waehrung (methan, ethan, andere than? oder rupees <3)
 		
-- Antimaterie !!!
+- Antimaterie
 - Anti-Iridium Schwert + Iridium Schwert
 	-> Energie Angriffe
 
@@ -44,7 +50,7 @@
 	kann mit speziellen Werkzeugen abgebaut werden
 		-> Sense, die wie Pickaxe funktioniert aber nur Pflanzenblöke abbaut (Pflanzenblke trotzdem mit anderen Tools abbaubar, dafür dann keine/weniger/seltenere Drops)
 	
-- GLASS!! Lichtdurchlaessige Bloecke und Lichterstellende bloecke
+# GLASS!! Lichtdurchlaessige Bloecke und Lichterstellende bloecke
 
 - mehr mehr meeehr mehr mehr mehr baubloecke. 
 - selfmade bloecke in einem 3d drucker machen.
@@ -86,18 +92,21 @@ BiomeMaps, zusammenhängende Biome, gleiche Kanten für gute Übergänge
 
 ---------- CONFIGS ----------
 
-- brightness constant, sodass zB 245->255 erhellt wird (siehe Chunk.java TODO)
-- framecap
-- resizable window
-- max light iterations
+# brightness constant, sodass zB 245->255 erhellt wird (siehe Chunk.java TODO)
+# framecap
+# resizable window
+# max light iterations
 - character creation, away with those pesky black people.
 
 ---------- FEATURES/MECHANICS ----------
 
-- fix dynamic Oven/ore/fire texture
+### neues Crafting Fenster
 
-- Fehlende HD Texturen ergänzen:
+# fix dynamic Oven/ore/fire texture
+
+!!! Fehlende Texturen ergänzen:
 	- Bags
+	- (crafting stuff)
 	
 - Loader class auch für andere Ladevorgänge verwenden
 	->Materials, Recipes, etc
