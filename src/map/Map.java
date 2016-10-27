@@ -4,7 +4,6 @@ import gfx.Screen;
 import multiplayer.MapUpdater;
 import multiplayer.client.ChunkManagerC;
 import multiplayer.client.ServerManager;
-import multiplayer.server.ClientManager;
 import pixel.AD;
 import pixel.Material;
 import pixel.PixelList;
@@ -15,8 +14,8 @@ import java.io.IOException;
 public class Map {
 
 	public static final byte LAYER_BACK=0, LAYER_LIQUID = 1, LAYER_FRONT = 2, LAYER_LIGHT = 3,
-			MAX_LIGHT=64,
 			GT_SP=0,GT_CLIENT=1,GT_SERVER=2;
+	public static final short MAX_LIGHT = 255;
 	public static final byte[] LAYER_ALL = {LAYER_BACK,LAYER_LIQUID,LAYER_FRONT,LAYER_LIGHT},
 			LAYER_ALL_PIXEL = {LAYER_BACK,LAYER_LIQUID,LAYER_FRONT},
 			LAYER_ALL_MATERIAL = {LAYER_BACK,LAYER_FRONT};
@@ -32,6 +31,9 @@ public class Map {
 	private MapUpdater mapUpdater;
 
 	private Chunk[][] chunks = new Chunk[1024][1024];
+	
+	private int regularUpdateX = -Screen.width/2-Screen.RENDER_CHUNK_SIZE;
+	private int regularUpdateY = -Screen.height/2-Screen.RENDER_CHUNK_SIZE;
 	
 	public Map(String path, Screen screen){
 		this.path = path;
@@ -50,11 +52,9 @@ public class Map {
 		this.chunkMaganer = chunkManager;
 		return chunkManager;
 	}
-	public void setChunkManager(ClientManager manager){
-//		this.chunkMaganer = new ChunkManagerC(this, chunks, manager);
-	}
 	
 	public void tick(int tickCount){
+		
 		Material<?> m;
 		int x,y,l;
 		int ID;
@@ -74,15 +74,28 @@ public class Map {
 			}
 			updateCountPixel++;
 		}
-		size = updatesLight.startUpdate();
-		for(int i = 0; i < size; i++){
-			int[] co = updatesLight.activate(i);
-			x=co[0];y=co[1];l=co[2];
-			if(getUpdate(x,y,l)) {
-				updateLight(x, y);
+		for (int n = 0; n < 8; n++) {
+			size = updatesLight.startUpdate();
+			for(int i = 0; i < size; i++){
+				int[] co = updatesLight.activate(i);
+				x=co[0];y=co[1];l=co[2];
+				if(getUpdate(x,y,l)) {
+					updateLight(x, y);
+				}
+				updateCountLight++;
 			}
-			updateCountLight++;
 		}
+		if( regularUpdateX < Screen.width/2+Screen.RENDER_CHUNK_SIZE) {
+			regularUpdateX+=Screen.RENDER_CHUNK_SIZE;
+		}else{
+			if(regularUpdateY < Screen.height/2+Screen.RENDER_CHUNK_SIZE) {
+				regularUpdateY+=Screen.RENDER_CHUNK_SIZE;
+			}else {
+				regularUpdateY = -Screen.height/2-Screen.RENDER_CHUNK_SIZE;
+			}
+			regularUpdateX = -Screen.width/2-Screen.RENDER_CHUNK_SIZE;
+		}
+		setTextureUpdating(regularUpdateX+Screen.xOffset, regularUpdateY+Screen.yOffset, Map.LAYER_LIGHT);
 	}
 	
 	public boolean isUpdating(int x, int y, int l){
@@ -99,6 +112,13 @@ public class Map {
 			x %= 1024;y %= 1024;
 			return chunks[cx][cy].setUpdating(x, y, l);
 		}else return false;
+	}
+	
+	public void setTextureUpdating(int x, int y, int l) {
+		int cx = x/1024,cy = y/1024;
+		if(chunks[cx][cy]!=null){
+			chunks[cx][cy].setTextureUpdating(x%1024, y%1024, l);
+		}
 	}
 	
 	public boolean getUpdate(int x, int y, int l){
@@ -133,6 +153,9 @@ public class Map {
 					if(setUpdating(x+Sx*X-Sx, y+Sy*Y-Sy, Map.LAYER_LIGHT)) {
 						updatesLight.addUpdate(x+Sx*X-Sx, y+Sy*Y-Sy, Map.LAYER_LIGHT);
 					}
+					for (int L : LAYER_ALL_PIXEL) {
+						setTextureUpdating(x+Sx*X-Sx, y+Sy*Y-Sy, L);
+					}
 				}
 			}
 		}
@@ -146,55 +169,26 @@ public class Map {
 	}
 	
 	public void updateLight(int x, int y){
-		byte light,tempL,c;
+		short light,tempL,c;
 		if(getID(x,y,LAYER_BACK)==0){
-			light = (byte) MAX_LIGHT;
+			light = MAX_LIGHT;
 		}else{
-			light=0;
-			c = (byte) (getID(x,y,Map.LAYER_FRONT)==0 ? 1 : 2);
+			light=(short) (MAX_LIGHT-PixelList.GetMat(x, y, this, LAYER_BACK).backLightReduction());
 			for (int L= 0; L < LAYER_ALL_PIXEL.length; L++) {
 				tempL = PixelList.GetPixel(getID(x, y, L),L).tickLight(x, y, L, this);
 				if(tempL>light)light = tempL;
 			}
-			if((tempL = getlight(x+1,y))-c>light)light = (byte) (tempL-c);
-			if((tempL = getlight(x-1,y))-c>light)light = (byte) (tempL-c);
-			if((tempL = getlight(x,y+1))-c>light)light = (byte) (tempL-c);
-			if((tempL = getlight(x,y-1))-c>light)light = (byte) (tempL-c);
+			if((tempL = getlight(x+1,y))-(c=PixelList.GetMat(x, y, this, LAYER_FRONT).frontLightReduction())>light)light = (short) (tempL-c);
+			if((tempL = getlight(x-1,y))-(c=PixelList.GetMat(x, y, this, LAYER_FRONT).frontLightReduction())>light)light = (short) (tempL-c);
+			if((tempL = getlight(x,y+1))-(c=PixelList.GetMat(x, y, this, LAYER_FRONT).frontLightReduction())>light)light = (short) (tempL-c);
+			if((tempL = getlight(x,y-1))-(c=PixelList.GetMat(x, y, this, LAYER_FRONT).frontLightReduction())>light)light = (short) (tempL-c);
 			if(light<0)light = 0;
 		}
-		setlight(x,y,light);
+		setlight(x,y,(byte) light);
 	}
 	
 	public void render(){
-		int ID;
-//		Material<?> m;
-		int X,Y;
-		short light;
-
-		for(int l = Map.LAYER_BACK; l <= Map.LAYER_LIGHT; l++){
-			for(int y = 0; y <screen.height/Screen.MAP_SCALE/Screen.MAP_ZOOM; y++){
-				for(int x = 0; x <screen.width/Screen.MAP_SCALE/Screen.MAP_ZOOM; x++){
-					X=x+screen.xOffset;Y=y+screen.yOffset;
-					
-					light = (byte) ((MAX_LIGHT-getlight(X,Y)));
-					ID = getID(X,Y,l);
-					if(ID==-1){
-						loadChunk(X/1024,Y/1024);
-//						try{ID = cloaders.get(0).chunk.getID(X%1024, Y%1024, l);}catch(NullPointerException|IndexOutOfBoundsException e) {}
-//						light = 0;
-					}else {
-						if(light == MAX_LIGHT){
-							screen.drawShadow(X, Y, 0xff000000);
-						}else{
-							if(ID!=0){
-								PixelList.GetPixel(ID, l).render(X, Y, l, this,screen);
-							}
-							if(l==Map.LAYER_LIGHT)screen.drawShadow(X, Y, ((MAX_LIGHT-getlight(X,Y))<<26));
-						}
-					}
-				}
-			}
-		}
+		Screen.drawMap(this);
 	}
 	
 	public void loadChunk(int cx, int cy){
@@ -266,11 +260,12 @@ public class Map {
 		}
 	}
 
-	public byte getlight(int x, int y){
+	public short getlight(int x, int y){
 		int cx = x/1024,cy = y/1024;
 		if(chunks[cx][cy]!=null){
 			x %= 1024;y %= 1024;
-			return chunks[cx][cy].light[x+y*1024];
+			short temp = chunks[cx][cy].light[x+y*1024];
+			return (short) (temp<0 ? temp+256 : temp);
 		}else{
 			return 0;
 		}
@@ -286,15 +281,25 @@ public class Map {
 		}
 	}
 
-	public void setlighter(int x, int y, byte b) {
-		if(getlight(x,y)<b)setlight(x, y, b);
+	public void setlighter(int x, int y, short b) {
+		if(getlight(x,y)<b)setlight(x, y, (byte)b);
 	}
 
 	public boolean isSolid(int x, int y){
 		if(getID(x, y, Map.LAYER_FRONT)!=0 && PixelList.GetMat(getID(x, y, Map.LAYER_FRONT)).solid)return true;
 		else return false;
 	}
-
+	
+	public int getRenderChunk(int x, int y, int l) {
+		int cx = x/1024,cy = y/1024;
+		if(chunks[cx][cy]!=null){
+			return chunks[cx][cy].getRenderChunk(x%1024, y%1024, l);
+		}else {
+			loadChunk(cx, cy);
+			return 0;
+		}
+	}
+	
 	public void save(){
 		for(int x = 0; x < Map.widthh; x++){
 			for(int y = 0; y < Map.heighth; y++){
@@ -306,7 +311,7 @@ public class Map {
 	public byte[] compressedChunk(int x, int y) {
 		try {
 			return chunks[x][y].compress();
-		} catch (IOException e) {/*dont worry, this should never ever happen C: */}
+		} catch (IOException e) {e.printStackTrace();/*dont worry, this should never ever happen C: */}
 		return null;
 	}
 	

@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import main.conversion.ConverterQueue;
-import main.conversion.InConverter;
+import dataUtils.conversion.ConverterQueue;
+import dataUtils.conversion.InConverter;
 import map.Chunk;
 import map.Map;
 import pixel.AD;

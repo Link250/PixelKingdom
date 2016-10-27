@@ -1,6 +1,6 @@
 package gui.menu;
 
-import gfx.SpriteSheet;
+import gfx.Screen;
 import gui.Button;
 import gui.menu.options.Controls;
 import gui.menu.options.Visuals;
@@ -29,11 +29,11 @@ public class OptionScreen implements GameMenu{
 		
 		int bWidth = 300, bHeight = 60, bYOff = 250, bNr = 0;
 		back = new Button(50, 50, 60, 60);
-		back.gfxData(new SpriteSheet("/Buttons/back.png"), true);
+		back.gfxData("/Buttons/back.png", true);
 		visualsButton = new Button(Game.WIDTH/2,bYOff + (int)(bHeight*bNr++*1.5),bWidth,bHeight);
-		visualsButton.TextData("Visuals", false);
+		visualsButton.TextData("Visuals", false, true);
 		controlsButton = new Button(Game.WIDTH/2,bYOff + (int)(bHeight*bNr++*1.5),bWidth,bHeight);
-		controlsButton.TextData("Controls", false);
+		controlsButton.TextData("Controls", false, true);
 	}
 	
 	public void resetMenu() {
@@ -76,7 +76,7 @@ public class OptionScreen implements GameMenu{
 			break;
 		case MAIN:
 		default:
-			Game.font.render(Game.screen.width/2, 50, "Options", 0, 0xff000000, Game.screen);
+			Game.font.render(Screen.width/2, 50, "Options", 0, 0xff000000, Game.screen);
 			back.render();
 			this.visualsButton.render();
 			this.controlsButton.render();

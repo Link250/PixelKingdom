@@ -2,7 +2,7 @@ package multiplayer.server;
 
 import java.io.IOException;
 
-import main.conversion.InConverter;
+import dataUtils.conversion.InConverter;
 
 public interface InputReceiver {
 	public abstract void useInput(InConverter in, byte ID) throws IOException;

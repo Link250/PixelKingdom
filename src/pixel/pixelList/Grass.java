@@ -13,6 +13,7 @@ public class Grass extends Material<AD>{
 		displayName = "Grass";
 		usePickaxe = 1;
 		tick = true;
+		loadTexture();
 	}
 	
 	public boolean tick(int x, int y, int l, int numTick, Map map) {

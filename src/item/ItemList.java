@@ -3,9 +3,9 @@ package item;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 
+import dataUtils.Loader;
 import item.itemList.*;
 import main.Game;
-import main.Loader;
 import pixel.PixelList;
 
 public class ItemList {

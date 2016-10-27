@@ -1,7 +1,9 @@
 package gui;
 
+import gfx.Screen;
 import gfx.SpriteSheet;
 import main.Game;
+import main.MouseInput;
 
 public class Button {
 	private int x;
@@ -13,8 +15,10 @@ public class Button {
 	private int ToffX;
 	private int ToffY;
 	private SpriteSheet gfx;
-	private int mirrorXY=0;
-	private boolean background = true;
+	private boolean mirrorX=false, mirrorY = false;
+	private SpriteSheet bg_on;
+	private SpriteSheet bg_off;
+	private boolean background = false;
 	public boolean mouseover = false;
 	public boolean isclicked = false;
 	
@@ -32,31 +36,55 @@ public class Button {
 		this.y = y - (centeredY ? this.height/2 : 0);
 	}
 
-	public void TextData(String Text, boolean limit, int ToffX, int ToffY){
+	public void TextData(String Text, boolean limit, int ToffX, int ToffY, boolean background){
 		this.Text = Text;
 		this.uselimit = limit;
 		this.ToffX = ToffX;
 		this.ToffY = ToffY;
+		this.background = background;
+		if(background)constructBackground();
 	}
 	
-	public void TextData(String Text, boolean limit){
+	public void TextData(String Text, boolean limit, boolean background){
 		this.Text = Text;
 		this.uselimit = limit;
 		this.ToffX = this.width/2;
 		this.ToffY = this.height/2;
+		this.background = background;
+		if(background)constructBackground();
 	}
 	
-	public void gfxData(SpriteSheet gfx, boolean background){
-		this.gfx = gfx;
+	public void gfxData(String gfxPath, boolean background){
+		this.gfx = new SpriteSheet(gfxPath, this.width, this.height);
 		this.background = background;
+		if(background)constructBackground();
 	}
 	
-	public void gfxData(SpriteSheet gfx, int mirrorXY, boolean background){
-		this.gfx = gfx;
-		this.mirrorXY = mirrorXY;
+	public void gfxData(String gfxPath, boolean mirrorX, boolean mirrorY, boolean background){
+		this.gfx = new SpriteSheet(gfxPath, this.width, this.height);
+		this.mirrorX = mirrorX;
+		this.mirrorY = mirrorY;
 		this.background = background;
+		if(background)constructBackground();
 	}
 
+	private void constructBackground() {
+		int[] pixels = new int[width * height];
+		for(int x = 0; x < width; x++){
+			for(int y = 0; y < height; y++){
+				pixels[y*width+x] = ((x < 2 || y < 2 || x >= width-2 || y >= height-2)? 0xffC0C0C0 : 0xff606060);
+			}
+		}
+		this.bg_on = new SpriteSheet(pixels, width, height, width, height);
+		
+		for(int x = 0; x < width; x++){
+			for(int y = 0; y < height; y++){
+				pixels[y*width+x] = ((x < 2 || y < 2 || x >= width-2 || y >= height-2)? 0xffC0C0C0 : 0xffA0A0A0);
+			}
+		}
+		this.bg_off = new SpriteSheet(pixels, width, height, width, height);
+	}
+	
 	public void SetPos(int x, int y){
 		SetPos(x, y, true, true);
 	}
@@ -67,11 +95,10 @@ public class Button {
 	}
 	
 	public void tick(){
-//		System.out.println(input.mouse.x + " " + input.mouse.y);
-		if(Game.input.mouse.x >= x && Game.input.mouse.x <= x+width-1 && Game.input.mouse.y >= y && Game.input.mouse.y <= y+height-1) mouseover = true;
+		if(MouseInput.mouse.x >= x && MouseInput.mouse.x <= x+width-1 && MouseInput.mouse.y >= y && MouseInput.mouse.y <= y+height-1) mouseover = true;
 		else  mouseover = false;
 		if(mouseover){
-			isclicked = Game.input.mousel.click();
+			isclicked = MouseInput.mousel.click();
 		}else{
 			isclicked = false;
 		}
@@ -79,27 +106,13 @@ public class Button {
 
 	public void render(){
 		if(background){
-			for(int i = 0; i < height; i++){
-				for(int j = 0; j < width; j++){
-					if(mouseover){
-						if(i==0 || i==height-1 || j==0 || j==width-1)Game.screen.drawGUIPixel(x+j, y+i, 0xffC0C0C0);
-						else Game.screen.drawGUIPixel(x+j, y+i, 0xff606060);
-					}
-					else{
-						if(i==0 || i==height-1 || j==0 || j==width-1)Game.screen.drawGUIPixel(x+j, y+i, 0xffC0C0C0);
-						else Game.screen.drawGUIPixel(x+j, y+i, 0xffA0A0A0);
-					}
-				}
-			}
+			Screen.drawGUISprite(x, y, mouseover ? bg_on : bg_off);
 		}
 		if(gfx != null){
-			gfx.tileWidth=width;
-			gfx.tileHeight=height;
-//debug			System.out.println(gfx.tileWidth);
 			if(mouseover){
-				Game.screen.drawGUITile(x, y, 1, mirrorXY, gfx, 0);
+				Screen.drawGUISprite(x, y, gfx, 1, mirrorX, mirrorY);
 			}else{
-				Game.screen.drawGUITile(x, y, 0, mirrorXY, gfx, 0);
+				Screen.drawGUISprite(x, y, gfx, 0, mirrorX, mirrorY);
 			}
 		}
 		if(uselimit){

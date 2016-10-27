@@ -1,6 +1,5 @@
 package pixel.pixelList;
 
-import gfx.Screen;
 import map.Map;
 import pixel.Material;
 import pixel.PixelList;
@@ -15,6 +14,8 @@ public class Fire extends Material<FireAD>{
 		displayName = "Fire";
 		tick = true;
 		solid = false;
+		frontLightReduction = 0;
+		backLightReduction = 0;
 	}
 	
 	public boolean tick(int x, int y, int l, int numTick, Map map) {
@@ -38,17 +39,19 @@ public class Fire extends Material<FireAD>{
 		return true;
 	}
 	
-	public byte tickLight(int x, int y, int l, Map map) {
+	public short tickLight(int x, int y, int l, Map map) {
 		return (byte) (map.<FireAD>getAD(x, y, l).burntime*Map.MAX_LIGHT/100);
 	}
 	
-	public void render(int x, int y, int l, Map map, Screen screen) {
+	public int render(int x, int y, int l, Map map) {
 		try {
-			screen.drawMapPixelScaled(x, y, 0xffff0000 | (((byte)(map.<FireAD>getAD(x, y, l).burntime*2+Math.random()*55))<<8));
+			return 0xffff0000;
+//			return( 0xffff0000 | (((byte)(map.<FireAD>getAD(x, y, l).burntime*2+Math.random()*55))<<8));
 		}catch(NullPointerException e) {
 			System.out.println("Fire.render()");
 			//can happen if the AD is changed while this pixel is being rendered
 		}
+		return 0xffff0000;
 	}
 	
 	public void spread(int x, int y, int l, Map map){

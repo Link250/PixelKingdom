@@ -14,5 +14,6 @@ public class Ore_Iron extends Ore<OreAD>{
 		displayName = "Iron Ore";
 		usePickaxe = 2.0;
 		tick = false;
+		loadTexture();
 	}
 }

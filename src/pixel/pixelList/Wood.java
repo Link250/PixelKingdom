@@ -13,6 +13,7 @@ public class Wood extends Material<AD>{
 		usePickaxe = 1;
 		burnable = 20;
 		tick = false;
+		loadTexture();
 	}
 	
 }

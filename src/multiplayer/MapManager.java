@@ -1,7 +1,8 @@
 package multiplayer;
 
 import java.io.IOException;
-import main.conversion.InConverter;
+
+import dataUtils.conversion.InConverter;
 
 public class MapManager implements multiplayer.client.InputReceiver, multiplayer.server.InputReceiver{
 

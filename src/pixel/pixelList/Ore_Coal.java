@@ -13,5 +13,6 @@ public class Ore_Coal extends Ore<OreAD>{
 		usePickaxe = 1.9;
 		burnable = 50;
 		tick = false;
+		loadTexture();
 	}
 }

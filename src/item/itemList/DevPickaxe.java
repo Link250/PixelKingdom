@@ -1,5 +1,6 @@
 package item.itemList;
 
+import gfx.SpriteSheet;
 import item.Pickaxe;
 
 public class DevPickaxe extends Pickaxe{
@@ -13,5 +14,6 @@ public class DevPickaxe extends Pickaxe{
 		strength = 333;
 		size = 8;
 		range = 100;
+		gfx = new SpriteSheet("/Items/Pickaxe_Dev.png");
 	}
 }

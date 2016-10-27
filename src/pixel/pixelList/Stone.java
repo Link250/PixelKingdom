@@ -12,6 +12,7 @@ public class Stone extends Material<AD>{
 		displayName = "Stone";
 		usePickaxe = 1.5;
 		tick = false;
+		loadTexture();
 	}
 	
 }

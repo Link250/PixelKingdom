@@ -13,5 +13,8 @@ public class Leaf extends Material<AD>{
 		usePickaxe = 1;
 		burnable = 10;
 		tick = false;
+		frontLightReduction = 6;
+		backLightReduction = 200;
+		loadTexture();
 	}
 }

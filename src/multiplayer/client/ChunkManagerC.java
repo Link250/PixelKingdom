@@ -3,8 +3,8 @@ package multiplayer.client;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import dataUtils.conversion.InConverter;
 import main.Game;
-import main.conversion.InConverter;
 import map.Chunk;
 import map.Map;
 import multiplayer.Request;

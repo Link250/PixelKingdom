@@ -2,15 +2,17 @@ package gameFields;
 
 import java.util.ArrayList;
 
+import dataUtils.PArea;
 import entities.Player;
 import gfx.Mouse;
 import gfx.SpriteSheet;
 import gfx.Mouse.MouseType;
+import gfx.Screen;
 import item.*;
 import item.itemList.MatStack;
 import main.MainConfig.GameFields;
+import main.MouseInput;
 import main.Game;
-import main.PArea;
 
 public class Crafting extends GameField {
 	
@@ -39,10 +41,10 @@ public class Crafting extends GameField {
 	
 	public void tick() {
 		Drag();
-		if(mouseover(Game.input.mouse.x, Game.input.mouse.y)){
+		if(mouseover(MouseInput.mouse.x, MouseInput.mouse.y)){
 			Mouse.mouseType=MouseType.DEFAULT;
-			if(Game.input.mousel.click()){
-				int mx = Game.input.mousel.x, my = Game.input.mousel.y;
+			if(MouseInput.mousel.click()){
+				int mx = MouseInput.mousel.x, my = MouseInput.mousel.y;
 				int x = field.x, y = field.y;
 				PArea r = new PArea(x,y,36,36);
 				switch(select_type){
@@ -118,24 +120,24 @@ public class Crafting extends GameField {
 		if(select_type == 0){
 			y += 33;
 			for(SpriteSheet gfx : gfxs){
-				Game.screen.drawGUITile(x, y, 0, 0, Background, 0);
-				Game.screen.drawGUITile(x+1, y+1, 0, 0, gfx, 0);
+				Screen.drawGUISprite(x, y, Background);
+				Screen.drawGUISprite(x+1, y+1, gfx);
 				x += 39;
 			}	
 		}else{
-			for(int X = 0; X < field.width; X++){for(int Y = 0; Y < 36; Y++){Game.screen.drawGUIPixel(x+X, y+Y+72, 0x30808080);}}
+//			for(int X = 0; X < field.width; X++){for(int Y = 0; Y < 36; Y++){Game.screen.drawGUIPixel(x+X, y+Y+72, 0x30808080);}}
 			y += 33;
-			Game.screen.drawGUITile(x, y, 0, 0, Background, 0);
-			Game.screen.drawGUITile(x+1, y+1, 0, 0, BackButton, 0); x+= 78;
-			Game.screen.drawGUITile(x, y, 0, 0, Background, 0);
-			Game.screen.drawGUITile(x+1, y+1, 0, 0, gfxs.get(select_type-1), 0); x+= 78;
-			Game.screen.drawGUITile(x, y, 0, 0, Background, 0);
-			Game.screen.drawGUITile(x+1, y+1, 0, 0, Search, 0);
+			Screen.drawGUISprite(x, y, Background);
+			Screen.drawGUISprite(x+1, y+1, BackButton); x+= 78;
+			Screen.drawGUISprite(x, y, Background);
+			Screen.drawGUISprite(x+1, y+1, gfxs.get(select_type-1)); x+= 78;
+			Screen.drawGUISprite(x, y, Background);
+			Screen.drawGUISprite(x+1, y+1, Search);
 			if(recipelist.size()!=0){
-				Game.screen.drawGUITile(x-78, y+114, 0, 0, Craft, 0);
+				Screen.drawGUISprite(x-78, y+114, Craft, 0);
 				x -= 78; y += 39;
 				for(int i = -2; i <= 2; i ++){
-					if(i == 0)Game.screen.drawGUITile(x+i*39, y, 0, 0, Background, 0);
+					if(i == 0)Screen.drawGUISprite(x+i*39, y, Background);
 					try{
 						ItemList.GetItem(recipelist.get(i+select_recipe).products.get(0).ID).render(Game.screen, x+i*39+1, y+1);
 					}catch(IndexOutOfBoundsException e){}
@@ -144,12 +146,12 @@ public class Crafting extends GameField {
 				n = recipelist.get(select_recipe).educts.size();
 				if(n<3)if(n>1)y+=15;else y+=33;
 				
-				if(select_educt>0)Game.screen.drawGUITile(x+33, y, 0, 0x01, scroll, 0);
-				if(select_educt<recipelist.get(select_recipe).educts.size()-3)Game.screen.drawGUITile(x+33, y+2*33+15, 0, 0x00, scroll, 0);
+				if(select_educt>0)Screen.drawGUISprite(x+33, y, scroll);
+				if(select_educt<recipelist.get(select_recipe).educts.size()-3)Screen.drawGUISprite(x+33, y+2*33+15, scroll);
 				
 				for(int i = 0; i < 3; i ++){
 					try{
-						Game.mfont.render( x-39, y+i*33+9, false, false, Integer.toString(recipelist.get(select_recipe).educts.get(i+select_educt).n), 0, 0xff000000, Game.screen);
+						Game.mfont.render( x-39, y+i*33+9, false, false, Integer.toString(recipelist.get(select_recipe).educts.get(i+select_educt).n), 0, 0xff000000);
 						ItemList.GetItem(recipelist.get(select_recipe).educts.get(i+select_educt).ID).render(Game.screen, x, y+i*33);
 					}catch(IndexOutOfBoundsException e){}
 				}x+=78;
@@ -157,12 +159,12 @@ public class Crafting extends GameField {
 				n = recipelist.get(select_recipe).products.size();
 				if(n<3)if(n>1)y+=15;else y+=33;
 				
-				if(select_product>0)Game.screen.drawGUITile(x-12, y, 0, 0x01, scroll, 0);
-				if(select_product<recipelist.get(select_recipe).products.size()-3)Game.screen.drawGUITile(x-12, y+2*33+15, 0, 0x00, scroll, 0);
+				if(select_product>0)Screen.drawGUISprite(x-12, y, scroll);
+				if(select_product<recipelist.get(select_recipe).products.size()-3)Screen.drawGUISprite(x-12, y+2*33+15, scroll);
 				
 				for(int i = 0; i < 3; i ++){
 					try{
-						Game.mfont.render( x+36, y+i*33+9, false, false, Integer.toString(recipelist.get(select_recipe).products.get(i+select_product).n), 0, 0xff000000, Game.screen);
+						Game.mfont.render( x+36, y+i*33+9, false, false, Integer.toString(recipelist.get(select_recipe).products.get(i+select_product).n), 0, 0xff000000);
 						ItemList.GetItem(recipelist.get(select_recipe).products.get(i+select_product).ID).render(Game.screen, x, y+i*33);
 					}catch(IndexOutOfBoundsException e){}
 				}

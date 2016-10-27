@@ -13,6 +13,7 @@ public class Planks extends Material<AD>{
 		usePickaxe = 1;
 		tick = false;
 		burnable = 15;
+		loadTexture();
 	}
 	
 }
