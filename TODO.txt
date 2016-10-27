@@ -39,7 +39,7 @@
 
 ---------- PIXELS/BLOCKS/STRUCTURES ----------
 
-- Kiste
+- # Kiste
 
 - cooking potte, kuechen, nanokuechen (koch und kochalchemiesystem das mit einem wahrscheinlichkeitssystem aber richtungen sachen herstellt)
 
@@ -62,7 +62,7 @@ BiomeMaps, zusammenhängende Biome, gleiche Kanten für gute Übergänge
 - Riesen Bäume in Wald Biomen
 - "Astro"Biome
 	-> Meteoriten, Iridium, weniger Gravitation
-- Biomes (Urwald, wueste, schneeplain, tundra, plains, berge, canyon, blumen, wald, sumpf, see, boeses biom)
+- Biomes (Urwald, wueste, schneeplain, tundra, plains, berge, canyon, blumen, wald, sumpf, see, boeses biom, minenbiom))
 - rare biomes (Ein Biom das anstatt eines anderen Biom mit einer ehh 25% chance erstellt wird, große liste an ideen unten)
 - Clever Biomes (Biome die von Klima in der naehe passen, kein Eis Biom neben einer Wueste.)
 - rare biome ideen: 
@@ -76,6 +76,8 @@ BiomeMaps, zusammenhängende Biome, gleiche Kanten für gute Übergänge
 	- Schneeber (ersetzt schneeplains)
 	- Buntwald (viele verschieden Baeume, ersetzt wald)
 	- Kueste + meer (ersetzt see)
+	- industrial (ersetzt mine)
+	- steampunk (ersetzt mine)
 	- superrare biome ideen:
 	- Korallenwald (ersetzt sumpf, seeehr selten)
 	- fairy Biom (ersetzt korrupte/boese biome, seeehr friggin selten)
@@ -121,7 +123,7 @@ BiomeMaps, zusammenhängende Biome, gleiche Kanten für gute Übergänge
 	
 - Day evening night, ein jahreszeiten basierendes tag nacht system.
 - je nach jahreszeit aendernde baumfarben usw.
-- sprint
+- #sprint
 - verlangsamte gravitation/bei welterstellung gravitationsstaerke aussuchen maybe?
 - musik (das mach ich wohl, wollt ich sowieso machen)
 - skilltrees (rpg feeling)
