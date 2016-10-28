@@ -2,7 +2,6 @@ package entities;
 
 import gfx.Screen;
 import gfx.SpriteSheet;
-import map.Map;
 
 public class MPlayer extends Mob {
 

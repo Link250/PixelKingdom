@@ -39,7 +39,7 @@
 
 ---------- PIXELS/BLOCKS/STRUCTURES ----------
 
-- # Kiste
++ Kiste
 
 - cooking potte, kuechen, nanokuechen (koch und kochalchemiesystem das mit einem wahrscheinlichkeitssystem aber richtungen sachen herstellt)
 
@@ -48,7 +48,7 @@
 	-> droppen material für bags
 	-> Weizen, oder anderes essen etc.
 	kann mit speziellen Werkzeugen abgebaut werden
-		-> Sense, die wie Pickaxe funktioniert aber nur Pflanzenblöke abbaut (Pflanzenblke trotzdem mit anderen Tools abbaubar, dafür dann keine/weniger/seltenere Drops)
+		-> Sense, die wie Pickaxe funktioniert aber nur Pflanzenblöke abbaut (Pflanzenblöcke trotzdem mit anderen Tools abbaubar, dafür dann keine/weniger/seltenere Drops)
 	
 # GLASS!! Lichtdurchlaessige Bloecke und Lichterstellende bloecke
 
@@ -57,8 +57,9 @@
 
 ---------- BIOMES ----------
 
-BiomeMaps, zusammenhängende Biome, gleiche Kanten für gute Übergänge
+- BiomeMaps, zusammenhängende Biome, gleiche Kanten für gute Übergänge
 
+--- Map Chunk Biomes ---
 - Riesen Bäume in Wald Biomen
 - "Astro"Biome
 	-> Meteoriten, Iridium, weniger Gravitation
@@ -85,6 +86,17 @@ BiomeMaps, zusammenhängende Biome, gleiche Kanten für gute Übergänge
 	- Staehlerne Berge (ersetzt vulkan) (sehr resistente Berge, spezieller stein, voller Eisen-verwandter Metalle aber irre resistente Gegner und metallischer himmel weil cool)
 	- Lost woods (ersetzt buntwald) (in jeden lost woods biom ist ein tolles Item drin oder so... was man nur dort kriegen kann)
 	- Glitch biom (ersetzt ehhh keine ahnung)
+
+--- Stellar Chunk Biomes ---
+-black hole
+-star/planet/moon/rings
+-deathstar
+-asteroids
+
+--- Galaxy Chunk Biomes ---
+-galaxy
+-nebula
+-dark matter / anti matter
 
 ---------- NPCS ----------
 
@@ -123,7 +135,7 @@ BiomeMaps, zusammenhängende Biome, gleiche Kanten für gute Übergänge
 	
 - Day evening night, ein jahreszeiten basierendes tag nacht system.
 - je nach jahreszeit aendernde baumfarben usw.
-- #sprint
+- sprint
 - verlangsamte gravitation/bei welterstellung gravitationsstaerke aussuchen maybe?
 - musik (das mach ich wohl, wollt ich sowieso machen)
 - skilltrees (rpg feeling)
@@ -152,7 +164,7 @@ BiomeMaps, zusammenhängende Biome, gleiche Kanten für gute Übergänge
 	Schusswaffe
 	Waffe mit Mousetracking
 	
-- Interagieren mit Taste
++ Interagieren mit Taste
 
 - Leitungen:
 	-liquid/energy/item/signal etc.
@@ -162,7 +174,8 @@ BiomeMaps, zusammenhängende Biome, gleiche Kanten für gute Übergänge
 - Dynamische Lichtquelle (beim tragen einer Torch)
 
 -!!! CUDA Berechnung /*-vielleicht*/
-- Multiblock ADs
++ Multiblock ADs
++ pixel bekommen gesagt mit welchem tool sie abgebaut wurden
 
 - Cool, aber unwichtig (TODO in pixel kingdom nach dem full release):
 	- veglitcht/fehlgehauene aber trotzdem geniale waffen (1 in 500 chance eine Waffe zu craften dessen Werte ueberwitzig geaendert werden, bsp: anstatt einer
