@@ -119,11 +119,11 @@ public abstract class Item {
 		}
 	}
 	
-	public void render(Screen screen, int x, int y){
+	public void render(int x, int y){
 		Screen.drawGUISprite(x, y, gfx, 0, false, false, col);
 	}
 
-	public void renderOnMap(Screen screen, int x, int y, boolean mirrorX, boolean mirrorY){
+	public void renderOnMap(int x, int y, boolean mirrorX, boolean mirrorY){
 		Screen.drawGUISprite(x, y, gfx, 0, mirrorX, mirrorY, col);
 	}
 
@@ -131,7 +131,7 @@ public abstract class Item {
 		return anim;
 	}
 
-	public abstract void useItem(Player plr, Map map, Screen screen);
+	public abstract void useItem(Player plr, Map map);
 
 	public void setMouse() {
 		Mouse.mouseType=MouseType.DEFAULT;

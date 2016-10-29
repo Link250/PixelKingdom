@@ -60,6 +60,8 @@ public class Game implements Runnable{
 	public static PxlFont font;
 	public static PxlFont sfont;
 	public static PxlFont mfont;
+	/**Coders Crux Font, Size: 10*18*/
+	public static PxlFont ccFont;
 	public SinglePlayer SinglePlayer;
 	public Client client;
 	public Server server;
@@ -107,6 +109,7 @@ public class Game implements Runnable{
 		mfont = new PxlFont(new SpriteSheet("/StackFont.png", 12, 15), "1234567890", 12, 15, -2);
 		sfont = new PxlFont(new SpriteSheet("/8x8Font.png", 24, 24), " !\"# %&'()* ,-./0123456789:; = ? ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{ }~",24,24, 1);
 		font = new PxlFont(new SpriteSheet("/Font.png", 45, 60), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 1234567890!\",;%&/()=?'+-.",45,60, 2);
+		ccFont = new PxlFont(new SpriteSheet("/Font/coders_crux.png", 12, 20), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890^´+#<,.-°!\"§$%&/()=?`*'>;:_²³{[]}\\~| ",12, 20, 2);
 		
 		pixellist = new PixelList();
 		itemlist = new ItemList();

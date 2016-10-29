@@ -57,7 +57,7 @@ public class Visuals {
 	
 	public void render(){
 		back.render();
-		Game.font.render(Screen.width/2, 50, "Visuals", 0, 0xff000000, Game.screen);
+		Game.font.render(Screen.width/2, 50, "Visuals", 0, 0xff000000);
 		
 		for (GFXOption gfxOption : options) {
 			gfxOption.render();
@@ -103,7 +103,7 @@ public class Visuals {
 		}
 
 		public void render() {
-			Game.font.render(Screen.width/2-200, height, "Player Color", 0, 0xff000000, Game.screen);
+			Game.font.render(Screen.width/2-200, height, "Player Color", 0, 0xff000000);
 			Screen.drawGUISprite(Screen.width/2-2, height-21, sliders);
 			int c = (PlrCol&0x00ff0000)>>16;
 			Screen.drawGUISprite(Screen.width/2+c-1, height-20, marker);
@@ -133,7 +133,7 @@ public class Visuals {
 		}
 
 		public void render() {
-			Game.font.render(Screen.width/2-200, height, "Map Zoom", 0, 0xff000000, Game.screen);
+			Game.font.render(Screen.width/2-200, height, "Map Zoom", 0, 0xff000000);
 			value.render();
 		}
 
@@ -195,8 +195,8 @@ public class Visuals {
 		}
 
 		public void render() {
-			Game.font.render(Screen.width/2-200, height, "Resolution", 0, 0xff000000, Game.screen);
-			Game.sfont.render(Screen.width/2+180, height, MainConfig.resX+"x"+MainConfig.resY, 0, 0xff000000, Game.screen);
+			Game.font.render(Screen.width/2-200, height, "Resolution", 0, 0xff000000);
+			Game.sfont.render(Screen.width/2+180, height, MainConfig.resX+"x"+MainConfig.resY, 0, 0xff000000);
 			arrowLeft.render();
 			arrowRight.render();
 		}

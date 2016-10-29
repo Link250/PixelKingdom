@@ -111,11 +111,11 @@ public class Client {
 		for(MPlayer p : players)p.render();
 		
 		if(debuginfo){
-			Game.sfont.render(10, 10, "FPS:" + Integer.toString(Game.fps), 0, 0xff000000, screen);
-			Game.sfont.render(10, 20, "cX:" + Integer.toString(player.x/Chunk.width), 0, 0xff000000, screen);
-			Game.sfont.render(10, 30, "cY:" + Integer.toString(player.y/Chunk.height), 0, 0xff000000, screen);
-			Game.sfont.render(10, 40, "rX:" + Integer.toString(player.x%Chunk.width), 0, 0xff000000, screen);
-			Game.sfont.render(10, 50, "rY:" + Integer.toString(player.y%Chunk.height), 0, 0xff000000, screen);
+			Game.sfont.render(10, 10, "FPS:" + Integer.toString(Game.fps), 0, 0xff000000);
+			Game.sfont.render(10, 20, "cX:" + Integer.toString(player.x/Chunk.width), 0, 0xff000000);
+			Game.sfont.render(10, 30, "cY:" + Integer.toString(player.y/Chunk.height), 0, 0xff000000);
+			Game.sfont.render(10, 40, "rX:" + Integer.toString(player.x%Chunk.width), 0, 0xff000000);
+			Game.sfont.render(10, 50, "rY:" + Integer.toString(player.y%Chunk.height), 0, 0xff000000);
 		}
 	}
 	

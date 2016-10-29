@@ -19,8 +19,8 @@ public abstract class GameField {
 	
 	public GameField(GameFields savefile) {
 		Point p = MainConfig.fieldPos.get(savefile);
-		field = new PArea(p.x,p.y,100,32);
-		fieldTop = new PArea(p.x,p.y,100,32);
+		field = new PArea(p.x,p.y,100,36);
+		fieldTop = new PArea(p.x,p.y,100,36);
 		grab = new Point();
 		this.savefile = savefile;
 	}
@@ -28,7 +28,7 @@ public abstract class GameField {
 	public GameField(int w, int h, GameFields savefile){
 		Point p = MainConfig.fieldPos.get(savefile);
 		field = new PArea(p.x,p.y,w,h);
-		fieldTop = new PArea(p.x,p.y,w,32);
+		fieldTop = new PArea(p.x,p.y,w,36);
 		grab = new Point();
 		this.savefile = savefile;
 		constructBackground();
@@ -40,8 +40,8 @@ public abstract class GameField {
 	 * @param height
 	 */
 	protected void setSize(int width, int height) {
-		field.setSize(width, height+32);
-		fieldTop.setSize(width, 32);
+		field.setSize(width, height+36);
+		fieldTop.setSize(width, 36);
 		constructBackground();
 	}
 	
@@ -96,14 +96,13 @@ public abstract class GameField {
 	
 	protected void renderfield(){
 		Screen.drawGUISprite(field.x, field.y, background);
-//		Game.screen.drawGUITile(field.x, field.y, 0, 0, background, 0);
 	}
 	
 	public void save(){
 		MainConfig.fieldPos.put(savefile,new Point(field.x, field.y));
 	}
 
-	public boolean mouseover(int mousex, int mousey){
-		return field.contains(mousex, mousey);
+	public boolean mouseover(){
+		return field.contains(MouseInput.mouse.x, MouseInput.mouse.y);
 	}
 }

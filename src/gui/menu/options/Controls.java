@@ -116,7 +116,7 @@ public class Controls {
 	
 	public void render(){
 		back.render();
-		Game.font.render(Screen.width/2, 50, "Controls", 0, 0xff000000, Game.screen);
+		Game.font.render(Screen.width/2, 50, "Controls", 0, 0xff000000);
 		if(this.lOffset > 0)scrollUP.render();
 		if(this.lOffset < keyConfigs.size()-this.lVisibleEntries)scrollDOWN.render();
 		for(int i = this.lOffset; i < this.lOffset+this.lVisibleEntries; i++) {

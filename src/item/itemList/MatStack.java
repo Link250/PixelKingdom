@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import dataUtils.conversion.ConvertData;
 import entities.Player;
 import gfx.Mouse;
-import gfx.Screen;
 import gfx.SpriteSheet;
 import gfx.Mouse.MouseType;
 import item.Item;
@@ -28,7 +27,7 @@ public class MatStack extends Item{
 		col = Game.csheetf.pixels[ID];
 	}
 
-	public void useItem(Player plr, Map map, Screen screen) {
+	public void useItem(Player plr, Map map) {
 		MouseInput.mouse.refresh();
 		anim = 12;
 		int l = Map.LAYER_FRONT;if(!MouseInput.mousel.isPressed())l = Map.LAYER_BACK;

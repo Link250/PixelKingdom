@@ -8,7 +8,7 @@ import dataUtils.conversion.ConvertData;
 import gfx.Screen;
 import gfx.SpriteSheet;
 import item.*;
-import item.Recipe.component;
+import item.Recipe.Component;
 import main.MainConfig.GameFields;
 import main.MouseInput;
 import main.Game;
@@ -190,7 +190,7 @@ public class Player extends Mob{
 	}
 	
 	public boolean CraftItem(Recipe r){
-		for(component c : r.educts){
+		for(Component c : r.educts){
 			int n = c.n;
 			for (Bag<?> bag : this.bags.values()) {
 				for(int i = 0; i < bag.invSize(); i++){
@@ -203,7 +203,7 @@ public class Player extends Mob{
 			}
 			if(n > 0)return false;
 		}
-		for(component c : r.educts){
+		for(Component c : r.educts){
 			int n = c.n;
 			for (Bag<?> bag : this.bags.values()) {
 				for(int i = 0; i < bag.invSize(); i++){
@@ -218,7 +218,7 @@ public class Player extends Mob{
 				}
 			}
 		}
-		for(component c : r.products){
+		for(Component c : r.products){
 			PickUp(ItemList.NewItem(c.ID, c.n));
 		}
 //		System.out.println("craftable");
@@ -320,7 +320,7 @@ public class Player extends Mob{
 		}
 
 		if(this.bags.containsKey(BAG.BELT_1) && this.bags.get(BAG.BELT_1).getItem(selected)!=null && MouseInput.mousel.isClickable()) {
-			this.bags.get(BAG.BELT_1).getItem(selected).useItem(this, map, Game.screen);
+			this.bags.get(BAG.BELT_1).getItem(selected).useItem(this, map);
 		}else{
 			MouseInput.mousel.click();
 		}
@@ -355,13 +355,13 @@ public class Player extends Mob{
 		
 		if((anim == 10 || anim == 11) & this.bags.get(BAG.BELT_1) != null){
 			try{
-				if(anim == 10)	this.bags.get(BAG.BELT_1).getItem(selected).renderOnMap(Game.screen, x+3-movingDir*10, y-5, movingDir==1, false);
-				if(anim == 11)	this.bags.get(BAG.BELT_1).getItem(selected).renderOnMap(Game.screen, x+4-movingDir*12, y-3, movingDir==1, false);
+				if(anim == 10)	this.bags.get(BAG.BELT_1).getItem(selected).renderOnMap(x+3-movingDir*10, y-5, movingDir==1, false);
+				if(anim == 11)	this.bags.get(BAG.BELT_1).getItem(selected).renderOnMap(x+4-movingDir*12, y-3, movingDir==1, false);
 			}catch(NullPointerException e){}
 		}
 		if(anim == 12 & this.bags.get(BAG.BELT_1) != null){
 			try{
-				this.bags.get(BAG.BELT_1).getItem(selected).renderOnMap(Game.screen, x+3-movingDir*8, y-2, movingDir==1, false);
+				this.bags.get(BAG.BELT_1).getItem(selected).renderOnMap(x+3-movingDir*8, y-2, movingDir==1, false);
 			}catch(NullPointerException e){}
 		}
 		/*		EQUIPMENT		*/
@@ -398,7 +398,7 @@ public class Player extends Mob{
 								,true);
 					}catch(NullPointerException e){}
 				}
-				try{Game.font.render(MouseInput.mouse.x, MouseInput.mouse.y, (this.bags.get(BAG.BELT_1).getItem(selected).getName()), 0, 0xff000000, Game.screen);}
+				try{Game.font.render(MouseInput.mouse.x, MouseInput.mouse.y, (this.bags.get(BAG.BELT_1).getItem(selected).getName()), 0, 0xff000000);}
 			catch(NullPointerException e){}
 			}
 		}

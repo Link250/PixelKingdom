@@ -23,7 +23,8 @@ public class SpriteSheet {
 		
 		try {
 			image = ImageIO.read(SpriteSheet.class.getResourceAsStream(path));
-		} catch (IOException e) {
+		} catch (Exception e) {
+			System.err.println(path);
 			e.printStackTrace();
 		}
 		if(image == null){ return;}

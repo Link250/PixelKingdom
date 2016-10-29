@@ -165,12 +165,12 @@ public class ServerList implements GameMenu{
 		back.render();
 		add.render();
 		if(game.server==null)start.render();
-		else Game.font.render(Screen.width/2-65, Screen.height-20, "ServerRunning", 0, 0xff000000, Game.screen);
+		else Game.font.render(Screen.width/2-65, Screen.height-20, "ServerRunning", 0, 0xff000000);
 		if(ButtonList.size()!=0)del.render();
 		if(ButtonList.size()!=0)join.render();
 		if(selected > 0)scrollUP.render();
 		if(selected < ButtonList.size()-1)scrollDOWN.render();
-		Game.font.render(Screen.width/2, 50, "Multiplayer", 0, 0xff000000, Game.screen);
+		Game.font.render(Screen.width/2, 50, "Multiplayer", 0, 0xff000000);
 	}
 	
 	public void refresh() {

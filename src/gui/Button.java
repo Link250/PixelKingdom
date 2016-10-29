@@ -116,9 +116,9 @@ public class Button {
 			}
 		}
 		if(uselimit){
-			Game.font.render(x+ToffX, y+ToffY, Text, width-20, 0xff000000, Game.screen);
+			Game.font.render(x+ToffX, y+ToffY, Text, width-20, 0xff000000);
 		}else{
-			Game.font.render(x+ToffX, y+ToffY, Text, 0, 0xff000000, Game.screen);
+			Game.font.render(x+ToffX, y+ToffY, Text, 0, 0xff000000);
 		}
 	}
 	

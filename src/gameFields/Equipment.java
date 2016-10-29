@@ -19,7 +19,7 @@ public class Equipment extends GameField {
 	private EnumMap<BAG, EquipItemField> itemFields;
 	
 	public Equipment(Player player, EnumMap<BAG, Bag<?>> bags){
-		super(210,177, GameFields.Field_Equipment);
+		super(210,181, GameFields.Field_Equipment);
 		this.itemFields = new EnumMap<>(BAG.class);
 		this.itemFields.put(BAG.TOOL_1, new EquipItemField(bags, BAG.TOOL_1, player));
 		this.itemFields.put(BAG.MAT_1, new EquipItemField(bags, BAG.MAT_1, player));
@@ -45,7 +45,7 @@ public class Equipment extends GameField {
 	
 	public void tick() {
 		if(Drag())allignFields();
-		if(mouseover(MouseInput.mouse.x, MouseInput.mouse.y)){
+		if(mouseover()){
 		Mouse.mouseType=MouseType.DEFAULT;
 			for (BAG bag : BAG.values()) {
 				if(this.itemFields.get(bag).getField().contains(MouseInput.mouse.x, MouseInput.mouse.y)) {
@@ -62,8 +62,8 @@ public class Equipment extends GameField {
 	
 	public void render() {
 		renderfield();
-		Screen.drawGUISprite(field.x+87, field.y+33, Background);
-		Game.sfont.render(field.x+field.width/2, field.y+fieldTop.height/2, "Equipment", 0, 0xff000000, Game.screen);
+		Screen.drawGUISprite(field.x+87, field.y+37, Background);
+		Game.sfont.render(field.x+field.width/2, field.y+fieldTop.height/2, "Equipment", 0, 0xff000000);
 		
 		for (EquipItemField field : itemFields.values()) {
 			field.render();

@@ -76,7 +76,7 @@ public class OptionScreen implements GameMenu{
 			break;
 		case MAIN:
 		default:
-			Game.font.render(Screen.width/2, 50, "Options", 0, 0xff000000, Game.screen);
+			Game.font.render(Screen.width/2, 50, "Options", 0, 0xff000000);
 			back.render();
 			this.visualsButton.render();
 			this.controlsButton.render();

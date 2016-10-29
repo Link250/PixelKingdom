@@ -1,7 +1,6 @@
 package item.itemList;
 
 import entities.Player;
-import gfx.Screen;
 import gfx.SpriteSheet;
 import item.*;
 import map.Map;
@@ -16,6 +15,6 @@ public class SmallBeltBag extends BeltBag {
 		gfx = new SpriteSheet("/Items/NormalBeltBag.png");
 	}
 
-	public void useItem(Player plr, Map map, Screen screen) {
+	public void useItem(Player plr, Map map) {
 	}
 }

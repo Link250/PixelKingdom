@@ -52,7 +52,7 @@ public class Mouse {
 			break;
 		case ITEM:
 			if(Item==null)mouseType = MouseType.DEFAULT;
-			Item.render(Game.screen, MouseInput.mouse.x-5, MouseInput.mouse.y-5);
+			Item.render(MouseInput.mouse.x-5, MouseInput.mouse.y-5);
 			break;
 		case TEXT:
 			int x = MouseInput.mouse.x+MouseType.DEFAULT.sheet.getWidth()+2;

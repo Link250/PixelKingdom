@@ -149,6 +149,6 @@ public class MapSelection implements GameMenu{
 		if(ButtonList.size()!=0)start.render();
 		if(selected > 0)scrollUP.render();
 		if(selected < ButtonList.size()-1)scrollDOWN.render();
-		Game.font.render(Screen.width/2, 50, "Map Selection", 0, 0xff000000, Game.screen);
+		Game.font.render(Screen.width/2, 50, "Map Selection", 0, 0xff000000);
 	}
 }

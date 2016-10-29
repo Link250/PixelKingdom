@@ -4,7 +4,6 @@ import java.util.ArrayList;
 
 import dataUtils.conversion.ConvertData;
 import entities.Player;
-import gfx.Screen;
 import gfx.SpriteSheet;
 import item.Tool;
 import main.MouseInput;
@@ -27,7 +26,7 @@ public class Lighter extends Tool{
 		range = 10;
 	}
 
-	public void useItem(Player plr, Map map, Screen screen) {
+	public void useItem(Player plr, Map map) {
 		if((MouseInput.mousel.isPressed()|MouseInput.mouser.isPressed())){
 			int X = MouseInput.mouse.getMapX(), Y = MouseInput.mouse.getMapY(), L = Map.LAYER_FRONT;
 			if(!MouseInput.mousel.isPressed()){L=Map.LAYER_BACK;}

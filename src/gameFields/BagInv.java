@@ -35,7 +35,7 @@ public class BagInv extends GameField {
 	private void allignFields() {
 		int x=0, y=0;
 		for (ItemField itemField : itemFields) {
-			itemField.setPosition(field.x+(x++)*38, field.y+y*38+34, false, false);
+			itemField.setPosition(field.x+(x++)*38, field.y+y*38+fieldTop.height+2, false, false);
 			if(x >= this.width) {
 				x = 0;
 				y++;
@@ -45,9 +45,9 @@ public class BagInv extends GameField {
 	
 	public void tick() {
 		if(Drag())this.allignFields();
-		if(mouseover(MouseInput.mouse.x, MouseInput.mouse.y)){
+		if(mouseover()){
 			Mouse.mouseType=MouseType.DEFAULT;
-			int mouseX = (MouseInput.mouse.x-field.x), mouseY = (MouseInput.mouse.y-field.y-32);
+			int mouseX = (MouseInput.mouse.x-field.x), mouseY = (MouseInput.mouse.y-field.y-fieldTop.height);
 			int index = mouseX/38 + mouseY/38*this.width;
 			if(mouseX%38 >= 0 && mouseY%38 >= 0 && mouseX%38 <= 36 && mouseY%38 <= 36 && index >= 0 && index < this.itemFields.size()) {
 				if(MouseInput.mousel.click()){
@@ -61,7 +61,7 @@ public class BagInv extends GameField {
 
 	public void render() {
 		renderfield();
-		Game.sfont.render(field.x+fieldTop.width/2, field.y+fieldTop.height/2, this.title, fieldTop.width, 0xff000000, Game.screen);
+		Game.sfont.render(field.x+fieldTop.width/2, field.y+fieldTop.height/2, this.title, fieldTop.width, 0xff000000);
 		for (ItemField itemField : itemFields) {
 			itemField.render();
 		}

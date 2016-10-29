@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import dataUtils.conversion.ConvertData;
 import entities.Player;
 import gfx.Mouse;
-import gfx.Screen;
 import gfx.SpriteSheet;
 import item.Item;
 import main.MouseInput;
@@ -24,7 +23,7 @@ public class Bucket extends Item {
 		gfx = new SpriteSheet("/Items/Bucket.png");
 	}
 	
-	public void useItem(Player plr, Map map, Screen screen) {
+	public void useItem(Player plr, Map map) {
 		MouseInput.mouse.refresh();
 		if((MouseInput.mousel.isPressed()|MouseInput.mouser.isPressed())){
 			int X = MouseInput.mouse.getMapX(), Y = MouseInput.mouse.getMapY();

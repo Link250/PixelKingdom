@@ -39,7 +39,7 @@ public class PxlFont {
 		if(chars.indexOf('.') > -1)pointSize = size[chars.indexOf('.')];
 	}
 	
-	public void render(int x, int y, String msg, int limit, int color, Screen screen){
+	public void render(int x, int y, String msg, int limit, int color){
 		render(x, y, true, true, msg, limit, color);
 	}
 	
