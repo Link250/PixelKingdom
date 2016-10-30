@@ -263,9 +263,9 @@ public class Screen {
 
 //		int nx = 0, ny = 0;
 //		float ox = 0, oy = 0;
-		for (float x = -RENDER_CHUNK_SIZE/2; x < width/2+RENDER_CHUNK_SIZE; x+=RENDER_CHUNK_SIZE) {
+		for (float x = -RENDER_CHUNK_SIZE/2; x < width/2/MAP_ZOOM+RENDER_CHUNK_SIZE; x+=RENDER_CHUNK_SIZE) {
 //			ny=0;
-			for (float y = -RENDER_CHUNK_SIZE/2; y < height/2+RENDER_CHUNK_SIZE; y+=RENDER_CHUNK_SIZE) {
+			for (float y = -RENDER_CHUNK_SIZE/2; y < height/2/MAP_ZOOM+RENDER_CHUNK_SIZE; y+=RENDER_CHUNK_SIZE) {
 				for (int l : Map.LAYER_ALL) {
 					textures[l] = map.getRenderChunk((int)(x+xOffset), (int)(y+yOffset), l);
 				}
