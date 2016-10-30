@@ -114,7 +114,7 @@
 
 ---------- FEATURES/MECHANICS ----------
 
-### neues Crafting Fenster
+# Textfields (für crafting suche und zahl angaben)
 
 # fix dynamic Oven/ore/fire texture
 
