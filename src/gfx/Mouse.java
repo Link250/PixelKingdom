@@ -66,7 +66,6 @@ public class Mouse {
 				y+=26;
 			}
 			textActive = false;
-			mouseType = MouseType.DEFAULT;
 		case DEFAULT:
 		default:
 			if(mouseType.sheet==null)genMouseTexture(MouseType.DEFAULT);

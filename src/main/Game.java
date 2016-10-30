@@ -190,6 +190,7 @@ public class Game implements Runnable{
 	public void tick(){
 		tickCount++;
 		if(reset)reset();
+		Mouse.mouseType = Mouse.MouseType.DEFAULT;
 		switch (gamemode){
 		case Menu : 
 			menu.tick();
