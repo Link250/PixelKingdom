@@ -7,6 +7,7 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
+
 import map.Map;
 
 public class Screen {
@@ -262,8 +263,9 @@ public class Screen {
 
 //		int nx = 0, ny = 0;
 //		float ox = 0, oy = 0;
-		for (float x = -width/2-RENDER_CHUNK_SIZE; x < width/2+RENDER_CHUNK_SIZE; x+=RENDER_CHUNK_SIZE) {
-			for (float y = -height/2-RENDER_CHUNK_SIZE; y < height/2+RENDER_CHUNK_SIZE; y+=RENDER_CHUNK_SIZE) {
+		for (float x = -RENDER_CHUNK_SIZE/2; x < width/2+RENDER_CHUNK_SIZE; x+=RENDER_CHUNK_SIZE) {
+//			ny=0;
+			for (float y = -RENDER_CHUNK_SIZE/2; y < height/2+RENDER_CHUNK_SIZE; y+=RENDER_CHUNK_SIZE) {
 				for (int l : Map.LAYER_ALL) {
 					textures[l] = map.getRenderChunk((int)(x+xOffset), (int)(y+yOffset), l);
 				}
@@ -290,12 +292,13 @@ public class Screen {
 					glBindTexture(GL_TEXTURE_2D, textures[l]);
 					tileModel.render();
 				}
+//				Game.ccFont.render((int)(x*2), (int)(y*2), nx+" "+ny, 0, 0xffff0000);
 //				ny++;
 //				target.m30(ox+target.m00()*2*nx);
 //				target.m31(oy-target.m11()*2*ny);
 			}
 //			nx++;
-//			ny=0;
 		}
+//		System.out.println(nx+" "+ny);
 	}
 }

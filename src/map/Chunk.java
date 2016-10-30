@@ -347,11 +347,18 @@ public class Chunk{
 			for (int x = 0; x < Screen.RENDER_CHUNK_SIZE; x++) {
 				X=x+xPos*Screen.RENDER_CHUNK_SIZE;Y=y+yPos*Screen.RENDER_CHUNK_SIZE;
 				if(l==Map.LAYER_LIGHT) {
-					lightP = (light[X+Y*width]); //TODO +brightness constant, sodass zB 245->255 erhellt wird
-					pixelBuffer.put((byte)0); //RED
-					pixelBuffer.put((byte)0);  //GREEN
-					pixelBuffer.put((byte)0);		  //BLUE
-					pixelBuffer.put((byte)(Map.MAX_LIGHT-(getID(X, Y, Map.LAYER_BACK) == Map.MAX_LIGHT ? 0 : lightP))); //ALPHA
+//					if((X%Screen.RENDER_CHUNK_SIZE == 0 || X%Screen.RENDER_CHUNK_SIZE == Screen.RENDER_CHUNK_SIZE-1 || Y%Screen.RENDER_CHUNK_SIZE == 0 || Y%Screen.RENDER_CHUNK_SIZE == Screen.RENDER_CHUNK_SIZE-1)) {
+//						pixelBuffer.put((byte)255); //RED
+//						pixelBuffer.put((byte)0);  //GREEN
+//						pixelBuffer.put((byte)0);		  //BLUE
+//						pixelBuffer.put((byte)255); //ALPHA
+//					}else {
+						lightP = (light[X+Y*width]); //TODO +brightness constant, sodass zB 245->255 erhellt wird
+						pixelBuffer.put((byte)0); //RED
+						pixelBuffer.put((byte)0);  //GREEN
+						pixelBuffer.put((byte)0);		  //BLUE
+						pixelBuffer.put((byte)(Map.MAX_LIGHT-(getID(X, Y, Map.LAYER_BACK) == Map.MAX_LIGHT ? 0 : lightP))); //ALPHA
+//					}
 				}else {
 					ID = getID(X,Y,l);
 					if(ID>=0){
