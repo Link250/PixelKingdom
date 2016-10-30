@@ -108,7 +108,7 @@ public abstract class Item {
 		return n;
 	}
 
-	public void render(Screen screen, int x, int y, boolean showstack){
+	public void render(int x, int y, boolean showstack){
 		Screen.drawGUISprite(x, y, gfx, 0, false, false, col);
 		if(showstack & stackMax != 1){
 			if(stack>=2000){Game.mfont.render(x, y+17, false, false, Integer.toString(stack), 0, 0xff000000);}
@@ -116,6 +116,17 @@ public abstract class Item {
 			else if(stack>=100){Game.mfont.render(x+4, y+17, false, false, Integer.toString(stack), 0, 0xff000000);}
 			else if(stack>=10){Game.mfont.render(x+13, y+17, false, false, Integer.toString(stack), 0, 0xff000000);}
 			else if(stack>1){Game.mfont.render(x+22, y+17, false, false, Integer.toString(stack), 0, 0xff000000);}
+		}
+	}
+	
+	public void render(int x, int y, int stacksize){
+		Screen.drawGUISprite(x, y, gfx, 0, false, false, col);
+		if(stackMax != 1){
+			if(stacksize>=2000){Game.mfont.render(x, y+17, false, false, Integer.toString(stacksize), 0, 0xff000000);}
+			if(stacksize>=1000){Game.mfont.render(x-5, y+17, false, false, Integer.toString(stacksize), 0, 0xff000000);}
+			else if(stacksize>=100){Game.mfont.render(x+4, y+17, false, false, Integer.toString(stacksize), 0, 0xff000000);}
+			else if(stacksize>=10){Game.mfont.render(x+13, y+17, false, false, Integer.toString(stacksize), 0, 0xff000000);}
+			else if(stacksize>1){Game.mfont.render(x+22, y+17, false, false, Integer.toString(stacksize), 0, 0xff000000);}
 		}
 	}
 	

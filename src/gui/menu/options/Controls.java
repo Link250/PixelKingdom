@@ -72,7 +72,7 @@ public class Controls {
 		int buttonHeight = keyConfigs.get(0).button.getHeight();
 		int gapHeight = (this.lFieldSize-(buttonHeight*this.lVisibleEntries))/(this.lVisibleEntries+1);
 		for(int i = 0; i < this.lVisibleEntries; i++) {
-			keyConfigs.get(i+this.lOffset).button.SetPos(Screen.width/2, this.lFieldTop+(i+1)*gapHeight+i*buttonHeight, false, false);
+			keyConfigs.get(i+this.lOffset).button.setPos(Screen.width/2, this.lFieldTop+(i+1)*gapHeight+i*buttonHeight, false, false);
 			keyConfigs.get(i+this.lOffset).height = this.lFieldTop+(i+1)*gapHeight+i*buttonHeight;
 		}
 	}

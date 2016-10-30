@@ -139,7 +139,7 @@ public class Visuals {
 
 		public void setHeight(int height) {
 			super.setHeight(height);
-			value.SetPos(Screen.width/2+180, height);
+			value.setPos(Screen.width/2+180, height);
 		}
 	}
 	
@@ -203,8 +203,8 @@ public class Visuals {
 
 		public void setHeight(int height) {
 			super.setHeight(height);
-			arrowLeft.SetPos(Screen.width/2+30, height);
-			arrowRight.SetPos(Screen.width/2+330, height);
+			arrowLeft.setPos(Screen.width/2+30, height);
+			arrowRight.setPos(Screen.width/2+330, height);
 		}
 	}
 	
@@ -230,7 +230,7 @@ public class Visuals {
 
 		public void setHeight(int height) {
 			super.setHeight(height);
-			fullscreen.SetPos(Screen.width/2, height);
+			fullscreen.setPos(Screen.width/2, height);
 		}
 	}
 }

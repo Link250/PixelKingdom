@@ -29,20 +29,25 @@ public class ScrollBar {
 	}
 	
 	public void setValue(int value) {
-		if(value>=0 && value<(maxValues-sliderSize+1)) {
-			this.value = value;
-			repositionSlider();
-		}
+		this.value = value;
+		checkValueBounds();
+	}
+	
+	public void checkValueBounds() {
+		if(value>=(maxValues-sliderSize))value = maxValues-sliderSize;
+		if(value<0)value = 0;
+		repositionSlider();
 	}
 	
 	public void setValues(int maxValues, int sliderSize) {
-		System.out.println(maxValues + " " + sliderSize);
 		this.sliderSize = sliderSize;
 		if(maxValues>0) {
 			this.maxValues = maxValues;
+		}else {
+			this.maxValues = 1;
 		}
 		resizeSlider();
-		repositionSlider();
+		checkValueBounds();
 	}
 	
 	private void repositionSlider() {

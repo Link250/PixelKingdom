@@ -99,7 +99,7 @@ public class BagInv extends GameField {
 
 		public void render() {
 			Screen.drawGUISprite(field.x, field.y, back);
-			if(bag.getItem(index)!=null) bag.getItem(index).render(Game.screen, field.x+2, field.y+2, true);
+			if(bag.getItem(index)!=null) bag.getItem(index).render(field.x+2, field.y+2, true);
 		}
 	}
 }

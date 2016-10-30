@@ -5,7 +5,6 @@ import gfx.Mouse;
 import gfx.Screen;
 import gfx.SpriteSheet;
 import item.Item;
-import main.Game;
 
 public class ItemField {
 	protected static SpriteSheet back = new SpriteSheet("/Items/field.png");
@@ -55,6 +54,11 @@ public class ItemField {
 	
 	public void render() {
 		Screen.drawGUISprite(field.x, field.y, back);
-		if(this.item != null)this.item.render(Game.screen, field.x+2, field.y+2, true);
+		if(this.item != null)this.item.render(field.x+2, field.y+2, true);
+	}
+
+	public void render(int stackSize) {
+		Screen.drawGUISprite(field.x, field.y, back);
+		if(this.item != null)this.item.render(field.x+2, field.y+2, stackSize);
 	}
 }

@@ -392,8 +392,7 @@ public class Player extends Mob{
 								, itemBackgrounds);
 					}
 					try{
-						this.bags.get(BAG.BELT_1).getItem(i).render(Game.screen
-								,hotBar.x+(int)(openHotBar*Math.sin((i+0.5)*Math.PI*2/this.bags.get(BAG.BELT_1).invSize()))-15
+						this.bags.get(BAG.BELT_1).getItem(i).render(hotBar.x+(int)(openHotBar*Math.sin((i+0.5)*Math.PI*2/this.bags.get(BAG.BELT_1).invSize()))-15
 								,hotBar.y+(int)(-openHotBar*Math.cos((i+0.5)*Math.PI*2/this.bags.get(BAG.BELT_1).invSize()))-15
 								,true);
 					}catch(NullPointerException e){}

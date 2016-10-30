@@ -28,24 +28,20 @@ public class Recipe implements Comparable<Recipe>{
 	private void sortComponents(List<Component> list) {
 		list.sort(new Comparator<Component>(){
 			public int compare(Component c1, Component c2) {
-				return compareComponents(c1, c2);
+				return c1.compareTo(c2);
 			}
 		});
-	}
-	
-	private int compareComponents(Component c1, Component c2) {
-		return c1.ID != c2.ID ? c1.ID-c2.ID : (c1.n != c2.n ? c1.n-c2.n : 0);
 	}
 	
 	public int compareTo(Recipe r) {
 		if(r.products.size() == this.products.size()) {
 			for (int i = 0; i < this.products.size(); i++) {
-				if(!r.products.get(i).equals(this.products.get(i)))return compareComponents(this.products.get(i), r.products.get(i));
+				if(!r.products.get(i).equals(this.products.get(i)))return this.products.get(i).compareTo(r.products.get(i));
 			}
 		}else return this.products.size() - r.products.size();
 		if(r.educts.size() == this.educts.size()) {
 			for (int i = 0; i < this.educts.size(); i++) {
-				if(!r.educts.get(i).equals(this.educts.get(i)))return compareComponents(this.educts.get(i), r.educts.get(i));
+				if(!r.educts.get(i).equals(this.educts.get(i)))return this.educts.get(i).compareTo(r.educts.get(i));
 			}
 		}else return this.educts.size() - r.educts.size();
 		return 0;
@@ -68,7 +64,7 @@ public class Recipe implements Comparable<Recipe>{
 		return true;
 	}
 	
-	public class Component{
+	public static class Component implements Comparable<Component>{
 		public int ID,n;
 		public Component(int ID, int n){
 			this.ID = ID;
@@ -81,6 +77,10 @@ public class Recipe implements Comparable<Recipe>{
 				Component c = (Component)obj;
 				return (ID == c.ID && n == c.n);
 			}else return false;
+		}
+
+		public int compareTo(Component c) {
+			return ID != c.ID ? ID-c.ID : (n != c.n ? n-c.n : 0);
 		}
 	}
 }

@@ -139,7 +139,7 @@ public class MapSelection implements GameMenu{
 	public void render(){
 		for(int i = -maxButtonsOnScreen/2; i <= maxButtonsOnScreen/2; i++){
 			try{
-				ButtonList.get(selected+i).SetPos(Game.WIDTH/2, Screen.height/2+(i*90));
+				ButtonList.get(selected+i).setPos(Game.WIDTH/2, Screen.height/2+(i*90));
 				ButtonList.get(selected+i).render();
 			}catch(ArrayIndexOutOfBoundsException e){}catch(IndexOutOfBoundsException e){}
 		}

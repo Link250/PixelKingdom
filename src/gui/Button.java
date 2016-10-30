@@ -85,11 +85,11 @@ public class Button {
 		this.bg_off = new SpriteSheet(pixels, width, height, width, height);
 	}
 	
-	public void SetPos(int x, int y){
-		SetPos(x, y, true, true);
+	public void setPos(int x, int y){
+		setPos(x, y, true, true);
 	}
 	
-	public void SetPos(int x, int y, boolean centeredX, boolean centeredY){
+	public void setPos(int x, int y, boolean centeredX, boolean centeredY){
 		this.x = x - (centeredX ? this.width/2 : 0);
 		this.y = y - (centeredY ? this.height/2 : 0);
 	}

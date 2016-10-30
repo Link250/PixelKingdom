@@ -108,7 +108,7 @@ public class Equipment extends GameField {
 		public void render() {
 			Screen.drawGUISprite(field.x, field.y, back);
 			if(bags.containsKey(bagEnum)) {
-				bags.get(bagEnum).render(Game.screen, field.x+2, field.y+2, true);
+				bags.get(bagEnum).render(field.x+2, field.y+2, true);
 			}else{
 				Screen.drawGUISprite(field.x+2, field.y+2, bagEnum.defaultSprite, 0);
 //				Game.screen.drawGUITile(field.x+2, field.y+2, 0, 0, bagEnum.defaultSprite, 0);
