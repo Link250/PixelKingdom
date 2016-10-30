@@ -7,6 +7,7 @@ import dataUtils.PArea;
 import entities.Player;
 import gfx.SpriteSheet;
 import gui.Button;
+import gui.ScrollBar;
 import gfx.Screen;
 import item.*;
 import main.MainConfig.GameFields;
@@ -18,6 +19,8 @@ public class Crafting extends GameField {
 	private SpriteSheet back = new SpriteSheet("/Crafting/Back.png");
 	private Button searchButton;
 	private Button backButton;
+	private ScrollBar scroll;
+	private SpriteSheet scrollSprite;
 	private String selectedCategory = null;
 	private String mouseoverCategory = null;
 	private Recipe mouseoverRecipe = null;
@@ -39,6 +42,7 @@ public class Crafting extends GameField {
 		this.searchButton.gfxData("/Crafting/SearchButton.png", false);
 		this.backButton = new Button(field.x, field.y, 36, 36, false, false);
 		this.backButton.gfxData("/Crafting/BackButton.png", false);
+		this.scroll = new ScrollBar(1, 1, 16, 226, false, false);
 		this.placeFields();
 	}
 	
@@ -47,13 +51,25 @@ public class Crafting extends GameField {
 		this.fieldsArea.setPosition(x, y);
 		this.searchButton.SetPos(field.x+field.width-36, field.y, false, false);
 		this.backButton.SetPos(field.x, field.y, false, false);
-		if(selectedCategory == null)for (ItemField field : categories.values()) {
-			field.setPosition(x+(n%4)*58, y+(n/4)*58, false, false);
-			n++;
-		}else for (ItemField field : recipes.values()) {
-			field.setPosition(x+(n%6)*38, y+(n/6)*38, false, false);
-			n++;
+		if(selectedCategory == null){
+			for (ItemField field : categories.values()) {
+				field.setPosition(x+(n%4)*58, y+(n/4)*58, false, false);
+				n++;
+			}
+			this.scroll.setValues(categories.size()/4, 4);
+		}else{
+			for (ItemField field : recipes.values()) {
+				field.setPosition(x+(n%6)*38, y+(n/6)*38, false, false);
+				n++;
+			}
+			this.scroll.setValues(recipes.size()/6, 6);
 		}
+		this.scroll.setPos(x+228, y, false, false);
+		PArea sliderArea = this.scroll.getSlider();
+		int[] pixels = new int[sliderArea.width*sliderArea.height];
+		for (int i = 0; i < pixels.length; i++) {pixels[i] = 0xff404040;}
+		if(this.scrollSprite == null)this.scrollSprite = new SpriteSheet(pixels, sliderArea.width, sliderArea.height, sliderArea.width, sliderArea.height);
+		else this.scrollSprite.setPixels(pixels, sliderArea.width, sliderArea.height, sliderArea.width, sliderArea.height);
 	}
 	
 	public void tick() {
@@ -86,6 +102,7 @@ public class Crafting extends GameField {
 		backButton.tick();
 		if(backButton.isclicked)selectedCategory = null;
 		searchButton.tick();
+		scroll.tick();
 	}
 	
 	public void render() {
@@ -95,12 +112,21 @@ public class Crafting extends GameField {
 		backButton.render();
 		searchButton.render();
 		if(selectedCategory==null) {
-			categories.values().forEach((f)->f.render());
+			int n = -scroll.getValue()*4;
+			for (ItemField f : categories.values()) {
+				if(n>=0 && n<16)f.render();
+				n++;
+			}
 			if(mouseoverCategory != null)Game.ccFont.render(x+250, y+42, false, false, mouseoverCategory, 0, 0xff000000);
 		}else{
-			recipes.values().forEach((f)->f.render());
+			int n = -scroll.getValue()*6;
+			for (ItemField f : recipes.values()) {
+				if(n>=0 && n<36)f.render();
+				n++;
+			}
 			if(mouseoverRecipe != null)Game.ccFont.render(x+250, y+42, false, false, ItemList.GetItem(mouseoverRecipe.products.get(0).ID).getDisplayName(), 0, 0xff000000);
 		}
+		Screen.drawGUISprite(x+228, y+38+scroll.getSlider().y, scrollSprite);
 	}
 	
 	private static class CategoryField extends ItemField{

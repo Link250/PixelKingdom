@@ -10,7 +10,7 @@ import item.Recipe.Component;
 
 public class RecipeList {
 	/**recipe category**/
-	public static final String C_PIXEL = "Pixel", C_TOOLS = "Tools", C_EQUIPMENT = "Equipment", C_MATERIAL = "Material", C_WEAPONS = "Weapons", C_FURNITURE = "Furniture", C_TECHNOLOGY = "Technology";
+	public static final String C_PIXEL = "Pixel", C_TOOLS = "Tools", C_EQUIPMENT = "Equipment", C_MATERIAL = "Material", C_WEAPONS = "Weapons", C_FURNITURE = "Furniture", C_TECHNOLOGY = "Technology", C_STORAGE = "Storage";
 
 	private ArrayList<Recipe> recipes = new ArrayList<Recipe>();
 	private Map<String, Set<Recipe>> allRecipes = new TreeMap<>();
@@ -37,6 +37,9 @@ public class RecipeList {
 		addRecipe(new Recipe().addP(1, 1).addE(1, 1), C_WEAPONS);
 		addRecipe(new Recipe().addP(1, 1).addE(1, 1), C_FURNITURE);
 		addRecipe(new Recipe().addP(1, 1).addE(1, 1), C_TECHNOLOGY);
+		for (int i = 0; i < 50; i++) {
+			addRecipe(new Recipe().addP((int)(Math.random()*5)+1, i).addE(1, i), C_STORAGE);
+		}
 	}
 	
 	public ArrayList<Recipe> getRecipes(Class<?> type){
