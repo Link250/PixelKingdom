@@ -23,7 +23,7 @@
 
 ---------- ITEMS ----------
 
-# Eimer
++ Eimer
 	- kann vorerst nur Wasser nehmen (wegen den ADs der Lava)
 	- kann sich auffüllen und eine bestimmte anzahl an Pixeln speichern (wird dann angezeigt als Zahl wie bei MatStacks)
 	- rechtsklick aufsammelt, mit pickaxe algorythmen
@@ -114,13 +114,12 @@
 
 ---------- FEATURES/MECHANICS ----------
 
-# Textfields (für crafting suche und zahl angaben)
+# Textfields einbauen für crafting-menge und map/server erstellung
 
 # fix dynamic Oven/ore/fire texture
 
 !!! Fehlende Texturen ergänzen:
 	- Bags
-	- (crafting stuff)
 	
 - Loader class auch für andere Ladevorgänge verwenden
 	->Materials, Recipes, etc
