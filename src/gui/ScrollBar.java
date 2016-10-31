@@ -7,7 +7,6 @@ public class ScrollBar {
 	private PArea main;
 	private PArea slider;
 	private int value = 0, maxValues = 1, sliderSize = 1;
-	private boolean render = false;
 	
 	public ScrollBar(int x, int y, int width, int height){
 		main = new PArea(x-width/2, y-height/2, width, height);
@@ -61,15 +60,13 @@ public class ScrollBar {
 	}
 	
 	public void tick(){
-		if(main.contains(MouseInput.mouse.x, MouseInput.mouse.y) && MouseInput.mousel.isPressed() && main.contains(MouseInput.mousel.x, MouseInput.mousel.y)){
+		if(main.containsMouse(MouseInput.mouse) && MouseInput.mousel.isPressed() && main.containsMouse(MouseInput.mousel)){
 			setValue((MouseInput.mouse.y-main.y)/(this.main.height/(this.maxValues-this.sliderSize+1)));
 		}
 	}
 
 	public void render(){
-		if(render){
-			
-		}
+		
 	}
 	
 	public int getWidth() {

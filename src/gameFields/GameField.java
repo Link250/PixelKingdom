@@ -60,7 +60,7 @@ public abstract class GameField {
 	public abstract void tick();
 	
 	public boolean Drag(){
-		if(fieldTop.contains(MouseInput.mouse.x, MouseInput.mouse.y)){
+		if(fieldTop.containsMouse(MouseInput.mouse)){
 			if(MouseInput.mousel.click()){
 				grab.x = MouseInput.mousel.x-field.x;
 				grab.y = MouseInput.mousel.y-field.y;
@@ -103,6 +103,6 @@ public abstract class GameField {
 	}
 
 	public boolean mouseover(){
-		return field.contains(MouseInput.mouse.x, MouseInput.mouse.y);
+		return field.containsMouse(MouseInput.mouse);
 	}
 }

@@ -9,6 +9,7 @@ import entities.Player;
 import gfx.SpriteSheet;
 import gui.Button;
 import gui.ScrollBar;
+import gui.TextField;
 import gfx.Screen;
 import item.*;
 import main.MainConfig.GameFields;
@@ -20,9 +21,11 @@ public class Crafting extends GameField {
 	private SpriteSheet back = new SpriteSheet("/Crafting/Back.png");
 	private SpriteSheet selection = new SpriteSheet("/Crafting/Selection.png");
 	private Button searchButton;
+	private Button editButton;
 	private Button backButton;
 	private Button craftButton;
 	private ScrollBar scroll;
+	private TextField searchText;
 	private SpriteSheet scrollSprite;
 	private String mouseoverCategory = null;
 	private String selectedCategory = null;
@@ -46,20 +49,26 @@ public class Crafting extends GameField {
 		this.plr.recipelist.getCategories().forEach((s) -> this.categories.put(s, new CategoryField(s)));
 		this.searchButton = new Button(1, 1, 36, 36, false, false);
 		this.searchButton.gfxData("/Crafting/SearchButton.png", false);
+		this.editButton = new Button(1, 1, 36, 36, false, false);
+		this.editButton.gfxData("/Crafting/EditButton.png", false);
 		this.backButton = new Button(1, 1, 36, 36, false, false);
 		this.backButton.gfxData("/Crafting/BackButton.png", false);
 		this.craftButton = new Button(1, 1, 150, 30, false, false);
 		this.craftButton.gfxData("/Crafting/CraftButton.png", false);
 		this.scroll = new ScrollBar(1, 1, 16, 226, false, false);
+		this.searchText = new TextField(1, 1, 326, 36, true, false, Game.ccFont);
 		this.placeFields();
 		this.createScrollSprite();
 	}
 	
 	private void placeFields() {
-		int x = this.field.x, y = this.field.y+this.fieldTop.height+2;
+		int x = this.field.x, y = this.field.y;
+		this.searchText.setPos(x+38, y, false, false);
+		y+=+this.fieldTop.height+2;
 		this.fieldsArea.setPosition(x, y);
 		this.ComponentsArea.setPosition(x+246, y);
 		this.searchButton.setPos(field.x+field.width-36, field.y, false, false);
+		this.editButton.setPos(field.x+field.width-36, field.y, false, false);
 		this.backButton.setPos(field.x, field.y, false, false);
 		this.craftButton.setPos(x+249, y+193, false, false);
 		this.scroll.setPos(x+228, y, false, false);
@@ -68,7 +77,7 @@ public class Crafting extends GameField {
 	
 	private void placeItemFields() {
 		int x = this.field.x, y = this.field.y+this.fieldTop.height+2;
-		if(selectedCategory == null){
+		if(selectedCategory == null && !searching){
 			this.scroll.setValues(categories.size()/4, 4);
 			int n = -scroll.getValue()*4;
 			for (ItemField field : categories.values()) {
@@ -110,76 +119,137 @@ public class Crafting extends GameField {
 	
 	public void tick() {
 		if(Drag())placeFields();
+		//reposition top field
 		this.fieldTop.setPosition(field.x+36, field.y);
 		this.mouseoverCategory = null;
 		if(mouseover()) {
-			if(fieldsArea.contains(MouseInput.mouse.x, MouseInput.mouse.y)) {
-				if(selectedCategory == null)this.categories.entrySet().forEach((e)->{
-					if(e.getValue().field.contains(MouseInput.mouse.x, MouseInput.mouse.y)) {
-						if(e.getValue().field.contains(MouseInput.mousel.x, MouseInput.mousel.y) && MouseInput.mousel.click()) {
-							selectedCategory = e.getKey();
-							recipes = new TreeMap<>();
-							plr.recipelist.getRecipes(selectedCategory).forEach((r) -> recipes.put(r, new RecipeField(r)));
-							placeFields();
-							createScrollSprite();
-						}else
-							mouseoverCategory = e.getKey();
-					}
-				});
-				else this.recipes.entrySet().forEach((e)->{
-					if(e.getValue().field.contains(MouseInput.mouse.x, MouseInput.mouse.y)) {
-						if(e.getValue().field.contains(MouseInput.mousel.x, MouseInput.mousel.y) && MouseInput.mousel.click()) {
-							selectedRecipe = e.getKey();
-							educts = new TreeMap<>();
-							selectedRecipe.educts.forEach((educt) -> {
-								ItemField f = new ItemField();
-								f.item = ItemList.GetItem(educt.ID);
-								educts.put(educt, f);
-							});
-							products = new TreeMap<>();
-							selectedRecipe.products.forEach((product) -> {
-								ItemField f = new ItemField();
-								f.item = ItemList.GetItem(product.ID);
-								products.put(product, f);
-							});
-							placeFields();
+			//check if the left area contains the mouse
+			if(fieldsArea.containsMouse(MouseInput.mouse)) {
+				if(selectedCategory == null && !searching) {
+					this.categories.entrySet().forEach((e)->{
+						if(e.getValue().field.containsMouse(MouseInput.mouse)) {
+							if(e.getValue().field.isClicked(MouseInput.mousel)) {selectCategory(e.getKey());}
+							else mouseoverCategory = e.getKey();
 						}
-					}
-				});
+					});
+				}else{
+					this.recipes.entrySet().forEach((e)->{
+						if(e.getValue().field.isClicked(MouseInput.mousel)) {selectRecipe(e.getKey());}
+					});
+				}
 				int scrollCount;
 				if((scrollCount = MouseInput.mouse.getScroll()) != 0) {
 					scroll.setValue(scroll.getValue()+scrollCount);
 					placeItemFields();
 				}
-			}else if(selectedRecipe!=null && ComponentsArea.contains(MouseInput.mouse.x, MouseInput.mouse.y)){
-				educts.values().forEach((f)->{if(f.getField().contains(MouseInput.mouse.x, MouseInput.mouse.y))f.mouseOver();});
-				products.values().forEach((f)->{if(f.getField().contains(MouseInput.mouse.x, MouseInput.mouse.y))f.mouseOver();});
-				craftButton.tick();
-				if(craftButton.isclicked) {
-					plr.CraftItem(selectedRecipe);
+			}else{
+				//check if the right area contains the mouse and a recipe is selected
+				if(selectedRecipe!=null && ComponentsArea.containsMouse(MouseInput.mouse)){
+					educts.values().forEach((f)->{if(f.getField().containsMouse(MouseInput.mouse))f.mouseOver();});
+					products.values().forEach((f)->{if(f.getField().containsMouse(MouseInput.mouse))f.mouseOver();});
+					craftButton.tick();
+					if(craftButton.isclicked) {
+						plr.CraftItem(selectedRecipe);
+					}
 				}
 			}
+			backButton.tick();
+			if(backButton.isclicked) {
+				if(searching) {
+					searchText.setFocus(false);
+					searching = false;
+				}
+				selectedCategory = null;
+				selectedRecipe = null;
+				placeItemFields();
+				createScrollSprite();
+			}
+			if(searching) {
+				editButton.tick();
+				if(editButton.isclicked) {
+					searchText.setFocus(true);
+				}
+				searchText.tick();
+				if(searchText.hasFinshed()) {
+					selectSearch(searchText.getText());
+					searchText.setUnfinished();
+					selectedRecipe = null;
+				}
+			}else {
+				searchButton.tick();
+				if(searchButton.isclicked) {
+					searchText.setFocus(true);
+					searching = true;
+					selectSearch(null);
+				}
+			}
+			int value = scroll.getValue();
+			scroll.tick();
+			if(value != scroll.getValue())placeItemFields();
+		}else {
+			backButton.mouseover = false;
+			searchButton.mouseover = false;
+			editButton.mouseover = false;
+			craftButton.mouseover = false;
 		}
-		backButton.tick();
-		if(backButton.isclicked) {
-			selectedCategory = null;
-			selectedRecipe = null;
-			placeItemFields();
-			createScrollSprite();
+	}
+	
+	private void selectCategory(String category) {
+		selectedCategory = category;
+		recipes = new TreeMap<>();
+		plr.recipelist.getRecipes(selectedCategory).forEach((r) -> recipes.put(r, new RecipeField(r)));
+		placeFields();
+		createScrollSprite();
+	}
+	
+	private void selectRecipe(Recipe recipe) {
+		selectedRecipe = recipe;
+		educts = new TreeMap<>();
+		selectedRecipe.educts.forEach((educt) -> {
+			ItemField f = new ItemField();
+			f.item = ItemList.GetItem(educt.ID);
+			educts.put(educt, f);
+		});
+		products = new TreeMap<>();
+		selectedRecipe.products.forEach((product) -> {
+			ItemField f = new ItemField();
+			f.item = ItemList.GetItem(product.ID);
+			products.put(product, f);
+		});
+		placeFields();
+	}
+	
+	private void selectSearch(String search) {
+		recipes = new TreeMap<>();
+		if(search==null) {
+			plr.recipelist.getAllRecipes().forEach((r) -> recipes.put(r, new RecipeField(r)));
+		}else {
+			plr.recipelist.getAllRecipes((r)->{
+				if(r.educts.stream().filter((c)->{
+					return ItemList.GetItem(c.ID).getDisplayName().toLowerCase().contains(search.toLowerCase());
+				}).count()>0)return true;
+				if(r.products.stream().filter((c)->{
+					return ItemList.GetItem(c.ID).getDisplayName().toLowerCase().contains(search.toLowerCase());
+				}).count()>0)return true;
+				return false;
+			}).forEach((r) -> recipes.put(r, new RecipeField(r)));
 		}
-		searchButton.tick();
-		int value = scroll.getValue();
-		scroll.tick();
-		if(value != scroll.getValue())placeItemFields();
+		placeFields();
+		createScrollSprite();
 	}
 	
 	public void render() {
 		int x = field.x, y = field.y;
 		Screen.drawGUISprite(x, y, back);
-		Game.sfont.render(x+field.width/2, y+fieldTop.height/2, searching ? "" : "Crafting", 0, 0xff000000);
+		if(searching) {
+			searchText.render();
+			editButton.render();
+		}else {
+			Game.sfont.render(x+field.width/2, y+fieldTop.height/2, "Crafting", 0, 0xff000000);
+			searchButton.render();
+		}
 		backButton.render();
-		searchButton.render();
-		if(selectedCategory==null) {
+		if(selectedCategory==null && !searching) {
 			int n = -scroll.getValue()*4;
 			for (ItemField f : categories.values()) {
 				if(n>=0 && n<16)f.render();
@@ -202,7 +272,6 @@ public class Crafting extends GameField {
 				educts.forEach((c,f)->f.render(c.n));
 				products.forEach((c,f)->f.render(c.n));
 				craftButton.render();
-//				Game.ccFont.render(x+250, y+42, false, false, ItemList.GetItem(selectedRecipe.products.get(0).ID).getDisplayName(), 0, 0xff000000);
 			}
 		}
 		Screen.drawGUISprite(x+228, y+38+scroll.getSlider().y, scrollSprite);

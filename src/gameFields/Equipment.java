@@ -48,7 +48,7 @@ public class Equipment extends GameField {
 		if(mouseover()){
 		Mouse.mouseType=MouseType.DEFAULT;
 			for (BAG bag : BAG.values()) {
-				if(this.itemFields.get(bag).getField().contains(MouseInput.mouse.x, MouseInput.mouse.y)) {
+				if(this.itemFields.get(bag).getField().containsMouse(MouseInput.mouse)) {
 					if(MouseInput.mousel.click()){
 						this.itemFields.get(bag).mouseClick();
 					}else {

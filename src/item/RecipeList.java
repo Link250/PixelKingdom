@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.TreeSet;
+import java.util.function.Predicate;
 
 public class RecipeList {
 	/**recipe category**/
@@ -28,6 +29,18 @@ public class RecipeList {
 	
 	public Set<String> getCategories(){
 		return allRecipes.keySet();
+	}
+	
+	public Set<Recipe> getAllRecipes(){
+		Set<Recipe> recipes = new TreeSet<>();
+		allRecipes.values().forEach(rSet->recipes.addAll(rSet));
+		return recipes;
+	}
+	
+	public Set<Recipe> getAllRecipes(Predicate<Recipe> predicate){
+		Set<Recipe> recipes = new TreeSet<>();
+		allRecipes.values().forEach(rSet->rSet.stream().filter(predicate).forEach(r->recipes.add(r)));
+		return recipes;
 	}
 	
 	public void addRecipe(Recipe recipe, String category) {
