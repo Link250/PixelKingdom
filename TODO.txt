@@ -116,9 +116,6 @@
 
 # fix dynamic Oven/ore/fire texture
 
-!!! Fehlende Texturen ergänzen:
-	- Bags
-	
 - Loader class auch für andere Ladevorgänge verwenden
 	->Materials, Recipes, etc
 	+ folge: einfacheres adden von content ins spiel, auch in die jar (...modding)
