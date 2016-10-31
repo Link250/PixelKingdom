@@ -114,8 +114,6 @@
 
 ---------- FEATURES/MECHANICS ----------
 
-# Textfields einbauen für crafting-menge
-
 # fix dynamic Oven/ore/fire texture
 
 !!! Fehlende Texturen ergänzen:
