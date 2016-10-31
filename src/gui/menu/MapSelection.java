@@ -2,7 +2,6 @@ package gui.menu;
 
 import gfx.Screen;
 import gui.Button;
-import gui.NewMapWindow;
 import main.Game;
 import main.Keys;
 import main.MouseInput;
@@ -21,16 +20,10 @@ public class MapSelection implements GameMenu{
 	private String[] files;
 	private Button  back,genmap,del,start,scrollUP,scrollDOWN;
 	private int selected = 0;
-	private Game game;
 	/** should always be uneven or else the delete and play buttons dont lign up */
 	private int maxButtonsOnScreen = 1;
 	
-	private NewMapWindow newMapWindow;
-	
-	boolean refresh = false;
-	
-	public MapSelection(Game game) {
-		this.game = game;
+	public MapSelection() {
 		int buttonSize = 60;
 		maxButtonsOnScreen = (int) ((Screen.height-buttonSize*3)/(buttonSize*1.5));
 		//makes it uneven
@@ -48,10 +41,6 @@ public class MapSelection implements GameMenu{
 		scrollDOWN = new Button(Screen.width/2, Screen.height/2+(maxButtonsOnScreen/2+1)*buttonSize*3/2, buttonSize, buttonSize);
 		scrollDOWN.gfxData("/Buttons/ArrowDown.png", false);
 		LoadFiles();
-	}
-	
-	public void refresh() {
-		refresh = true;
 	}
 	
 	public void LoadFiles(){
@@ -94,24 +83,18 @@ public class MapSelection implements GameMenu{
 	}
 	
 	public void tick(){
-		if(refresh)LoadFiles();
 		for(Button button : ButtonList){
 			button.tick();
 		}
 		if(start.isclicked && ButtonList.size()!=0){
-			game.SinglePlayer = new SinglePlayer(files[selected]);
+			Game.singlePlayer = new SinglePlayer(files[selected]);
 			Game.gamemode = Game.GameMode.SinglePlayer;
 		}
 		if(back.isclicked || Keys.MENU.click()){
-			if(this.newMapWindow != null)this.newMapWindow.dispose();
-			Game.menu.subMenu=Menu.MainMenu;
+			Game.menu = new MainMenu();
 		}
 		if(genmap.isclicked){
-			if(this.newMapWindow != null && this.newMapWindow.isDisplayable()) {
-				this.newMapWindow.requestFocus();
-			}else{
-				this.newMapWindow = new NewMapWindow(game, this);
-			}
+			Game.menu = new NewMapScreen();
 		}
 		if(del.isclicked && ButtonList.size()!=0){
 			File dir = new File(files[selected] + File.separator);

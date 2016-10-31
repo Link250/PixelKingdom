@@ -21,7 +21,6 @@ public class Map {
 			LAYER_ALL_MATERIAL = {LAYER_BACK,LAYER_FRONT};
 	public static final int widthh = 1024, heighth = 1024;
 	public String path;
-	public Screen screen;
 	protected UpdateManager updatesPixel = new UpdateManager();
 	public int updateCountPixel = 0;
 	protected UpdateManager updatesLight = new UpdateManager();
@@ -35,9 +34,8 @@ public class Map {
 	private int regularUpdateX = -Screen.width/2-Screen.RENDER_CHUNK_SIZE;
 	private int regularUpdateY = -Screen.height/2-Screen.RENDER_CHUNK_SIZE;
 	
-	public Map(String path, Screen screen){
+	public Map(String path){
 		this.path = path;
-		this.screen = screen;
 		//the standard Chunk Manager is the one for Single Player
 		chunkMaganer = new ChunkManagerSP(this, chunks, path);
 	}

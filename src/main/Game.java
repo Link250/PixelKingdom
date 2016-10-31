@@ -7,8 +7,8 @@ import gfx.Screen;
 import gfx.SpriteSheet;
 import gfx.Mouse.MouseType;
 import gui.Window;
+import gui.menu.GameMenu;
 import gui.menu.MainMenu;
-import gui.menu.Menu;
 import item.ItemList;
 import map.BiomeList;
 import multiplayer.client.Client;
@@ -43,12 +43,12 @@ public class Game implements Runnable{
 	
 	private Window window;
 	
-	private boolean running = false;
+	private static boolean running = false;
 	public static boolean reset = false;
 	public int tickCount = 0;
 	public static boolean devmode;
 	public static GameMode gamemode = GameMode.Menu;
-	public static MainMenu menu;
+	public static GameMenu menu;
 	
 	public static ItemList itemlist;
 	public static PixelList pixellist;
@@ -62,9 +62,9 @@ public class Game implements Runnable{
 	public static PxlFont mfont;
 	/**Coders Crux Font, Size: 10*18*/
 	public static PxlFont ccFont;
-	public SinglePlayer SinglePlayer;
-	public Client client;
-	public Server server;
+	public static SinglePlayer singlePlayer;
+	public static Client client;
+	public static Server server;
 	
 	public SpriteSheet back;
 	
@@ -105,7 +105,7 @@ public class Game implements Runnable{
 		Screen.MAP_ZOOM = MainConfig.mapZoom;
 		Screen.initialize(WIDTH, HEIGHT, csheetf, csheetm, csheetb);
 		
-		menu = new MainMenu(this);
+		menu = new MainMenu();
 		mfont = new PxlFont(new SpriteSheet("/StackFont.png", 12, 15), "1234567890", 12, 15, -2);
 		sfont = new PxlFont(new SpriteSheet("/8x8Font.png", 24, 24), " !\"# %&'()* ,-./0123456789:; = ? ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{ }~",24,24, 1);
 		font = new PxlFont(new SpriteSheet("/Font.png", 45, 60), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 1234567890!\",;%&/()=?'+-.",45,60, 2);
@@ -121,7 +121,6 @@ public class Game implements Runnable{
 	
 	public void reset(){
 		gamemode = GameMode.Menu;
-		menu.subMenu = Menu.MainMenu;
 		Screen.xOffset=0;
 		Screen.yOffset=0;
 		Mouse.Item = null;
@@ -137,7 +136,7 @@ public class Game implements Runnable{
 		t.start();
 	}
 
-	public synchronized void stop() {
+	public static synchronized void stop() {
 		running = false;
 	}
 
@@ -179,7 +178,7 @@ public class Game implements Runnable{
 				ticks = 0;
 			}
 		}
-		if(gamemode == GameMode.SinglePlayer)SinglePlayer.map.save();
+		if(gamemode == GameMode.SinglePlayer)singlePlayer.map.save();
 		if(server!=null)server.save();
 		MainConfig.save();
 		KeyConfig.save();
@@ -196,7 +195,7 @@ public class Game implements Runnable{
 			menu.tick();
 			break;
 		case SinglePlayer :
-			SinglePlayer.tick(tickCount);
+			singlePlayer.tick(tickCount);
 			break;
 		case MultiPlayer :
 			try {
@@ -220,7 +219,7 @@ public class Game implements Runnable{
 			menu.render();
 			break;
 		case SinglePlayer :
-			SinglePlayer.render();
+			singlePlayer.render();
 			break;
 		case MultiPlayer :
 			client.render();

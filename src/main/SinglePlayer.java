@@ -13,7 +13,6 @@ import gfx.Screen;
 import map.Map;
 
 public class SinglePlayer {
-	private Screen screen;
 	protected Map map;
 	private Player player;
 	public static boolean debuginfo = false;
@@ -22,9 +21,8 @@ public class SinglePlayer {
 	private ArrayList<Mob> mobList = new ArrayList<>();
 	
 	public SinglePlayer(String files){
-		this.screen = Game.screen;
 		this.files = files;
-		map = new Map(files, screen);
+		map = new Map(files);
 		player = new Player(map);
 		plr = new File(files + File.separator + "plr.pdat");
 		if(plr.exists()){

@@ -22,7 +22,7 @@ public class OptionScreen implements GameMenu{
 	
 	private SubMenu subMenu = SubMenu.MAIN;
 	
-	public OptionScreen(Game game) {
+	public OptionScreen() {
 //		this.game = game;
 		this.visuals = new Visuals(this);
 		this.controls = new Controls(this);
@@ -54,7 +54,7 @@ public class OptionScreen implements GameMenu{
 			this.visualsButton.tick();
 			this.controlsButton.tick();
 			if(back.isclicked || Keys.MENU.click()){
-				Game.menu.subMenu=Menu.MainMenu;
+				Game.menu=new MainMenu();
 			}
 			if(visualsButton.isclicked) {
 				this.subMenu = SubMenu.VISUALS;

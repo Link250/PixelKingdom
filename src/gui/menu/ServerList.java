@@ -11,7 +11,6 @@ import java.util.List;
 
 import gfx.Screen;
 import gui.Button;
-import gui.NewServerWindow;
 import main.Game;
 import main.Keys;
 import main.MouseInput;
@@ -26,16 +25,12 @@ public class ServerList implements GameMenu{
 	private ArrayList<Button> ButtonList;
 	private ArrayList<String> adress;
 	private ArrayList<String> name;
-	private Game game;
 	private Button  back,add,del,join,scrollUP,scrollDOWN,start;
 	private int selected = 0;
-	private NewServerWindow newServerWindow;
 	/** should always be uneven or else the delete and play buttons dont lign up */
 	private int maxButtonsOnScreen = 1;
-	boolean refresh = false;
 	
-	public ServerList(Game game) {
-		this.game = game;
+	public ServerList() {
 		int buttonSize = 60;
 		maxButtonsOnScreen = (int) ((Screen.height-buttonSize*3)/(buttonSize*1.5));
 		//makes it uneven
@@ -99,20 +94,14 @@ public class ServerList implements GameMenu{
 	}
 	
 	public void tick(){
-		if(refresh)LoadServers(true);
 		for(Button button : ButtonList){
 			button.tick();
 		}
 		if(back.isclicked || Keys.MENU.click()){
-			if(this.newServerWindow != null)this.newServerWindow.dispose();
-			Game.menu.subMenu=Menu.MainMenu;
+			Game.menu = new MainMenu();
 		}
 		if(add.isclicked){
-			if(newServerWindow != null && newServerWindow.isDisplayable()) {
-				newServerWindow.requestFocus();
-			}else{
-				newServerWindow = new NewServerWindow(game, this);
-			}
+			Game.menu = new NewServerScreen();
 		}
 		if(del.isclicked&ButtonList.size()!=0){
 			String DIR = this.DATA_PATH + name.remove(selected);
@@ -125,28 +114,28 @@ public class ServerList implements GameMenu{
 			adress.remove(selected);
 			LoadServers(true);
 		}
-		if(start.isclicked && game.server==null){
+		if(start.isclicked && Game.server==null){
 			File dir = new File(Game.GAME_PATH+"maps"+File.separator+"Server"+File.separator);
 			if(!dir.isDirectory()) {dir.mkdirs();}
-			game.server=new Server(Game.GAME_PATH+"maps"+File.separator+"Server");
-			Thread t = new Thread(game.server);
+			Game.server=new Server(Game.GAME_PATH+"maps"+File.separator+"Server");
+			Thread t = new Thread(Game.server);
 			t.setName("Server");
 			t.start();
 		}
 		if(join.isclicked){
 			try {
-				game.client = new Client(game, adress.get(selected), this.DATA_PATH + name.get(selected));
+				Game.client = new Client(adress.get(selected), this.DATA_PATH + name.get(selected));
 				Game.gamemode = Game.GameMode.MultiPlayer;
 			} catch (IOException e) {
 				Game.logWarning("Could not connect to Server.");
-				game.client = null;
+				Game.client = null;
 			}
 		}
 		back.tick();
 		add.tick();
 		del.tick();
 		int scroll = MouseInput.mouse.getScroll();
-		if(game.server==null)start.tick();
+		if(Game.server==null)start.tick();
 		if(ButtonList.size()!=0)join.tick();
 		if(selected > 0)scrollUP.tick();
 		if((scrollUP.isclicked || scroll<0) && selected > 0)selected--;
@@ -164,27 +153,12 @@ public class ServerList implements GameMenu{
 		}
 		back.render();
 		add.render();
-		if(game.server==null)start.render();
+		if(Game.server==null)start.render();
 		else Game.font.render(Screen.width/2-65, Screen.height-20, "ServerRunning", 0, 0xff000000);
 		if(ButtonList.size()!=0)del.render();
 		if(ButtonList.size()!=0)join.render();
 		if(selected > 0)scrollUP.render();
 		if(selected < ButtonList.size()-1)scrollDOWN.render();
 		Game.font.render(Screen.width/2, 50, "Multiplayer", 0, 0xff000000);
-	}
-	
-	public void refresh() {
-		refresh = true;
-	}
-	
-	public void addServer(String name, String adress) {
-        this.name.add(name);
-        this.adress.add(adress);
-        File dir = new File(this.DATA_PATH);
-        if(!dir.isDirectory()) {
-        	dir.mkdirs();
-        }
-        new File(this.DATA_PATH+name).mkdir();
-		this.refresh();
 	}
 }

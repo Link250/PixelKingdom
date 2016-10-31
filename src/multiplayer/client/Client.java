@@ -24,7 +24,6 @@ public class Client {
 	private Socket serverConnection = null;
 	private ServerManager serverManager;
 	
-	private Screen screen;
 	private Map map;
 	private MapManager mapManager;
 	
@@ -35,14 +34,13 @@ public class Client {
 	
 	public static boolean debuginfo = false;
 	
-	public Client(Game game, String IP, String files) throws UnknownHostException, IOException {
+	public Client(String IP, String files) throws UnknownHostException, IOException {
 		serverConnection = new Socket(IP, Game.PORT);
 		Game.logInfo("connected so Server");
 		
-		this.screen = Game.screen;
 		this.files = files;
 		
-		this.map = new Map(null, screen);
+		this.map = new Map(null);
 		
 		this.player = new Player(map);
 		this.plr = new File(files + File.separator + "plr.pdat");

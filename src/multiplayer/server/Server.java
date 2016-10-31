@@ -25,7 +25,7 @@ public class Server implements Runnable{
 		}
 		clientsManager = new ClientsManager(this,serverSocket);
 		
-		map = new Map(files, Game.screen);
+		map = new Map(files);
 		mapManager = new MapManager(new MapUpdater(map, Map.GT_SERVER), clientsManager);
 		clientsManager.addInputReceiver(mapManager);
 		clientsManager.addInputReceiver(new PlayerManager(clientsManager));
