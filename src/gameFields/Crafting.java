@@ -24,8 +24,9 @@ public class Crafting extends GameField {
 	private Button editButton;
 	private Button backButton;
 	private Button craftButton;
-	private ScrollBar scroll;
+	private TextField craftCount;
 	private TextField searchText;
+	private ScrollBar scroll;
 	private SpriteSheet scrollSprite;
 	private String mouseoverCategory = null;
 	private String selectedCategory = null;
@@ -53,10 +54,13 @@ public class Crafting extends GameField {
 		this.editButton.gfxData("/Crafting/EditButton.png", false);
 		this.backButton = new Button(1, 1, 36, 36, false, false);
 		this.backButton.gfxData("/Crafting/BackButton.png", false);
-		this.craftButton = new Button(1, 1, 150, 30, false, false);
+		this.craftButton = new Button(1, 1, 74, 30, false, false);
 		this.craftButton.gfxData("/Crafting/CraftButton.png", false);
-		this.scroll = new ScrollBar(1, 1, 16, 226, false, false);
+		this.craftCount = new TextField(1, 1, 74, 30, true, true, Game.ccFont);
+		this.craftCount.setCharFilter((c)->{return Character.isDigit(c);});
+		this.craftCount.setText("1");
 		this.searchText = new TextField(1, 1, 326, 36, true, false, Game.ccFont);
+		this.scroll = new ScrollBar(1, 1, 16, 226, false, false);
 		this.placeFields();
 		this.createScrollSprite();
 	}
@@ -71,6 +75,7 @@ public class Crafting extends GameField {
 		this.editButton.setPos(field.x+field.width-36, field.y, false, false);
 		this.backButton.setPos(field.x, field.y, false, false);
 		this.craftButton.setPos(x+249, y+193, false, false);
+		this.craftCount.setPos(x+325, y+193, false, false);
 		this.scroll.setPos(x+228, y, false, false);
 		this.placeItemFields();
 	}
@@ -147,9 +152,13 @@ public class Crafting extends GameField {
 				if(selectedRecipe!=null && ComponentsArea.containsMouse(MouseInput.mouse)){
 					educts.values().forEach((f)->{if(f.getField().containsMouse(MouseInput.mouse))f.mouseOver();});
 					products.values().forEach((f)->{if(f.getField().containsMouse(MouseInput.mouse))f.mouseOver();});
+					craftCount.tick();
 					craftButton.tick();
 					if(craftButton.isclicked) {
-						plr.CraftItem(selectedRecipe);
+						int n = Integer.parseInt(craftCount.getText());
+						for (int i = 0; i < n; i++) {
+							if(!plr.CraftItem(selectedRecipe))break;
+						}
 					}
 				}
 			}
@@ -268,10 +277,10 @@ public class Crafting extends GameField {
 			if(selectedRecipe != null) {
 				Game.ccFont.render(x+323, y+50, true, true, "Ingredients:", 0, 0xff000000);
 				Game.ccFont.render(x+323, y+144, true, true, "Products:", 0, 0xff000000);
-				Game.ccFont.render(x+323, y+250, true, true, "Craft", 0, 0xff000000);
 				educts.forEach((c,f)->f.render(c.n));
 				products.forEach((c,f)->f.render(c.n));
 				craftButton.render();
+				craftCount.render();
 			}
 		}
 		Screen.drawGUISprite(x+228, y+38+scroll.getSlider().y, scrollSprite);

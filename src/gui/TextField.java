@@ -1,5 +1,7 @@
 package gui;
 
+import java.util.function.Predicate;
+
 import dataUtils.PArea;
 import gfx.PxlFont;
 import main.KeyInput;
@@ -14,12 +16,14 @@ public class TextField implements Focusable{
 	private boolean background = false;
 	private PArea field;
 	private PxlFont font;
+	private Predicate<Character> charFilter;
 	
 	public TextField(int x, int y, int width, int height, boolean textLimit, boolean background, PxlFont font) {
 		this.field = new PArea(x, y, width, height);
 		this.textLimit = textLimit;
 		this.background = background;
 		this.font = font;
+		this.charFilter = (c)->{return true;};
 	}
 		
 	public void setPos(int x, int y){
@@ -53,7 +57,7 @@ public class TextField implements Focusable{
 			finished = false;
 			break;
 		default:
-			text+=c;
+			if(charFilter.test(c))text+=c;
 			finished = false;
 		}
 	}
@@ -77,5 +81,13 @@ public class TextField implements Focusable{
 	
 	public String getText() {
 		return text;
+	}
+	
+	public void setText(String text) {
+		this.text = text;
+	}
+	
+	public void setCharFilter(Predicate<Character> charFilter) {
+		this.charFilter = charFilter;
 	}
 }
