@@ -4,9 +4,8 @@ package gfx;
 import static org.lwjgl.opengl.GL20.*;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.FloatBuffer;
 
 import org.joml.Matrix4f;
@@ -91,7 +90,7 @@ public class Shader {
 		StringBuilder outputString = new StringBuilder();
 		BufferedReader bufferedReader;
 		try {
-			bufferedReader = new BufferedReader(new FileReader(new File("./shaders/" + filename)));
+			bufferedReader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/shaders/"+filename)));
 			String line;
 			while((line = bufferedReader.readLine()) != null) {
 				outputString.append(line);
