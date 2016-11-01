@@ -111,13 +111,13 @@ public class Game implements Runnable{
 		itemlist = new ItemList();
 		biomelist = new BiomeList();
 		
-		back = new SpriteSheet("/NormalBack.png");
+		back = new SpriteSheet("/Menu/NormalBack.png");
 		//TODO		TESTING AREA
 	}
 	
 	public static void resizeWindow(int width, int height) {
 		Screen.initialize(width, height);
-		if(gamemode == GameMode.Menu)menu.refreshGUI();
+		if(menu!=null)menu.refreshGUI();
 		MainConfig.resX = width;
 		MainConfig.resY = height;
 	}

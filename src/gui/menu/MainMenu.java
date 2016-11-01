@@ -22,7 +22,7 @@ public class MainMenu implements GameMenu{
 		QT = new Button(1, 1, bWidth, bHeight);
 		QT.gfxData("/Buttons/QT.png", true);
 		refreshGUI();
-		logo = new SpriteSheet("/Logo.png");
+		logo = new SpriteSheet("/Menu/Logo.png");
 	}
 	
 	public void render() {

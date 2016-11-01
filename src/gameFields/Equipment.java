@@ -44,7 +44,7 @@ public class Equipment extends GameField {
 	}
 	
 	public void tick() {
-		if(Drag())allignFields();
+		if(hasMoved())allignFields();
 		if(mouseover()){
 		Mouse.mouseType=MouseType.DEFAULT;
 			for (BAG bag : BAG.values()) {

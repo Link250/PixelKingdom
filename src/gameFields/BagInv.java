@@ -44,7 +44,7 @@ public class BagInv extends GameField {
 	}
 	
 	public void tick() {
-		if(Drag())this.allignFields();
+		if(hasMoved())this.allignFields();
 		if(mouseover()){
 			Mouse.mouseType=MouseType.DEFAULT;
 			int mouseX = (MouseInput.mouse.x-field.x), mouseY = (MouseInput.mouse.y-field.y-fieldTop.height);

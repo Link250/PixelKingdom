@@ -123,7 +123,7 @@ public class Crafting extends GameField {
 	}
 	
 	public void tick() {
-		if(Drag())placeFields();
+		if(hasMoved())placeFields();
 		//reposition top field
 		this.fieldTop.setPosition(field.x+36, field.y);
 		this.mouseoverCategory = null;

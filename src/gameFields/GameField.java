@@ -59,7 +59,7 @@ public abstract class GameField {
 	
 	public abstract void tick();
 	
-	public boolean Drag(){
+	public boolean hasMoved(){
 		if(fieldTop.containsMouse(MouseInput.mouse)){
 			if(MouseInput.mousel.click()){
 				grab.x = MouseInput.mousel.x-field.x;
@@ -82,13 +82,14 @@ public abstract class GameField {
 				grabing = false;
 				save();
 			}
-			if(field.x < 0)field.x = 0;
-			if(field.x > Screen.width-field.width)field.x = Screen.width-field.width;
-			if(field.y < 0)field.y = 0;
-			if(field.y > Screen.height-field.height)field.y = Screen.height-field.height;
+			boolean hasMoved = false;
+			if(field.x < 0) {field.x = 0; hasMoved=true;}
+			if(field.x > Screen.width-field.width) {field.x = Screen.width-field.width; hasMoved=true;}
+			if(field.y < 0) {field.y = 0; hasMoved=true;}
+			if(field.y > Screen.height-field.height) {field.y = Screen.height-field.height; hasMoved=true;}
 			fieldTop.x = field.x;
 			fieldTop.y = field.y;
-			return false;
+			return hasMoved;
 		}
 	}
 	
