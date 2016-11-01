@@ -275,7 +275,6 @@ public class Game implements Runnable{
 			if(s.contains("-devmode")){Game.devmode = true;Game.logInfo("Developer Mode activated !");}
 			Game.logInfo(s);
 		}
-		
 		new Game().start();
 	}
 }
