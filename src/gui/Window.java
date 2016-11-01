@@ -3,16 +3,15 @@ package gui;
 
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.opengl.GL11.GL_BLEND;
-import static org.lwjgl.opengl.GL11.GL_ONE_MINUS_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.GL_SRC_ALPHA;
-import static org.lwjgl.opengl.GL11.glBlendFunc;
-import static org.lwjgl.opengl.GL11.glEnable;
+import static org.lwjgl.opengl.GL11.*;
 
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWErrorCallbackI;
 import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.glfw.GLFWWindowSizeCallbackI;
 import org.lwjgl.opengl.GL;
+
+import main.Game;
 
 public class Window {
 	private long window;
@@ -74,6 +73,14 @@ public class Window {
 					(vid.height()-height)/2);
 		}
 		
+		glfwSetWindowSizeCallback(window, new GLFWWindowSizeCallbackI() {
+			public void invoke(long window, int width, int height) {
+				setSize(width, height);
+				Game.resizeWindow(width, height);
+				glViewport(0, 0, width, height);
+			}
+		});
+		
 		glfwShowWindow(window);
 		
 		glfwMakeContextCurrent(window);
@@ -91,8 +98,6 @@ public class Window {
 		return glfwWindowShouldClose(window);
 	}
 	
-	public int getWidth() { return width; }
-	public int getHeight() { return height; }
 	public boolean isFullscreen() { return fullscreen; }
 	public long getWindow() { return window; }
 }

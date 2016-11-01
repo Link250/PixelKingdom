@@ -8,7 +8,6 @@ import gfx.Mouse;
 import gfx.SpriteSheet;
 import gfx.Mouse.MouseType;
 import item.Item;
-import main.Game;
 import main.MouseInput;
 import map.Map;
 import pixel.PixelList;
@@ -24,7 +23,7 @@ public class MatStack extends Item{
 		stackMax  = 1024;
 		gfx = new SpriteSheet("/Items/Material.png");
 		gfxs = new SpriteSheet("/Items/Materialh.png");
-		col = Game.csheetf.pixels[ID];
+		col = PixelList.GetMat((byte)ID).getColor();
 	}
 
 	public void useItem(Player plr, Map map) {
@@ -58,7 +57,7 @@ public class MatStack extends Item{
 		ID = mat;
 		name = PixelList.GetMat((byte)ID).getName();
 		displayName = PixelList.GetMat((byte)ID).getDisplayName();
-		col = Game.csheetf.pixels[ID];
+		col = PixelList.GetMat((byte)ID).getColor();
 	}
 
 	public void setMouse() {

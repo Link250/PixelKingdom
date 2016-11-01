@@ -1,9 +1,6 @@
 package gui.menu.options;
 
-import java.awt.Point;
 import java.util.ArrayList;
-import java.util.List;
-
 import dataUtils.PArea;
 
 import static main.MainConfig.PlrCol;
@@ -30,12 +27,7 @@ public class Visuals {
 		this.back.gfxData("/Buttons/back.png", true);
 		options.add(new PlayerColorOption());
 		options.add(new MapZoomOption());
-		options.add(new ResolutionOption());
 		options.add(new FullscreenOption());
-//		a = new ItemField(100,300); a.setItem(new MatStack());
-//		b = new ItemField(100,350); b.setItem(new MatStack());
-//		c = new ItemField(100,400); c.setItem(new MatStack());
-//		d = new ItemField(100,450); d.setItem(new MatStack());
 	}
 	
 	public void tick(){
@@ -49,10 +41,6 @@ public class Visuals {
 			height += Screen.height/5;
 			gfxOption.tick();
 		}
-//		a.getItem().addStack(1); if(a.getItem().getStack()>=10)a.getItem().setStack(1);
-//		b.getItem().addStack(10); if(b.getItem().getStack()>=100)b.getItem().setStack(10);
-//		c.getItem().addStack(100); if(c.getItem().getStack()>=1000)c.getItem().setStack(100);
-//		d.getItem().addStack(1000); if(d.getItem().getStack()>=10000)d.getItem().setStack(1000);
 	}
 	
 	public void render(){
@@ -62,10 +50,6 @@ public class Visuals {
 		for (GFXOption gfxOption : options) {
 			gfxOption.render();
 		}
-//		a.render();
-//		b.render();
-//		c.render();
-//		d.render();
 	}
 	
 	private abstract class GFXOption{
@@ -140,71 +124,6 @@ public class Visuals {
 		public void setHeight(int height) {
 			super.setHeight(height);
 			value.setPos(Screen.width/2+180, height);
-		}
-	}
-	
-	private class ResolutionOption extends GFXOption{
-		private List<Point> resolutions = new ArrayList<>();
-		private int currentRes = -1;
-		private Button arrowLeft, arrowRight;
-		
-		public ResolutionOption() {
-			arrowLeft = new Button(0, 0, 60, 60);
-			arrowLeft.gfxData("/Buttons/ArrowRight.png", true, false, false);
-			arrowRight = new Button(0, 0, 60, 60);
-			arrowRight.gfxData("/Buttons/ArrowRight.png", false);
-			resolutions.add(new Point(960,720));
-			resolutions.add(new Point(1024,768));
-			resolutions.add(new Point(1200,900));
-			resolutions.add(new Point(1280,720));
-			resolutions.add(new Point(1280,1024));
-			resolutions.add(new Point(1368,768));
-			resolutions.add(new Point(1440,900));
-			resolutions.add(new Point(1600,900));
-			resolutions.add(new Point(1600,1200));
-			resolutions.add(new Point(1680,1050));
-			resolutions.add(new Point(1920,1080));
-			resolutions.add(new Point(1920,1200));
-			resolutions.add(new Point(2560,1440));
-			resolutions.add(new Point(2560,1600));
-			for(int i = 0; i < resolutions.size(); i++) {
-				if(MainConfig.resX == resolutions.get(i).getX() && MainConfig.resY == resolutions.get(i).getY())currentRes = i;
-			}if(currentRes == -1)currentRes = 1;
-		}
-		
-		public void tick() {
-			arrowLeft.tick();
-			if(arrowLeft.isclicked) {
-				if(currentRes>0) {
-					currentRes--;
-					setResolution();
-				}
-			}
-			arrowRight.tick();
-			if(arrowRight.isclicked) {
-				if(currentRes<resolutions.size()-1) {
-					currentRes++;
-					setResolution();
-				}
-			}
-		}
-		
-		private void setResolution() {
-			MainConfig.resX = resolutions.get(currentRes).x;
-			MainConfig.resY = resolutions.get(currentRes).y;
-		}
-
-		public void render() {
-			Game.font.render(Screen.width/2-200, height, "Resolution", 0, 0xff000000);
-			Game.sfont.render(Screen.width/2+180, height, MainConfig.resX+"x"+MainConfig.resY, 0, 0xff000000);
-			arrowLeft.render();
-			arrowRight.render();
-		}
-
-		public void setHeight(int height) {
-			super.setHeight(height);
-			arrowLeft.setPos(Screen.width/2+30, height);
-			arrowRight.setPos(Screen.width/2+330, height);
 		}
 	}
 	

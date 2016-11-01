@@ -50,8 +50,8 @@ public class Client {
 			create();
 			save();
 		}
-		Screen.xOffset= player.x-Game.WIDTH/3/2;
-		Screen.yOffset= player.y-Game.HEIGHT/3/2;
+		Screen.xOffset= player.x-Screen.width/3/2;
+		Screen.yOffset= player.y-Screen.height/3/2;
 		this.players = new ArrayList<MPlayer>();
 		
 		serverManager = new ServerManager(this,serverConnection);
@@ -95,8 +95,8 @@ public class Client {
 				map.updateCountLight=0;
 			}
 		}
-		Screen.xOffset= player.x-Game.WIDTH/Screen.MAP_SCALE/Screen.MAP_ZOOM/2;
-		Screen.yOffset= player.y-Game.HEIGHT/Screen.MAP_SCALE/Screen.MAP_ZOOM/2;
+		Screen.xOffset= player.x-Screen.width/Screen.MAP_SCALE/Screen.MAP_ZOOM/2;
+		Screen.yOffset= player.y-Screen.height/Screen.MAP_SCALE/Screen.MAP_ZOOM/2;
 	}
 	
 	public void render() {

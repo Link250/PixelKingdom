@@ -12,20 +12,21 @@ public class MainMenu implements GameMenu{
 	private SpriteSheet logo;
 	
 	public MainMenu() {
-		int bWidth = 300, bHeight = 60, bYOff = 250, bNr = 0;
-		SP = new Button((Game.WIDTH)/2,bYOff + (int)(bHeight*bNr++*1.5),bWidth,bHeight);
+		int bWidth = 300, bHeight = 60;
+		SP = new Button(1, 1, bWidth, bHeight);
 		SP.gfxData("/Buttons/SP.png", true);
-		MP = new Button((Game.WIDTH)/2,bYOff + (int)(bHeight*bNr++*1.5),bWidth,bHeight);
+		MP = new Button(1, 1, bWidth, bHeight);
 		MP.gfxData("/Buttons/MP.png", true);
-		OP = new Button((Game.WIDTH)/2,bYOff + (int)(bHeight*bNr++*1.5),bWidth,bHeight);
+		OP = new Button(1, 1, bWidth, bHeight);
 		OP.gfxData("/Buttons/OP.png", true);
-		QT = new Button((Game.WIDTH)/2,bYOff + (int)(bHeight*bNr++*1.5),bWidth,bHeight);
+		QT = new Button(1, 1, bWidth, bHeight);
 		QT.gfxData("/Buttons/QT.png", true);
+		refreshGUI();
 		logo = new SpriteSheet("/Logo.png");
 	}
 	
 	public void render() {
-		Screen.drawGUISprite((Game.WIDTH-logo.getWidth())/2, 50, logo);
+		Screen.drawGUISprite((Screen.width-logo.getWidth())/2, 50, logo);
 		SP.render();
 		MP.render();
 		OP.render();
@@ -49,5 +50,13 @@ public class MainMenu implements GameMenu{
 		if(QT.isclicked || Keys.MENU.click()){
 			Game.stop();
 		}
+	}
+
+	public void refreshGUI() {
+		int bYOff = 250, bNr = 0, bHeight = 60;
+		SP.setPos((Screen.width)/2,bYOff + (int)(bHeight*bNr++*1.5));
+		MP.setPos((Screen.width)/2,bYOff + (int)(bHeight*bNr++*1.5));
+		OP.setPos((Screen.width)/2,bYOff + (int)(bHeight*bNr++*1.5));
+		QT.setPos((Screen.width)/2,bYOff + (int)(bHeight*bNr++*1.5));
 	}
 }

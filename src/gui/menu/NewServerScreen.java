@@ -80,4 +80,10 @@ public class NewServerScreen implements GameMenu {
 			}out.close();
 		} catch (IOException e) {e.printStackTrace();}
 	}
+
+	public void refreshGUI() {
+		create.setPos(Screen.width/2, Screen.height/2+100);
+		serverName.setPos(Screen.width/2, Screen.height/2-180);
+		serverIP.setPos(Screen.width/2, Screen.height/2);
+	}
 }

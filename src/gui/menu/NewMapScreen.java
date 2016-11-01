@@ -40,5 +40,10 @@ public class NewMapScreen implements GameMenu {
 		mapName.render();
 		create.render();
 	}
+
+	public void refreshGUI() {
+		create.setPos(Screen.width/2, Screen.height/2+100);
+		mapName.setPos(Screen.width/2, Screen.height/2);
+	}
 	
 }

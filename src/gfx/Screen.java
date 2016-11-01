@@ -23,12 +23,6 @@ public class Screen {
 	
 	public static int width;
 	public static int height;
-	/**== width*height*/
-	public int length;
-	public int lengthMap;
-	public int lengthShadow;
-	
-	public static ColorSheet[] csheets = new ColorSheet[3];
 	
 	private static Shader default_shader;
 	private static Shader colored_shader;
@@ -37,13 +31,9 @@ public class Screen {
 	private static Matrix4f projection;
 	private static Model tileModel;
 	
-	public static void initialize(int width, int height, ColorSheet f, ColorSheet l, ColorSheet b) {
+	public static void initialize(int width, int height) {
 		Screen.width = width;
 		Screen.height = height;
-		csheets[Map.LAYER_BACK] = b;
-		csheets[Map.LAYER_LIQUID] = l;
-		csheets[Map.LAYER_FRONT] = f;
-	
 		projection = new Matrix4f().setOrtho2D(-width, width, -height, height);
 		default_shader = new Shader("default_shader");
 		colored_shader = new Shader("colored_shader");
@@ -131,10 +121,6 @@ public class Screen {
 		drawMapPixelScaled(xPos, yPos, col);
 	}*/
 	
-	public static int getMaterialPixel(int tile, int layer) {
-		return csheets[layer].pixels[tile];
-	}
-
 	/**
 	 * 
 	 * @param xPos on the Screen

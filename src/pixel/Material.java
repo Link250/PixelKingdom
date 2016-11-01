@@ -118,4 +118,8 @@ public abstract class Material<ADType extends AD> {
 	public int render(int x, int y, int l, Map map) {
 		return texture[x%textureWidth + (y%textureHeight)*textureWidth];
 	}
+	
+	public int getColor() {
+		return texture!=null ? texture[0] : 0;
+	}
 }

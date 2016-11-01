@@ -1,6 +1,5 @@
 package main;
 
-import gfx.ColorSheet;
 import gfx.PxlFont;
 import gfx.Mouse;
 import gfx.Screen;
@@ -31,8 +30,6 @@ public class Game implements Runnable{
 		Menu,SinglePlayer,MultiPlayer
 	}
 
-	public static int WIDTH;
-	public static int HEIGHT;
 	public static final String NAME = "Pixel Kingdom - the number of Commits is over 100 !";
 	public static final String GAME_PATH = System.getenv("APPDATA") + "\\PixelKingdom\\";
 	public static final int PORT = 7777;
@@ -41,36 +38,35 @@ public class Game implements Runnable{
 	public static int frames = 0;
 	public static int fps = 0;
 	
-	private Window window;
+	private static Window window;
 	
 	private static boolean running = false;
 	public static boolean reset = false;
-	public int tickCount = 0;
+	public static int tickCount = 0;
 	public static boolean devmode;
 	public static GameMode gamemode = GameMode.Menu;
 	public static GameMenu menu;
 	
-	public static ItemList itemlist;
 	public static PixelList pixellist;
+	public static ItemList itemlist;
 	public static BiomeList biomelist;
-	public static ColorSheet csheetf = new ColorSheet("/Mat_Front.png");
-	public static ColorSheet csheetm = new ColorSheet("/Mat_Mid.png");
-	public static ColorSheet csheetb = new ColorSheet("/Mat_Back.png");
-	public static Screen screen;
+	
 	public static PxlFont font;
 	public static PxlFont sfont;
 	public static PxlFont mfont;
 	/**Coders Crux Font, Size: 10*18*/
 	public static PxlFont ccFont;
+	
 	public static SinglePlayer singlePlayer;
 	public static Client client;
 	public static Server server;
 	
-	public SpriteSheet back;
+	public static SpriteSheet back;
 	
 	public TrueTypeFont font2;
 	
 	public void init(){
+		int width, height;
 		File gameDir = new File(Game.GAME_PATH);
 		if(!gameDir.isDirectory()) {gameDir.mkdirs();Game.logInfo("Created PixelKingdom Path");}
 		MainConfig.load();
@@ -86,24 +82,24 @@ public class Game implements Runnable{
 		
 		if(MainConfig.fullscreen) {
 			GLFWVidMode vid = glfwGetVideoMode(glfwGetPrimaryMonitor());
-			Game.WIDTH = vid.width();
-			Game.HEIGHT = vid.height();
+			width = vid.width();
+			height = vid.height();
 		}else {
-			Game.WIDTH = MainConfig.resX;
-			Game.HEIGHT = MainConfig.resY;
+			width = MainConfig.resX;
+			height = MainConfig.resY;
 		}
 		
-		window = new Window(WIDTH, HEIGHT, MainConfig.fullscreen, "Pixel Kingdom");
+		window = new Window(width, height, MainConfig.fullscreen, "Pixel Kingdom");
 		
 		window.init();
 		
 		new KeyInput(window.getWindow());
 		new MouseInput(window.getWindow());
 		glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-		glfwSetWindowSizeLimits(window.getWindow(), WIDTH, HEIGHT, WIDTH, HEIGHT);
+		glfwSetWindowSizeLimits(window.getWindow(), 960, 720, GLFW_DONT_CARE, GLFW_DONT_CARE);
 
 		Screen.MAP_ZOOM = MainConfig.mapZoom;
-		Screen.initialize(WIDTH, HEIGHT, csheetf, csheetm, csheetb);
+		Screen.initialize(width, height);
 		
 		menu = new MainMenu();
 		mfont = new PxlFont(new SpriteSheet("/StackFont.png", 12, 15), "1234567890", 12, 15, -2);
@@ -117,6 +113,13 @@ public class Game implements Runnable{
 		
 		back = new SpriteSheet("/NormalBack.png");
 		//TODO		TESTING AREA
+	}
+	
+	public static void resizeWindow(int width, int height) {
+		Screen.initialize(width, height);
+		if(gamemode == GameMode.Menu)menu.refreshGUI();
+		MainConfig.resX = width;
+		MainConfig.resY = height;
 	}
 	
 	public void reset(){

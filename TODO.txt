@@ -108,9 +108,8 @@
 
 # brightness constant, sodass zB 245->255 erhellt wird (siehe Chunk.java TODO)
 # framecap
-# resizable window
 # max light iterations
-- character creation, away with those pesky black people.
+- character creation
 
 ---------- FEATURES/MECHANICS ----------
 

@@ -122,7 +122,7 @@ public class MapSelection implements GameMenu{
 	public void render(){
 		for(int i = -maxButtonsOnScreen/2; i <= maxButtonsOnScreen/2; i++){
 			try{
-				ButtonList.get(selected+i).setPos(Game.WIDTH/2, Screen.height/2+(i*90));
+				ButtonList.get(selected+i).setPos(Screen.width/2, Screen.height/2+(i*90));
 				ButtonList.get(selected+i).render();
 			}catch(ArrayIndexOutOfBoundsException e){}catch(IndexOutOfBoundsException e){}
 		}
@@ -133,5 +133,17 @@ public class MapSelection implements GameMenu{
 		if(selected > 0)scrollUP.render();
 		if(selected < ButtonList.size()-1)scrollDOWN.render();
 		Game.font.render(Screen.width/2, 50, "Map Selection", 0, 0xff000000);
+	}
+
+	public void refreshGUI() {
+		int buttonSize = 60;
+		maxButtonsOnScreen = (int) ((Screen.height-buttonSize*3)/(buttonSize*1.5));
+		//makes it uneven
+		maxButtonsOnScreen -= maxButtonsOnScreen%2==0 ? 1 : 0;
+		genmap.setPos(Screen.width-50, 50);
+		del.setPos(Screen.width/2-240, Screen.height/2);
+		start.setPos(Screen.width/2+240, Screen.height/2);
+		scrollUP.setPos(Screen.width/2, Screen.height/2-(maxButtonsOnScreen/2+1)*buttonSize*3/2);
+		scrollDOWN.setPos(Screen.width/2, Screen.height/2+(maxButtonsOnScreen/2+1)*buttonSize*3/2);
 	}
 }

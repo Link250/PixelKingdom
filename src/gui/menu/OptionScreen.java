@@ -30,9 +30,9 @@ public class OptionScreen implements GameMenu{
 		int bWidth = 300, bHeight = 60, bYOff = 250, bNr = 0;
 		back = new Button(50, 50, 60, 60);
 		back.gfxData("/Buttons/back.png", true);
-		visualsButton = new Button(Game.WIDTH/2,bYOff + (int)(bHeight*bNr++*1.5),bWidth,bHeight);
+		visualsButton = new Button(Screen.width/2,bYOff + (int)(bHeight*bNr++*1.5),bWidth,bHeight);
 		visualsButton.TextData("Visuals", false, true);
-		controlsButton = new Button(Game.WIDTH/2,bYOff + (int)(bHeight*bNr++*1.5),bWidth,bHeight);
+		controlsButton = new Button(Screen.width/2,bYOff + (int)(bHeight*bNr++*1.5),bWidth,bHeight);
 		controlsButton.TextData("Controls", false, true);
 	}
 	
@@ -82,5 +82,11 @@ public class OptionScreen implements GameMenu{
 			this.controlsButton.render();
 			break;
 		}
+	}
+
+	public void refreshGUI() {
+		int bHeight = 60, bYOff = 250, bNr = 0;
+		visualsButton.setPos(Screen.width/2,bYOff + (int)(bHeight*bNr++*1.5));
+		controlsButton.setPos(Screen.width/2,bYOff + (int)(bHeight*bNr++*1.5));
 	}
 }
