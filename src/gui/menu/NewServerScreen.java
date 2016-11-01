@@ -49,7 +49,7 @@ public class NewServerScreen implements GameMenu {
 		back.render();
 		Game.font.render(Screen.width/2, Screen.height/2-260, "Server Name", 0, 0xff000000);
 		serverName.render();
-		Game.font.render(Screen.width/2, Screen.height/2-80, "Server Adresse", 0, 0xff000000);
+		Game.font.render(Screen.width/2, Screen.height/2-80, "Server Address", 0, 0xff000000);
 		serverIP.render();
 		create.render();
 	}

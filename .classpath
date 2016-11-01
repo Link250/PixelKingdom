@@ -1,21 +1,92 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="src" path="lib/LWJGL-v3.0.0-b90/native"/>
 	<classpathentry kind="src" path="res"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
-	<classpathentry kind="lib" path="lib/JOML-1.8.6/joml-1.8.6.jar" sourcepath="lib/JOML-1.8.6/JOML-1.8.6.zip"/>
-	<classpathentry kind="lib" path="lib/LWJGL-v3.0.0-b90/jar/lwjgl.jar" sourcepath="lib/LWJGL-v3.0.0-b90/LWJGL-src.zip">
-		<attributes>
-			<attribute name="javadoc_location" value="jar:platform:/resource/PixelKingdom/lib/LWJGL-v3.0.0-b90/doc/javadoc.zip!/"/>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PixelKingdom/lib/LWJGL-v3.0.0-b90/native"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="lib" path="lib/xz-compression/xz-1.5.jar" sourcepath="lib/xz-compression/xz-1.5-sources.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="jar:platform:/resource/PixelKingdom/lib/xz-compression/xz-1.5-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="lib/LWJGL/libraries/lwjgl-bgfx.jar" sourcepath="lib/LWJGL/source/lwjgl-bgfx-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/PixelKingdom/lib/LWJGL/javadoc/lwjgl-bgfx-javadoc.jar!/"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PixelKingdom/lib/LWJGL/natives"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/LWJGL/libraries/lwjgl-glfw.jar" sourcepath="lib/LWJGL/source/lwjgl-glfw-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/PixelKingdom/lib/LWJGL/javadoc/lwjgl-glfw-javadoc.jar!/"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PixelKingdom/lib/LWJGL/natives"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/LWJGL/libraries/lwjgl-nfd.jar" sourcepath="lib/LWJGL/source/lwjgl-nfd-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/PixelKingdom/lib/LWJGL/javadoc/lwjgl-nfd-javadoc.jar!/"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PixelKingdom/lib/LWJGL/natives"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/LWJGL/libraries/lwjgl-nuklear.jar" sourcepath="lib/LWJGL/source/lwjgl-nuklear-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/PixelKingdom/lib/LWJGL/javadoc/lwjgl-nuklear-javadoc.jar!/"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PixelKingdom/lib/LWJGL/natives"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/LWJGL/libraries/lwjgl-openal.jar" sourcepath="lib/LWJGL/source/lwjgl-openal-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/PixelKingdom/lib/LWJGL/javadoc/lwjgl-openal-javadoc.jar!/"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PixelKingdom/lib/LWJGL/natives"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/LWJGL/libraries/lwjgl-opencl.jar" sourcepath="lib/LWJGL/source/lwjgl-opencl-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/PixelKingdom/lib/LWJGL/javadoc/lwjgl-opencl-javadoc.jar!/"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PixelKingdom/lib/LWJGL/natives"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/LWJGL/libraries/lwjgl-opengl.jar" sourcepath="lib/LWJGL/source/lwjgl-opengl-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/PixelKingdom/lib/LWJGL/javadoc/lwjgl-opengl-javadoc.jar!/"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PixelKingdom/lib/LWJGL/natives"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/LWJGL/libraries/lwjgl-sse.jar" sourcepath="lib/LWJGL/source/lwjgl-sse-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/PixelKingdom/lib/LWJGL/javadoc/lwjgl-sse-javadoc.jar!/"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PixelKingdom/lib/LWJGL/natives"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/LWJGL/libraries/lwjgl-stb.jar" sourcepath="lib/LWJGL/source/lwjgl-stb-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/PixelKingdom/lib/LWJGL/javadoc/lwjgl-stb-javadoc.jar!/"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PixelKingdom/lib/LWJGL/natives"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/LWJGL/libraries/lwjgl-tinyfd.jar" sourcepath="lib/LWJGL/source/lwjgl-tinyfd-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/PixelKingdom/lib/LWJGL/javadoc/lwjgl-tinyfd-javadoc.jar!/"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PixelKingdom/lib/LWJGL/natives"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/LWJGL/libraries/lwjgl-vulkan.jar" sourcepath="lib/LWJGL/source/lwjgl-vulkan-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/PixelKingdom/lib/LWJGL/javadoc/lwjgl-vulkan-javadoc.jar!/"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PixelKingdom/lib/LWJGL/natives"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/LWJGL/libraries/lwjgl-xxhash.jar" sourcepath="lib/LWJGL/source/lwjgl-xxhash-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/PixelKingdom/lib/LWJGL/javadoc/lwjgl-xxhash-javadoc.jar!/"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PixelKingdom/lib/LWJGL/natives"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/LWJGL/libraries/lwjgl.jar" sourcepath="lib/LWJGL/source/lwjgl-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/PixelKingdom/lib/LWJGL/javadoc/lwjgl-javadoc.jar!/"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="PixelKingdom/lib/LWJGL/natives"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="lib/JOML/joml.jar" sourcepath="lib/JOML/JOML.zip"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
