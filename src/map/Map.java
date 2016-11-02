@@ -93,7 +93,7 @@ public class Map {
 			}
 			regularUpdateX = -Screen.width/2-Screen.RENDER_CHUNK_SIZE;
 		}
-		setTextureUpdating(regularUpdateX+Screen.xOffset, regularUpdateY+Screen.yOffset, Map.LAYER_LIGHT);
+		if(gametype!=GT_SERVER)setTextureUpdating(regularUpdateX+Screen.xOffset, regularUpdateY+Screen.yOffset, Map.LAYER_LIGHT);
 	}
 	
 	public boolean isUpdating(int x, int y, int l){

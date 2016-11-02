@@ -154,7 +154,7 @@ public class ServerList implements GameMenu{
 		back.render();
 		add.render();
 		if(Game.server==null)start.render();
-		else Game.font.render(Screen.width/2-65, Screen.height-20, "ServerRunning", 0, 0xff000000);
+		else Game.font.render(Screen.width/2, Screen.height-30, "Server is running", 0, 0xff000000);
 		if(ButtonList.size()!=0)del.render();
 		if(ButtonList.size()!=0)join.render();
 		if(selected > 0)scrollUP.render();

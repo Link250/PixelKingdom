@@ -26,7 +26,7 @@ public class MPlayer extends Mob {
 	public void tick(int numTick) {}
 	
 	public void render() {
-		if(this.sheet == null)this.sheet = new SpriteSheet("/sprite_sheet_player.png", 13*Screen.MAP_SCALE, 16*Screen.MAP_SCALE);
+		if(this.sheet == null)this.sheet = new SpriteSheet("/Mobs/sprite_sheet_player.png", 13*Screen.MAP_SCALE, 16*Screen.MAP_SCALE);
 		Screen.drawMapSprite(x-xOffset, y-yOffset, sheet, anim, movingDir==1, false, color);
 	}
 }
