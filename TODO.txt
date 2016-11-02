@@ -41,6 +41,8 @@
 
 + Kiste
 
++ Ofen kann nur hitze abgeben wenn das erz kälter ist & erze kühlen auch ab
+- mehr Öfen aus wärmeleitenden Materialien
 - cooking potte, kuechen, nanokuechen (koch und kochalchemiesystem das mit einem wahrscheinlichkeitssystem aber richtungen sachen herstellt)
 
 - Pflanzen
@@ -112,8 +114,6 @@
 - character creation
 
 ---------- FEATURES/MECHANICS ----------
-
-# fix dynamic Oven/ore/fire texture
 
 - Loader class auch für andere Ladevorgänge verwenden
 	->Materials, Recipes, etc

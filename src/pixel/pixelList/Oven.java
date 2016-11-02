@@ -1,5 +1,6 @@
 package pixel.pixelList;
 
+import gfx.Screen;
 import map.Map;
 import pixel.AD;
 import pixel.Material;
@@ -77,10 +78,8 @@ public class Oven extends Material<Oven.OvenAD>{
 	}
 	
 	public int render(int x, int y, int l, Map map) {
-		return super.render(x, y, l, map);
-//		screen.drawMaterial(x, y, ID, l);
-//		int r = (int) (map.<OvenAD>getAD(x, y, l).heat/(((double)maxHeat)/127));if(r>255)r=255;
-//		screen.drawMapPixelScaled(x, y, 0x00ff0000 | (r<<24));
+		int r = (int) (map.<OvenAD>getAD(x, y, l).heat/(((double)maxHeat)/127));if(r>255)r=255;
+		return Screen.combineColors(texture[x%textureWidth + (y%textureHeight)*textureWidth], 0x00ff0000 | (r<<24));
 	}
 
 	public static class OvenAD extends AD {

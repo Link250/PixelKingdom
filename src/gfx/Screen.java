@@ -41,49 +41,29 @@ public class Screen {
 		tileModel = new Model();
 	}
 	
-	/*
-	private void drawPixelArea(int xPos, int yPos, int xSize, int ySize, int color, boolean gui){
-		int width = this.width;
-		int height = this.height;
-		if(!gui) { width /= MAP_ZOOM; height /= MAP_ZOOM;}
-		double a = (color>>24)&0xff;
-		if(a != 0xff){
-			int r = (color>>16)&0xff, g = (color>>8)&0xff, b = color&0xff;
-			int col,ro,go,bo,ao;
-			for(int x = 0; x < xSize; x++){
-				for(int y = 0; y < ySize; y++){
-					if(xPos+x >= 0 && xPos+x < width && yPos+y >= 0 && yPos+y < height){
-						col = gui ? GUI[xPos+x + (yPos+y)*width] : pixels[xPos+x + (yPos+y)*width];
-						ao = (col>>24)&0xff;
-						if(ao != 0){
-							ro = (int)((a/255*r) + ((255-a)/255*((col>>16)&0xff)));
-							go = (int)((a/255*g) + ((255-a)/255*((col>> 8)&0xff)));
-							bo = (int)((a/255*b) + ((255-a)/255*((col    )&0xff)));
-							if(ao != 255){
-								ao = (int) (a+(255-a)/255*((col>>24)&0xff));
-							}
-							if(gui) GUI[xPos+x + (yPos+y)*width] = (ao<<24)|(ro<<16)|(go<<8)|bo;
-							else pixels[xPos+x + (yPos+y)*width] = (ao<<24)|(ro<<16)|(go<<8)|bo;
-						}else{
-							if(gui) GUI[xPos+x + (yPos+y)*width] = color;
-							else pixels[xPos+x + (yPos+y)*width] = color;
-						}
-					}
+	public static int combineColors(int colorBack, int colorFront){
+		float af = (colorFront>>24)&0xff;
+		if(af != 0xff){
+			int ab = (colorBack>>24)&0xff;
+			if(ab != 0){
+				int rf = (colorFront>>16)&0xff, gf = (colorFront>>8)&0xff, bf = colorFront&0xff;
+				int rb,gb,bb;
+				rb = (int)((af/255*rf) + ((255-af)/255*((colorBack>>16)&0xff)));
+				gb = (int)((af/255*gf) + ((255-af)/255*((colorBack>> 8)&0xff)));
+				bb = (int)((af/255*bf) + ((255-af)/255*((colorBack    )&0xff)));
+				if(ab != 255){
+					ab = (int) (af+(255-af)/255*((colorBack>>24)&0xff));
 				}
+				return (ab<<24)|(rb<<16)|(gb<<8)|bb;
+			}else{
+				return colorFront;
 			}
 		}else{
-			for(int x = 0; x < xSize; x++){
-				for(int y = 0; y < ySize; y++){
-					if(xPos+x >= 0 && xPos+x < width && yPos+y >= 0 && yPos+y < height){
-						if(gui) GUI[xPos+x + (yPos+y)*width] = color;
-						else pixels[xPos+x + (yPos+y)*width] = color;
-					}
-				}
-			}
+			return colorFront;
 		}
 	}
 	
-	private void drawPixel(int x, int y, int color, boolean gui){
+/*	private void drawPixel(int x, int y, int color, boolean gui){
 		int width = this.width;
 		int height = this.height;
 		if(!gui) { width /= MAP_ZOOM; height /= MAP_ZOOM;}
@@ -112,61 +92,6 @@ public class Screen {
 			if(x >= 0 && x < width && y >= 0 && y < height){
 				if(gui) GUI[x + (y)*width] = color;
 				else pixels[x + (y)*width] = color;
-			}
-		}
-	}
-	
-	public void drawMaterial(int xPos, int yPos, int tile, int layer){
-		int col = csheets[layer].pixels[tile];
-		drawMapPixelScaled(xPos, yPos, col);
-	}*/
-	
-	/**
-	 * 
-	 * @param xPos on the Screen
-	 * @param yPos on the Screen
-	 * @param tile
-	 * @param mirrorXY values : 0x00 => no mirror ; 0x10 => X-mirror ; 0x01 => Y-mirror ; 0x11 => X- and Y-mirror ; 
-	 * @param sheet
-	 * @param color
-	 */
-//	public void drawGUITile(int xPos, int yPos, int tile, int mirrorXY, SpriteSheet sheet, int color){
-//		drawTile(xPos,yPos,tile,mirrorXY,sheet,color,true);
-//	}
-	
-	/**
-	 * 
-	 * @param xPos on the Map
-	 * @param yPos on the Map
-	 * @param tile
-	 * @param mirrorXY values : 0x00 => no mirror ; 0x10 => X-mirror ; 0x01 => Y-mirror ; 0x11 => X- and Y-mirror ; 
-	 * @param sheet
-	 * @param color
-	 */
-//	public void drawMapTile(int xPos, int yPos, int tile, int mirrorXY, SpriteSheet sheet, int color){
-//		drawTile(xPos-xOffset,yPos-yOffset,tile,mirrorXY,sheet,color,false);
-//	}
-
-/*	private void drawTile(int xPos, int yPos, int tile, int mirrorXY, SpriteSheet sheet, int color, boolean GUI){
-		if(!GUI) {xPos*=MAP_SCALE;yPos*=MAP_SCALE;}
-		int xTile = tile % (sheet.width/sheet.tileWidth);
-		int yTile = tile / (sheet.width/sheet.tileWidth);
-		int ysheet,xsheet,sheetc;
-		
-		for(int y = 0; y < sheet.tileHeight; y++){
-			if(y + yPos > 0 & y + yPos < height){
-				ysheet = y;
-				if((mirrorXY & 0x01) > 0) ysheet = sheet.tileHeight-1-y;
-				for(int x = 0; x < sheet.tileWidth; x++){
-					if(x + xPos > 0 & x + xPos <= width){
-						xsheet = x;
-						if((mirrorXY & 0x10) > 0) xsheet = sheet.tileWidth-1-x;
-						sheetc = sheet.pixels[(xTile*sheet.tileWidth+xsheet) + (yTile*sheet.tileHeight+ysheet)*sheet.width];
-						if(sheetc>>24 != 0){
-							drawPixel(xPos+x, yPos+y, ((sheetc & 0xffffff)== 0xff00ff) ? color : sheetc, GUI);
-						}
-					}
-				}	
 			}
 		}
 	}*/

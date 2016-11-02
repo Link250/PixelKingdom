@@ -1,5 +1,6 @@
 package pixel;
 
+import gfx.Screen;
 import map.Map;
 import pixel.pixelList.Lava;
 
@@ -33,8 +34,8 @@ public abstract class Ore<OreADType extends Ore.OreAD> extends Material<OreADTyp
 		int color = super.render(x, y, l, map);
 		ad = map.getAD(x, y, l);
 		if(melt>0 && ad!=null && ad.heat>0){
-			int r = (ad.heat*8/melt);if(r>7)r=7;
-//			color = 0xff000000 | 1;
+			int r = (ad.heat*255/melt);if(r>255)r=255;
+			return Screen.combineColors(color, 0x00ff0000 | (r<<24));
 		}
 		return color;
 	}
