@@ -25,7 +25,7 @@ public class MapSelection implements GameMenu{
 	
 	public MapSelection() {
 		int buttonSize = 60;
-		maxButtonsOnScreen = (int) ((Screen.height-buttonSize*3)/(buttonSize*1.5));
+		maxButtonsOnScreen = (int) ((Screen.height-buttonSize*5)/(buttonSize*1.5));
 		//makes it uneven
 		maxButtonsOnScreen -= maxButtonsOnScreen%2==0 ? 1 : 0;
 		back = new Button(50, 50, buttonSize, buttonSize);
@@ -137,7 +137,7 @@ public class MapSelection implements GameMenu{
 
 	public void refreshGUI() {
 		int buttonSize = 60;
-		maxButtonsOnScreen = (int) ((Screen.height-buttonSize*3)/(buttonSize*1.5));
+		maxButtonsOnScreen = (int) ((Screen.height-buttonSize*5)/(buttonSize*1.5));
 		//makes it uneven
 		maxButtonsOnScreen -= maxButtonsOnScreen%2==0 ? 1 : 0;
 		genmap.setPos(Screen.width-50, 50);

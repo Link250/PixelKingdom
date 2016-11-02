@@ -22,6 +22,8 @@ public class MainConfig {
 	public static int mapZoom;
 	public static boolean fullscreen;
 	
+	public static boolean needsRestart;
+	
 	private static ConfigFile configFile = new ConfigFile(Game.GAME_PATH+"Options.optn");
 
 	private static <T>T loadConfig(String config, T defaultValue) {
@@ -54,8 +56,9 @@ public class MainConfig {
 			configFile.setConfig(gf.toString()+"_PosY", p.y);
 		});
 		configFile.setConfig("PlayerColor", PlrCol);
-		configFile.setConfig("ResolutionX", resX);
-		configFile.setConfig("ResolutionY", resY);
+		boolean wasFullscreen = loadConfig("Fullscreen",false);
+		if(!wasFullscreen)configFile.setConfig("ResolutionX", resX);
+		if(!wasFullscreen)configFile.setConfig("ResolutionY", resY);
 		configFile.setConfig("MapZoom", mapZoom);
 		configFile.setConfig("Fullscreen", fullscreen);
 		configFile.save();

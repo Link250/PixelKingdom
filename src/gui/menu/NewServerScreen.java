@@ -29,17 +29,19 @@ public class NewServerScreen implements GameMenu {
 		serverName.setPos(Screen.width/2, Screen.height/2-180);
 		serverIP = new TextField(1, 1, 500, 60, true, true, Game.font);
 		serverIP.setPos(Screen.width/2, Screen.height/2);
+		serverName.setFocus(true);
 	}
 	
 	public void tick() {
 		back.tick();
-		if(back.isclicked || Keys.MENU.click()){
-			Game.menu = new ServerList();
-		}
 		create.tick();
-		if(create.isclicked) {
-			addServer(serverName.getText(), serverIP.getText());
+		if(back.isclicked || Keys.MENU.click() || create.isclicked){
+			if(create.isclicked) {
+				addServer(serverName.getText(), serverIP.getText());
+			}
 			Game.menu = new ServerList();
+			serverName.setFocus(false);
+			serverIP.setFocus(false);
 		}
 		serverName.tick();
 		serverIP.tick();

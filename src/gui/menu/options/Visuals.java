@@ -19,7 +19,6 @@ public class Visuals {
 	
 	private Button  back;
 	private ArrayList<GFXOption> options = new ArrayList<>();
-//	private ItemField a,b,c,d;
 	
 	public Visuals(OptionScreen mainMenu) {
 		this.mainMenu = mainMenu;
@@ -46,6 +45,7 @@ public class Visuals {
 	public void render(){
 		back.render();
 		Game.font.render(Screen.width/2, 50, "Visuals", 0, 0xff000000);
+		if(MainConfig.needsRestart)Game.ccFont.render(Screen.width/2, 100, "a restart is required for changes to take effect", 0, 0xffff0000);
 		
 		for (GFXOption gfxOption : options) {
 			gfxOption.render();
@@ -112,6 +112,7 @@ public class Visuals {
 			if(value.isclicked) {
 				MainConfig.mapZoom++;
 				if(MainConfig.mapZoom > 5) MainConfig.mapZoom = 1;
+				MainConfig.needsRestart = true;
 				value.TextData("x"+MainConfig.mapZoom, false, true);
 			}
 		}
@@ -139,6 +140,7 @@ public class Visuals {
 			fullscreen.tick();
 			if(fullscreen.isclicked) {
 				MainConfig.fullscreen = !MainConfig.fullscreen;
+				MainConfig.needsRestart = true;
 				fullscreen.TextData("Fullscreen: " + (MainConfig.fullscreen ? "ON" : "OFF"), false, true);
 			}
 		}

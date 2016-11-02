@@ -19,17 +19,18 @@ public class NewMapScreen implements GameMenu {
 		create.TextData("Create", false, true);
 		mapName = new TextField(1, 1, 500, 60, true, true, Game.font);
 		mapName.setPos(Screen.width/2, Screen.height/2);
+		mapName.setFocus(true);
 	}
 	
 	public void tick() {
 		back.tick();
-		if(back.isclicked || Keys.MENU.click()){
-			Game.menu = new MapSelection();
-		}
 		create.tick();
-		if(create.isclicked) {
-			Map.newMap(MapSelection.FILE_DIR,mapName.getText());
+		if(back.isclicked || Keys.MENU.click() || create.isclicked){
+			if(create.isclicked) {
+				Map.newMap(MapSelection.FILE_DIR,mapName.getText());
+			}
 			Game.menu = new MapSelection();
+			mapName.setFocus(false);
 		}
 		mapName.tick();
 	}

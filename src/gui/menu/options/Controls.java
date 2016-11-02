@@ -1,8 +1,6 @@
 package gui.menu.options;
 
 import static main.KeyConfig.keyMapping;
-import static org.lwjgl.glfw.GLFW.glfwPollEvents;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,6 +25,9 @@ public class Controls {
 	private int lVisibleEntries;
 	private int lFieldTop, lFieldBottom, lFieldSize;
 	
+	private boolean changing;
+	private KeyConfig selectedConfig;
+	
 	public Controls(OptionScreen mainMenu) {
 		this.mainMenu = mainMenu;
 		this.back = new Button(50, 50, 60, 60);
@@ -48,6 +49,8 @@ public class Controls {
 	}
 	
 	private void resetKeyButtons() {
+		this.changing = false;
+		this.selectedConfig = null;
 		this.buttonValues.clear();
 		this.keyConfigs.clear();
 		for (Keys key : Keys.values()) {
@@ -77,46 +80,41 @@ public class Controls {
 		}
 	}
 	
-	private void setKey(KeyConfig keyConfig){
-		int keyCode = 0;
-		int keyCodeOld = this.buttonValues.get(keyConfig.button);
-		Keys key = keyMapping.get(keyCodeOld);
-		while((keyCode=KeyInput.lastKeyCode)==0) {
-			try{Thread.sleep(10);
-			} catch (InterruptedException e) {
-			}finally{glfwPollEvents();}
-		}
-		//check if this key is unused
-		for (Integer code : keyMapping.keySet()) {
-			if(keyCode==code)return;
-		}
-		//setting new Codes
-		keyMapping.remove(keyCodeOld);
-		keyMapping.put(keyCode, key);
-		this.resetKeyButtons();
-		
-		System.out.println(keyConfig.text);
-	}
-	
 	public void tick(){
-		back.tick();
-		if(back.isclicked || Keys.MENU.click()){
-			this.mainMenu.resetMenu();
-		}
 		int scroll = MouseInput.mouse.getScroll();
 		if(this.lOffset > 0)scrollUP.tick();
 		if((scrollUP.isclicked || scroll<0) && this.lOffset > 0) {this.lOffset--;this.setButtonPositions();}
 		if(this.lOffset < keyConfigs.size()-this.lVisibleEntries)scrollDOWN.tick();
 		if((scrollDOWN.isclicked || scroll>0) && this.lOffset < keyConfigs.size()-this.lVisibleEntries) {this.lOffset++;this.setButtonPositions();}
 		
-		for(int i = this.lOffset; i < this.lOffset+this.lVisibleEntries; i++) {
-			if(keyConfigs.get(i).tick())break;
+		if(!changing) {
+			for(int i = this.lOffset; i < this.lOffset+this.lVisibleEntries; i++) {
+				if(keyConfigs.get(i).tick())break;
+			}
+		}else {
+			int keyCode = 0;
+			if((keyCode=KeyInput.lastKeyCode)!=0) {
+				if(!keyMapping.containsKey(keyCode)) {
+					int keyCodeOld = this.buttonValues.get(selectedConfig.button);
+					Keys key = keyMapping.get(keyCodeOld);
+					keyMapping.remove(keyCodeOld);
+					keyMapping.put(keyCode, key);
+				}
+				this.resetKeyButtons();
+			}
+		}
+		back.tick();
+		if(back.isclicked || Keys.MENU.click()){
+			this.changing = false;
+			this.selectedConfig = null;
+			this.mainMenu.resetMenu();
 		}
 	}
 	
 	public void render(){
 		back.render();
 		Game.font.render(Screen.width/2, 50, "Controls", 0, 0xff000000);
+		if(changing)Game.font.render(Screen.width/2, 100, "Please press a Key", 0, 0xffff0000);
 		if(this.lOffset > 0)scrollUP.render();
 		if(this.lOffset < keyConfigs.size()-this.lVisibleEntries)scrollDOWN.render();
 		for(int i = this.lOffset; i < this.lOffset+this.lVisibleEntries; i++) {
@@ -137,7 +135,8 @@ public class Controls {
 		public boolean tick(){
 			button.tick();
 			if(button.isclicked){
-				setKey(this);
+				changing = true;
+				selectedConfig = this;
 				return true;
 			}
 			return false;
