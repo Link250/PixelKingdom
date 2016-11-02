@@ -1,10 +1,10 @@
 package pixel.pixelList;
 
 import map.Map;
+import pixel.AD;
 import pixel.Liquid;
-import pixel.ads.LavaAD;
 
-public class Lava extends Liquid<LavaAD>{
+public class Lava extends Liquid<Lava.LavaAD>{
 
 	public Lava(){
 		super(new LavaAD());
@@ -52,5 +52,10 @@ public class Lava extends Liquid<LavaAD>{
 		ad = map.getAD(x, y, l);
 		ad.ID = (short) ID;
 		ad.heat = 60;
+	}
+	
+	public static class LavaAD extends AD {
+		public short ID;
+		public byte heat;
 	}
 }

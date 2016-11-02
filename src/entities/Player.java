@@ -397,8 +397,6 @@ public class Player extends Mob{
 								,true);
 					}catch(NullPointerException e){}
 				}
-				try{Game.font.render(MouseInput.mouse.x, MouseInput.mouse.y, (this.bags.get(BAG.BELT_1).getItem(selected).getName()), 0, 0xff000000);}
-			catch(NullPointerException e){}
 			}
 		}
 	}

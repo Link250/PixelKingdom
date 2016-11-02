@@ -36,7 +36,7 @@ public class PxlFont {
 			size[i] = (xe-xs);
 			sizel[i] = (xs);
 		}
-		if(chars.indexOf('.') > -1)pointSize = size[chars.indexOf('.')];
+		if(chars.indexOf('.') > -1)pointSize = size[chars.indexOf('.')] + letterDistance;
 	}
 	
 	public void render(int x, int y, String msg, int limit, int color){
@@ -45,12 +45,15 @@ public class PxlFont {
 	
 	public int renderLength(String msg, int limit) {
 		int xOff = 0;
+		int charWidth = 0;
 		for(int i = 0; i < msg.length(); i++){
 			int charIndex = chars.indexOf(msg.charAt(i));
 			if(charIndex > -1){
-				if(limit==0 || xOff < limit-pointSize) {
-					xOff += size[charIndex]+(size[charIndex]>0 ? letterDistance : sheet.getWidth()/2);
+				charWidth = size[charIndex]+(size[charIndex]>0 ? letterDistance : sheet.getWidth()/2);
+				if(limit==0 || xOff < limit-pointSize-charWidth) {
+					xOff += charWidth;
 				}else {
+					xOff+= pointSize;
 					break;
 				}
 			}
@@ -61,19 +64,18 @@ public class PxlFont {
 	public void render(int x, int y, boolean centeredX, boolean centeredY, String msg, int limit, int color){
 		if(msg == null) return;
 		int yOff = centeredY ? sheet.getHeight()/2 : 0;
-		int xOff = 0;
-		if(centeredX) xOff = renderLength(msg, limit)/2;
+		int xOff = centeredX ? renderLength(msg, limit)/2 : 0;
+		int charWidth = 0;
 		if(limit!=0)limit+=x;
 		for(int i = 0; i < msg.length(); i++){
 			int charIndex = chars.indexOf(msg.charAt(i));
 			if(charIndex >= 0){
-				if(limit==0 || x < limit-pointSize){
+				charWidth = size[charIndex]+(size[charIndex]>0 ? letterDistance : sheet.getWidth()/2);
+				if(limit==0 || x < limit-pointSize-charWidth){
 					Screen.drawGUISprite(x-sizel[charIndex]-xOff, y-yOff, sheet, charIndex, false, false, color);
-//					screen.drawGUITile(x-sizel[charIndex]-xOff, y-yOff, charIndex, 0x00, sheet, color);
-					x += size[charIndex]+(size[charIndex]>0 ? letterDistance : sheet.getWidth()/2);
+					x += charWidth;
 				}else{
 					if(pointSize > 0)Screen.drawGUISprite(x-sizel[charIndex]-xOff, y-yOff, sheet, chars.indexOf('.'), false, false, color);
-//					if(pointSize > 0)screen.drawGUITile(x-sizel[charIndex]-xOff, y-yOff, chars.indexOf('.'), 0x00, sheet, color);
 					break;
 				}
 			}

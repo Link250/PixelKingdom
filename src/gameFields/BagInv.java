@@ -61,7 +61,12 @@ public class BagInv extends GameField {
 
 	public void render() {
 		renderfield();
-		Game.sfont.render(field.x+fieldTop.width/2, field.y+fieldTop.height/2, this.title, fieldTop.width, 0xff000000);
+		int nameSize = Game.sfont.renderLength(this.title, 0);
+		if(nameSize<=fieldTop.width) {
+			Game.sfont.render(field.x+fieldTop.width/2, field.y+fieldTop.height/2, this.title, fieldTop.width, 0xff000000);
+		}else{
+			Game.ccFont.render(field.x+fieldTop.width/2, field.y+fieldTop.height/2, this.title, fieldTop.width, 0xff000000);
+		}
 		for (ItemField itemField : itemFields) {
 			itemField.render();
 		}

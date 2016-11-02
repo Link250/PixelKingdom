@@ -1,9 +1,8 @@
 package pixel.pixelList;
 
 import pixel.Ore;
-import pixel.ads.OreAD;
 
-public class Ore_Gold extends Ore<OreAD>{
+public class Ore_Gold extends Ore<Ore.OreAD>{
 
 	public Ore_Gold(){
 		super(new OreAD());

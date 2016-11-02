@@ -1,13 +1,13 @@
 package pixel.pixelList;
 
 import map.Map;
+import pixel.AD;
 import pixel.Material;
 import pixel.Ore;
+import pixel.Ore.OreAD;
 import pixel.PixelList;
-import pixel.ads.OreAD;
-import pixel.ads.OvenAD;
 
-public class Oven extends Material<OvenAD>{
+public class Oven extends Material<Oven.OvenAD>{
 	OvenAD adOven;
 	OreAD adOre;
 	Ore<?> ore;
@@ -81,5 +81,9 @@ public class Oven extends Material<OvenAD>{
 //		screen.drawMaterial(x, y, ID, l);
 //		int r = (int) (map.<OvenAD>getAD(x, y, l).heat/(((double)maxHeat)/127));if(r>255)r=255;
 //		screen.drawMapPixelScaled(x, y, 0x00ff0000 | (r<<24));
+	}
+
+	public static class OvenAD extends AD {
+		public short heat;
 	}
 }

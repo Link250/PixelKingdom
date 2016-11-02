@@ -43,7 +43,7 @@ public class TextField implements Focusable{
 		if(background){
 			field.showArea();
 		}
-		font.render(field.x+field.width/2, field.y+field.height/2, text+(hasFocus && System.currentTimeMillis()%1000<500 ? '|' : ""), textLimit ? field.width-20 : 0, 0xff000000);
+		font.render(field.x+field.width/2, field.y+field.height/2, text+(hasFocus && System.currentTimeMillis()%1000<500 ? '|' : ""), textLimit ? field.width-10 : 0, 0xff000000);
 	}
 	
 	public void useInput(char c) {

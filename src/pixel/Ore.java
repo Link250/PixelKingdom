@@ -1,10 +1,9 @@
 package pixel;
 
 import map.Map;
-import pixel.ads.OreAD;
 import pixel.pixelList.Lava;
 
-public abstract class Ore<OreADType extends OreAD> extends Material<OreADType>{
+public abstract class Ore<OreADType extends Ore.OreAD> extends Material<OreADType>{
 
 	public int melt;
 	public int ingot;
@@ -38,5 +37,9 @@ public abstract class Ore<OreADType extends OreAD> extends Material<OreADType>{
 //			color = 0xff000000 | 1;
 		}
 		return color;
+	}
+
+	public static class OreAD extends AD {
+		public short heat;
 	}
 }

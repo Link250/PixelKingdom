@@ -1,11 +1,11 @@
 package pixel.pixelList;
 
 import map.Map;
+import pixel.AD;
 import pixel.Material;
 import pixel.PixelList;
-import pixel.ads.FireAD;
 
-public class Fire extends Material<FireAD>{
+public class Fire extends Material<Fire.FireAD>{
 
 	public Fire(){
 		super(new FireAD());
@@ -78,5 +78,9 @@ public class Fire extends Material<FireAD>{
 	public void setTime(int x, int y, int l, byte time, Map map){
 		ad = map.getAD(x, y, l);
 		ad.burntime=time;
+	}
+	
+	public static class FireAD extends AD{
+		public byte burntime;
 	}
 }
