@@ -15,7 +15,6 @@ import main.Game;
 import main.Keys;
 import main.MouseInput;
 import multiplayer.client.Client;
-import multiplayer.server.Server;
 
 public class ServerList implements GameMenu{
 	
@@ -115,12 +114,14 @@ public class ServerList implements GameMenu{
 			LoadServers(true);
 		}
 		if(start.isclicked && Game.server==null){
-			File dir = new File(Game.GAME_PATH+"maps"+File.separator+"Server"+File.separator);
-			if(!dir.isDirectory()) {dir.mkdirs();}
-			Game.server=new Server(Game.GAME_PATH+"maps"+File.separator+"Server");
-			Thread t = new Thread(Game.server);
-			t.setName("Server");
-			t.start();
+			if(new File(Game.GAME_PATH+"pixelkingdom.jar").exists()){
+				try {
+					Runtime.getRuntime().exec("java -jar "+Game.GAME_PATH+"pixelkingdom.jar -XX:+UseFastAccessorMethods -XX:+UseParNewGC -XX:+UseConcMarkSweepGC -XX:+CMSIncrementalMode -XX:-UseAdaptiveSizePolicy -XX:+BindGCTaskThreadsToCPUs -server");
+				}catch(IOException e){e.printStackTrace();}
+				Game.logInfo("launched Pixel Kingdom ~have fun!");
+			}else{
+				Game.logInfo("pixelkingdom.jar was missing!");
+			}
 		}
 		if(join.isclicked){
 			try {
@@ -153,8 +154,7 @@ public class ServerList implements GameMenu{
 		}
 		back.render();
 		add.render();
-		if(Game.server==null)start.render();
-		else Game.font.render(Screen.width/2, Screen.height-30, "Server is running", 0, 0xff000000);
+		start.render();
 		if(ButtonList.size()!=0)del.render();
 		if(ButtonList.size()!=0)join.render();
 		if(selected > 0)scrollUP.render();

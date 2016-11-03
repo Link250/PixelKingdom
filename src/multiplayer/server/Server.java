@@ -1,7 +1,15 @@
 package multiplayer.server;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.io.IOException;
 import java.net.ServerSocket;
+
+import javax.swing.JFrame;
+import javax.swing.JTextPane;
+
 import main.Game;
 import main.Keys;
 import main.MouseInput;
@@ -17,7 +25,12 @@ public class Server implements Runnable{
 	private Map map;
 	private MapManager mapManager;
 	
+	private JFrame frame = new JFrame();
+	public static JTextPane text = new JTextPane();
+	public static String log = "";
+	
 	public Server(String files) {
+		initFrame();
 		try {
 			serverSocket = new ServerSocket(Game.PORT);
 		} catch (IOException e) {
@@ -30,6 +43,27 @@ public class Server implements Runnable{
 		clientsManager.addInputReceiver(mapManager);
 		clientsManager.addInputReceiver(new PlayerManager(clientsManager));
 		clientsManager.addInputReceiver(new ChunkManagerS(clientsManager, map));
+	}
+	
+	private void initFrame(){
+		frame.setPreferredSize(new Dimension(800, 500));
+		
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setLayout(new BorderLayout());
+
+		frame.pack();
+
+		text.setEditable(false);
+		text.setBackground(new Color(0xff000000));
+		text.setForeground(new Color(0xff00ff00));
+		text.setText(log);
+		text.setFont(new Font("Consolas", 0, 14));
+		frame.add(text);
+		
+		frame.setResizable(true);
+		frame.setLocationRelativeTo(null);
+		frame.setVisible(true);
+		frame.setFocusable(true);
 	}
 	
 	public void run() {
@@ -58,7 +92,8 @@ public class Server implements Runnable{
 				ticks = 0;
 			}
 		}
-		map.save();
+		save();
+		Game.logInfo("Server shut down by User "+System.getProperty("user.name")+". ~Thanks 4 playing");
 	}
 	
 	public void tick(int ticks){

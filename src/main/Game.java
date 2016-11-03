@@ -20,6 +20,8 @@ import static org.lwjgl.opengl.GL11.*;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.util.Calendar;
 
 import org.lwjgl.glfw.GLFWVidMode;
@@ -27,7 +29,7 @@ import org.lwjgl.glfw.GLFWVidMode;
 public class Game implements Runnable{
 
 	public static enum GameMode{
-		Menu,SinglePlayer,MultiPlayer
+		Menu,SinglePlayer,MultiPlayer,Server
 	}
 
 	public static final String NAME = "Pixel Kingdom - the number of Commits is over 100 !";
@@ -44,12 +46,12 @@ public class Game implements Runnable{
 	public static boolean reset = false;
 	public static int tickCount = 0;
 	public static boolean devmode;
-	public static GameMode gamemode = GameMode.Menu;
+	public static GameMode gamemode;
 	public static GameMenu menu;
 	
-	public static PixelList pixellist;
-	public static ItemList itemlist;
-	public static BiomeList biomelist;
+	public static PixelList pixellist = new PixelList();
+	public static ItemList itemlist = new ItemList();
+	public static BiomeList biomelist = new BiomeList();
 	
 	public static PxlFont font;
 	public static PxlFont sfont;
@@ -107,11 +109,9 @@ public class Game implements Runnable{
 		font = new PxlFont(new SpriteSheet("/Font.png", 45, 60), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 1234567890!\",;%&/()=?'+-.",45,60, 2);
 		ccFont = new PxlFont(new SpriteSheet("/Font/coders_crux.png", 12, 20), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890^´+#<,.-°!\"§$%&/()=?`*'>;:_²³{[]}\\~| ",12, 20, 2);
 		
-		pixellist = new PixelList();
-		itemlist = new ItemList();
-		biomelist = new BiomeList();
-		
 		back = new SpriteSheet("/Menu/NormalBack.png");
+		
+		gamemode = GameMode.Menu;
 		//TODO		TESTING AREA
 	}
 	
@@ -182,7 +182,6 @@ public class Game implements Runnable{
 			}
 		}
 		if(gamemode == GameMode.SinglePlayer)singlePlayer.map.save();
-		if(server!=null)server.save();
 		MainConfig.save();
 		KeyConfig.save();
 		Game.logInfo("Game shut down by User "+System.getProperty("user.name")+". ~Thanks 4 playing");
@@ -262,19 +261,41 @@ public class Game implements Runnable{
 		case 2:header+="[WARNING]";break;
 		case 3:header+="[INFO]";break;
 		}
-		if(type==1)
+		if(type==1){
 			System.err.println(header+": "+text);
-		else
+		}else{
 			System.out.println(header+": "+text);
+		}
+	}
+	
+	private static void redirectStream() {
+		System.setOut(new PrintStream(new OutputStream() {
+			PrintStream old = System.out;
+			public void write(int arg0) throws IOException {
+				Server.log += (char) (arg0);
+				Server.text.setText(Server.log);
+				old.write(arg0);
+			}
+		}, false));
 	}
 	
 	public static void main(String[] args){
-		Game.logInfo("Current Java Version running : "+System.getProperty("java.version"));
-		Game.logInfo("Current Operating System : "+System.getProperty("os.name"));
 		for(String s : args){
 			if(s.contains("-devmode")){Game.devmode = true;Game.logInfo("Developer Mode activated !");}
+			if(s.contains("-server")) {Game.gamemode = GameMode.Server;redirectStream();}
 			Game.logInfo(s);
 		}
-		new Game().start();
+		Game.logInfo("Current Java Version running : "+System.getProperty("java.version"));
+		Game.logInfo("Current Operating System : "+System.getProperty("os.name"));
+		if(Game.gamemode == GameMode.Server) {
+			File dir = new File(Game.GAME_PATH+"maps"+File.separator+"Server"+File.separator);
+			if(!dir.isDirectory()) {dir.mkdirs();}
+			Game.server=new Server(Game.GAME_PATH+"maps"+File.separator+"Server");
+			Thread t = new Thread(Game.server);
+			t.setName("Server");
+			t.start();
+		}else {
+			new Game().start();
+		}
 	}
 }
