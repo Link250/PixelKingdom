@@ -23,7 +23,7 @@
 
 ---------- ITEMS ----------
 
-+ Eimer
+# Eimer
 	- kann vorerst nur Wasser nehmen (wegen den ADs der Lava)
 	- kann sich auffüllen und eine bestimmte anzahl an Pixeln speichern (wird dann angezeigt als Zahl wie bei MatStacks)
 	- rechtsklick aufsammelt, mit pickaxe algorythmen
@@ -39,9 +39,9 @@
 
 ---------- PIXELS/BLOCKS/STRUCTURES ----------
 
-+ Kiste
+### Kiste
 
-+ Ofen kann nur hitze abgeben wenn das erz kälter ist & erze kühlen auch ab
+# Ofen kann nur hitze abgeben wenn das erz kälter ist & erze kühlen auch ab
 - mehr Öfen aus wärmeleitenden Materialien
 - cooking potte, kuechen, nanokuechen (koch und kochalchemiesystem das mit einem wahrscheinlichkeitssystem aber richtungen sachen herstellt)
 
@@ -129,7 +129,7 @@
 - Day evening night, ein jahreszeiten basierendes tag nacht system.
 - je nach jahreszeit aendernde baumfarben usw.
 - sprint
-- verlangsamte gravitation/bei welterstellung gravitationsstaerke aussuchen maybe?
+### gravitation, spawning, shader und vieles mehr von dem Biom machen lassen
 - musik (das mach ich wohl, wollt ich sowieso machen)
 - skilltrees (rpg feeling)
 - Eine Karte.
@@ -157,7 +157,7 @@
 	Schusswaffe
 	Waffe mit Mousetracking
 	
-+ Interagieren mit Taste
+# Interagieren mit Taste
 
 - Leitungen:
 	-liquid/energy/item/signal etc.
@@ -167,8 +167,8 @@
 - Dynamische Lichtquelle (beim tragen einer Torch)
 
 -!!! CUDA Berechnung /*-vielleicht*/
-+ Multiblock ADs
-+ pixel bekommen gesagt mit welchem tool sie abgebaut wurden
+### Multiblock ADs
+### pixel bekommen gesagt mit welchem tool sie abgebaut wurden
 
 - Cool, aber unwichtig (TODO in pixel kingdom nach dem full release):
 	- veglitcht/fehlgehauene aber trotzdem geniale waffen (1 in 500 chance eine Waffe zu craften dessen Werte ueberwitzig geaendert werden, bsp: anstatt einer
