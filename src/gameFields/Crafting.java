@@ -155,7 +155,8 @@ public class Crafting extends GameField {
 					craftCount.tick();
 					craftButton.tick();
 					if(craftButton.isclicked) {
-						int n = Integer.parseInt(craftCount.getText());
+						int n;
+						try{n = Integer.parseInt(craftCount.getText());}catch(NumberFormatException e) {n = 0;}
 						for (int i = 0; i < n; i++) {
 							if(!plr.CraftItem(selectedRecipe))break;
 						}
