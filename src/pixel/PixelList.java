@@ -3,26 +3,8 @@ package pixel;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 
+import dataUtils.Loader;
 import map.Map;
-import pixel.pixelList.Air;
-import pixel.pixelList.Earth;
-import pixel.pixelList.Fire;
-import pixel.pixelList.Gold;
-import pixel.pixelList.Grass;
-import pixel.pixelList.Iron;
-import pixel.pixelList.Lava;
-import pixel.pixelList.Leaf;
-import pixel.pixelList.Loam;
-import pixel.pixelList.Ore_Coal;
-import pixel.pixelList.Ore_Gold;
-import pixel.pixelList.Ore_Iron;
-import pixel.pixelList.Oven;
-import pixel.pixelList.Planks;
-import pixel.pixelList.Sand;
-import pixel.pixelList.Stone;
-import pixel.pixelList.Torch;
-import pixel.pixelList.Water;
-import pixel.pixelList.Wood;
 
 public class PixelList {
 	
@@ -32,25 +14,22 @@ public class PixelList {
 	private static HashMap<String, Short> idList = new HashMap<>();
 	
 	public PixelList(){
-		addMaterial(new Air());
-		addMaterial(new Stone());
-		addMaterial(new Earth());
-		addMaterial(new Grass());
-		addMaterial(new Wood());
-		addMaterial(new Leaf());
-		addMaterial(new Planks());
-		addMaterial(new Loam());
-		addMaterial(new Sand());
-		addMaterial(new Torch());
-		addMaterial(new Ore_Coal());
-		addMaterial(new Ore_Iron());
-		addMaterial(new Ore_Gold());
-		addMaterial(new Oven());
-		addMaterial(new Fire());
-		addMaterial(new Iron());
-		addMaterial(new Gold());
-		addLiquid(new Water());
-		addLiquid(new Lava());
+		Loader list = new Loader("pixel/pixelList");
+		list.loadPackage();list.createClasses();
+		for(Class<?> item : list.classes){
+			try {
+				Object mat = item.getConstructor().newInstance();
+				if(mat instanceof Material) {
+					if(mat instanceof Liquid) {
+						liqList[((Liquid<?>) mat).ID] = (Liquid<?>) mat;
+					}else {
+						matList[((Material<?>) mat).ID] = (Material<?>) mat;
+					}
+				}
+			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e){
+				e.printStackTrace();
+			}
+		}
 		
 		for (Material<?> material : matList) {
 			if(material!=null) {
@@ -64,9 +43,6 @@ public class PixelList {
 		}
 	}
 	
-	public void addMaterial(Material<?> m){matList[m.ID]=m;}
-	public void addLiquid(Liquid<?> l){liqList[l.ID]=l;}
-
 	public static short getPixelID(String pixelName){
 		return idList.get(pixelName);
 	}
