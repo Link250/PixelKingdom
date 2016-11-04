@@ -12,16 +12,16 @@ import dataUtils.conversion.OutConverter;
  * Just extend it and give it all the attributes it needs. But beware ! only
  * primitive types like <b>byte, int, char, boolean</b> and Classes with the Interface
  * {@link Convertable} are supported !
- * @author Daniel
+ * @author Quantum Hero
  *
  */
-public abstract class AD{
+public abstract class UDS{
 	
-	public AD(InConverter in){
+	public UDS(InConverter in){
 		load(in);
 	}
 	
-	public AD() {
+	public UDS() {
 		
 	}
 	
@@ -45,7 +45,7 @@ public abstract class AD{
 		}
 	}
 
-	public AD load(InConverter in) {
+	public UDS load(InConverter in) {
 		try {
 			Field[] f = this.getClass().getDeclaredFields();
 			for (Field field : f) {

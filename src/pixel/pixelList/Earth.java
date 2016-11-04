@@ -1,9 +1,9 @@
 package pixel.pixelList;
 
-import pixel.AD;
+import pixel.UDS;
 import pixel.Material;
 
-public class Earth extends Material<AD>{
+public class Earth extends Material<UDS>{
 
 	public Earth(){
 		super(null);

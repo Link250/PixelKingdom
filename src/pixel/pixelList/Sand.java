@@ -1,10 +1,10 @@
 package pixel.pixelList;
 
 import map.Map;
-import pixel.AD;
+import pixel.UDS;
 import pixel.Material;
 
-public class Sand extends Material<AD>{
+public class Sand extends Material<UDS>{
 
 	public Sand(){
 		super(null);

@@ -17,30 +17,30 @@ public abstract class Ore<OreADType extends Ore.OreAD> extends Material<OreADTyp
 	}
 	
 	public void heatUp(int x, int y, int l, short heat, short heatup, Map map){
-		this.ad = map.getAD(x, y, l);
-		if(ad.heat>=melt){
+		this.uds = map.getUDS(x, y, l);
+		if(uds.heat>=melt){
 			map.setID(x, y, l, 0);
 			map.setID(x, y, Map.LAYER_LIQUID, 2);
 			((Lava)PixelList.GetPixel(2, Map.LAYER_LIQUID)).setMat(x, y, Map.LAYER_LIQUID, ingot, map);
 		}else{
-			if(heat>=ad.heat) {
-				ad.heat += heatup;
-				map.addADUpdate(x, y, l, ad);
+			if(heat>=uds.heat) {
+				uds.heat += heatup;
+				map.addUDSUpdate(x, y, l, uds);
 			}
 		}
 	}
 	
 	public int render(int x, int y, int l, Map map) {
 		int color = super.render(x, y, l, map);
-		ad = map.getAD(x, y, l);
-		if(melt>0 && ad!=null && ad.heat>0){
-			int r = (ad.heat*255/melt);if(r>255)r=255;
+		uds = map.getUDS(x, y, l);
+		if(melt>0 && uds!=null && uds.heat>0){
+			int r = (uds.heat*255/melt);if(r>255)r=255;
 			return Screen.combineColors(color, 0x00ff0000 | (r<<24));
 		}
 		return color;
 	}
 
-	public static class OreAD extends AD {
+	public static class OreAD extends UDS {
 		public short heat;
 	}
 }

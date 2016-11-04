@@ -18,7 +18,7 @@ import org.tukaani.xz.XZInputStream;
 import dataUtils.conversion.ConverterQueue;
 import gfx.Screen;
 import main.Game;
-import pixel.AD;
+import pixel.UDS;
 import pixel.Material;
 import pixel.PixelList;
 
@@ -40,8 +40,7 @@ public class Chunk{
 	private short[] liquid;
 	private short[] back;
 	public byte[] light;
-//	private AdditionalData[][] AD;
-	private HashMap<Integer,AD> AD = new HashMap<>();
+	private HashMap<Integer,UDS> UDS = new HashMap<>();
 	private boolean[][][] updating = new boolean[width][height][Map.LAYER_ALL.length];
 	private Map map;
 	
@@ -103,20 +102,20 @@ public class Chunk{
 	}
 	
 	@SuppressWarnings("unchecked")
-	public <ADType> ADType getAD(int x, int y, int l){
-		return (ADType) this.AD.get(l*length+y*width+x);
-//		return(AD[x + y*width][layer]);
+	public <UDSType> UDSType getUDS(int x, int y, int l){
+		return (UDSType) this.UDS.get(l*length+y*width+x);
+//		return(UDS[x + y*width][layer]);
 	}
-	public AD getAD(int xy, int l){
-		return this.AD.get(l*length+xy);
+	public UDS getUDS(int xy, int l){
+		return this.UDS.get(l*length+xy);
 	}
 	
-	public void setAD(int x, int y, int l, AD ad){
-		this.AD.put(l*length+y*width+x, ad);
-//		AD[x + y*width][layer] = ad;
+	public void setUDS(int x, int y, int l, UDS uds){
+		this.UDS.put(l*length+y*width+x, uds);
+//		UDS[x + y*width][layer] = uds;
 	}
-	public void setAD(int xy, int l, AD ad){
-		this.AD.put(l*length+xy, ad);
+	public void setUDS(int xy, int l, UDS uds){
+		this.UDS.put(l*length+xy, uds);
 	}
 		
 	public void refreshUpdates(){
@@ -159,7 +158,7 @@ public class Chunk{
 		liquid = new short[length];
 		back = new short[length];
 		light = new byte[length];
-		AD = new HashMap<>();
+		UDS = new HashMap<>();
 		
 		if(rawfile==null) {
 			File file = new File(path + File.separator + "c-"+x+"-"+y+".pmap");
@@ -233,7 +232,7 @@ public class Chunk{
 				}
 			}else{
 				if(id==0x7fff){
-					setAD((x-1)%length, (int)((x-1)/length), PixelList.GetPixel(ID, (x/length)).getNewAD().load(filedata));
+					setUDS((x-1)%length, (int)((x-1)/length), PixelList.GetPixel(ID, (x/length)).getNewUDS().load(filedata));
 				}else{
 					l = (x/length);
 					switch(l){
@@ -300,16 +299,16 @@ public class Chunk{
 		for(int l = 0; l < layers.size(); l++){
 			for(int i = 0; i < layers.get(l).length; i++){
 				short ID = layers.get(l)[i], n = 0;
-				AD ad = getAD(i,l);
-				if(ad==null){for(n = 0; layers.get(l)[i+n]==ID && n < 0x7fff && i+n < layers.get(l).length-1; n++){}}
+				UDS uds = getUDS(i,l);
+				if(uds==null){for(n = 0; layers.get(l)[i+n]==ID && n < 0x7fff && i+n < layers.get(l).length-1; n++){}}
 				if(n > 1){
 					data.writeShort((short)-n);
 					i+=(n-1);
 				}
 				data.writeShort(ID);
-				if(ad!=null){
+				if(uds!=null){
 					try{
-						ad.save(data,true);
+						uds.save(data,true);
 					}catch(NullPointerException e){
 						Game.logError("Error with "+ID);
 					}

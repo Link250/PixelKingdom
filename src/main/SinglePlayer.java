@@ -5,12 +5,14 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 import entities.Mob;
 import entities.Player;
 import gfx.Screen;
 import map.Map;
+import pixel.UDS;
 
 public class SinglePlayer {
 	protected Map map;
@@ -48,8 +50,7 @@ public class SinglePlayer {
 		map.tick(tickCount);
 		
 		if(Keys.DEBUGINFO.click()){
-			if(debuginfo)debuginfo = false;
-			else debuginfo = true;
+			debuginfo = !debuginfo;
 		}
 		if(Keys.DEBUGMODE.click()){
 			if(Game.devmode)Game.devmode = false;
@@ -77,6 +78,25 @@ public class SinglePlayer {
 						+map.isUpdating(X, Y, Map.LAYER_FRONT)+","
 						+map.isUpdating(X, Y, Map.LAYER_LIGHT)+"}");
 				map.addPixelUpdate(X, Y, 1);
+				for(int L : Map.LAYER_ALL) {
+					Game.logInfo("UPS layer " + L);
+					UDS uds = map.<UDS>getUDS(X, Y, L);
+					if(uds!=null) {
+						Field[] f = uds.getClass().getDeclaredFields();
+						for (Field field : f) {
+							try {
+							if(byte.class == field.getType()){Game.logInfo(field.getName()+" "+field.getByte(uds));continue;}
+							if(short.class == field.getType()){Game.logInfo(field.getName()+" "+field.getShort(uds));continue;}
+							if(int.class == field.getType()){Game.logInfo(field.getName()+" "+field.getInt(uds));continue;}
+							if(long.class == field.getType()){Game.logInfo(field.getName()+" "+field.getLong(uds));continue;}
+							if(float.class == field.getType()){Game.logInfo(field.getName()+" "+field.getFloat(uds));continue;}
+							if(double.class == field.getType()){Game.logInfo(field.getName()+" "+field.getDouble(uds));continue;}
+							if(boolean.class == field.getType()){Game.logInfo(field.getName()+" "+field.getBoolean(uds));continue;}
+							if(char.class == field.getType()){Game.logInfo(field.getName()+" "+field.getChar(uds));continue;}
+							} catch (IllegalArgumentException | SecurityException | IllegalAccessException e) {e.printStackTrace();}
+						}
+					}
+				}
 //				this.mobList.add(new Slime(this.map, player.x, player.y));
 			}
 			if(tickCount%60==0){

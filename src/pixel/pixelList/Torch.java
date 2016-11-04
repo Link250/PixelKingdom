@@ -1,10 +1,10 @@
 package pixel.pixelList;
 
 import map.Map;
-import pixel.AD;
+import pixel.UDS;
 import pixel.Material;
 
-public class Torch extends Material<AD>{
+public class Torch extends Material<UDS>{
 	
 	public Torch(){
 		super(null);

@@ -1,9 +1,9 @@
 package pixel.pixelList;
 
-import pixel.AD;
+import pixel.UDS;
 import pixel.Material;
 
-public class Wood extends Material<AD>{
+public class Wood extends Material<UDS>{
 
 	public Wood(){
 		super(null);

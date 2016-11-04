@@ -1,7 +1,7 @@
 package pixel.pixelList;
 
 import map.Map;
-import pixel.AD;
+import pixel.UDS;
 import pixel.Liquid;
 
 public class Lava extends Liquid<Lava.LavaAD>{
@@ -20,22 +20,22 @@ public class Lava extends Liquid<Lava.LavaAD>{
 	public boolean tick(int x, int y, int l, int numTick, Map map) {
 		if(numTick%3==0)flow(x, y, l, map);
 		
-		ad = map.getAD(x, y, l);
-		if(ad!=null){
-			if(ad.heat==0){
+		uds = map.getUDS(x, y, l);
+		if(uds!=null){
+			if(uds.heat==0){
 				map.setID(x, y, Map.LAYER_LIQUID, 0);
-				map.setID(x, y, Map.LAYER_FRONT, ad.ID);
+				map.setID(x, y, Map.LAYER_FRONT, uds.ID);
 			}else{
 				if(numTick%60==0) {
-					ad.heat--;
-					map.addADUpdate(x, y, l, ad);
+					uds.heat--;
+					map.addUDSUpdate(x, y, l, uds);
 				}
 			}
 		}
 		if(map.getID(x+1, y, l)==1||map.getID(x-1, y, l)==1||map.getID(x, y+1, l)==1||map.getID(x, y-1, l)==1){
-			if(ad!=null){
+			if(uds!=null){
 				map.setID(x, y, Map.LAYER_LIQUID, 0);
-				map.setID(x, y, Map.LAYER_FRONT, ad.ID);
+				map.setID(x, y, Map.LAYER_FRONT, uds.ID);
 			}else{
 				map.setID(x, y, Map.LAYER_LIQUID, 0);
 				map.setID(x, y, Map.LAYER_FRONT, 1);
@@ -49,12 +49,12 @@ public class Lava extends Liquid<Lava.LavaAD>{
 	}
 	
 	public void setMat(int x, int y, int l, int ID, Map map){
-		ad = map.getAD(x, y, l);
-		ad.ID = (short) ID;
-		ad.heat = 60;
+		uds = map.getUDS(x, y, l);
+		uds.ID = (short) ID;
+		uds.heat = 60;
 	}
 	
-	public static class LavaAD extends AD {
+	public static class LavaAD extends UDS {
 		public short ID;
 		public byte heat;
 	}

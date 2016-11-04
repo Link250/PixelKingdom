@@ -8,7 +8,7 @@ import javax.imageio.ImageIO;
 import main.Game;
 import map.Map;
 
-public abstract class Material<ADType extends AD> {
+public abstract class Material<UDSType extends UDS> {
 	
 	public int ID = 0;
 	/**
@@ -25,10 +25,10 @@ public abstract class Material<ADType extends AD> {
 	public boolean tick = false;
 	public boolean solid = true;
 	
-	/**this AD is HOLY !!! it is used to create new ADs for this Material <b>SO NEVER EVER DELETE IT</b>*/
-	private ADType adtype = null;
+	/**this UDS is HOLY !!! it is used to create new ADs for this Material <b>SO NEVER EVER DELETE IT</b>*/
+	private UDSType udsType = null;
 	
-	protected ADType ad = null;
+	protected UDSType uds = null;
 	
 	protected int[] texture = null;
 	protected int textureWidth;
@@ -37,8 +37,8 @@ public abstract class Material<ADType extends AD> {
 	protected short frontLightReduction = 8;
 	protected short backLightReduction = 255;
 	
-	public Material(ADType ad){
-		this.adtype = ad;
+	public Material(UDSType uds){
+		this.udsType = uds;
 	}
 	
 	public final double usePickaxe(){
@@ -55,21 +55,21 @@ public abstract class Material<ADType extends AD> {
 	
 	/**
 	 * creates a new Intance of the Generic AD Type from the Material this method is called on
-	 * @return {@link pixel.AD}
+	 * @return {@link pixel.UDS}
 	 */
-	public AD getNewAD() {
+	public UDS getNewUDS() {
 		try {
-			return (AD) this.adtype.getClass().newInstance();
+			return (UDS) this.udsType.getClass().newInstance();
 		}catch(NullPointerException e){
-			Game.logError("AD was not Initialized yet !!! ID:"+this.ID+" Name:"+this.name);
+			Game.logError("UDS was not Initialized yet !!! ID:"+this.ID+" Name:"+this.name);
 		}catch(InstantiationException | IllegalAccessException e) {
 			e.printStackTrace();
 		}
 		return null;
 	}
 	
-	public boolean canHaveAD() {
-		return adtype!=null;
+	public boolean canHaveUDS() {
+		return udsType!=null;
 	}
 	
 	/**
@@ -82,8 +82,8 @@ public abstract class Material<ADType extends AD> {
 	 * @param l
 	 * @param map
 	 */
-	public final AD createAD(){
-		return this.canHaveAD() ? this.getNewAD() : null;
+	public final UDS createUDS(){
+		return this.canHaveUDS() ? this.getNewUDS() : null;
 	}
 	
 	protected void loadTexture() {

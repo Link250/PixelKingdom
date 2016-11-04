@@ -1,7 +1,8 @@
 package pixel.pixelList;
 
 import map.Map;
-import pixel.AD;
+import pixel.UDS;
+import pixel.interfaces.Heatable;
 import pixel.Material;
 import pixel.PixelList;
 
@@ -19,19 +20,24 @@ public class Fire extends Material<Fire.FireAD>{
 	}
 	
 	public boolean tick(int x, int y, int l, int numTick, Map map) {
+		Material<?> tempPixel;
 		for (int X = -1; X <= 1; X++) {
 			for (int Y = -1; Y <= 1; Y++) {
 				if(map.getID(x+X, y+Y, Map.LAYER_LIQUID)==1) {map.setID(x, y, l, 0);return true;}
+				if((tempPixel = PixelList.GetMat(map.getID(x+X, y+Y, Map.LAYER_BACK))) instanceof Heatable)
+					{((Heatable)tempPixel).heatUp(x+X, y+Y, Map.LAYER_BACK, 1800, 2, map);}
+				if((tempPixel = PixelList.GetMat(map.getID(x+X, y+Y, Map.LAYER_FRONT))) instanceof Heatable)
+					{((Heatable)tempPixel).heatUp(x+X, y+Y, Map.LAYER_FRONT, 1800, 2, map);}
 			}
 		}
-		ad = map.getAD(x, y, l);
+		uds = map.getUDS(x, y, l);
 		if(Math.random()*500 <= 1){
 			spread(x, y, l, map);
 		}
 		if(numTick%60==30){
-			if(ad.burntime>0){
-				ad.burntime = (byte) (ad.burntime-1);
-				map.addADUpdate(x, y, l, ad);
+			if(uds.burntime>0){
+				uds.burntime = (byte) (uds.burntime-1);
+				map.addUDSUpdate(x, y, l, uds);
 			}else{
 				map.setID(x, y, l, 0);return true;
 			}
@@ -40,7 +46,7 @@ public class Fire extends Material<Fire.FireAD>{
 	}
 	
 	public short tickLight(int x, int y, int l, Map map) {
-		return (byte) (map.<FireAD>getAD(x, y, l).burntime*Map.MAX_LIGHT/100);
+		return (byte) (map.<FireAD>getUDS(x, y, l).burntime*Map.MAX_LIGHT/100);
 	}
 	
 	public int render(int x, int y, int l, Map map) {
@@ -76,11 +82,11 @@ public class Fire extends Material<Fire.FireAD>{
 	}
 	
 	public void setTime(int x, int y, int l, byte time, Map map){
-		ad = map.getAD(x, y, l);
-		ad.burntime=time;
+		uds = map.getUDS(x, y, l);
+		uds.burntime=time;
 	}
 	
-	public static class FireAD extends AD{
+	public static class FireAD extends UDS{
 		public byte burntime;
 	}
 }

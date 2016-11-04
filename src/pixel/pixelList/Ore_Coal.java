@@ -1,8 +1,9 @@
 package pixel.pixelList;
 
-import pixel.Ore;
+import pixel.Material;
+import pixel.UDS;
 
-public class Ore_Coal extends Ore<Ore.OreAD>{
+public class Ore_Coal extends Material<UDS>{
 
 	public Ore_Coal(){
 		super(null);

@@ -1,10 +1,10 @@
 package pixel.pixelList;
 
 import map.Map;
-import pixel.AD;
+import pixel.UDS;
 import pixel.Liquid;
 
-public class Water extends Liquid<AD>{
+public class Water extends Liquid<UDS>{
 
 	public Water(){
 		super(null);

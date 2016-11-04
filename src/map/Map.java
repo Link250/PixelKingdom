@@ -4,7 +4,7 @@ import gfx.Screen;
 import multiplayer.MapUpdater;
 import multiplayer.client.ChunkManagerC;
 import multiplayer.client.ServerManager;
-import pixel.AD;
+import pixel.UDS;
 import pixel.Material;
 import pixel.PixelList;
 
@@ -67,7 +67,7 @@ public class Map {
 					if(m.tick(x, y, l, tickCount, this))addPixelUpdate(x, y, l);
 				}catch(NullPointerException e) {
 					e.printStackTrace();
-					/*dont worry, can happen in MP if some ADs are not loaded*/
+					/*dont worry, can happen in MP if some UDS Objects are not loaded*/
 				}
 			}
 			updateCountPixel++;
@@ -127,9 +127,9 @@ public class Map {
 		}else return false;
 	}
 	
-	public void addADUpdate(int x, int y, int l, AD ad){
+	public void addUDSUpdate(int x, int y, int l, UDS uds){
 		if(gametype == GT_SERVER || gametype == GT_CLIENT) {
-			mapUpdater.addUpdateAD(new int[]{x,y,l}, ad);
+			mapUpdater.addUpdateUDS(new int[]{x,y,l}, uds);
 		}
 	}
 	
@@ -213,46 +213,46 @@ public class Map {
 	public void setID(int x, int y, int l, int ID){
 		setID(x,y,l,ID,null,false);
 	}
-	public void setID(int x, int y, int l, int ID, AD ad, boolean skipUpdate){
+	public void setID(int x, int y, int l, int ID, UDS uds, boolean skipUpdate){
 		int cx = x/1024,cy = y/1024;
 		if(chunks[cx][cy]!=null){
 			addPixelUpdate(x, y, l);
-			setAD(x,y,l,ad!=null ? ad : PixelList.GetPixel(ID, l).createAD(),true);
+			setUDS(x,y,l,uds!=null ? uds : PixelList.GetPixel(ID, l).createUDS(),true);
 			chunks[cx][cy].setID(x%1024, y%1024, (short) ID, l);
 			
 			if(!skipUpdate && (gametype== GT_SERVER || gametype == GT_CLIENT)) {
-				if(ad==null)ad = chunks[cx][cy].getAD(x%1024, y%1024, l);
-				mapUpdater.addUpdatePixel(new int[] {x,y,l,ID}, ad);
+				if(uds==null)uds = chunks[cx][cy].getUDS(x%1024, y%1024, l);
+				mapUpdater.addUpdatePixel(new int[] {x,y,l,ID}, uds);
 			}
 		}
 	}
 	
 	public void movePixelRel(int xs, int ys, int ls, int xr, int yr, int lf){
-		setID(xs+xr,ys+yr,lf,getID(xs,ys,ls),getAD(xs,ys,ls),false);
+		setID(xs+xr,ys+yr,lf,getID(xs,ys,ls),getUDS(xs,ys,ls),false);
 		setID(xs,ys,ls,0);
 	}
 	
 	public void movePixelAbs(int xs, int ys, int ls, int xf, int yf, int lf){
-		setID(xf,yf,lf,getID(xs,ys,ls),getAD(xs,ys,ls),false);
+		setID(xf,yf,lf,getID(xs,ys,ls),getUDS(xs,ys,ls),false);
 		setID(xs,ys,ls,0);
 	}
 	
-	public <ADType extends AD> ADType getAD(int x, int y, int layer){
+	public <UDSType extends UDS> UDSType getUDS(int x, int y, int layer){
 		int cx = x/1024,cy = y/1024;
 		if(chunks[cx][cy]!=null){
 			x %= 1024;y %= 1024;
-			return chunks[cx][cy].getAD(x, y, layer);
+			return chunks[cx][cy].getUDS(x, y, layer);
 		}else{
 			return null;
 		}
 	}
 	
-	public void setAD(int x, int y, int l, AD ad, boolean skipcheck){
+	public void setUDS(int x, int y, int l, UDS uds, boolean skipcheck){
 		int cx = x/1024,cy = y/1024;
 		if(chunks[cx][cy]!=null){
 			x %= 1024;y %= 1024;
-			chunks[cx][cy].setAD(x, y, l, ad);
-			if(!skipcheck && ad!=null) {
+			chunks[cx][cy].setUDS(x, y, l, uds);
+			if(!skipcheck && uds!=null) {
 //				mapUpdater.addUpdateAD(new int[] {x,y,l}, ad);
 			}
 		}

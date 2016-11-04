@@ -19,8 +19,8 @@ public class MapManager implements multiplayer.client.InputReceiver, multiplayer
 		case Request.MAP_UPDATE_PXL:
 			this.mapUpdater.decompPixelUpdates(in);
 			break;
-		case Request.MAP_UPDATE_AD:
-			this.mapUpdater.decompADUpdates(in);
+		case Request.MAP_UPDATE_UDS:
+			this.mapUpdater.decompUDSUpdates(in);
 			break;
 		}
 	}
@@ -30,8 +30,8 @@ public class MapManager implements multiplayer.client.InputReceiver, multiplayer
 		case Request.MAP_UPDATE_PXL:
 			this.mapUpdater.decompPixelUpdates(in);
 			break;
-		case Request.MAP_UPDATE_AD:
-			this.mapUpdater.decompADUpdates(in);
+		case Request.MAP_UPDATE_UDS:
+			this.mapUpdater.decompUDSUpdates(in);
 			break;
 		}
 	}

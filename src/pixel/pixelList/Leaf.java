@@ -1,9 +1,9 @@
 package pixel.pixelList;
 
-import pixel.AD;
+import pixel.UDS;
 import pixel.Material;
 
-public class Leaf extends Material<AD>{
+public class Leaf extends Material<UDS>{
 
 	public Leaf(){
 		super(null);
