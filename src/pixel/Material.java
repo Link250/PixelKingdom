@@ -25,7 +25,7 @@ public abstract class Material<UDSType extends UDS> {
 	public boolean tick = false;
 	public boolean solid = true;
 	
-	/**this UDS is HOLY !!! it is used to create new ADs for this Material <b>SO NEVER EVER DELETE IT</b>*/
+	/**this UDS is HOLY !!! it is used to create new UDS Objects for this Material <b>SO NEVER EVER DELETE IT</b>*/
 	private UDSType udsType = null;
 	
 	protected UDSType uds = null;
