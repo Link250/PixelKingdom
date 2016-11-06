@@ -14,7 +14,6 @@ public class Ore_Gold extends Material<Heatable.DataStorage> implements Smeltabl
 		name = "GoldOre";
 		displayName = "Gold Ore";
 		usePickaxe = 2.0;
-		tick = false;
 		loadTexture();
 	}
 

@@ -12,7 +12,6 @@ public class Grass extends Material<UDS>{
 		name = "Grass";
 		displayName = "Grass";
 		usePickaxe = 1;
-		tick = true;
 		loadTexture();
 	}
 	

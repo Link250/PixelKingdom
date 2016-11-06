@@ -11,7 +11,6 @@ public class Air extends Material<UDS>{
 		name = "Air";
 		displayName = "Air";
 		usePickaxe = 0;
-		tick = false;
 		texture = new int[1];
 		textureWidth = 1;
 		textureHeight = 1;

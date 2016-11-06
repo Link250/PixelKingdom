@@ -12,7 +12,6 @@ public class Torch extends Material<UDS>{
 		ID = 48;
 		name = "Torch";
 		displayName = "Torch";
-		tick = true;
 		solid = false;
 		frontLightReduction = 0;
 		backLightReduction = 0;

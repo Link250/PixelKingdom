@@ -5,24 +5,20 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import item.Tool;
 import main.Game;
+import main.MouseInput.Mouse;
 import map.Map;
 
 public abstract class Material<UDSType extends UDS> {
 	
 	public int ID = 0;
-	/**
-	 * 0 -> no burning;
-	 * 100 -> max burning
-	 */
-	public byte burnable = 0;
-	public String name = "unnamed";
-	public String displayName = "unnamed";
+	protected String name = "unnamed";
+	protected String displayName = "unnamed";
 	/**
 	 * 0 -> Can't be mined
 	 */
 	public double usePickaxe = 0;
-	public boolean tick = false;
 	public boolean solid = true;
 	
 	/**this UDS is HOLY !!! it is used to create new UDS Objects for this Material <b>SO NEVER EVER DELETE IT</b>*/
@@ -39,6 +35,16 @@ public abstract class Material<UDSType extends UDS> {
 	
 	public Material(UDSType uds){
 		this.udsType = uds;
+	}
+	
+	public boolean breakPixel(Tool item) {
+		return false;
+	}
+	
+	public void mouseClick(int x, int y, Mouse mouse) {
+	}
+	
+	public void mouseOver(int x, int y) {
 	}
 	
 	public final double usePickaxe(){

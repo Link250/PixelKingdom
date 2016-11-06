@@ -85,6 +85,7 @@ public abstract class Item {
 	 * @return
 	 */
 	public int addStack(Item item, int n){
+		if(item.ID == this.ID)
 		while(stack < stackMax){
 			if(n > 0) {
 				this.stack++;
@@ -135,7 +136,11 @@ public abstract class Item {
 	}
 
 	public void renderOnMap(int x, int y, boolean mirrorX, boolean mirrorY){
-		Screen.drawGUISprite(x, y, gfx, 0, mirrorX, mirrorY, col);
+		Screen.drawMapSprite(x, y, gfx, 0, mirrorX, mirrorY, col);
+	}
+	
+	public void renderOnMap(int x, int y, boolean mirrorX, boolean mirrorY, boolean centered){
+		Screen.drawMapSprite(x, y, gfx, 0, mirrorX, mirrorY, col, centered);
 	}
 
 	public int getAnim(){

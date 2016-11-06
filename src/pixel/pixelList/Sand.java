@@ -14,7 +14,6 @@ public class Sand extends Material<Heatable.DataStorage> implements Smeltable{
 		name = "Sand";
 		displayName = "Sand";
 		usePickaxe = 1;
-		tick = true;
 		loadTexture();
 	}
 	

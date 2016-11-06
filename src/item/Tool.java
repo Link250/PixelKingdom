@@ -1,5 +1,7 @@
 package item;
 
+import pixel.Material;
+
 public abstract class Tool extends Item{
 	protected int strength;
 	protected int size;
@@ -17,4 +19,6 @@ public abstract class Tool extends Item{
 	public int getType(){
 		return type;
 	}
+	
+	public abstract boolean canBreak(Material<?> mat);
 }

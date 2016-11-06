@@ -9,6 +9,7 @@ import item.Tool;
 import main.MouseInput;
 import map.Map;
 import pixel.PixelList;
+import pixel.interfaces.Burnable;
 import pixel.pixelList.Fire;
 
 public class Lighter extends Tool{
@@ -30,8 +31,8 @@ public class Lighter extends Tool{
 		if((MouseInput.mousel.isPressed()|MouseInput.mouser.isPressed())){
 			int X = MouseInput.mouse.getMapX(), Y = MouseInput.mouse.getMapY(), L = Map.LAYER_FRONT;
 			if(!MouseInput.mousel.isPressed()){L=Map.LAYER_BACK;}
-			byte burntime = PixelList.GetMat(X, Y, map, L).burnable;
-			if(burntime>0 && Math.sqrt(Math.pow(MouseInput.mouse.getMapX()-plr.x, 2)+Math.pow(MouseInput.mouse.getMapY()-plr.y, 2))<20){
+			if(PixelList.GetMat(X, Y, map, L) instanceof Burnable && Math.sqrt(Math.pow(MouseInput.mouse.getMapX()-plr.x, 2)+Math.pow(MouseInput.mouse.getMapY()-plr.y, 2))<20){
+				byte burntime = ((Burnable)PixelList.GetMat(X, Y, map, L)).getBurnStrength();
 				map.setID(X, Y, L, 32);
 				((Fire)PixelList.GetMat(X, Y, map, L)).setTime(X, Y, L, burntime, map);
 				stack--;

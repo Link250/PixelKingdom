@@ -2,8 +2,9 @@ package pixel.pixelList;
 
 import pixel.Material;
 import pixel.UDS;
+import pixel.interfaces.Burnable;
 
-public class Ore_Coal extends Material<UDS>{
+public class Ore_Coal extends Material<UDS> implements Burnable{
 
 	public Ore_Coal(){
 		super(null);
@@ -11,8 +12,9 @@ public class Ore_Coal extends Material<UDS>{
 		name = "CoalOre";
 		displayName = "Coal Ore";
 		usePickaxe = 1.9;
-		burnable = 50;
-		tick = false;
 		loadTexture();
 	}
+	
+	public byte getBurnStrength() {return 50;}
+	
 }

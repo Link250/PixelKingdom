@@ -14,7 +14,6 @@ public class Ore_Iron extends Material<Heatable.DataStorage> implements Smeltabl
 		name = "IronOre";
 		displayName = "Iron Ore";
 		usePickaxe = 2.0;
-		tick = false;
 		loadTexture();
 	}
 

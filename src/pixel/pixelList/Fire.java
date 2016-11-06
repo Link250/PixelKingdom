@@ -2,6 +2,7 @@ package pixel.pixelList;
 
 import map.Map;
 import pixel.UDS;
+import pixel.interfaces.Burnable;
 import pixel.interfaces.Heatable;
 import pixel.Material;
 import pixel.PixelList;
@@ -13,7 +14,6 @@ public class Fire extends Material<Fire.FireAD>{
 		ID = 32;
 		name = "Fire";
 		displayName = "Fire";
-		tick = true;
 		solid = false;
 		frontLightReduction = 0;
 		backLightReduction = 0;
@@ -69,12 +69,14 @@ public class Fire extends Material<Fire.FireAD>{
 			for(int X=-2; X<=2; X++){
 				for(int L : Map.LAYER_ALL_PIXEL){
 					Xt = x+X*Xd;Yt = y+Y*Yd;
-					burntime = PixelList.GetMat(Xt, Yt, map, L).burnable;
-					if((int)(Math.random()*100+1)<=burntime){
-						map.setID(Xt, Yt, L, 32);
-						try {
-						((Fire)PixelList.GetMat(Xt, Yt, map, L)).setTime(Xt, Yt, L, burntime,map);
-						}catch(NullPointerException e) {}
+					if(PixelList.GetMat(Xt, Yt, map, L) instanceof Burnable) {
+						burntime = ((Burnable)PixelList.GetMat(Xt, Yt, map, L)).getBurnStrength();
+						if((int)(Math.random()*100+1)<=burntime){
+							map.setID(Xt, Yt, L, 32);
+							try {
+								((Fire)PixelList.GetMat(Xt, Yt, map, L)).setTime(Xt, Yt, L, burntime,map);
+							}catch(NullPointerException e) {}
+						}
 					}
 				}
 			}

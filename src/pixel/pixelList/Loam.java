@@ -11,7 +11,6 @@ public class Loam extends Material<UDS>{
 		name = "Loam";
 		displayName = "Loam";
 		usePickaxe = 1.5;
-		tick = false;
 		loadTexture();
 	}
 	

@@ -35,6 +35,7 @@ public class Screen {
 		Screen.width = width;
 		Screen.height = height;
 		projection = new Matrix4f().setOrtho2D(-width, width, -height, height);
+//		projection.rotate((float)Math.PI/32,0f,0f,1f);
 		default_shader = new Shader("default_shader");
 		colored_shader = new Shader("colored_shader");
 		map_shader = new Shader("map_shader");
@@ -96,48 +97,60 @@ public class Screen {
 		}
 	}*/
 	
+	public static void drawMapSprite(int xPos, int yPos, SpriteSheet sheet, int tile, boolean mirrorX, boolean mirrorY, int color, boolean centered){
+		drawSprite(xPos, yPos, sheet, tile, mirrorX, mirrorY, color, true, centered);
+	}
+	
 	public static void drawMapSprite(int xPos, int yPos, SpriteSheet sheet, int tile, boolean mirrorX, boolean mirrorY, int color){
-		drawSprite(xPos, yPos, sheet, tile, mirrorX, mirrorY, color, true);
+		drawSprite(xPos, yPos, sheet, tile, mirrorX, mirrorY, color, true, false);
 	}
 	
 	public static void drawMapSprite(int xPos, int yPos, SpriteSheet sheet, int tile, boolean mirrorX, boolean mirrorY){
-		drawSprite(xPos, yPos, sheet, tile, mirrorX, mirrorY, 0, true);
+		drawSprite(xPos, yPos, sheet, tile, mirrorX, mirrorY, 0, true, false);
 	}
 	
 	public static void drawMapSprite(int xPos, int yPos, SpriteSheet sheet, int tile){
-		drawSprite(xPos, yPos, sheet, tile, false, false, 0, true);
+		drawSprite(xPos, yPos, sheet, tile, false, false, 0, true, false);
 	}
 	
 	public static void drawMapSprite(int xPos, int yPos, SpriteSheet sheet){
-		drawSprite(xPos, yPos, sheet, 0, false, false, 0, true);
+		drawSprite(xPos, yPos, sheet, 0, false, false, 0, true, false);
+	}
+	
+	public static void drawGUISprite(int xPos, int yPos, SpriteSheet sheet, int tile, boolean mirrorX, boolean mirrorY, int color, boolean centered){
+		drawSprite(xPos, yPos, sheet, tile, mirrorX, mirrorY, color, false, centered);
 	}
 	
 	public static void drawGUISprite(int xPos, int yPos, SpriteSheet sheet, int tile, boolean mirrorX, boolean mirrorY, int color){
-		drawSprite(xPos, yPos, sheet, tile, mirrorX, mirrorY, color, false);
+		drawSprite(xPos, yPos, sheet, tile, mirrorX, mirrorY, color, false, false);
 	}
 	
 	public static void drawGUISprite(int xPos, int yPos, SpriteSheet sheet, int tile, boolean mirrorX, boolean mirrorY){
-		drawSprite(xPos, yPos, sheet, tile, mirrorX, mirrorY, 0, false);
+		drawSprite(xPos, yPos, sheet, tile, mirrorX, mirrorY, 0, false, false);
 	}
 	
 	public static void drawGUISprite(int xPos, int yPos, SpriteSheet sheet, int tile){
-		drawSprite(xPos, yPos, sheet, tile, false, false, 0, false);
+		drawSprite(xPos, yPos, sheet, tile, false, false, 0, false, false);
 	}
 	
 	public static void drawGUISprite(int xPos, int yPos, SpriteSheet sheet){
-		drawSprite(xPos, yPos, sheet, 0, false, false, 0, false);
+		drawSprite(xPos, yPos, sheet, 0, false, false, 0, false, false);
 	}
 	
-	public static void drawSprite(float xPos, float yPos, SpriteSheet sheet, int tile, boolean mirrorX, boolean mirrorY, int color, boolean onMap){
-		if(onMap) {
-			xPos-=xOffset;xPos*=MAP_SCALE*MAP_ZOOM;
-			yPos-=yOffset;yPos*=MAP_SCALE*MAP_ZOOM;
-			xPos += sheet.getWidth()/2f*MAP_ZOOM;
-			yPos += sheet.getHeight()/2f*MAP_ZOOM;
-		}else {
-			xPos += sheet.getWidth()/2f;
-			yPos += sheet.getHeight()/2f;
-		}
+	public static void drawSprite(float xPos, float yPos, SpriteSheet sheet, int tile, boolean mirrorX, boolean mirrorY, int color, boolean onMap, boolean centered){
+			if(onMap) {
+				xPos-=xOffset;xPos*=MAP_SCALE*MAP_ZOOM;
+				yPos-=yOffset;yPos*=MAP_SCALE*MAP_ZOOM;
+				if(!centered) {
+					xPos += sheet.getWidth()/2f*MAP_ZOOM;
+					yPos += sheet.getHeight()/2f*MAP_ZOOM;
+				}
+			}else {
+				if(!centered) {
+					xPos += sheet.getWidth()/2f;
+					yPos += sheet.getHeight()/2f;
+				}
+			}
 		yPos = height - yPos;
 		
 		glActiveTexture(GL_TEXTURE0 + 0);
@@ -165,51 +178,67 @@ public class Screen {
 	}
 	
 	public static void drawMap(Map map){
-		int textures[] = new int[4];
+		int textures[] = new int[3];
 		Matrix4f target = null;
 		float X, Y;
 		map_shader.bind();
 		map_shader.setUniform("sampler", 0);
 		glActiveTexture(GL_TEXTURE0 + 0);
 
-//		int nx = 0, ny = 0;
-//		float ox = 0, oy = 0;
 		for (float x = -RENDER_CHUNK_SIZE/2; x < width/2/MAP_ZOOM+RENDER_CHUNK_SIZE; x+=RENDER_CHUNK_SIZE) {
-//			ny=0;
 			for (float y = -RENDER_CHUNK_SIZE/2; y < height/2/MAP_ZOOM+RENDER_CHUNK_SIZE; y+=RENDER_CHUNK_SIZE) {
-				for (int l : Map.LAYER_ALL) {
+				for (int l : Map.LAYER_ALL_PIXEL) {
 					textures[l] = map.getRenderChunk((int)(x+xOffset), (int)(y+yOffset), l);
 				}
-//				if(target == null) {
-					X = x;
-					Y = y;
-					X -= (X+xOffset)%RENDER_CHUNK_SIZE;
-					Y -= (Y+yOffset)%RENDER_CHUNK_SIZE;
-					Y+=RENDER_CHUNK_SIZE/2;
-					X+=RENDER_CHUNK_SIZE/2;
-					X*=MAP_SCALE*MAP_ZOOM;
-					Y*=MAP_SCALE*MAP_ZOOM;
-					Y = height - Y;
-					target = projection.mul(new Matrix4f().translate(new Vector3f(X*2-width, Y*2-height, 0)), new Matrix4f());
-					target.scale(RENDER_CHUNK_SIZE*MAP_SCALE*MAP_ZOOM);
-//					ox = target.m30();
-//					oy = target.m31();
-//				}
+				X = x;
+				Y = y;
+				X -= (X+xOffset)%RENDER_CHUNK_SIZE;
+				Y -= (Y+yOffset)%RENDER_CHUNK_SIZE;
+				Y+=RENDER_CHUNK_SIZE/2;
+				X+=RENDER_CHUNK_SIZE/2;
+				X*=MAP_SCALE*MAP_ZOOM;
+				Y*=MAP_SCALE*MAP_ZOOM;
+				Y = height - Y;
+				target = projection.mul(new Matrix4f().translate(new Vector3f(X*2-width, Y*2-height, 0)), new Matrix4f());
+				target.scale(RENDER_CHUNK_SIZE*MAP_SCALE*MAP_ZOOM);
 				
 				map_shader.setUniform("projection", target);
-				for (int l : Map.LAYER_ALL) {
+				for (int l : Map.LAYER_ALL_PIXEL) {
 					if(textures[l] == 0)continue;
 					map_shader.setUniform("layer", l);
 					glBindTexture(GL_TEXTURE_2D, textures[l]);
 					tileModel.render();
 				}
-//				Game.ccFont.render((int)(x*2), (int)(y*2), nx+" "+ny, 0, 0xffff0000);
-//				ny++;
-//				target.m30(ox+target.m00()*2*nx);
-//				target.m31(oy-target.m11()*2*ny);
 			}
-//			nx++;
 		}
-//		System.out.println(nx+" "+ny);
+		
+		map.renderMobs();
+		map.renderEntities();
+		map.renderItemEntities();
+		
+		map_shader.bind();
+		map_shader.setUniform("sampler", 0);
+		for (float x = -RENDER_CHUNK_SIZE/2; x < width/2/MAP_ZOOM+RENDER_CHUNK_SIZE; x+=RENDER_CHUNK_SIZE) {
+			for (float y = -RENDER_CHUNK_SIZE/2; y < height/2/MAP_ZOOM+RENDER_CHUNK_SIZE; y+=RENDER_CHUNK_SIZE) {
+				int tex = map.getRenderChunk((int)(x+xOffset), (int)(y+yOffset), Map.LAYER_LIGHT);
+				if(tex == 0)continue;
+				X = x;
+				Y = y;
+				X -= (X+xOffset)%RENDER_CHUNK_SIZE;
+				Y -= (Y+yOffset)%RENDER_CHUNK_SIZE;
+				Y+=RENDER_CHUNK_SIZE/2;
+				X+=RENDER_CHUNK_SIZE/2;
+				X*=MAP_SCALE*MAP_ZOOM;
+				Y*=MAP_SCALE*MAP_ZOOM;
+				Y = height - Y;
+				target = projection.mul(new Matrix4f().translate(new Vector3f(X*2-width, Y*2-height, 0)), new Matrix4f());
+				target.scale(RENDER_CHUNK_SIZE*MAP_SCALE*MAP_ZOOM);
+				
+				map_shader.setUniform("projection", target);
+				map_shader.setUniform("layer", Map.LAYER_LIGHT);
+				glBindTexture(GL_TEXTURE_2D, tex);
+				tileModel.render();
+			}
+		}
 	}
 }

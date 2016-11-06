@@ -96,4 +96,8 @@ public abstract class Pickaxe extends Tool{
 	public void upgrade(int up){
 		size += up;
 	}
+	
+	public boolean canBreak(Material<?> mat) {
+		return true;
+	}
 }

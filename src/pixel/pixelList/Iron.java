@@ -11,7 +11,6 @@ public class Iron extends Material<UDS>{
 		name = "Iron";
 		displayName = "Iron";
 		usePickaxe = 2;
-		tick = false;
 		loadTexture();
 	}
 }

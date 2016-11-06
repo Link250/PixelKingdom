@@ -18,7 +18,6 @@ public class Oven extends Material<Heatable.DataStorage> implements Heatable{
 		name = "Oven";
 		displayName = "Oven";
 		usePickaxe = 1;
-		tick = true;
 		loadTexture();
 	}
 	

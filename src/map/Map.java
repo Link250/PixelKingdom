@@ -1,6 +1,8 @@
 package map;
 
 import gfx.Screen;
+import item.Item;
+import item.Tool;
 import multiplayer.MapUpdater;
 import multiplayer.client.ChunkManagerC;
 import multiplayer.client.ServerManager;
@@ -10,6 +12,14 @@ import pixel.PixelList;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Predicate;
+
+import entities.Entity;
+import entities.Mob;
+import entities.entityList.ItemEntity;
 
 public class Map {
 
@@ -29,6 +39,9 @@ public class Map {
 	private int gametype = 0;
 	private MapUpdater mapUpdater;
 
+	private ArrayList<Mob> mobEntityList = new ArrayList<>();
+	private ArrayList<Entity> entityList = new ArrayList<>();
+	private ArrayList<ItemEntity> itemEntityList = new ArrayList<>();
 	private Chunk[][] chunks = new Chunk[1024][1024];
 	
 	private int regularUpdateX = -Screen.width/2-Screen.RENDER_CHUNK_SIZE;
@@ -52,6 +65,25 @@ public class Map {
 	}
 	
 	public void tick(int tickCount){
+		this.mobEntityList.forEach(e->e.tick(tickCount));
+		this.itemEntityList.forEach(e->e.tick(tickCount));
+		this.entityList.forEach(e->e.tick(tickCount));
+		
+		for (int i = this.itemEntityList.size()-1; i >= 0; i--) {
+			if(itemEntityList.get(i).item.getStack()<=0) {
+				itemEntityList.remove(i);
+			}else {
+				itemEntityList.get(i).combine(itemEntityList);
+			}
+		}
+		
+		
+		if(tickCount%4==0) {
+			this.mobEntityList.forEach(e->e.applyGravity());
+			this.entityList.forEach(e->e.applyGravity());
+			this.itemEntityList.forEach(e->e.applyGravity());
+		}
+		
 		
 		Material<?> m;
 		int x,y,l;
@@ -189,6 +221,64 @@ public class Map {
 		Screen.drawMap(this);
 	}
 	
+	public void renderMobs(){
+		mobEntityList.forEach(e->e.render());
+	}
+	
+	public void renderEntities(){
+		entityList.forEach(e->e.render());
+	}
+	
+	public void renderItemEntities(){
+		itemEntityList.forEach(e->e.render());
+	}
+	
+	public void addMobEntity(Mob mob) {
+		this.mobEntityList.add(mob);
+	}
+	
+	public void addItemEntity(ItemEntity e) {
+		this.itemEntityList.add(e);
+	}
+	
+	public void spawnItemEntity(Item item, int x, int y) {
+		this.itemEntityList.add(new ItemEntity(item, this, x, y));
+	}
+	
+	public void addEntity(Entity e) {
+		this.entityList.add(e);
+	}
+	
+	public List<Entity> getEntities(Predicate<Entity> area) {
+		List<Entity> list = new LinkedList<>();
+		this.entityList.stream().filter(area).forEach(e->list.add(e));
+		return list;
+	}
+	
+	public List<ItemEntity> getItemEntities(Predicate<ItemEntity> area) {
+		List<ItemEntity> list = new LinkedList<>();
+		this.itemEntityList.stream().filter(area).filter(e->e.item.getStack()>0).forEach(e->list.add(e));
+		return list;
+	}
+	
+	public void removeMob(Mob mob) {
+		this.mobEntityList.remove(mob);
+	}
+	
+	public void removeEntitiy(Entity e) {
+		this.entityList.remove(e);
+	}
+	
+	public void removeItemEntitiy(ItemEntity e) {
+		this.itemEntityList.remove(e);
+	}
+	
+	public List<Mob> getMobs(Predicate<Mob> area) {
+		List<Mob> list = new LinkedList<>();
+		this.mobEntityList.stream().filter(area).forEach(e->list.add(e));
+		return list;
+	}
+	
 	public void loadChunk(int cx, int cy){
 		this.chunkMaganer.loadChunk(cx, cy);
 	}
@@ -210,9 +300,11 @@ public class Map {
 			return -1;
 		}
 	}
+	
 	public void setID(int x, int y, int l, int ID){
 		setID(x,y,l,ID,null,false);
 	}
+	
 	public void setID(int x, int y, int l, int ID, UDS uds, boolean skipUpdate){
 		int cx = x/1024,cy = y/1024;
 		if(chunks[cx][cy]!=null){
@@ -225,6 +317,11 @@ public class Map {
 				mapUpdater.addUpdatePixel(new int[] {x,y,l,ID}, uds);
 			}
 		}
+	}
+	
+	public void breakPixel(int x, int y, int l, Tool tool){
+		Material<?> m = PixelList.GetPixel(getID(x, y, l), l);
+		if(tool.)
 	}
 	
 	public void movePixelRel(int xs, int ys, int ls, int xr, int yr, int lf){

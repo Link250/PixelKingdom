@@ -11,7 +11,6 @@ public class Stone extends Material<UDS>{
 		name = "Stone";
 		displayName = "Stone";
 		usePickaxe = 1.5;
-		tick = false;
 		loadTexture();
 	}
 	

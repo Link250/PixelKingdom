@@ -8,7 +8,6 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
-import entities.Mob;
 import entities.Player;
 import gfx.Screen;
 import map.Map;
@@ -20,7 +19,6 @@ public class SinglePlayer {
 	public static boolean debuginfo = false;
 	private String files;
 	public File plr;
-	private ArrayList<Mob> mobList = new ArrayList<>();
 	
 	public SinglePlayer(String files){
 		this.files = files;
@@ -33,20 +31,13 @@ public class SinglePlayer {
 			create();
 			save();
 		}
+		map.addMobEntity(player);
 		Screen.xOffset= player.x-Screen.width/Screen.MAP_SCALE/Screen.MAP_ZOOM/2;
 		Screen.yOffset= player.y-Screen.height/Screen.MAP_SCALE/Screen.MAP_ZOOM/2;
 	}
 	
 	public void tick(int tickCount){
 		
-		player.tick(tickCount);
-		for (Mob mob : mobList) {mob.tick(tickCount);}
-		
-		if(tickCount%4==0) {
-			player.applyGravity();
-			for (Mob mob : mobList) {mob.applyGravity();}
-		}
-
 		map.tick(tickCount);
 		
 		if(Keys.DEBUGINFO.click()){
@@ -110,8 +101,7 @@ public class SinglePlayer {
 	public void render(){
 		
 		map.render();
-		for (Mob mob : mobList) {mob.render();}
-		player.render();
+		player.renderGUI();
 		
 		if(debuginfo){
 			Game.sfont.render(50, 30, false, false, "FPS:" + Integer.toString(Game.fps), 0, 0xff000000);

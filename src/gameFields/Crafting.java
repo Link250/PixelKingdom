@@ -158,7 +158,7 @@ public class Crafting extends GameField {
 						int n;
 						try{n = Integer.parseInt(craftCount.getText());}catch(NumberFormatException e) {n = 0;}
 						for (int i = 0; i < n; i++) {
-							if(!plr.CraftItem(selectedRecipe))break;
+							if(!plr.craftItem(selectedRecipe))break;
 						}
 					}
 				}

@@ -11,7 +11,6 @@ public class Earth extends Material<UDS>{
 		name = "Earth";
 		displayName = "Earth";
 		usePickaxe = 1;
-		tick = false;
 		loadTexture();
 	}
 	

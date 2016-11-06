@@ -9,7 +9,6 @@ public abstract class Liquid<LiquidUDSType extends UDS> extends Material<LiquidU
 	public Liquid(LiquidUDSType uds){
 		super(uds);
 		name = "Liquid";
-		tick = true;
 	}
 	
 	public boolean flow(int x, int y, int l, Map map) {

@@ -1,9 +1,10 @@
 package pixel.pixelList;
 
 import pixel.UDS;
+import pixel.interfaces.Burnable;
 import pixel.Material;
 
-public class Planks extends Material<UDS>{
+public class Planks extends Material<UDS> implements Burnable{
 
 	public Planks(){
 		super(null);
@@ -11,9 +12,9 @@ public class Planks extends Material<UDS>{
 		name = "Planks";
 		displayName = "Planks";
 		usePickaxe = 1;
-		tick = false;
-		burnable = 15;
 		loadTexture();
 	}
+	
+	public byte getBurnStrength() {return 15;}
 	
 }

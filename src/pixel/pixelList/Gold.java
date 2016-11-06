@@ -11,7 +11,6 @@ public class Gold extends Material<UDS>{
 		name = "Gold";
 		displayName = "Gold";
 		usePickaxe = 2.0;
-		tick = false;
 		loadTexture();
 	}
 }

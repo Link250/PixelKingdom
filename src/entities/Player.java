@@ -165,7 +165,7 @@ public class Player extends Mob{
 	 * @param item
 	 * @return true if there was enough space for the whole Item Stack
 	 */
-	public boolean PickUp(Item item){
+	public boolean pickUp(Item item){
 		while(item.getStack()>0) {
 			Bag<?> pBag = null;
 			int cIndex, pIndex = 0;
@@ -189,7 +189,7 @@ public class Player extends Mob{
 		return true;
 	}
 	
-	public boolean CraftItem(Recipe r){
+	public boolean craftItem(Recipe r){
 		for(Component c : r.educts){
 			int n = c.n;
 			for (Bag<?> bag : this.bags.values()) {
@@ -219,7 +219,7 @@ public class Player extends Mob{
 			}
 		}
 		for(Component c : r.products){
-			PickUp(ItemList.NewItem(c.ID, c.n));
+			pickUp(ItemList.NewItem(c.ID, c.n));
 		}
 //		System.out.println("craftable");
 		return true;
@@ -278,6 +278,9 @@ public class Player extends Mob{
 			}
 			y += speedY;
 		}
+		
+		/*	COLLECT ITEMS	*/
+		map.getItemEntities(e->Point.distanceSq(x, y, e.x, e.y)<=100).forEach(i->i.collectWith(this::pickUp));
 		
 		/*		HOTBAR		*/
 		if(MouseInput.mousem.click() || Keys.HOTBAR.click()){
@@ -351,7 +354,6 @@ public class Player extends Mob{
 	
 	public void render() {
 		Screen.drawMapSprite(x-xOffset, y-yOffset, sheet, anim, movingDir==1, false, color);
-//		Game.screen.drawMapTile(x-xOffset, y-yOffset, anim, movingDir*16, sheet, color);
 		
 		if((anim == 10 || anim == 11) & this.bags.get(BAG.BELT_1) != null){
 			try{
@@ -364,6 +366,9 @@ public class Player extends Mob{
 				this.bags.get(BAG.BELT_1).getItem(selected).renderOnMap(x+3-movingDir*8, y-2, movingDir==1, false);
 			}catch(NullPointerException e){}
 		}
+	}
+	
+	public void renderGUI() {
 		/*		EQUIPMENT		*/
 		if(openEquip){equipment.render();}
 		
@@ -438,21 +443,21 @@ public class Player extends Mob{
 		
 		//initializing Inventory
 		Pickaxe newpick = (Pickaxe) ItemList.NewItem("StonePickaxe");
-		this.PickUp(newpick);
+		this.pickUp(newpick);
 		if(Game.devmode){
 			Item newitem = ItemList.NewItem(64); newitem.addStack(999);
-			this.PickUp(newitem);
+			this.pickUp(newitem);
 			newitem = ItemList.NewItem(16); newitem.addStack(999);
-			this.PickUp(newitem);
+			this.pickUp(newitem);
 			newitem = ItemList.NewItem(17); newitem.addStack(999);
-			this.PickUp(newitem);
+			this.pickUp(newitem);
 			newitem = ItemList.NewItem(18); newitem.addStack(999);
-			this.PickUp(newitem);
+			this.pickUp(newitem);
 			
-			this.PickUp(ItemList.NewItem(333));
+			this.pickUp(ItemList.NewItem(333));
 			newitem = ItemList.NewItem(400);newitem.addStack(999);
-			this.PickUp(newitem);
-			this.PickUp(ItemList.NewItem(332));
+			this.pickUp(newitem);
+			this.pickUp(ItemList.NewItem(332));
 		}
 	}
 }
