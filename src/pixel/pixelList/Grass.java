@@ -11,7 +11,9 @@ public class Grass extends Material<UDS>{
 		ID = 3;
 		name = "Grass";
 		displayName = "Grass";
-		usePickaxe = 1;
+		requiredType = MINING_TYPE_PICKAXE;
+		requiredTier = 1;
+		miningResistance = 1;
 		loadTexture();
 	}
 	

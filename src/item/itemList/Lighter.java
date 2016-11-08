@@ -21,13 +21,12 @@ public class Lighter extends Tool{
 		stack  = 1;
 		stackMax  = 100;
 		gfx = new SpriteSheet("/Items/Lighter.png");
-		strength = 1;
 		size = 1;
 		type = 0;
 		range = 10;
 	}
 
-	public void useItem(Player plr, Map map) {
+	public void holdItem(Player plr, Map map) {
 		if((MouseInput.mousel.isPressed()|MouseInput.mouser.isPressed())){
 			int X = MouseInput.mouse.getMapX(), Y = MouseInput.mouse.getMapY(), L = Map.LAYER_FRONT;
 			if(!MouseInput.mousel.isPressed()){L=Map.LAYER_BACK;}

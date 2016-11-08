@@ -13,13 +13,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.lwjgl.BufferUtils;
-import org.tukaani.xz.XZInputStream;
-
 import dataUtils.conversion.ConverterQueue;
 import gfx.Screen;
 import main.Game;
 import pixel.UDS;
 import pixel.Material;
+import pixel.MultiPixel;
 import pixel.PixelList;
 
 public class Chunk{
@@ -151,7 +150,6 @@ public class Chunk{
 		}
 	}
 	
-	@SuppressWarnings("unused")
 	public void load(byte[] rawfile) throws IOException{
 		ConverterQueue filedata = new ConverterQueue();
 		front = new short[length];
@@ -163,7 +161,7 @@ public class Chunk{
 		if(rawfile==null) {
 			File file = new File(path + File.separator + "c-"+x+"-"+y+".pmap");
 			InputStream fIS = null;
-			if(true) {
+//			if(true) {
 				rawfile = new byte[(int) file.length()];
 				try {
 					fIS = new FileInputStream(file);
@@ -178,27 +176,27 @@ public class Chunk{
 				for(int i = 0; i < rawfile.length; i++){
 					filedata.writeByte(rawfile[i]);
 				}
-			}else{
-				try{
-					fIS = new FileInputStream(file);
-					fIS = new XZInputStream(fIS);
-					ArrayList<byte[]> bytes = new ArrayList<byte[]>();
-					int s = 0;
-					byte[] b = new byte[8192];
-					while((s = fIS.read(b)) == 8192)
-						{bytes.add(b);b = new byte[8192];}bytes.add(b);
-					fIS.close();
-					s = (bytes.size()-1)*8192 + s;
-					int j = 0;
-					try {
-						for(byte[] btemp : bytes) {
-							for(int i = 0; i < btemp.length && filedata.length() < s; i++) {
-								filedata.writeByte(btemp[i]);
-							}
-						}
-					}catch(ArrayIndexOutOfBoundsException e) {}
-				}catch (FileNotFoundException e) {Game.logWarning("no file found");create();return;} catch (IOException e) {e.printStackTrace();}
-			}
+//			}else{
+//				try{
+//					fIS = new FileInputStream(file);
+//					fIS = new XZInputStream(fIS);
+//					ArrayList<byte[]> bytes = new ArrayList<byte[]>();
+//					int s = 0;
+//					byte[] b = new byte[8192];
+//					while((s = fIS.read(b)) == 8192)
+//						{bytes.add(b);b = new byte[8192];}bytes.add(b);
+//					fIS.close();
+//					s = (bytes.size()-1)*8192 + s;
+//					int j = 0;
+//					try {
+//						for(byte[] btemp : bytes) {
+//							for(int i = 0; i < btemp.length && filedata.length() < s; i++) {
+//								filedata.writeByte(btemp[i]);
+//							}
+//						}
+//					}catch(ArrayIndexOutOfBoundsException e) {}
+//				}catch (FileNotFoundException e) {Game.logWarning("no file found");create();return;} catch (IOException e) {e.printStackTrace();}
+//			}
 		}
 		else
 		for(int i = 0; i < rawfile.length; i++){
@@ -232,7 +230,12 @@ public class Chunk{
 				}
 			}else{
 				if(id==0x7fff){
-					setUDS((x-1)%length, (int)((x-1)/length), PixelList.GetPixel(ID, (x/length)).getNewUDS().load(filedata));
+					UDS uds = PixelList.GetPixel(ID, (x/length)).getNewUDS().load(filedata);
+					if(uds instanceof MultiPixel.DataStorage) {
+						MultiPixel.DataStorage mpUDS = (MultiPixel.DataStorage) uds;
+						map.addMultiPixelData(mpUDS.xOrigin, mpUDS.yOrigin, (MultiPixel<?>) PixelList.GetPixel(ID, x/length));
+					}
+					setUDS((x-1)%length, (int)((x-1)/length), uds);
 				}else{
 					l = (x/length);
 					switch(l){

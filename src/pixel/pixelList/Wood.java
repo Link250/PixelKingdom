@@ -11,7 +11,9 @@ public class Wood extends Material<UDS> implements Burnable{
 		ID = 4;
 		name = "Wood";
 		displayName = "Wood";
-		usePickaxe = 1;
+		requiredType = MINING_TYPE_PICKAXE;
+		requiredTier = 1;
+		miningResistance = 1;
 		loadTexture();
 	}
 

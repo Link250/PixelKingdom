@@ -51,7 +51,7 @@ public abstract class Bag<ItemType extends Item> extends Item {
 		for (int i = 0; i < this.invSize; i++) {this.inventory.add(null);}
 	}
 	
-	public abstract void useItem(Player plr, Map map);
+	public abstract void holdItem(Player plr, Map map);
 	
 	/**
 	 * 

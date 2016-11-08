@@ -10,7 +10,9 @@ public class Loam extends Material<UDS>{
 		ID = 7;
 		name = "Loam";
 		displayName = "Loam";
-		usePickaxe = 1.5;
+		requiredType = MINING_TYPE_PICKAXE;
+		requiredTier = 1;
+		miningResistance = 1.5;
 		loadTexture();
 	}
 	

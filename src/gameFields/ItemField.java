@@ -44,8 +44,8 @@ public class ItemField {
 	
 	public void mouseClick() {
 		Item temp = this.item;
-		this.item = Mouse.Item;
-		Mouse.Item = temp;
+		this.item = Mouse.item;
+		Mouse.item = temp;
 	}
 
 	public void mouseOver() {

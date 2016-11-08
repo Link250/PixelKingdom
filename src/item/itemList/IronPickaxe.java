@@ -11,9 +11,10 @@ public class IronPickaxe extends Pickaxe{
 		name = "IronPickaxe";
 		displayName = "Iron Pickaxe";
 		col = 0xffA0A0A0;
-		strength = 3;
+		strength = 1;
 		size = 5;
 		range = 30;
+		miningTier = 2;
 		gfx = new SpriteSheet("/Items/Pickaxe_Iron.png");
 	}
 }

@@ -22,7 +22,7 @@ public class RecipeList {
 		addRecipe(new Recipe().addP(302, 1).addE(33, 30).addE(6, 10), C_TOOLS);
 		addRecipe(new Recipe().addP(400, 5).addE(16, 1).addE(6, 3), C_TOOLS);
 		addRecipe(new Recipe().addP(331, 1).addE(35, 10).addE(33, 2), C_TOOLS);
-		addRecipe(new Recipe().addP(65, 100).addE(6, 1), C_FURNITURE);
+		addRecipe(new Recipe().addP(500, 100).addE(6, 1), C_FURNITURE);
 	}
 	
 	public Set<Recipe> getRecipes(String category){

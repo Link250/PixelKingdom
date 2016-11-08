@@ -15,6 +15,6 @@ public class SmallBeltBag extends BeltBag {
 		gfx = new SpriteSheet("/Items/NormalBeltBag.png");
 	}
 
-	public void useItem(Player plr, Map map) {
+	public void holdItem(Player plr, Map map) {
 	}
 }

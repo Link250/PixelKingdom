@@ -95,10 +95,10 @@ public class BagInv extends GameField {
 		}
 		
 		public void mouseClick() {
-			if(bag.canContain(Mouse.Item) || Mouse.Item == null) {
+			if(bag.canContain(Mouse.item) || Mouse.item == null) {
 				Item temp = bag.removeItem(index);
-				if(Mouse.Item!=null)bag.setItem(index, Mouse.Item);
-				Mouse.Item = temp;
+				if(Mouse.item!=null)bag.setItem(index, Mouse.item);
+				Mouse.item = temp;
 			}
 		}
 

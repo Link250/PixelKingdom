@@ -15,6 +15,6 @@ public class NormalMaterialBag extends MaterialBag {
 		gfx = new SpriteSheet("/Items/NormalMaterialBag.png");
 	}
 
-	public void useItem(Player plr, Map map) {
+	public void holdItem(Player plr, Map map) {
 	}
 }

@@ -7,15 +7,17 @@ import entities.Player;
 import gfx.Mouse;
 import gfx.Mouse.MouseType;
 import gfx.SpriteSheet;
-import main.Game;
 import main.MouseInput;
 import map.Map;
 import pixel.Material;
 import pixel.PixelList;
 
-public abstract class Pickaxe extends Tool{
+public abstract class Pickaxe extends Tool implements MiningTool{
 	
-	private double npxs = 0;
+	protected double miningTier = 0;
+	protected double strength = 0;
+	private double powerLeft = 0;
+	
 	public Pickaxe(){
 		type = 1;
 		name = "Pickaxe";
@@ -25,58 +27,47 @@ public abstract class Pickaxe extends Tool{
 		gfxs = new SpriteSheet("/Items/Pickaxeh.png");
 	}
 	
-	public void useItem(Player plr, Map map) {
+	public void holdItem(Player plr, Map map) {
 	anim = 0;
 	
-	if((MouseInput.mousel.isPressed() | MouseInput.mouser.isPressed()) && !plr.iscrouching && !plr.isinair){
-		if(npxs <= 0)npxs += ((double)size*strength)/4;
+	if((MouseInput.mousel.isPressed() | MouseInput.mouser.isPressed())/* && !plr.iscrouching && !plr.isinair*/){
+		powerLeft += strength/60;
 		double r = 0;
-		while(npxs > 0){
-			r = size;
+		boolean couldMine = false;
+		while(powerLeft > 0){
+			r = size*size;
 			int pX = 0, pY = 0;
 			Material<?> m = null;
-			int l = Map.LAYER_FRONT;
-			if(MouseInput.mousel.isPressed()){
-				for(int x = -size; x <= size; x++){
-					for(int y = -size; y <= size; y++){
-						int X = MouseInput.mouse.getMapX()+x, Y = MouseInput.mouse.getMapY()+y;
-						if(Math.sqrt(x*x+y*y) < r & Math.sqrt((plr.x-X)*(plr.x-X)+(plr.y-Y)*(plr.y-Y)) <= range){
-							m = PixelList.GetMat(map.getID(X,Y,Map.LAYER_FRONT));
-							if(m.ID!=0 && m.usePickaxe() <= strength && m.usePickaxe()>0){
-								r = Math.sqrt(x*x+y*y);
+			int l = MouseInput.mousel.isPressed() ? Map.LAYER_FRONT : Map.LAYER_BACK;
+			for(int x = -size; x <= size; x++){
+				for(int y = -size; y <= size; y++){
+					int X = MouseInput.mouse.getMapX()+x, Y = MouseInput.mouse.getMapY()+y;
+					if(x*x+y*y < r && ((plr.x-X)*(plr.x-X)+(plr.y-Y)*(plr.y-Y) <= range*range)){
+						m = PixelList.GetMat(map.getID(X,Y,l));
+						if(m.canBeMinedBy(this)) {
+							couldMine = true;
+							if(m.getMiningResistance()<=powerLeft){
+								r = x*x+y*y;
 								pX = X;pY = Y;
 							}
 						}
 					}
 				}
-			}else{
-				for(int x = -size; x <= size; x++){
-					for(int y = -size; y <= size; y++){
-						int X = MouseInput.mouse.getMapX()+x, Y = MouseInput.mouse.getMapY()+y;
-						if(Math.sqrt(x*x+y*y) < r & Math.sqrt((plr.x-X)*(plr.x-X)+(plr.y-Y)*(plr.y-Y)) <= range){
-							m = PixelList.GetMat(map.getID(X,Y,Map.LAYER_BACK));
-							if(m.ID!=0 && m.usePickaxe() <= strength && m.usePickaxe()>0){
-								r = Math.sqrt(x*x+y*y);
-								pX = X;pY = Y;
-							}
-						}
-					}
-				}
-				l=Map.LAYER_BACK;
 			}
 			m = PixelList.GetMat(map.getID(pX,pY,l));
 			if(m.ID!=0){
-//				if(plr.PickUp(ItemList.NewItem(m.ID)) || Game.devmode){
-				if(plr.addToStack(m.ID, 1)==0 || Game.devmode){
-					npxs -= PixelList.GetMat((byte)map.getID(pX, pY, l)).usePickaxe;
-					map.setID(pX, pY, l, 0);
-				}else{npxs = 0;}
-			}else{npxs = 0;}
+				map.breakPixel(pX, pY, l, this);
+				powerLeft -= PixelList.GetMat((byte)map.getID(pX, pY, l)).getMiningResistance();
+			}else{
+				if(!couldMine)powerLeft = 0;
+				break;
+			}
 		}
 		
 		if((System.nanoTime()/100000000)%10 < 5)anim = 11;
-		else anim = 10;
-		}
+			else anim = 10;
+		
+		}else{powerLeft = 0;}
 	}
 	
 	public void setMouse(){
@@ -99,5 +90,13 @@ public abstract class Pickaxe extends Tool{
 	
 	public boolean canBreak(Material<?> mat) {
 		return true;
+	}
+	
+	public int getMiningType() {
+		return Material.MINING_TYPE_PICKAXE;
+	}
+	
+	public double getMiningTier() {
+		return miningTier;
 	}
 }

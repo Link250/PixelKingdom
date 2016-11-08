@@ -1,9 +1,6 @@
 package item;
 
-import pixel.Material;
-
 public abstract class Tool extends Item{
-	protected int strength;
 	protected int size;
 	protected int type;
 	protected int range;
@@ -11,14 +8,4 @@ public abstract class Tool extends Item{
 	public Tool(){
 		super();
 	}
-
-	public int getStregth(){
-		return strength;
-	}
-
-	public int getType(){
-		return type;
-	}
-	
-	public abstract boolean canBreak(Material<?> mat);
 }

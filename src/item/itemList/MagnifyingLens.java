@@ -24,14 +24,13 @@ public class MagnifyingLens extends Tool {
 		stack  = 1;
 		stackMax  = 1;
 		gfx = new SpriteSheet("/Items/Lighter.png");
-		strength = 1;
 		size = 1;
 		type = 0;
 		range = 10;
 		tooltip.add("Hold over a Pixel to see its Name");
 	}
 	
-	public void useItem(Player plr, Map map) {
+	public void holdItem(Player plr, Map map) {
 		MouseInput.mouse.refresh();
 		List<String> text = new ArrayList<>();
 		Point plrPos = new Point(plr.x, plr.y);
@@ -57,5 +56,4 @@ public class MagnifyingLens extends Tool {
 	public void load(ArrayList<Byte> file) {
 
 	}
-
 }

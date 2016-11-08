@@ -14,6 +14,7 @@ public class DevPickaxe extends Pickaxe{
 		strength = 333;
 		size = 8;
 		range = 100;
+		miningTier = Double.MAX_VALUE;
 		gfx = new SpriteSheet("/Items/Pickaxe_Dev.png");
 	}
 }

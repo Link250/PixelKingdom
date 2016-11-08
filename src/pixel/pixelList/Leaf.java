@@ -11,9 +11,11 @@ public class Leaf extends Material<UDS> implements Burnable{
 		ID = 5;
 		name = "Leaf";
 		displayName = "Leaf";
-		usePickaxe = 1;
 		frontLightReduction = 6;
 		backLightReduction = 200;
+		requiredType = MINING_TYPE_PICKAXE;
+		requiredTier = 1;
+		miningResistance = 0.5;
 		loadTexture();
 	}
 	

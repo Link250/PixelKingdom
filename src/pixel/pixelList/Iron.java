@@ -10,7 +10,9 @@ public class Iron extends Material<UDS>{
 		ID = 33;
 		name = "Iron";
 		displayName = "Iron";
-		usePickaxe = 2;
+		requiredType = MINING_TYPE_PICKAXE;
+		requiredTier = 1;
+		miningResistance = 2;
 		loadTexture();
 	}
 }

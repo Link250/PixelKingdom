@@ -11,7 +11,9 @@ public class Ore_Coal extends Material<UDS> implements Burnable{
 		ID = 16;
 		name = "CoalOre";
 		displayName = "Coal Ore";
-		usePickaxe = 1.9;
+		requiredType = MINING_TYPE_PICKAXE;
+		requiredTier = 1;
+		miningResistance = 1.8;
 		loadTexture();
 	}
 	

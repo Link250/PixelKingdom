@@ -1,24 +1,32 @@
 package pixel;
 
+import java.awt.Point;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import item.Tool;
+import item.Item;
+import item.ItemList;
+import item.MiningTool;
 import main.Game;
 import main.MouseInput.Mouse;
 import map.Map;
 
 public abstract class Material<UDSType extends UDS> {
+	public static final int MINING_TYPE_NONE = 0;
+	public static final int MINING_TYPE_PICKAXE = 1;
+	public static final int MINING_TYPE_AXE = 2;
+	public static final int MINING_TYPE_SHOVEL = 4;
+	public static final int MINING_TYPE_HAMMER = 8;
 	
 	public int ID = 0;
+	protected int itemID = 0;
 	protected String name = "unnamed";
 	protected String displayName = "unnamed";
-	/**
-	 * 0 -> Can't be mined
-	 */
-	public double usePickaxe = 0;
+	protected int requiredType = MINING_TYPE_NONE;
+	protected double requiredTier = 1;
+	protected double miningResistance = 1/25;
 	public boolean solid = true;
 	
 	/**this UDS is HOLY !!! it is used to create new UDS Objects for this Material <b>SO NEVER EVER DELETE IT</b>*/
@@ -37,20 +45,16 @@ public abstract class Material<UDSType extends UDS> {
 		this.udsType = uds;
 	}
 	
-	public boolean breakPixel(Tool item) {
-		return false;
+	public boolean breakPixel(Map map, int x, int y, int l, MiningTool item) {
+		map.spawnItemEntity(ItemList.NewItem(itemID>0 ? itemID : ID), x, y);
+		map.setID(x, y, l, 0);
+		return true;
 	}
 	
-	public void mouseClick(int x, int y, Mouse mouse) {
-	}
+	public void mouseClick(Map map, int x, int y, Mouse mouse, Item item) {}
 	
-	public void mouseOver(int x, int y) {
-	}
+	public void mouseOver(Map map, int x, int y, Item item) {}
 	
-	public final double usePickaxe(){
-		return usePickaxe;
-	}
-
 	public final String getName(){
 		return name;
 	}
@@ -93,10 +97,13 @@ public abstract class Material<UDSType extends UDS> {
 	}
 	
 	protected void loadTexture() {
-		loadTexture("/MapTextures/"+name+".png");
+		Point size = new Point();
+		texture = loadTexture("/MapTextures/"+name+".png", size);
+		this.textureWidth = size.x;
+		this.textureHeight = size.y;
 	}
 
-	protected void loadTexture(String path) {
+	protected int[] loadTexture(String path, Point size) {
 		BufferedImage image = null;
 		
 		try {
@@ -105,12 +112,12 @@ public abstract class Material<UDSType extends UDS> {
 			e.printStackTrace();
 		}
 		
-		if(image == null){ return;}
+		if(image == null){ return null;}
 		
-		textureWidth = image.getWidth();
-		textureHeight = image.getHeight();
+		size.x = image.getWidth();
+		size.y = image.getHeight();
 
-		texture = image.getRGB(0, 0, textureWidth, textureHeight, null, 0, textureWidth);
+		return image.getRGB(0, 0, size.x, size.y, null, 0, size.x);
 	}
 	
 	public short tickLight(int x, int y, int l, Map map) {return 0;}
@@ -127,5 +134,21 @@ public abstract class Material<UDSType extends UDS> {
 	
 	public int getColor() {
 		return texture!=null ? texture[0] : 0;
+	}
+	
+	public double getMiningResistance() {
+		return miningResistance;
+	}
+	
+	public double getRequiredTier() {
+		return requiredTier;
+	}
+	
+	public int getRequiredType() {
+		return requiredType;
+	}
+	
+	public boolean canBeMinedBy(MiningTool tool) {
+		return (this.requiredTier<=tool.getMiningTier()) && ((tool.getMiningType() & this.requiredType) > 0);
 	}
 }

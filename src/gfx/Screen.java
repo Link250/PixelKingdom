@@ -212,9 +212,7 @@ public class Screen {
 			}
 		}
 		
-		map.renderMobs();
-		map.renderEntities();
-		map.renderItemEntities();
+		map.renderSprites();
 		
 		map_shader.bind();
 		map_shader.setUniform("sampler", 0);

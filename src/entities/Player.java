@@ -323,7 +323,7 @@ public class Player extends Mob{
 		}
 
 		if(this.bags.containsKey(BAG.BELT_1) && this.bags.get(BAG.BELT_1).getItem(selected)!=null && MouseInput.mousel.isClickable()) {
-			this.bags.get(BAG.BELT_1).getItem(selected).useItem(this, map);
+			this.bags.get(BAG.BELT_1).getItem(selected).holdItem(this, map);
 		}else{
 			MouseInput.mousel.click();
 		}

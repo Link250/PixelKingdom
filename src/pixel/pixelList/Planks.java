@@ -11,7 +11,9 @@ public class Planks extends Material<UDS> implements Burnable{
 		ID = 6;
 		name = "Planks";
 		displayName = "Planks";
-		usePickaxe = 1;
+		requiredType = MINING_TYPE_PICKAXE;
+		requiredTier = 1;
+		miningResistance = 1;
 		loadTexture();
 	}
 	

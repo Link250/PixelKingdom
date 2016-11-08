@@ -17,7 +17,9 @@ public class Oven extends Material<Heatable.DataStorage> implements Heatable{
 		ID = 64;
 		name = "Oven";
 		displayName = "Oven";
-		usePickaxe = 1;
+		requiredType = MINING_TYPE_PICKAXE;
+		requiredTier = 1;
+		miningResistance = 1;
 		loadTexture();
 	}
 	

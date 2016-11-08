@@ -91,13 +91,13 @@ public class Equipment extends GameField {
 		}
 		
 		public void mouseClick() {
-			if(Mouse.Item!=null) {
+			if(Mouse.item!=null) {
 				Item tempItem;
 				tempItem = plr.unequipItem(bagEnum);
-				if(plr.equipItem(bagEnum, Mouse.Item)) Mouse.Item = tempItem;
+				if(plr.equipItem(bagEnum, Mouse.item)) Mouse.item = tempItem;
 				else plr.equipItem(bagEnum, tempItem);
 			}else {
-				Mouse.Item = plr.unequipItem(bagEnum);
+				Mouse.item = plr.unequipItem(bagEnum);
 			}
 		}
 		

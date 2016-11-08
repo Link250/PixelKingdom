@@ -3,6 +3,7 @@ package item;
 import java.util.ArrayList;
 import java.util.List;
 
+import dataUtils.conversion.ConvertData;
 import entities.Player;
 import gfx.Mouse;
 import gfx.Screen;
@@ -147,14 +148,18 @@ public abstract class Item {
 		return anim;
 	}
 
-	public abstract void useItem(Player plr, Map map);
+	public abstract void holdItem(Player plr, Map map);
 
 	public void setMouse() {
 		Mouse.mouseType=MouseType.DEFAULT;
 	}
 	
-	public abstract void save(ArrayList<Byte> file);
+	public void save(ArrayList<Byte> file) {
+		ConvertData.I2B(file, ID);
+		ConvertData.I2B(file, stack);
+	}
 
-	public abstract void load(ArrayList<Byte> file);
-
+	public void load(ArrayList<Byte> file) {
+		stack = ConvertData.B2I(file);
+	}
 }

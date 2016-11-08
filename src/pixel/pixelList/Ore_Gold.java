@@ -13,7 +13,9 @@ public class Ore_Gold extends Material<Heatable.DataStorage> implements Smeltabl
 		ID = 18;
 		name = "GoldOre";
 		displayName = "Gold Ore";
-		usePickaxe = 2.0;
+		requiredType = MINING_TYPE_PICKAXE;
+		requiredTier = 1;
+		miningResistance = 2;
 		loadTexture();
 	}
 

@@ -7,16 +7,18 @@ import dataUtils.PArea;
 import item.*;
 import main.Game;
 import main.MouseInput;
+import pixel.MultiPixel;
 
 public class Mouse {
 	public static enum MouseType{
-		DEFAULT,ITEM,MINING,BUILDING,TEXT;
+		DEFAULT,ITEM,MINING,BUILDING,TEXT,MULTIPIXEL;
 		
 		private SpriteSheet sheet;
 	}
 	public static MouseType mouseType = MouseType.DEFAULT;
 	public static byte mousesize = 0;
-	public static Item Item;
+	public static Item item;
+	public static MultiPixel<?> multiPixel;
 	private static List<String> textList = new ArrayList<>();
 	private static boolean textActive;
 	private static PArea textField;
@@ -40,7 +42,7 @@ public class Mouse {
 	
 	public static void render(){
 		if(textActive)mouseType = MouseType.TEXT;
-		if(Item!=null)mouseType = MouseType.ITEM;
+		if(item!=null)mouseType = MouseType.ITEM;
 		switch(mouseType){
 		case MINING:
 			if(mouseType.sheet==null || (mouseType.sheet.getWidth()-1)/2 != mousesize)genMouseTexture(mouseType);
@@ -50,9 +52,13 @@ public class Mouse {
 			if(mouseType.sheet==null || (mouseType.sheet.getWidth()-3)/2 != mousesize)genMouseTexture(mouseType);
 			Screen.drawMapSprite(MouseInput.mouse.getMapX()-mousesize-1, MouseInput.mouse.getMapY()-mousesize-1, mouseType.sheet);
 			break;
+		case MULTIPIXEL:
+			if(multiPixel==null)mouseType = MouseType.DEFAULT;
+			else multiPixel.renderOnMouse(MouseInput.mouse.getMapX(), MouseInput.mouse.getMapY());
+			break;
 		case ITEM:
-			if(Item==null)mouseType = MouseType.DEFAULT;
-			Item.render(MouseInput.mouse.x-5, MouseInput.mouse.y-5);
+			if(item==null)mouseType = MouseType.DEFAULT;
+			else item.render(MouseInput.mouse.x-15, MouseInput.mouse.y-15);
 			break;
 		case TEXT:
 			int x = MouseInput.mouse.x+MouseType.DEFAULT.sheet.getWidth()+2;

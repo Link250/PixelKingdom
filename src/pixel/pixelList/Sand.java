@@ -13,7 +13,9 @@ public class Sand extends Material<Heatable.DataStorage> implements Smeltable{
 		ID = 8;
 		name = "Sand";
 		displayName = "Sand";
-		usePickaxe = 1;
+		requiredType = MINING_TYPE_PICKAXE;
+		requiredTier = 1;
+		miningResistance = 1;
 		loadTexture();
 	}
 	

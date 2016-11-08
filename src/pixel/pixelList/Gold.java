@@ -10,7 +10,9 @@ public class Gold extends Material<UDS>{
 		ID = 34;
 		name = "Gold";
 		displayName = "Gold";
-		usePickaxe = 2.0;
+		requiredType = MINING_TYPE_PICKAXE;
+		requiredTier = 1;
+		miningResistance = 2;
 		loadTexture();
 	}
 }

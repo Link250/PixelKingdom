@@ -26,7 +26,7 @@ public class MatStack extends Item{
 		col = PixelList.GetMat((byte)ID).getColor();
 	}
 
-	public void useItem(Player plr, Map map) {
+	public void holdItem(Player plr, Map map) {
 		MouseInput.mouse.refresh();
 		anim = 12;
 		int l = Map.LAYER_FRONT;if(!MouseInput.mousel.isPressed())l = Map.LAYER_BACK;

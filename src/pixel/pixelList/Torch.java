@@ -8,13 +8,15 @@ public class Torch extends Material<UDS>{
 	
 	public Torch(){
 		super(null);
-		usePickaxe=1;
 		ID = 48;
 		name = "Torch";
 		displayName = "Torch";
 		solid = false;
 		frontLightReduction = 0;
 		backLightReduction = 0;
+		requiredType = MINING_TYPE_PICKAXE;
+		requiredTier = 1;
+		miningResistance = 1;
 		loadTexture();
 	}
 

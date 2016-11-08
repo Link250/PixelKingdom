@@ -23,7 +23,7 @@ public class Bucket extends Item {
 		gfx = new SpriteSheet("/Items/Bucket.png");
 	}
 	
-	public void useItem(Player plr, Map map) {
+	public void holdItem(Player plr, Map map) {
 		MouseInput.mouse.refresh();
 		if((MouseInput.mousel.isPressed()|MouseInput.mouser.isPressed())){
 			int X = MouseInput.mouse.getMapX(), Y = MouseInput.mouse.getMapY();

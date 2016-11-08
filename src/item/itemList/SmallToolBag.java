@@ -15,6 +15,6 @@ public class SmallToolBag extends ToolBag {
 		gfx = new SpriteSheet("/Items/NormalToolBag.png");
 	}
 	
-	public void useItem(Player plr, Map map) {
+	public void holdItem(Player plr, Map map) {
 	}
 }

@@ -10,7 +10,9 @@ public class Stone extends Material<UDS>{
 		ID = 1;
 		name = "Stone";
 		displayName = "Stone";
-		usePickaxe = 1.5;
+		requiredType = MINING_TYPE_PICKAXE;
+		requiredTier = 1;
+		miningResistance = 1.5;
 		loadTexture();
 	}
 	

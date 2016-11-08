@@ -12,7 +12,9 @@ public class Glass extends Material<UDS> {
 		this.frontLightReduction = 4;
 		this.ID = 35;
 		this.name = "Glass";
-		this.usePickaxe = 1.0;
+		this.requiredType = MINING_TYPE_PICKAXE;
+		this.requiredTier = 1;
+		this.miningResistance = 1;
 		loadTexture();
 	}
 }

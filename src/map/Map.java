@@ -2,12 +2,13 @@ package map;
 
 import gfx.Screen;
 import item.Item;
-import item.Tool;
+import item.MiningTool;
 import multiplayer.MapUpdater;
 import multiplayer.client.ChunkManagerC;
 import multiplayer.client.ServerManager;
 import pixel.UDS;
 import pixel.Material;
+import pixel.MultiPixel;
 import pixel.PixelList;
 
 import java.io.File;
@@ -42,6 +43,7 @@ public class Map {
 	private ArrayList<Mob> mobEntityList = new ArrayList<>();
 	private ArrayList<Entity> entityList = new ArrayList<>();
 	private ArrayList<ItemEntity> itemEntityList = new ArrayList<>();
+	private ArrayList<MultiPixelData> multiPixelSprites = new ArrayList<>();
 	private Chunk[][] chunks = new Chunk[1024][1024];
 	
 	private int regularUpdateX = -Screen.width/2-Screen.RENDER_CHUNK_SIZE;
@@ -221,15 +223,10 @@ public class Map {
 		Screen.drawMap(this);
 	}
 	
-	public void renderMobs(){
+	public void renderSprites(){
+		multiPixelSprites.forEach(e->e.render());
 		mobEntityList.forEach(e->e.render());
-	}
-	
-	public void renderEntities(){
 		entityList.forEach(e->e.render());
-	}
-	
-	public void renderItemEntities(){
 		itemEntityList.forEach(e->e.render());
 	}
 	
@@ -319,9 +316,68 @@ public class Map {
 		}
 	}
 	
-	public void breakPixel(int x, int y, int l, Tool tool){
+	public boolean placePixel(int x, int y, int l, int ID) {
+		return false;
+	}
+	
+	public boolean placeMultiPixel(int mx, int my, int l, MultiPixel<?> place) {
+		int[] bitmap = place.getBitMap();
+		MultiPixel.DataStorage uds = null;
+		boolean collision = false;
+		for (int x = 0; x < place.getWidth(); x++) {
+			for (int y = 0; y < place.getHeight(); y++) {
+				if(bitmap[x+y*place.getWidth()]>>24 != 0) {
+					if(getID(mx+x, my+y, l)!=0)collision = true;
+				}
+			}
+		}
+		if(!collision) {
+			for (int x = 0; x < place.getWidth(); x++) {
+				for (int y = 0; y < place.getHeight(); y++) {
+					if(bitmap[x+y*place.getWidth()]>>24 != 0) {
+						setID(mx+x, my+y, l, place.ID);
+						if(uds==null) {
+							uds = getUDS(mx+x, my+y, l);
+							uds.xOrigin = mx;
+							uds.yOrigin = my;
+						}else {
+							setUDS(mx+x, my+y, l, uds, true);
+						}
+					}
+				}
+			}
+			multiPixelSprites.add(new MultiPixelData(mx, my, place));
+			return true;
+		}else {
+			return false;
+		}
+	}
+	
+	public void breakPixel(int x, int y, int l, MiningTool tool){
 		Material<?> m = PixelList.GetPixel(getID(x, y, l), l);
-		if(tool.)
+		if(m instanceof MultiPixel)breakMultiPixel(x, y, l, tool);
+		else m.breakPixel(this, x, y, l, tool);
+	}
+	
+	public void breakMultiPixel(int mx, int my, int l, MiningTool tool){
+		MultiPixel<?> m = (MultiPixel<?>) PixelList.GetPixel(getID(mx, my, l), l);
+		MultiPixel.DataStorage uds = (MultiPixel.DataStorage)getUDS(mx, my, l);
+		if(m.breakPixel(this, mx, my, l, tool)) {
+			int[] bitmap = m.getBitMap();
+			for (int x = 0; x < m.getWidth(); x++) {
+				for (int y = 0; y < m.getHeight(); y++) {
+					if(bitmap[x+y*m.getWidth()]>>24 != 0) {
+						setID(uds.xOrigin+x, uds.yOrigin+y, l, 0);
+					}
+				}
+			}
+			multiPixelSprites.remove(new MultiPixelData(uds.xOrigin, uds.yOrigin, m));
+		}
+	}
+	
+	public void addMultiPixelData(int x, int y, MultiPixel<?> m) {
+		MultiPixelData mpd = new MultiPixelData(x, y, m);
+		if(!multiPixelSprites.contains(mpd))multiPixelSprites.add(mpd);
 	}
 	
 	public void movePixelRel(int xs, int ys, int ls, int xr, int yr, int lf){
@@ -423,5 +479,27 @@ public class Map {
 	public static interface ChunkManager{
 		public void loadChunk(int cx, int cy);
 		public void cancelChunkLoading();
+	}
+	
+	private static class MultiPixelData{
+		int x,y;
+		MultiPixel<?> multiPixel;
+		
+		public MultiPixelData(int x, int y, MultiPixel<?> mp) {
+			this.x = x;
+			this.y = y;
+			this.multiPixel = mp;
+		}
+		
+		public void render() {
+			multiPixel.renderSprite(x, y);
+		}
+		
+		public boolean equals(Object obj) {
+			if(obj instanceof MultiPixelData) {
+				MultiPixelData other = (MultiPixelData)obj;
+				return other.x == this.x && other.y == this.y && other.multiPixel.ID == this.multiPixel.ID;
+			}else return false;
+		}
 	}
 }

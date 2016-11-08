@@ -126,7 +126,7 @@ public class Game implements Runnable{
 		gamemode = GameMode.Menu;
 		Screen.xOffset=0;
 		Screen.yOffset=0;
-		Mouse.Item = null;
+		Mouse.item = null;
 		Mouse.mouseType=MouseType.DEFAULT;
 		if(client!=null)client.reset();
 		reset = false;
