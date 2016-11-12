@@ -30,6 +30,7 @@ public class Screen {
 	
 	private static Matrix4f projection;
 	private static Model tileModel;
+	private static Model shadowModel;
 	
 	public static void initialize(int width, int height) {
 		Screen.width = width;
@@ -40,6 +41,26 @@ public class Screen {
 		colored_shader = new Shader("colored_shader");
 		map_shader = new Shader("map_shader");
 		tileModel = new Model();
+		
+		float[] vertices = new float[] {
+				-1f, 1f, 0, //TOP LEFT     0
+				1f, 1f, 0,  //TOP RIGHT    1
+				1f, -1f, 0, //BOTTOM RIGHT 2
+				-1f, -1f, 0,//BOTTOM LEFT  3
+		};
+		float diff = 1f/((float)(RENDER_CHUNK_SIZE));
+		float[] tex_coords = new float[] {
+				diff,diff,
+				1-diff,diff,
+				1-diff,1-diff,
+				diff,1-diff,
+		};
+		
+		int[] indices = new int[] {
+				0,1,2,
+				2,3,0
+		};
+		shadowModel = new Model(vertices, tex_coords, indices);
 	}
 	
 	public static int combineColors(int colorBack, int colorFront){
@@ -230,12 +251,12 @@ public class Screen {
 				Y*=MAP_SCALE*MAP_ZOOM;
 				Y = height - Y;
 				target = projection.mul(new Matrix4f().translate(new Vector3f(X*2-width, Y*2-height, 0)), new Matrix4f());
-				target.scale(RENDER_CHUNK_SIZE*MAP_SCALE*MAP_ZOOM);
+				target.scale((RENDER_CHUNK_SIZE)*MAP_SCALE*MAP_ZOOM);
 				
 				map_shader.setUniform("projection", target);
 				map_shader.setUniform("layer", Map.LAYER_LIGHT);
 				glBindTexture(GL_TEXTURE_2D, tex);
-				tileModel.render();
+				shadowModel.render();
 			}
 		}
 	}

@@ -340,6 +340,10 @@ public class Chunk{
 		if(this.textureChunks[xPos][yPos][l]>0) {
 			glDeleteTextures(this.textureChunks[xPos][yPos][l]);
 		}
+		if(l==Map.LAYER_LIGHT) {
+			genShadowTexture(xPos, yPos);
+			return;
+		}
 		int ID;
 		int X,Y;
 		int pixel;
@@ -385,5 +389,39 @@ public class Chunk{
 		
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Screen.RENDER_CHUNK_SIZE, Screen.RENDER_CHUNK_SIZE, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixelBuffer);
 		this.textureUpdates[xPos][yPos][l] = false;
+	}
+
+	private void genShadowTexture(int xPos, int yPos){
+		int X,Y;
+		short lightP;
+		ByteBuffer pixelBuffer = BufferUtils.createByteBuffer((Screen.RENDER_CHUNK_SIZE+2) * (Screen.RENDER_CHUNK_SIZE+2) * 4);
+		for (int y = 0; y < Screen.RENDER_CHUNK_SIZE+2; y++) {
+			for (int x = 0; x < Screen.RENDER_CHUNK_SIZE+2; x++) {
+				X=x+xPos*Screen.RENDER_CHUNK_SIZE-1;Y=y+yPos*Screen.RENDER_CHUNK_SIZE-1;
+				if(X<0 || Y<0 || X>=width || Y>=height) {
+					lightP = map.getlight(this.x*width+X, this.y*height+Y);
+					pixelBuffer.put((byte)0); //RED
+					pixelBuffer.put((byte)0);  //GREEN
+					pixelBuffer.put((byte)0);		  //BLUE
+					pixelBuffer.put((byte)(Map.MAX_LIGHT-(map.getID(X, Y, Map.LAYER_BACK) == Map.MAX_LIGHT ? 0 : lightP))); //ALPHA
+				}else {
+					lightP = (light[X+Y*width]); //TODO +brightness constant, sodass zB 245->255 erhellt wird
+					pixelBuffer.put((byte)0); //RED
+					pixelBuffer.put((byte)0);  //GREEN
+					pixelBuffer.put((byte)0);		  //BLUE
+					pixelBuffer.put((byte)(Map.MAX_LIGHT-(getID(X, Y, Map.LAYER_BACK) == Map.MAX_LIGHT ? 0 : lightP))); //ALPHA
+				}
+			}
+		}
+		pixelBuffer.flip();
+		this.textureChunks[xPos][yPos][Map.LAYER_LIGHT] = glGenTextures();
+		
+		glBindTexture(GL_TEXTURE_2D, this.textureChunks[xPos][yPos][Map.LAYER_LIGHT]);
+		
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Screen.RENDER_CHUNK_SIZE+2, Screen.RENDER_CHUNK_SIZE+2, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixelBuffer);
+		this.textureUpdates[xPos][yPos][Map.LAYER_LIGHT] = false;
 	}
 }
