@@ -8,11 +8,12 @@ import dataUtils.conversion.ConvertData;
 import entities.Player;
 import gfx.Mouse;
 import gfx.SpriteSheet;
-import item.ItemList;
 import item.Tool;
 import main.MouseInput;
 import map.Map;
 import pixel.PixelList;
+import pixel.UDS;
+import pixel.interfaces.Heatable;
 
 public class MagnifyingLens extends Tool {
 	int layer = Map.LAYER_FRONT;
@@ -43,8 +44,11 @@ public class MagnifyingLens extends Tool {
 				else if(layer == Map.LAYER_BACK) layer = Map.LAYER_LIQUID;
 				else if(layer == Map.LAYER_LIQUID) layer = Map.LAYER_FRONT;
 			}
-			if(MouseInput.mouser.click()) {
-				map.spawnItemEntity(ItemList.NewItem("Lighter"), MouseInput.mouse.getMapX(), MouseInput.mouse.getMapY());
+			if(MouseInput.mouser.isPressed()) {
+				UDS uds = map.getUDS(MouseInput.mouse.getMapX(), MouseInput.mouse.getMapY(), layer);
+				if(uds instanceof Heatable.DataStorage) {
+					((Heatable.DataStorage) uds).heat = 10000;
+				}
 			}
 		}
 	}

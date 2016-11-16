@@ -17,7 +17,7 @@ public class Grass extends Material<UDS>{
 		loadTexture();
 	}
 	
-	public boolean tick(int x, int y, int l, int numTick, Map map) {
+	public boolean tick(int x, int y, int l, Map map, int numTick) {
 		if(Math.random()*100 < 1){
 			for(int X = -1; X <= 1; X++){for(int Y = -1; Y <= 1; Y++){
 				if(map.getID(x+X, y+Y, Map.LAYER_FRONT)==2){

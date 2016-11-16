@@ -102,6 +102,8 @@ public class Chunk{
 	
 	@SuppressWarnings("unchecked")
 	public <UDSType> UDSType getUDS(int x, int y, int l){
+		if(!this.UDS.containsKey(l*length+y*width+x))
+			this.UDS.put(l*length+y*width+x, PixelList.GetPixel(getID(x, y, l), l).createUDS());
 		return (UDSType) this.UDS.get(l*length+y*width+x);
 //		return(UDS[x + y*width][layer]);
 	}
@@ -128,7 +130,7 @@ public class Chunk{
 						if(ID!=0){
 							if(l==Map.LAYER_LIQUID) m = PixelList.GetLiquid(ID);
 							else m = PixelList.GetMat(ID);
-							if(m.tick(X, Y, l, 0, map))if(map.setUpdating(X, Y, l))map.updatesPixel.addUpdate(X, Y, l);
+							if(m.tick(X, Y, l, map, 0))if(map.setUpdating(X, Y, l))map.updatesPixel.addUpdate(X, Y, l);
 						}
 					}else{
 						map.updateLight(X, Y);

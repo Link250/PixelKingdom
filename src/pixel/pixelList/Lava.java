@@ -3,6 +3,7 @@ package pixel.pixelList;
 import map.Map;
 import pixel.UDS;
 import pixel.Liquid;
+import pixel.PixelList;
 
 public class Lava extends Liquid<Lava.LavaAD>{
 
@@ -17,31 +18,12 @@ public class Lava extends Liquid<Lava.LavaAD>{
 		loadTexture();
 	}
 	
-	public boolean tick(int x, int y, int l, int numTick, Map map) {
-		if(numTick%3==0)flow(x, y, l, map);
-		
-		uds = map.getUDS(x, y, l);
-		if(uds!=null){
-			if(uds.heat==0){
-				map.setID(x, y, Map.LAYER_LIQUID, 0);
-				map.setID(x, y, Map.LAYER_FRONT, uds.ID);
-			}else{
-				if(numTick%60==0) {
-					uds.heat--;
-					map.addUDSUpdate(x, y, l, uds);
-				}
-			}
+	public boolean tick(int x, int y, int l, Map map, int numTick) {
+		if((map.getID(x+1, y, l)==1 || map.getID(x-1, y, l)==1 || map.getID(x, y+1, l)==1 || map.getID(x, y-1, l)==1) && map.getID(x, y, Map.LAYER_FRONT)==0){
+			map.setID(x, y, l, 0);
+			map.setID(x, y, Map.LAYER_FRONT, PixelList.getPixelID("Stone"));
 		}
-		if(map.getID(x+1, y, l)==1||map.getID(x-1, y, l)==1||map.getID(x, y+1, l)==1||map.getID(x, y-1, l)==1){
-			if(uds!=null){
-				map.setID(x, y, Map.LAYER_LIQUID, 0);
-				map.setID(x, y, Map.LAYER_FRONT, uds.ID);
-			}else{
-				map.setID(x, y, Map.LAYER_LIQUID, 0);
-				map.setID(x, y, Map.LAYER_FRONT, 1);
-			}
-		}
-		return true;
+		return Liquid.flow(x, y, l, viscosity, map, numTick);
 	}
 	
 	public short tickLight(int x, int y, int l, Map map) {

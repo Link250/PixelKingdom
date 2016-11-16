@@ -98,7 +98,7 @@ public class Map {
 			if(getUpdate(x,y,l) && ID!=0){
 				m = PixelList.GetPixel(ID, l);
 				try {
-					if(m.tick(x, y, l, tickCount, this))addPixelUpdate(x, y, l);
+					if(m.tick(x, y, l, this, tickCount))addPixelUpdate(x, y, l);
 				}catch(NullPointerException e) {
 					e.printStackTrace();
 					/*dont worry, can happen in MP if some UDS Objects are not loaded*/

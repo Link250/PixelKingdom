@@ -17,8 +17,7 @@ public class Water extends Liquid<UDS>{
 		loadTexture();
 	}
 	
-	public boolean tick(int x, int y, int l, int numTick, Map map) {
-		if(flow(x, y, l, map)) return true;
-		else return false;
+	public boolean tick(int x, int y, int l, Map map, int numTick) {
+		return Liquid.flow(x, y, l, viscosity, map, numTick);
 	}
 }

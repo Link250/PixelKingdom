@@ -19,15 +19,15 @@ public class Fire extends Material<Fire.FireAD>{
 		backLightReduction = 0;
 	}
 	
-	public boolean tick(int x, int y, int l, int numTick, Map map) {
+	public boolean tick(int x, int y, int l, Map map, int numTick) {
 		Material<?> tempPixel;
 		for (int X = -1; X <= 1; X++) {
 			for (int Y = -1; Y <= 1; Y++) {
 				if(map.getID(x+X, y+Y, Map.LAYER_LIQUID)==1) {map.setID(x, y, l, 0);return true;}
 				if((tempPixel = PixelList.GetMat(map.getID(x+X, y+Y, Map.LAYER_BACK))) instanceof Heatable)
-					{((Heatable)tempPixel).heatUp(x+X, y+Y, Map.LAYER_BACK, 1800, 2, map);}
+					{((Heatable)tempPixel).heatUp(x+X, y+Y, Map.LAYER_BACK, 1700, 2, map);}
 				if((tempPixel = PixelList.GetMat(map.getID(x+X, y+Y, Map.LAYER_FRONT))) instanceof Heatable)
-					{((Heatable)tempPixel).heatUp(x+X, y+Y, Map.LAYER_FRONT, 1800, 2, map);}
+					{((Heatable)tempPixel).heatUp(x+X, y+Y, Map.LAYER_FRONT, 1700, 2, map);}
 			}
 		}
 		uds = map.getUDS(x, y, l);

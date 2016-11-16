@@ -83,10 +83,10 @@ public abstract class Material<UDSType extends UDS> {
 	}
 	
 	/**
-	 * Creates a new AD on the Position <b>x y l</b>.<br>
-	 * If the AD Length of this Pixel is 0 or negative
+	 * Creates a new UDS on the Position <b>x y l</b>.<br>
+	 * If the UDS Type is null
 	 * the current AD will be set to <b><code>null</code></b>.
-	 * <pre>The AD will have the Generic Type specific to the Material this Method is called from</pre>
+	 * <pre>The UDS will have the Generic Type specific to the Material this Method is called from</pre>
 	 * @param x
 	 * @param y
 	 * @param l
@@ -126,9 +126,13 @@ public abstract class Material<UDSType extends UDS> {
 	
 	public short backLightReduction(){return this.backLightReduction;}
 	
-	public boolean tick(int x, int y, int l, int numTick, Map map){return false;}
+	public boolean tick(int x, int y, int l, Map map, int numTick){return false;}
 	
 	public int render(int x, int y, int l, Map map) {
+		return getColor(x, y);
+	}
+	
+	public int getColor(int x, int y) {
 		return texture[x%textureWidth + (y%textureHeight)*textureWidth];
 	}
 	
