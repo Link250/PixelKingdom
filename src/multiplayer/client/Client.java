@@ -50,8 +50,8 @@ public class Client {
 			create();
 			save();
 		}
-		Screen.xOffset= player.x-Screen.width/3/2;
-		Screen.yOffset= player.y-Screen.height/3/2;
+		Screen.xOffset= (int) (player.x-Screen.width/Screen.MAP_SCALE/Screen.MAP_ZOOM/2);
+		Screen.yOffset= (int) (player.y-Screen.height/Screen.MAP_SCALE/Screen.MAP_ZOOM/2);
 		this.players = new ArrayList<MPlayer>();
 		
 		serverManager = new ServerManager(this,serverConnection);
@@ -95,8 +95,8 @@ public class Client {
 				map.updateCountLight=0;
 			}
 		}
-		Screen.xOffset= player.x-Screen.width/Screen.MAP_SCALE/Screen.MAP_ZOOM/2;
-		Screen.yOffset= player.y-Screen.height/Screen.MAP_SCALE/Screen.MAP_ZOOM/2;
+		Screen.xOffset= (int) (player.x-Screen.width/Screen.MAP_SCALE/Screen.MAP_ZOOM/2);
+		Screen.yOffset= (int) (player.y-Screen.height/Screen.MAP_SCALE/Screen.MAP_ZOOM/2);
 	}
 	
 	public void render() {
@@ -110,10 +110,10 @@ public class Client {
 		
 		if(debuginfo){
 			Game.sfont.render(10, 10, "FPS:" + Integer.toString(Game.fps), 0, 0xff000000);
-			Game.sfont.render(10, 20, "cX:" + Integer.toString(player.x/Chunk.width), 0, 0xff000000);
-			Game.sfont.render(10, 30, "cY:" + Integer.toString(player.y/Chunk.height), 0, 0xff000000);
-			Game.sfont.render(10, 40, "rX:" + Integer.toString(player.x%Chunk.width), 0, 0xff000000);
-			Game.sfont.render(10, 50, "rY:" + Integer.toString(player.y%Chunk.height), 0, 0xff000000);
+			Game.sfont.render(10, 20, "cX:" + Double.toString(player.x/Chunk.width), 0, 0xff000000);
+			Game.sfont.render(10, 30, "cY:" + Double.toString(player.y/Chunk.height), 0, 0xff000000);
+			Game.sfont.render(10, 40, "rX:" + Double.toString(player.x%Chunk.width), 0, 0xff000000);
+			Game.sfont.render(10, 50, "rY:" + Double.toString(player.y%Chunk.height), 0, 0xff000000);
 		}
 	}
 	

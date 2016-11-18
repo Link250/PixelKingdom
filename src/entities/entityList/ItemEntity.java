@@ -21,7 +21,7 @@ public class ItemEntity extends Entity {
 	}
 	
 	public void tick(int numTick) {
-		if(!Colision.canMove(map, new Hitbox(-1, -1, 1, 1), x, y, 0, speedY)) speedY--;
+		if(!Colision.canMove(map, new Hitbox(-1, -1, 1, 1), (int)x, (int)y, 0, (int)speedY)) speedY--;
 		else y+=speedY;
 	}
 	
@@ -44,7 +44,7 @@ public class ItemEntity extends Entity {
 	}
 	
 	public void render() {
-		item.renderOnMap(x, y, false, false, true);
+		item.renderOnMap((int)x, (int)y, false, false, true);
 	}
 
 }

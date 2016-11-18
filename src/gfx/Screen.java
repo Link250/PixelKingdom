@@ -18,8 +18,8 @@ public class Screen {
 	
 	public static int RENDER_CHUNK_SIZE = 128;
 
-	public static int xOffset = 0;
-	public static int yOffset = 0;
+	public static double xOffset = 0;
+	public static double yOffset = 0;
 	
 	public static int width;
 	public static int height;
@@ -63,6 +63,22 @@ public class Screen {
 		shadowModel = new Model(vertices, tex_coords, indices);
 	}
 	
+	/**
+	 * will set the centre of the camera to the specified position on the map
+	 * @param x
+	 * @param y
+	 */
+	public static void setMapPos(double x, double y) {
+		xOffset= x-Screen.width/Screen.MAP_SCALE/Screen.MAP_ZOOM/2;
+		yOffset= y-Screen.height/Screen.MAP_SCALE/Screen.MAP_ZOOM/2;
+	}
+	
+	/**
+	 * combines two colors
+	 * @param colorBack
+	 * @param colorFront
+	 * @return
+	 */
 	public static int combineColors(int colorBack, int colorFront){
 		float af = (colorFront>>24)&0xff;
 		if(af != 0xff){
@@ -84,39 +100,6 @@ public class Screen {
 			return colorFront;
 		}
 	}
-	
-/*	private void drawPixel(int x, int y, int color, boolean gui){
-		int width = this.width;
-		int height = this.height;
-		if(!gui) { width /= MAP_ZOOM; height /= MAP_ZOOM;}
-		double a = (color>>24)&0xff;
-		if(a != 0xff){
-			int r = (color>>16)&0xff, g = (color>>8)&0xff, b = color&0xff;
-			int col,ro,go,bo,ao;
-			if(x >= 0 && x < width && y >= 0 && y < height){
-				col = gui ? GUI[x + (y)*width] : pixels[x + (y)*width];
-				ao = (col>>24)&0xff;
-				if(ao != 0){
-					ro = (int)((a/255*r) + ((255-a)/255*((col>>16)&0xff)));
-					go = (int)((a/255*g) + ((255-a)/255*((col>> 8)&0xff)));
-					bo = (int)((a/255*b) + ((255-a)/255*((col    )&0xff)));
-					if(ao != 255){
-						ao = (int) (a+(255-a)/255*((col>>24)&0xff));
-					}
-					if(gui) GUI[x + (y)*width] = (ao<<24)|(ro<<16)|(go<<8)|bo;
-					else pixels[x + (y)*width] = (ao<<24)|(ro<<16)|(go<<8)|bo;
-				}else{
-					if(gui) GUI[x + (y)*width] = color;
-					else pixels[x + (y)*width] = color;
-				}
-			}
-		}else{
-			if(x >= 0 && x < width && y >= 0 && y < height){
-				if(gui) GUI[x + (y)*width] = color;
-				else pixels[x + (y)*width] = color;
-			}
-		}
-	}*/
 	
 	public static void drawMapSprite(int xPos, int yPos, SpriteSheet sheet, int tile, boolean mirrorX, boolean mirrorY, int color, boolean centered){
 		drawSprite(xPos, yPos, sheet, tile, mirrorX, mirrorY, color, true, centered);

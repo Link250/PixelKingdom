@@ -108,8 +108,8 @@ public class ServerManager implements Runnable, ConnectionManager {
 		ConverterQueue data = new ConverterQueue();
 		data.addByte(Request.PLAYER_DATA);
 		data.addByte(Request.PLAYER_REFRESH);
-		data.addInt(player.x);
-		data.addInt(player.y);
+		data.addDouble(player.x);
+		data.addDouble(player.y);
 		data.addByte(player.getAnim());
 		data.addByte(player.getDir());
 		this.sendToServer(data);

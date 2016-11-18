@@ -12,9 +12,7 @@ public class Coordinate {
 	}
 	
 	public Coordinate(Coordinate copy) {
-		this.x = copy.x;
-		this.y = copy.y;
-		this.l = copy.l;
+		setAll(copy.x, copy.y, copy.l);
 	}
 	
 	public void setAll(int x, int y, int l) {

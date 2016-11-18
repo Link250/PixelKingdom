@@ -34,7 +34,8 @@ public class MagnifyingLens extends Tool {
 	public void holdItem(Player plr, Map map) {
 		MouseInput.mouse.refresh();
 		List<String> text = new ArrayList<>();
-		Point plrPos = new Point(plr.x, plr.y);
+		Point plrPos = new Point();
+		plrPos.setLocation(plr.x, plr.y);
 		if (plrPos.distance(MouseInput.mouse.getMapX(), MouseInput.mouse.getMapY()) <= 20){
 			text.add(PixelList.GetPixel(map.getID(MouseInput.mouse.getMapX(), MouseInput.mouse.getMapY(), layer), layer).getDisplayName());
 			Mouse.setText(text);

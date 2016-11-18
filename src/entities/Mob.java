@@ -32,11 +32,11 @@ public abstract class Mob extends Entity{
 	}
 
 	public int getspeedX(){
-		return speedX;
+		return (int)speedX;
 	}
 
 	public int getspeedY(){
-		return speedY;
+		return(int)speedY;
 	}
 
 }

@@ -137,11 +137,11 @@ public abstract class Item {
 	}
 
 	public void renderOnMap(int x, int y, boolean mirrorX, boolean mirrorY){
-		Screen.drawMapSprite(x, y, gfx, 0, mirrorX, mirrorY, col);
+		Screen.drawMapSprite(x, y, gfxs != null ? gfxs : gfx, 0, mirrorX, mirrorY, col);
 	}
 	
 	public void renderOnMap(int x, int y, boolean mirrorX, boolean mirrorY, boolean centered){
-		Screen.drawMapSprite(x, y, gfx, 0, mirrorX, mirrorY, col, centered);
+		Screen.drawMapSprite(x, y, gfxs != null ? gfxs : gfx, 0, mirrorX, mirrorY, col, centered);
 	}
 
 	public int getAnim(){

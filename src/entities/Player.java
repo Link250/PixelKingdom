@@ -257,23 +257,23 @@ public class Player extends Mob{
 		Hitbox temp = col;
 		if(iscrouching) temp =cols;
 		if(!iscrouching || numTick%2==0){
-			if(Colision.onGround(map, temp, x, y)){
+			if(Colision.onGround(map, temp, (int)x, (int)y)){
 				isinair = false;
 				if(jumpcooldown == 0)canJump = true;
 			}else{isinair = true;}
-			if(Colision.canMove(map, temp, x, y, speedX, 0)){ x += speedX;
+			if(Colision.canMove(map, temp, (int)x, (int)y, (int)speedX, 0)){ x += speedX;
 			}else{
-				if(speedX != 0 & Colision.canWalkOver(map, temp, x, y, speedX, 0)){y --; x += speedX;}
+				if(speedX != 0 & Colision.canWalkOver(map, temp, (int)x, (int)y, (int)speedX, 0)){y --; x += speedX;}
 				else speedX=0;
 			}
 			int n;
 			if(speedY < 0){
 				for(n = 0; n >= speedY; n--){
-					if(!Colision.canMove(map, temp, x, y, 0, n)) speedY = n+1;
+					if(!Colision.canMove(map, temp, (int)x, (int)y, 0, n)) speedY = n+1;
 				}
 			}else{
 				for(n = 0; n <= speedY; n++){
-					if(!Colision.canMove(map, temp, x, y, 0, n)) speedY = n-1;
+					if(!Colision.canMove(map, temp, (int)x, (int)y, 0, n)) speedY = n-1;
 				}
 			}
 			y += speedY;
@@ -353,17 +353,17 @@ public class Player extends Mob{
 	}
 	
 	public void render() {
-		Screen.drawMapSprite(x-xOffset, y-yOffset, sheet, anim, movingDir==1, false, color);
+		Screen.drawMapSprite((int)(x-xOffset), (int)(y-yOffset), sheet, anim, movingDir==1, false, color);
 		
 		if((anim == 10 || anim == 11) & this.bags.get(BAG.BELT_1) != null){
 			try{
-				if(anim == 10)	this.bags.get(BAG.BELT_1).getItem(selected).renderOnMap(x+3-movingDir*10, y-5, movingDir==1, false);
-				if(anim == 11)	this.bags.get(BAG.BELT_1).getItem(selected).renderOnMap(x+4-movingDir*12, y-3, movingDir==1, false);
+				if(anim == 10)	this.bags.get(BAG.BELT_1).getItem(selected).renderOnMap((int)(x+3-movingDir*10), (int)(y-5), movingDir==1, false);
+				if(anim == 11)	this.bags.get(BAG.BELT_1).getItem(selected).renderOnMap((int)(x+4-movingDir*12), (int)(y-3), movingDir==1, false);
 			}catch(NullPointerException e){}
 		}
 		if(anim == 12 & this.bags.get(BAG.BELT_1) != null){
 			try{
-				this.bags.get(BAG.BELT_1).getItem(selected).renderOnMap(x+3-movingDir*8, y-2, movingDir==1, false);
+				this.bags.get(BAG.BELT_1).getItem(selected).renderOnMap((int)(x+3-movingDir*8), (int)(y-2), movingDir==1, false);
 			}catch(NullPointerException e){}
 		}
 	}
@@ -407,8 +407,8 @@ public class Player extends Mob{
 	}
 
 	public void save(ArrayList<Byte> file){
-		ConvertData.I2B(file, x);
-		ConvertData.I2B(file, y);
+		ConvertData.I2B(file, (int)x);
+		ConvertData.I2B(file, (int)y);
 		for (BAG bagEnum : Player.BAG.values()) {
 			if(this.bags.containsKey(bagEnum)) {
 				this.bags.get(bagEnum).save(file);

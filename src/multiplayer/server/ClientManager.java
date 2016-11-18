@@ -129,8 +129,8 @@ public class ClientManager implements Runnable, ConnectionManager {
 		data.addByte(Request.PLAYER_DATA);
 		data.addByte(Request.PLAYER_REFRESH);
 		data.addByte(ID);
-		data.addInt(player.x);
-		data.addInt(player.y);
+		data.addDouble(player.x);
+		data.addDouble(player.y);
 		data.addByte(player.getAnim());
 		data.addByte(player.getDir());
 		this.sendToClient(data);

@@ -21,18 +21,18 @@ public class Slime extends Mob {
 		int n;
 		if(speedY < 0){
 			for(n = 0; n >= speedY; n--){
-				if(!Colision.canMove(map, col, x, y, 0, n)) speedY = n+1;
+				if(!Colision.canMove(map, col, (int)x, (int)y, 0, n)) speedY = n+1;
 			}
 		}else{
 			for(n = 0; n <= speedY; n++){
-				if(!Colision.canMove(map, col, x, y, 0, n)) speedY = n-1;
+				if(!Colision.canMove(map, col, (int)x, (int)y, 0, n)) speedY = n-1;
 			}
 		}
 		y += speedY;
 	}
 
 	public void render() {
-		Screen.drawMapSprite(x-xOffset, y-yOffset, sheet);
+		Screen.drawMapSprite((int)(x-xOffset), (int)(y-yOffset), sheet);
 	}
 	
 }

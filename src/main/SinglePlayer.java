@@ -105,8 +105,8 @@ public class SinglePlayer {
 		
 		if(debuginfo){
 			Game.sfont.render(50, 30, false, false, "FPS:" + Integer.toString(Game.fps), 0, 0xff000000);
-			Game.sfont.render(50, 60, false, false, "X:" + Integer.toString(player.x), 0, 0xff000000);
-			Game.sfont.render(50, 90, false, false, "Y:" + Integer.toString(player.y), 0, 0xff000000);
+			Game.sfont.render(50, 60, false, false, "X:" + Double.toString(player.x), 0, 0xff000000);
+			Game.sfont.render(50, 90, false, false, "Y:" + Double.toString(player.y), 0, 0xff000000);
 			Game.sfont.render(50, 120, false, false, "sX:" + Integer.toString(player.getspeedX()), 0, 0xff000000);
 			Game.sfont.render(50, 150, false, false, "sY:" + Integer.toString(player.getspeedY()), 0, 0xff000000);
 		}

@@ -30,6 +30,7 @@ public class Map {
 	public static final byte[] LAYER_ALL = {LAYER_BACK,LAYER_LIQUID,LAYER_FRONT,LAYER_LIGHT},
 			LAYER_ALL_PIXEL = {LAYER_BACK,LAYER_LIQUID,LAYER_FRONT},
 			LAYER_ALL_MATERIAL = {LAYER_BACK,LAYER_FRONT};
+	public static final int SOLID_NONE = 0b0, SOLID_TOP = 0b0001, SOLID_BOTTOM = 0b0010, SOLID_RIGHT = 0b0100, SOLID_LEFT = 0b1000, SOLID_ALL = 0b1111;
 	public static final int widthh = 1024, heighth = 1024;
 	public String path;
 	protected UpdateManager updatesPixel = new UpdateManager();
@@ -79,13 +80,9 @@ public class Map {
 			}
 		}
 		
-		
-		if(tickCount%4==0) {
-			this.mobEntityList.forEach(e->e.applyGravity());
-			this.entityList.forEach(e->e.applyGravity());
-			this.itemEntityList.forEach(e->e.applyGravity());
-		}
-		
+		this.mobEntityList.forEach(e->e.applyGravity());
+		this.entityList.forEach(e->e.applyGravity());
+		this.itemEntityList.forEach(e->e.applyGravity());
 		
 		Material<?> m;
 		int x,y,l;
@@ -127,7 +124,7 @@ public class Map {
 			}
 			regularUpdateX = -Screen.width/2-Screen.RENDER_CHUNK_SIZE;
 		}
-		if(gametype!=GT_SERVER)setTextureUpdating(regularUpdateX+Screen.xOffset, regularUpdateY+Screen.yOffset, Map.LAYER_LIGHT);
+		if(gametype!=GT_SERVER)setTextureUpdating(regularUpdateX+(int)Screen.xOffset, regularUpdateY+(int)Screen.yOffset, Map.LAYER_LIGHT);
 	}
 	
 	public boolean isUpdating(int x, int y, int l){
@@ -439,6 +436,12 @@ public class Map {
 	public boolean isSolid(int x, int y){
 		if(getID(x, y, Map.LAYER_FRONT)!=0 && PixelList.GetMat(getID(x, y, Map.LAYER_FRONT)).solid)return true;
 		else return false;
+	}
+	
+	public int getSolidity(int x, int y){
+//		if(getID(x, y, Map.LAYER_FRONT)!=0 && PixelList.GetMat(getID(x, y, Map.LAYER_FRONT)).solid)return true;
+//		else return false;
+		return 0;
 	}
 	
 	public int getRenderChunk(int x, int y, int l) {
