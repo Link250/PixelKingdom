@@ -3,7 +3,9 @@ package entities.entityList;
 import java.util.List;
 import java.util.function.Predicate;
 
-import entities.Colision;
+import org.joml.Vector2d;
+
+import entities.Collision;
 import entities.Entity;
 import entities.Hitbox;
 import item.Item;
@@ -12,17 +14,29 @@ import map.Map;
 public class ItemEntity extends Entity {
 	public Item item;
 	public Map map;
+	private Hitbox hitbox = new Hitbox(-1, -1, 1, 1);
 	
 	public ItemEntity(Item item, Map map, int x, int y) {
 		this.item = item;
 		this.map = map;
 		this.x = x;
 		this.y = y;
+		double rad = Math.random()*Math.PI*2;
+		this.speedX = Math.cos(rad);
+		this.speedY = Math.sin(rad);
 	}
 	
 	public void tick(int numTick) {
-		if(!Colision.canMove(map, new Hitbox(-1, -1, 1, 1), (int)x, (int)y, 0, (int)speedY)) speedY--;
-		else y+=speedY;
+		Collision c;
+		if((c = Collision.canMoveTo(map, hitbox, x, y, new Vector2d(speedX, speedY)))==null) {
+			x+= speedX;
+			y+= speedY;
+		}else {
+			speedX = 0;
+			speedY = 0;
+			x = c.entityPos.x;
+			y = c.entityPos.y;
+		}
 	}
 	
 	public void combine(List<ItemEntity> list) {

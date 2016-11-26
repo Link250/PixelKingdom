@@ -11,7 +11,7 @@ public class Torch extends Material<UDS>{
 		ID = 48;
 		name = "Torch";
 		displayName = "Torch";
-		solid = false;
+		solidity = Map.SOLID_NONE;
 		frontLightReduction = 0;
 		backLightReduction = 0;
 		requiredType = MINING_TYPE_PICKAXE;

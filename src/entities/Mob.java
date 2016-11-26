@@ -5,6 +5,7 @@ import map.Map;
 
 
 public abstract class Mob extends Entity{
+	public static int DIRECTION_RIGHT = 0, DIRECTION_LEFT = 1;
 	
 	protected String name;
 	protected Map map;
@@ -12,7 +13,6 @@ public abstract class Mob extends Entity{
 	protected int numSteps = 0;
 	protected boolean isMoving;
 	protected int movingDir;
-	protected int scale = 1;
 	
 	public Mob(Map map, String name, int x, int y, SpriteSheet sheet){
 		this.map = map;

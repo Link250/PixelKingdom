@@ -7,14 +7,14 @@ import pixel.interfaces.Heatable;
 import pixel.Material;
 import pixel.PixelList;
 
-public class Fire extends Material<Fire.FireAD>{
+public class Fire extends Material<Fire.FireUDS>{
 
 	public Fire(){
-		super(new FireAD());
+		super(new FireUDS());
 		ID = 32;
 		name = "Fire";
 		displayName = "Fire";
-		solid = false;
+		solidity = Map.SOLID_NONE;
 		frontLightReduction = 0;
 		backLightReduction = 0;
 	}
@@ -46,7 +46,7 @@ public class Fire extends Material<Fire.FireAD>{
 	}
 	
 	public short tickLight(int x, int y, int l, Map map) {
-		return (byte) (map.<FireAD>getUDS(x, y, l).burntime*Map.MAX_LIGHT/100);
+		return (byte) (map.<FireUDS>getUDS(x, y, l).burntime*Map.MAX_LIGHT/100);
 	}
 	
 	public int render(int x, int y, int l, Map map) {
@@ -88,7 +88,7 @@ public class Fire extends Material<Fire.FireAD>{
 		uds.burntime=time;
 	}
 	
-	public static class FireAD extends UDS{
+	public static class FireUDS extends UDS{
 		public byte burntime;
 	}
 }

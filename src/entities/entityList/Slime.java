@@ -1,6 +1,6 @@
 package entities.entityList;
 
-import entities.Colision;
+import entities.Collision;
 import entities.Hitbox;
 import entities.Mob;
 import gfx.Screen;
@@ -21,11 +21,11 @@ public class Slime extends Mob {
 		int n;
 		if(speedY < 0){
 			for(n = 0; n >= speedY; n--){
-				if(!Colision.canMove(map, col, (int)x, (int)y, 0, n)) speedY = n+1;
+				if(!Collision.canMove(map, col, (int)x, (int)y, 0, n)) speedY = n+1;
 			}
 		}else{
 			for(n = 0; n <= speedY; n++){
-				if(!Colision.canMove(map, col, (int)x, (int)y, 0, n)) speedY = n-1;
+				if(!Collision.canMove(map, col, (int)x, (int)y, 0, n)) speedY = n-1;
 			}
 		}
 		y += speedY;

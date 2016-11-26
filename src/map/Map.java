@@ -434,14 +434,15 @@ public class Map {
 	}
 
 	public boolean isSolid(int x, int y){
-		if(getID(x, y, Map.LAYER_FRONT)!=0 && PixelList.GetMat(getID(x, y, Map.LAYER_FRONT)).solid)return true;
-		else return false;
+		return getID(x, y, Map.LAYER_FRONT)!=0 && PixelList.GetMat(getID(x, y, Map.LAYER_FRONT)).getSolidity() == SOLID_ALL;
+	}
+	
+	public int getSolidity(double x, double y){
+		return PixelList.GetMat(getID((int)x, (int)y, Map.LAYER_FRONT)).getSolidity();
 	}
 	
 	public int getSolidity(int x, int y){
-//		if(getID(x, y, Map.LAYER_FRONT)!=0 && PixelList.GetMat(getID(x, y, Map.LAYER_FRONT)).solid)return true;
-//		else return false;
-		return 0;
+		return PixelList.GetMat(getID(x, y, Map.LAYER_FRONT)).getSolidity();
 	}
 	
 	public int getRenderChunk(int x, int y, int l) {

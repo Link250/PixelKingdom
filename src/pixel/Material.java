@@ -15,10 +15,10 @@ import map.Map;
 
 public abstract class Material<UDSType extends UDS> {
 	public static final int MINING_TYPE_NONE = 0;
-	public static final int MINING_TYPE_PICKAXE = 1;
-	public static final int MINING_TYPE_AXE = 2;
-	public static final int MINING_TYPE_SHOVEL = 4;
-	public static final int MINING_TYPE_HAMMER = 8;
+	public static final int MINING_TYPE_PICKAXE = 0b1;
+	public static final int MINING_TYPE_AXE = 0b10;
+	public static final int MINING_TYPE_SHOVEL = 0b100;
+	public static final int MINING_TYPE_HAMMER = 0b1000;
 	
 	public int ID = 0;
 	protected int itemID = 0;
@@ -27,7 +27,7 @@ public abstract class Material<UDSType extends UDS> {
 	protected int requiredType = MINING_TYPE_NONE;
 	protected double requiredTier = 1;
 	protected double miningResistance = 1/25;
-	public boolean solid = true;
+	protected int solidity = Map.SOLID_ALL;
 	
 	/**this UDS is HOLY !!! it is used to create new UDS Objects for this Material <b>SO NEVER EVER DELETE IT</b>*/
 	private UDSType udsType = null;
@@ -64,7 +64,7 @@ public abstract class Material<UDSType extends UDS> {
 	}
 	
 	/**
-	 * creates a new Intance of the Generic AD Type from the Material this method is called on
+	 * creates a new Intance of the Generic UDS Type from the Material this method is called on
 	 * @return {@link pixel.UDS}
 	 */
 	public UDS getNewUDS() {
@@ -85,7 +85,7 @@ public abstract class Material<UDSType extends UDS> {
 	/**
 	 * Creates a new UDS on the Position <b>x y l</b>.<br>
 	 * If the UDS Type is null
-	 * the current AD will be set to <b><code>null</code></b>.
+	 * the current UDS will be set to <b><code>null</code></b>.
 	 * <pre>The UDS will have the Generic Type specific to the Material this Method is called from</pre>
 	 * @param x
 	 * @param y
@@ -138,6 +138,10 @@ public abstract class Material<UDSType extends UDS> {
 	
 	public int getColor() {
 		return texture!=null ? texture[0] : 0;
+	}
+	
+	public int getSolidity() {
+		return solidity;
 	}
 	
 	public double getMiningResistance() {

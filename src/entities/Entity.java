@@ -6,7 +6,7 @@ public abstract class Entity {
 	
 	public double x, y ,xOffset ,yOffset;
 	protected double speedX, speedY;
-	public boolean isinair = true;
+	public boolean onGround = false;
 	
 	public Entity(){
 		
@@ -17,8 +17,8 @@ public abstract class Entity {
 	public abstract void render ();
 	
 	public void applyGravity(){
-		if(isinair){
-			speedY += g_earth*m;
+		if(!onGround){
+			speedY += g_earth/m*s;
 		}
 	}
 	

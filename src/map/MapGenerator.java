@@ -8,26 +8,26 @@ public class MapGenerator {
 		return BiomeList.GetBiome(biome).generate();
 	}
 	
-	public static void newTree(int x, int y, short[][][] Map){
+	public static void newTree(int x, int y, short[][][] mapData){
 		int height = (int)(Math.random()*30+20);
 		y -= height;
 		for(int i = 0; i < 60; i++){
-			if(Map[2][x+0][y+i]==0)Map[2][x+0][y+i]=4;
-			if(Map[2][x+1][y+i]==0)Map[2][x+1][y+i]=4;
-			if(Map[2][x+2][y+i]==0)Map[2][x+2][y+i]=4;
-			if(Map[2][x+3][y+i]==0)Map[2][x+3][y+i]=4;
+			if(mapData[2][x+0][y+i]==0)mapData[2][x+0][y+i]=4;
+			if(mapData[2][x+1][y+i]==0)mapData[2][x+1][y+i]=4;
+			if(mapData[2][x+2][y+i]==0)mapData[2][x+2][y+i]=4;
+			if(mapData[2][x+3][y+i]==0)mapData[2][x+3][y+i]=4;
 		}
 		for(double r = 0.9*Math.PI; r <= 1.1*Math.PI*2; r+= Math.PI/20){
-			for(int l = 0; l < 3; l+=2){
+//			for(int l = 0; l < 3; l+=2){
 				int X=x+2,Y=y+1;
 				for(int i = 0; i < height/5; i++){
 					double d = (Math.random()*0.5-0.25)*Math.PI;
-					DrawPixelLine((int)(5*Math.cos(r+d)+X), (int)(4*Math.sin(r+d)+Y), X, Y, Map[l], (byte)5, 2, false);
-					DrawPixelLine((int)(5*Math.cos(r+d)+X), (int)(4*Math.sin(r+d)+Y), X, Y, Map[l], (byte)4, 0, true);
+					DrawPixelLine((int)(5*Math.cos(r+d)+X), (int)(4*Math.sin(r+d)+Y), X, Y, mapData[Map.LAYER_BACK], (byte)5, 2, false);
+					DrawPixelLine((int)(5*Math.cos(r+d)+X), (int)(4*Math.sin(r+d)+Y), X, Y, mapData[Map.LAYER_FRONT], (byte)4, 0, true);
 					X+=(int)(4*Math.cos(r+d));
 					Y+=(int)(4*Math.sin(r+d));
 				}
-			}
+//			}
 		}
 	}
 	

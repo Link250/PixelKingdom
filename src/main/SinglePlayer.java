@@ -32,8 +32,7 @@ public class SinglePlayer {
 			save();
 		}
 		map.addMobEntity(player);
-		Screen.xOffset= player.x-Screen.width/Screen.MAP_SCALE/Screen.MAP_ZOOM/2;
-		Screen.yOffset= player.y-Screen.height/Screen.MAP_SCALE/Screen.MAP_ZOOM/2;
+		Screen.setMapPos(player.x, player.y);
 	}
 	
 	public void tick(int tickCount){
@@ -52,8 +51,7 @@ public class SinglePlayer {
 			this.save();
 			Game.reset = true;
 		}
-		Screen.xOffset= player.x-Screen.width/Screen.MAP_SCALE/Screen.MAP_ZOOM/2;
-		Screen.yOffset= player.y-Screen.height/Screen.MAP_SCALE/Screen.MAP_ZOOM/2;
+		Screen.setMapPos(player.x, player.y);
 
 		if(debuginfo){
 			if(Game.devmode&&Keys.DEBUGPXL.click()) {

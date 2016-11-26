@@ -18,8 +18,8 @@ public class Screen {
 	
 	public static int RENDER_CHUNK_SIZE = 128;
 
-	public static double xOffset = 0;
-	public static double yOffset = 0;
+	public static int xOffset = 0;
+	public static int yOffset = 0;
 	
 	public static int width;
 	public static int height;
@@ -69,8 +69,8 @@ public class Screen {
 	 * @param y
 	 */
 	public static void setMapPos(double x, double y) {
-		xOffset= x-Screen.width/Screen.MAP_SCALE/Screen.MAP_ZOOM/2;
-		yOffset= y-Screen.height/Screen.MAP_SCALE/Screen.MAP_ZOOM/2;
+		xOffset= (int) (x-Screen.width/Screen.MAP_SCALE/Screen.MAP_ZOOM/2);
+		yOffset= (int) (y-Screen.height/Screen.MAP_SCALE/Screen.MAP_ZOOM/2);
 	}
 	
 	/**
@@ -196,8 +196,8 @@ public class Screen {
 				}
 				X = x;
 				Y = y;
-				X -= (X+xOffset)%RENDER_CHUNK_SIZE;
-				Y -= (Y+yOffset)%RENDER_CHUNK_SIZE;
+				X -= (X+((int)xOffset))%RENDER_CHUNK_SIZE;
+				Y -= (Y+((int)yOffset))%RENDER_CHUNK_SIZE;
 				Y+=RENDER_CHUNK_SIZE/2;
 				X+=RENDER_CHUNK_SIZE/2;
 				X*=MAP_SCALE*MAP_ZOOM;
@@ -226,8 +226,8 @@ public class Screen {
 				if(tex == 0)continue;
 				X = x;
 				Y = y;
-				X -= (X+xOffset)%RENDER_CHUNK_SIZE;
-				Y -= (Y+yOffset)%RENDER_CHUNK_SIZE;
+				X -= (X+(int)xOffset)%RENDER_CHUNK_SIZE;
+				Y -= (Y+(int)yOffset)%RENDER_CHUNK_SIZE;
 				Y+=RENDER_CHUNK_SIZE/2;
 				X+=RENDER_CHUNK_SIZE/2;
 				X*=MAP_SCALE*MAP_ZOOM;
