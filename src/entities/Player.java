@@ -297,6 +297,9 @@ public class Player extends Mob {
 		
 		Collision c;
 		if ((c = Collision.canMoveTo(map, tempHitBox, x, y, new Vector2d(speedX, speedY))) != null) {
+			for (Vector2d vec : c.collisionPos) {
+				System.out.printf("pX:%f pY:%f\n", vec.x, vec.y);
+			}
 			System.out.printf("cX:%f cY:%f\n", x, y);
 			x = (int)c.entityPos.x;
 			y = (int)c.entityPos.y;
