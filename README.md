@@ -2,7 +2,7 @@
 Pixel Kingdom is a 2D sandbox game, which is still under heavy development.
 
 
-# Discrod
+# Discord
 Join our Discord Server! https://discord.gg/4Ha3MYN
 
 # License
