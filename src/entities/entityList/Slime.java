@@ -9,7 +9,7 @@ import map.Map;
 
 public class Slime extends Mob {
 
-	private Hitbox col = new Hitbox(-3,-2,3,2);
+	private Hitbox col = new Hitbox(-3,3,-2,2);
 	
 	public Slime(Map map, int x, int y) {
 		super(map, "Slime", x, y, new SpriteSheet("/Mobs/slime.png", 33, 21));

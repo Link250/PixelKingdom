@@ -235,8 +235,12 @@ public class Map {
 		this.itemEntityList.add(e);
 	}
 	
-	public void spawnItemEntity(Item item, int x, int y) {
-		this.itemEntityList.add(new ItemEntity(item, this, x, y));
+	public ItemEntity spawnItemEntity(Item item, int x, int y) {
+		ItemEntity temp;
+		if(this.itemEntityList.add(temp = new ItemEntity(item, this, x, y)))
+			return temp;
+		else 
+			return null;
 	}
 	
 	public void addEntity(Entity e) {

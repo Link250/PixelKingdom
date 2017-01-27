@@ -17,9 +17,13 @@ public abstract class Entity {
 	public abstract void render ();
 	
 	public void applyGravity(){
-		if(!onGround){
+//		if(!onGround){
 			speedY += g_earth/m*s;
-		}
+//		}
 	}
 	
+	public void setSpeed(double x, double y) {
+		this.speedX = x;
+		this.speedY = y;
+	}
 }

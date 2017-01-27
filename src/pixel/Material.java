@@ -28,6 +28,7 @@ public abstract class Material<UDSType extends UDS> {
 	protected double requiredTier = 1;
 	protected double miningResistance = 1/25;
 	protected int solidity = Map.SOLID_ALL;
+	protected int friction = 1;
 	
 	/**this UDS is HOLY !!! it is used to create new UDS Objects for this Material <b>SO NEVER EVER DELETE IT</b>*/
 	private UDSType udsType = null;
@@ -158,5 +159,9 @@ public abstract class Material<UDSType extends UDS> {
 	
 	public boolean canBeMinedBy(MiningTool tool) {
 		return (this.requiredTier<=tool.getMiningTier()) && ((tool.getMiningType() & this.requiredType) > 0);
+	}
+	
+	public int getFriction() {
+		return this.friction;
 	}
 }

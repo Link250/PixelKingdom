@@ -50,8 +50,8 @@ public class Client {
 			create();
 			save();
 		}
-		Screen.xOffset= (int) (player.x-Screen.width/Screen.MAP_SCALE/Screen.MAP_ZOOM/2);
-		Screen.yOffset= (int) (player.y-Screen.height/Screen.MAP_SCALE/Screen.MAP_ZOOM/2);
+		Screen.xOffset= (player.x-Screen.width/Screen.MAP_SCALE/Screen.MAP_ZOOM/2);
+		Screen.yOffset= (player.y-Screen.height/Screen.MAP_SCALE/Screen.MAP_ZOOM/2);
 		this.players = new ArrayList<MPlayer>();
 		
 		serverManager = new ServerManager(this,serverConnection);

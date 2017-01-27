@@ -5,9 +5,11 @@ import static org.lwjgl.opengl.GL11.glBindTexture;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
 import static org.lwjgl.opengl.GL13.glActiveTexture;
 
-import org.joml.Matrix4f;
-import org.joml.Vector3f;
+import java.util.List;
 
+import org.joml.Matrix4f;
+import org.joml.Vector2d;
+import org.joml.Vector3f;
 import map.Map;
 
 public class Screen {
@@ -18,8 +20,8 @@ public class Screen {
 	
 	public static int RENDER_CHUNK_SIZE = 128;
 
-	public static int xOffset = 0;
-	public static int yOffset = 0;
+	public static double xOffset = 0;
+	public static double yOffset = 0;
 	
 	public static int width;
 	public static int height;
@@ -27,10 +29,12 @@ public class Screen {
 	private static Shader default_shader;
 	private static Shader colored_shader;
 	private static Shader map_shader;
+	private static Shader line_shader;
 	
 	private static Matrix4f projection;
 	private static Model tileModel;
 	private static Model shadowModel;
+	private static LineModel lineModel;
 	
 	public static void initialize(int width, int height) {
 		Screen.width = width;
@@ -40,7 +44,9 @@ public class Screen {
 		default_shader = new Shader("default_shader");
 		colored_shader = new Shader("colored_shader");
 		map_shader = new Shader("map_shader");
+		line_shader = new Shader("line_shader");
 		tileModel = new Model();
+		lineModel = new LineModel();
 		
 		float[] vertices = new float[] {
 				-1f, 1f, 0, //TOP LEFT     0
@@ -69,8 +75,8 @@ public class Screen {
 	 * @param y
 	 */
 	public static void setMapPos(double x, double y) {
-		xOffset= (int) (x-Screen.width/Screen.MAP_SCALE/Screen.MAP_ZOOM/2);
-		yOffset= (int) (y-Screen.height/Screen.MAP_SCALE/Screen.MAP_ZOOM/2);
+		xOffset= (x-Screen.width/Screen.MAP_SCALE/Screen.MAP_ZOOM/2);
+		yOffset= (y-Screen.height/Screen.MAP_SCALE/Screen.MAP_ZOOM/2);
 	}
 	
 	/**
@@ -101,65 +107,65 @@ public class Screen {
 		}
 	}
 	
-	public static void drawMapSprite(int xPos, int yPos, SpriteSheet sheet, int tile, boolean mirrorX, boolean mirrorY, int color, boolean centered){
+	public static void drawMapSprite(double xPos, double yPos, SpriteSheet sheet, int tile, boolean mirrorX, boolean mirrorY, int color, boolean centered){
 		drawSprite(xPos, yPos, sheet, tile, mirrorX, mirrorY, color, true, centered);
 	}
 	
-	public static void drawMapSprite(int xPos, int yPos, SpriteSheet sheet, int tile, boolean mirrorX, boolean mirrorY, int color){
+	public static void drawMapSprite(double xPos, double yPos, SpriteSheet sheet, int tile, boolean mirrorX, boolean mirrorY, int color){
 		drawSprite(xPos, yPos, sheet, tile, mirrorX, mirrorY, color, true, false);
 	}
 	
-	public static void drawMapSprite(int xPos, int yPos, SpriteSheet sheet, int tile, boolean mirrorX, boolean mirrorY){
+	public static void drawMapSprite(double xPos, double yPos, SpriteSheet sheet, int tile, boolean mirrorX, boolean mirrorY){
 		drawSprite(xPos, yPos, sheet, tile, mirrorX, mirrorY, 0, true, false);
 	}
 	
-	public static void drawMapSprite(int xPos, int yPos, SpriteSheet sheet, int tile){
+	public static void drawMapSprite(double xPos, double yPos, SpriteSheet sheet, int tile){
 		drawSprite(xPos, yPos, sheet, tile, false, false, 0, true, false);
 	}
 	
-	public static void drawMapSprite(int xPos, int yPos, SpriteSheet sheet){
+	public static void drawMapSprite(double xPos, double yPos, SpriteSheet sheet){
 		drawSprite(xPos, yPos, sheet, 0, false, false, 0, true, false);
 	}
 	
-	public static void drawGUISprite(int xPos, int yPos, SpriteSheet sheet, int tile, boolean mirrorX, boolean mirrorY, int color, boolean centered){
+	public static void drawGUISprite(double xPos, double yPos, SpriteSheet sheet, int tile, boolean mirrorX, boolean mirrorY, int color, boolean centered){
 		drawSprite(xPos, yPos, sheet, tile, mirrorX, mirrorY, color, false, centered);
 	}
 	
-	public static void drawGUISprite(int xPos, int yPos, SpriteSheet sheet, int tile, boolean mirrorX, boolean mirrorY, int color){
+	public static void drawGUISprite(double xPos, double yPos, SpriteSheet sheet, int tile, boolean mirrorX, boolean mirrorY, int color){
 		drawSprite(xPos, yPos, sheet, tile, mirrorX, mirrorY, color, false, false);
 	}
 	
-	public static void drawGUISprite(int xPos, int yPos, SpriteSheet sheet, int tile, boolean mirrorX, boolean mirrorY){
+	public static void drawGUISprite(double xPos, double yPos, SpriteSheet sheet, int tile, boolean mirrorX, boolean mirrorY){
 		drawSprite(xPos, yPos, sheet, tile, mirrorX, mirrorY, 0, false, false);
 	}
 	
-	public static void drawGUISprite(int xPos, int yPos, SpriteSheet sheet, int tile){
+	public static void drawGUISprite(double xPos, double yPos, SpriteSheet sheet, int tile){
 		drawSprite(xPos, yPos, sheet, tile, false, false, 0, false, false);
 	}
 	
-	public static void drawGUISprite(int xPos, int yPos, SpriteSheet sheet){
+	public static void drawGUISprite(double xPos, double yPos, SpriteSheet sheet){
 		drawSprite(xPos, yPos, sheet, 0, false, false, 0, false, false);
 	}
 	
-	public static void drawSprite(float xPos, float yPos, SpriteSheet sheet, int tile, boolean mirrorX, boolean mirrorY, int color, boolean onMap, boolean centered){
-			if(onMap) {
-				xPos-=xOffset;xPos*=MAP_SCALE*MAP_ZOOM;
-				yPos-=yOffset;yPos*=MAP_SCALE*MAP_ZOOM;
-				if(!centered) {
-					xPos += sheet.getWidth()/2f*MAP_ZOOM;
-					yPos += sheet.getHeight()/2f*MAP_ZOOM;
-				}
-			}else {
-				if(!centered) {
-					xPos += sheet.getWidth()/2f;
-					yPos += sheet.getHeight()/2f;
-				}
+	public static void drawSprite(double xPos, double yPos, SpriteSheet sheet, int tile, boolean mirrorX, boolean mirrorY, int color, boolean onMap, boolean centered){
+		if(onMap) {
+			xPos-=xOffset;xPos*=MAP_SCALE*MAP_ZOOM;
+			yPos-=yOffset;yPos*=MAP_SCALE*MAP_ZOOM;
+			if(!centered) {
+				xPos += sheet.getWidth()/2f*MAP_ZOOM;
+				yPos += sheet.getHeight()/2f*MAP_ZOOM;
 			}
+		}else {
+			if(!centered) {
+				xPos += sheet.getWidth()/2f;
+				yPos += sheet.getHeight()/2f;
+			}
+		}
 		yPos = height - yPos;
 		
 		glActiveTexture(GL_TEXTURE0 + 0);
 		glBindTexture(GL_TEXTURE_2D, sheet.getID(tile));
-		Matrix4f target = projection.mul(new Matrix4f().translate(new Vector3f(xPos*2-width, yPos*2-height, 0)), new Matrix4f());
+		Matrix4f target = projection.mul(new Matrix4f().translate(new Vector3f((float)(xPos*2-width), (float)(yPos*2-height), 0)), new Matrix4f());
 		
 		float ratio = (((float)sheet.getHeight())/((float)sheet.getWidth()));
 		target.mul(new Matrix4f().ortho2D(ratio*(mirrorX ? 1.0f : -1.0f), ratio*(mirrorX ? -1.0f : 1.0f), (mirrorY ? 1.0f : -1.0f), (mirrorY ? -1.0f : 1.0f)));
@@ -181,6 +187,61 @@ public class Screen {
 		tileModel.render();
 	}
 	
+	public static void drawLine(double xStart, double yStart, double xEnd, double yEnd, int color, boolean onMap){
+		if(onMap) {
+			xStart-=xOffset;xStart*=MAP_SCALE*MAP_ZOOM;
+			yStart-=yOffset;yStart*=MAP_SCALE*MAP_ZOOM;
+			xEnd-=xOffset;xEnd*=MAP_SCALE*MAP_ZOOM;
+			yEnd-=yOffset;yEnd*=MAP_SCALE*MAP_ZOOM;
+		}
+		yStart = height - yStart;
+		yEnd = height - yEnd;
+//		System.out.format("%f %f %f %f\n", xStart, yStart, xEnd, yEnd);
+		Matrix4f target = projection.mul(new Matrix4f().translate(new Vector3f((float)(-width), (float)(-height), 0)), new Matrix4f());
+		
+		target.scale((float) (2));
+		line_shader.bind();
+		line_shader.setUniform("color",
+				((color>>24)&0xff)/255.0f,
+				((color>>16)&0xff)/255.0f,
+				((color>>8 )&0xff)/255.0f,
+				((color    )&0xff)/255.0f);
+		line_shader.setUniform("projection", target);
+		lineModel.setPos(new float[] {
+				(float) xStart, (float) yStart, //start
+				(float) xEnd, (float) yEnd, //end
+		});
+		lineModel.render();
+	}
+	
+	public static void drawLines(List<Vector2d> points, int color, boolean onMap){
+		float[] positions = new float[points.size()*2];
+		Vector2d p;
+		for (int i = 0; i < points.size(); i++) {
+			p = points.get(i);
+			if(onMap) {
+				p.x-=xOffset;p.x*=MAP_SCALE*MAP_ZOOM;
+				p.y-=yOffset;p.y*=MAP_SCALE*MAP_ZOOM;
+			}
+			p.y = height - p.y;
+			positions[i*2] = (float) p.x;
+			positions[i*2+1] = (float) p.y;
+		}
+		
+		Matrix4f target = projection.mul(new Matrix4f().translate(new Vector3f((float)(-width), (float)(-height), 0)), new Matrix4f());
+		
+		target.scale((float) (2));
+		line_shader.bind();
+		line_shader.setUniform("color",
+				((color>>24)&0xff)/255.0f,
+				((color>>16)&0xff)/255.0f,
+				((color>>8 )&0xff)/255.0f,
+				((color    )&0xff)/255.0f);
+		line_shader.setUniform("projection", target);
+		lineModel.setPos(positions);
+		lineModel.render();
+	}
+	
 	public static void drawMap(Map map){
 		int textures[] = new int[3];
 		Matrix4f target = null;
@@ -196,8 +257,8 @@ public class Screen {
 				}
 				X = x;
 				Y = y;
-				X -= (X+((int)xOffset))%RENDER_CHUNK_SIZE;
-				Y -= (Y+((int)yOffset))%RENDER_CHUNK_SIZE;
+				X -= (X+(xOffset))%RENDER_CHUNK_SIZE;
+				Y -= (Y+(yOffset))%RENDER_CHUNK_SIZE;
 				Y+=RENDER_CHUNK_SIZE/2;
 				X+=RENDER_CHUNK_SIZE/2;
 				X*=MAP_SCALE*MAP_ZOOM;
@@ -226,8 +287,8 @@ public class Screen {
 				if(tex == 0)continue;
 				X = x;
 				Y = y;
-				X -= (X+(int)xOffset)%RENDER_CHUNK_SIZE;
-				Y -= (Y+(int)yOffset)%RENDER_CHUNK_SIZE;
+				X -= (X+xOffset)%RENDER_CHUNK_SIZE;
+				Y -= (Y+yOffset)%RENDER_CHUNK_SIZE;
 				Y+=RENDER_CHUNK_SIZE/2;
 				X+=RENDER_CHUNK_SIZE/2;
 				X*=MAP_SCALE*MAP_ZOOM;

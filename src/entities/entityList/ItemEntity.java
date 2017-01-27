@@ -14,16 +14,18 @@ import map.Map;
 public class ItemEntity extends Entity {
 	public Item item;
 	public Map map;
-	private Hitbox hitbox = new Hitbox(-1, -1, 1, 1);
+	private Hitbox hitbox = new Hitbox(-1.5, 1.5, -1.5, 1.5);
 	
 	public ItemEntity(Item item, Map map, int x, int y) {
 		this.item = item;
 		this.map = map;
 		this.x = x;
 		this.y = y;
-		double rad = Math.random()*Math.PI*2;
-		this.speedX = Math.cos(rad);
-		this.speedY = Math.sin(rad);
+		this.speedX = 0;
+		this.speedY = 0;
+//		double rad = Math.random()*Math.PI*2;
+//		this.speedX = Math.cos(rad);
+//		this.speedY = Math.sin(rad);
 	}
 	
 	public void tick(int numTick) {
@@ -32,10 +34,18 @@ public class ItemEntity extends Entity {
 			x+= speedX;
 			y+= speedY;
 		}else {
-			speedX = 0;
-			speedY = 0;
-			x = c.entityPos.x;
-			y = c.entityPos.y;
+			if((c.collisionFlags & Collision.X_COLLISION) != 0) {
+				speedX = 0;
+				x = c.entityPos.x;
+			}else {
+				x += speedX;
+			}
+			if((c.collisionFlags & Collision.Y_COLLISION) != 0) {
+				speedY = 0;
+				y = c.entityPos.y;
+			}else {
+				y += speedY;
+			}
 		}
 	}
 	
@@ -58,7 +68,8 @@ public class ItemEntity extends Entity {
 	}
 	
 	public void render() {
-		item.renderOnMap((int)x, (int)y, false, false, true);
+		item.renderOnMap(x, y, false, false, true);
+		hitbox.render(x, y);
 	}
 
 }

@@ -3,8 +3,10 @@ package entities;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.List;
 
 import org.joml.Vector2d;
+import org.joml.Vector2f;
 
 import dataUtils.conversion.ConvertData;
 import gfx.Screen;
@@ -44,11 +46,12 @@ public class Player extends Mob {
 	// visual and Hitboxes
 	private int anim;
 	private int color;
-	private Hitbox col = new Hitbox(-1, -7, 1, 6); // walking
-	private Hitbox cols = new Hitbox(-1, -1, 1, 6);// sneaking
+	private Hitbox col = new Hitbox(-1, 2, -6, 8); // walking
+	private Hitbox cols = new Hitbox(-1, 2, -1, 8);// sneaking
 
 	// internal values for physics
-	private double jumpspeed = 4;
+	private double jumpspeed = 2;
+	private double jumpMaxLength = 25;
 	private double walkspeed = 6 * m / s;
 	private double accelerationGround = 0.3 * m / s;
 	private double slowdownGround = 1.2 * m / s;
@@ -56,6 +59,7 @@ public class Player extends Mob {
 	private double slowdownAir = 0.8 * m / s;
 
 	// physical abilities
+	private double jumpLength;
 	private boolean canJump;
 	public boolean iscrouching;
 	private int jumpcooldown;
@@ -81,7 +85,7 @@ public class Player extends Mob {
 		crafting = new Crafting(this);
 		color = MainConfig.PlrCol;
 		xOffset = 6;
-		yOffset = 9;
+		yOffset = 8;
 		// sheet.tileWidth = 13*Screen.MAP_SCALE;
 		// sheet.tileHeight = 16*Screen.MAP_SCALE;
 		try {
@@ -237,15 +241,24 @@ public class Player extends Mob {
 		// System.out.println("craftable");
 		return true;
 	}
+	
+	public List<Vector2d> temp;
 
 	public void tick(int numTick) {
 		// map.setlight((int)x, (int)y, (byte) (64));map.updateLight((int)x,
 		// (int)y); // just for testing lightsystem
 		/* MOVEMENT */
 		if (Keys.JUMP.isPressed() && canJump) {
-			speedY -= jumpspeed;
+			speedY = -jumpspeed;
+			jumpLength++;
+			if(jumpLength>jumpMaxLength) {
+				canJump = false;
+				jumpcooldown = 10;
+			}
+		}else if(jumpLength>0){
 			canJump = false;
 			jumpcooldown = 10;
+			jumpLength = 0;
 		}
 		if (Keys.RIGHT.isPressed() ^ Keys.LEFT.isPressed()) {
 			if (Keys.LEFT.isPressed() && (speedX > -walkspeed || (!iscrouching && speedX > -walkspeed / 2))) {
@@ -293,24 +306,35 @@ public class Player extends Mob {
 
 		/* COLLISION */
 		Hitbox tempHitBox = iscrouching ? cols : col;
-
 		
 		Collision c;
 		if ((c = Collision.canMoveTo(map, tempHitBox, x, y, new Vector2d(speedX, speedY))) != null) {
-			for (Vector2d vec : c.collisionPos) {
-				System.out.printf("pX:%f pY:%f\n", vec.x, vec.y);
+//			for (Vector2d vec : c.collisionPos) {
+//				System.out.printf("pX:%f pY:%f\n", vec.x, vec.y);
+//			}
+//			System.out.printf("cX:%f cY:%f\n", x, y);
+			if((c.collisionFlags & Collision.X_COLLISION) != 0) {
+				speedX = 0;
+				x = c.entityPos.x;
+			}else {
+				x += speedX;
 			}
-			System.out.printf("cX:%f cY:%f\n", x, y);
-			x = (int)c.entityPos.x;
-			y = (int)c.entityPos.y;
-			if((c.collisionFlags & Collision.X_COLLISION) != 0)speedX = 0;
-			if((c.collisionFlags & Collision.Y_COLLISION) != 0)speedY = 0;
-			System.out.printf("eX:%f eY:%f sX:%f sY:%f\n", c.entityPos.x, c.entityPos.y, speedX, speedY);
+			if((c.collisionFlags & Collision.Y_COLLISION) != 0) {
+				speedY = 0;
+				y = c.entityPos.y;
+			}else {
+				y += speedY;
+			}
+//			speedX=0;
+//			speedY=0;
+			
+			temp = c.collisionPos;
+//			System.out.printf("eX:%f eY:%f sX:%f sY:%f\n", c.entityPos.x, c.entityPos.y, speedX, speedY);
+		}else {
+			x+=speedX;
+			y+=speedY;
 		}
-		
-		if(speedX!=0 || speedY!=0)System.out.printf(" X:%f  Y:%f sX:%f sY:%f\n", x, y, speedX, speedY);
-		x+=speedX;
-		y+=speedY;
+//		if(speedX!=0 || speedY!=0)System.out.printf(" X:%f  Y:%f sX:%f sY:%f\n", x, y, speedX, speedY);
 		
 		onGround = Collision.onGround(map, tempHitBox, (int) x, (int) y);
 		
@@ -411,7 +435,7 @@ public class Player extends Mob {
 	}
 
 	public void render() {
-		Screen.drawMapSprite((int) (x - xOffset), (int) (y - yOffset), sheet, anim, movingDir == 1, false, color);
+		Screen.drawMapSprite((x - xOffset), (y - yOffset), sheet, anim, movingDir == 1, false, color);
 
 		if ((anim == 10 || anim == 11) & this.bags.get(BAG.BELT_1) != null) {
 			try {
@@ -465,6 +489,9 @@ public class Player extends Mob {
 				}
 			}
 		}
+		Screen.drawLine(x, y, x+speedX, y+speedY, 0xffff0000, true);
+		col.render(x, y);
+		if(temp!=null)Screen.drawLines(temp, 0xffff0000, true);
 	}
 
 	public void save(ArrayList<Byte> file) {
@@ -521,6 +548,7 @@ public class Player extends Mob {
 			this.pickUp(newitem);
 
 			this.pickUp(ItemList.NewItem(333));
+			this.pickUp(ItemList.NewItem(331));
 			newitem = ItemList.NewItem(400);
 			newitem.addStack(999);
 			this.pickUp(newitem);

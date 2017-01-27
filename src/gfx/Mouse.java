@@ -84,7 +84,7 @@ public class Mouse {
 		int width;
 		int[] pixels;
 		int[] pixelsScaled;
-		int s = Screen.MAP_SCALE;
+		int s = (int) Screen.MAP_SCALE;
 		switch(type){
 		case MINING:
 			width = 2*mousesize+1;

@@ -6,8 +6,10 @@ import java.util.List;
 
 import dataUtils.conversion.ConvertData;
 import entities.Player;
+import entities.entityList.ItemEntity;
 import gfx.Mouse;
 import gfx.SpriteSheet;
+import item.ItemList;
 import item.Tool;
 import main.MouseInput;
 import map.Map;
@@ -17,6 +19,7 @@ import pixel.interfaces.Heatable;
 
 public class MagnifyingLens extends Tool {
 	int layer = Map.LAYER_FRONT;
+	double x, y;
 	
 	public MagnifyingLens() {
 		ID = 331;
@@ -40,17 +43,21 @@ public class MagnifyingLens extends Tool {
 			text.add(PixelList.GetPixel(map.getID(MouseInput.mouse.getMapX(), MouseInput.mouse.getMapY(), layer), layer).getDisplayName());
 			Mouse.setText(text);
 			Mouse.mouseType = Mouse.MouseType.TEXT;
-			if(MouseInput.mousel.click()) {
-				if(layer == Map.LAYER_FRONT) layer = Map.LAYER_BACK;
-				else if(layer == Map.LAYER_BACK) layer = Map.LAYER_LIQUID;
-				else if(layer == Map.LAYER_LIQUID) layer = Map.LAYER_FRONT;
-			}
-			if(MouseInput.mouser.isPressed()) {
-				UDS uds = map.getUDS(MouseInput.mouse.getMapX(), MouseInput.mouse.getMapY(), layer);
-				if(uds instanceof Heatable.DataStorage) {
-					((Heatable.DataStorage) uds).heat = 10000;
-				}
-			}
+		}
+		if(MouseInput.mousel.click()) {
+			x = MouseInput.mouse.getMapX();
+			y = MouseInput.mouse.getMapY();
+//				if(layer == Map.LAYER_FRONT) layer = Map.LAYER_BACK;
+//				else if(layer == Map.LAYER_BACK) layer = Map.LAYER_LIQUID;
+//				else if(layer == Map.LAYER_LIQUID) layer = Map.LAYER_FRONT;
+		}
+		if(MouseInput.mouser.isPressed()) {
+			ItemEntity e = map.spawnItemEntity(ItemList.NewItem("Stone"), (int)x, (int)y);
+			e.setSpeed((x-MouseInput.mouse.getMapX())/10, (y-MouseInput.mouse.getMapY())/10);
+//				UDS uds = map.getUDS(MouseInput.mouse.getMapX(), MouseInput.mouse.getMapY(), layer);
+//				if(uds instanceof Heatable.DataStorage) {
+//					((Heatable.DataStorage) uds).heat = 10000;
+//				}
 		}
 	}
 

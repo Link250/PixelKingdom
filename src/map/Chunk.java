@@ -349,34 +349,18 @@ public class Chunk{
 		int ID;
 		int X,Y;
 		int pixel;
-		short lightP;
 		ByteBuffer pixelBuffer = BufferUtils.createByteBuffer(Screen.RENDER_CHUNK_SIZE * Screen.RENDER_CHUNK_SIZE * 4);
 		for (int y = 0; y < Screen.RENDER_CHUNK_SIZE; y++) {
 			for (int x = 0; x < Screen.RENDER_CHUNK_SIZE; x++) {
 				X=x+xPos*Screen.RENDER_CHUNK_SIZE;Y=y+yPos*Screen.RENDER_CHUNK_SIZE;
-				if(l==Map.LAYER_LIGHT) {
-//					if((X%Screen.RENDER_CHUNK_SIZE == 0 || X%Screen.RENDER_CHUNK_SIZE == Screen.RENDER_CHUNK_SIZE-1 || Y%Screen.RENDER_CHUNK_SIZE == 0 || Y%Screen.RENDER_CHUNK_SIZE == Screen.RENDER_CHUNK_SIZE-1)) {
-//						pixelBuffer.put((byte)255); //RED
-//						pixelBuffer.put((byte)0);  //GREEN
-//						pixelBuffer.put((byte)0);		  //BLUE
-//						pixelBuffer.put((byte)255); //ALPHA
-//					}else {
-						lightP = (light[X+Y*width]); //TODO +brightness constant, sodass zB 245->255 erhellt wird
-						pixelBuffer.put((byte)0); //RED
-						pixelBuffer.put((byte)0);  //GREEN
-						pixelBuffer.put((byte)0);		  //BLUE
-						pixelBuffer.put((byte)(Map.MAX_LIGHT-(getID(X, Y, Map.LAYER_BACK) == Map.MAX_LIGHT ? 0 : lightP))); //ALPHA
-//					}
-				}else {
-					ID = getID(X,Y,l);
-					if(ID>=0){
-						pixel = ID == 0 ? 0 : PixelList.GetPixel(ID, l).render(X+this.x*Chunk.width, Y+this.y*Chunk.height, l, map);
-						pixelBuffer.put((byte)((pixel >> 16) & 0xFF)); //RED
-						pixelBuffer.put((byte)((pixel >> 8) & 0xFF));  //GREEN
-						pixelBuffer.put((byte)(pixel & 0xFF));		  //BLUE
-						pixelBuffer.put((byte)((pixel >> 24) & 0xFF)); //ALPHA
-					}
-				}
+				ID = getID(X,Y,l);
+				if(ID>=0){
+					pixel = ID == 0 ? 0 : PixelList.GetPixel(ID, l).render(X+this.x*Chunk.width, Y+this.y*Chunk.height, l, map);
+					pixelBuffer.put((byte)((pixel >> 16) & 0xFF)); //RED
+					pixelBuffer.put((byte)((pixel >> 8) & 0xFF));  //GREEN
+					pixelBuffer.put((byte)(pixel & 0xFF));		  //BLUE
+					pixelBuffer.put((byte)((pixel >> 24) & 0xFF)); //ALPHA
+			}
 			}
 		}
 		pixelBuffer.flip();
@@ -388,6 +372,8 @@ public class Chunk{
 //		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, l==Map.LAYER_LIGHT ? GL_LINEAR : GL_NEAREST);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
 		
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, Screen.RENDER_CHUNK_SIZE, Screen.RENDER_CHUNK_SIZE, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixelBuffer);
 		this.textureUpdates[xPos][yPos][l] = false;

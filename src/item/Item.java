@@ -132,15 +132,15 @@ public abstract class Item {
 		}
 	}
 	
-	public void render(int x, int y){
+	public void render(double x, double y){
 		Screen.drawGUISprite(x, y, gfx, 0, false, false, col);
 	}
 
-	public void renderOnMap(int x, int y, boolean mirrorX, boolean mirrorY){
+	public void renderOnMap(double x, double y, boolean mirrorX, boolean mirrorY){
 		Screen.drawMapSprite(x, y, gfxs != null ? gfxs : gfx, 0, mirrorX, mirrorY, col);
 	}
 	
-	public void renderOnMap(int x, int y, boolean mirrorX, boolean mirrorY, boolean centered){
+	public void renderOnMap(double x, double y, boolean mirrorX, boolean mirrorY, boolean centered){
 		Screen.drawMapSprite(x, y, gfxs != null ? gfxs : gfx, 0, mirrorX, mirrorY, col, centered);
 	}
 
