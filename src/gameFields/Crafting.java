@@ -18,7 +18,7 @@ import main.Game;
 
 public class Crafting extends GameField {
 	
-	private SpriteSheet back = new SpriteSheet("/Crafting/Back.png");
+	private SpriteSheet back = new SpriteSheet("/Crafting/BackV2.png");
 	private SpriteSheet selection = new SpriteSheet("/Crafting/Selection.png");
 	private Button searchButton;
 	private Button editButton;
@@ -38,6 +38,9 @@ public class Crafting extends GameField {
 	private Map<Recipe, ItemField> recipes = new TreeMap<>();
 	private Map<Recipe.Component, ItemField> educts = new TreeMap<>(), products = new TreeMap<>();
 	
+	private static final int categoriesPerRow = 4, categoryIconDistance = 2, categoryIconOffset = 8;
+	private static final int recipesPerRow = 5, recipeIconDistance = 8, recipeIconOffset = 9;
+	
 	public Player plr;
 	
 	public Crafting(Player plr){
@@ -45,22 +48,22 @@ public class Crafting extends GameField {
 		this.plr = plr;
 		this.field.setSize(back.getWidth(), back.getHeight());
 		this.fieldTop.setSize(back.getWidth()-2*36, 36);
-		this.fieldsArea = new PArea(1, 1, 226, 226);
-		this.ComponentsArea = new PArea(1, 1, 156, 226);
-		this.plr.recipelist.getCategories().forEach((s) -> this.categories.put(s, new CategoryField(s)));
+		this.fieldsArea = new PArea(1, 1, 230, 230);
+		this.ComponentsArea = new PArea(1, 1, 162, 230);
+		this.plr.recipeList.getCategories().forEach((s) -> this.categories.put(s, new CategoryField(s)));
 		this.searchButton = new Button(1, 1, 36, 36, false, false);
 		this.searchButton.gfxData("/Crafting/SearchButton.png", false);
 		this.editButton = new Button(1, 1, 36, 36, false, false);
 		this.editButton.gfxData("/Crafting/EditButton.png", false);
 		this.backButton = new Button(1, 1, 36, 36, false, false);
 		this.backButton.gfxData("/Crafting/BackButton.png", false);
-		this.craftButton = new Button(1, 1, 74, 30, false, false);
+		this.craftButton = new Button(1, 1, 74, 26, false, false);
 		this.craftButton.gfxData("/Crafting/CraftButton.png", false);
-		this.craftCount = new TextField(1, 1, 74, 30, true, true, Game.ccFont);
-		this.craftCount.setCharFilter((c)->{return Character.isDigit(c);});
+		this.craftCount = new TextField(1, 1, 74, 26, true, true, Game.ccFont);
+		this.craftCount.setCharFilter(Character::isDigit);
 		this.craftCount.setText("1");
-		this.searchText = new TextField(1, 1, 326, 36, true, false, Game.ccFont);
-		this.scroll = new ScrollBar(1, 1, 16, 226, false, false);
+		this.searchText = new TextField(1, 1, 336, 36, true, false, Game.ccFont);
+		this.scroll = new ScrollBar(1, 1, 16, fieldsArea.height, false, false);
 		this.placeFields();
 		this.createScrollSprite();
 	}
@@ -70,41 +73,43 @@ public class Crafting extends GameField {
 		this.searchText.setPos(x+38, y, false, false);
 		y+=+this.fieldTop.height+2;
 		this.fieldsArea.setPosition(x, y);
-		this.ComponentsArea.setPosition(x+246, y);
+		this.ComponentsArea.setPosition(x+fieldsArea.width+2+scroll.getWidth()+2, y);
 		this.searchButton.setPos(field.x+field.width-36, field.y, false, false);
 		this.editButton.setPos(field.x+field.width-36, field.y, false, false);
 		this.backButton.setPos(field.x, field.y, false, false);
-		this.craftButton.setPos(x+249, y+193, false, false);
-		this.craftCount.setPos(x+325, y+193, false, false);
-		this.scroll.setPos(x+228, y, false, false);
+		this.craftButton.setPos(x+256, y+198, false, false);
+		this.craftCount.setPos(x+332, y+198, false, false);
+		this.scroll.setPos(x+fieldsArea.width+2, y, false, false);
 		this.placeItemFields();
 	}
 	
 	private void placeItemFields() {
 		int x = this.field.x, y = this.field.y+this.fieldTop.height+2;
 		if(selectedCategory == null && !searching){
-			this.scroll.setValues(categories.size()/4, 4);
-			int n = -scroll.getValue()*4;
+			this.scroll.setValues(categories.size()/categoriesPerRow, categoriesPerRow);
+			int n = -scroll.getValue()*categoriesPerRow;
 			for (ItemField field : categories.values()) {
-				if(n>=0 && n<16)field.setPosition(x+(n%4)*58, y+(n/4)*58, false, false);
+				if(n>=0 && n<categoriesPerRow*categoriesPerRow)
+					field.setPosition(x+(n%categoriesPerRow)*(52+categoryIconDistance)+categoryIconOffset, y+(n/categoriesPerRow)*(52+categoryIconDistance)+categoryIconOffset, false, false);
 				n++;
 			}
 		}else{
-			this.scroll.setValues(recipes.size()/6, 6);
-			int n = -scroll.getValue()*6;
+			this.scroll.setValues(recipes.size()/recipesPerRow, recipesPerRow);
+			int n = -scroll.getValue()*recipesPerRow;
 			for (ItemField field : recipes.values()) {
-				if(n>=0 && n<36)field.setPosition(x+(n%6)*38, y+(n/6)*38, false, false);
+				if(n>=0 && n<recipesPerRow*recipesPerRow)
+					field.setPosition(x+(n%recipesPerRow)*(36+recipeIconDistance)+recipeIconOffset, y+(n/recipesPerRow)*(36+recipeIconDistance)+recipeIconOffset, false, false);
 				n++;
 			}
 			if(selectedRecipe != null) {
-				x = this.field.x+249;
-				y = this.field.y+this.fieldTop.height+24;
+				x = this.ComponentsArea.x + 6;
+				y = this.ComponentsArea.y + 26;
 				n = 0;
 				for (ItemField field : educts.values()) {
 					field.setPosition(x+(n%4)*38, y+(n/4)*38, false, false);
 					n++;
 				}
-				y = this.field.y+this.fieldTop.height+118;
+				y = this.ComponentsArea.y + 122;
 				n = 0;
 				for (ItemField field : products.values()) {
 					field.setPosition(x+(n%4)*38, y+(n/4)*38, false, false);
@@ -140,6 +145,7 @@ public class Crafting extends GameField {
 				}else{
 					this.recipes.entrySet().forEach((e)->{
 						if(e.getValue().field.isClicked(MouseInput.mousel)) {selectRecipe(e.getKey());}
+						if(e.getValue().getField().containsMouse(MouseInput.mouse))e.getValue().mouseOver();
 					});
 				}
 				int scrollCount;
@@ -154,7 +160,7 @@ public class Crafting extends GameField {
 					products.values().forEach((f)->{if(f.getField().containsMouse(MouseInput.mouse))f.mouseOver();});
 					craftCount.tick();
 					craftButton.tick();
-					if(craftButton.isclicked) {
+					if(craftButton.isclicked && selectedRecipe.researched) {
 						int n;
 						try{n = Integer.parseInt(craftCount.getText());}catch(NumberFormatException e) {n = 0;}
 						for (int i = 0; i < n; i++) {
@@ -207,7 +213,7 @@ public class Crafting extends GameField {
 	private void selectCategory(String category) {
 		selectedCategory = category;
 		recipes = new TreeMap<>();
-		plr.recipelist.getRecipes(selectedCategory).forEach((r) -> recipes.put(r, new RecipeField(r)));
+		plr.recipeList.getRecipes(selectedCategory).forEach((r) -> recipes.put(r, getSuitableItemField(r.mainProduct.ID, r.researched)));
 		placeFields();
 		createScrollSprite();
 	}
@@ -215,26 +221,18 @@ public class Crafting extends GameField {
 	private void selectRecipe(Recipe recipe) {
 		selectedRecipe = recipe;
 		educts = new TreeMap<>();
-		selectedRecipe.educts.forEach((educt) -> {
-			ItemField f = new ItemField();
-			f.item = ItemList.GetItem(educt.ID);
-			educts.put(educt, f);
-		});
+		selectedRecipe.educts.forEach((educt) -> educts.put(educt, getSuitableItemField(educt.ID, recipe.researched)));
 		products = new TreeMap<>();
-		selectedRecipe.products.forEach((product) -> {
-			ItemField f = new ItemField();
-			f.item = ItemList.GetItem(product.ID);
-			products.put(product, f);
-		});
+		selectedRecipe.products.forEach((product) -> products.put(product, getSuitableItemField(product.ID, recipe.researched)));
 		placeFields();
 	}
 	
 	private void selectSearch(String search) {
 		recipes = new TreeMap<>();
 		if(search==null) {
-			plr.recipelist.getAllRecipes().forEach((r) -> recipes.put(r, new RecipeField(r)));
+			plr.recipeList.getAllRecipes().forEach((r) -> recipes.put(r, getSuitableItemField(r.mainProduct.ID, r.researched)));
 		}else {
-			plr.recipelist.getAllRecipes((r)->{
+			plr.recipeList.getAllRecipes((r)->{
 				if(r.educts.stream().filter((c)->{
 					return ItemList.GetItem(c.ID).getDisplayName().toLowerCase().contains(search.toLowerCase());
 				}).count()>0)return true;
@@ -242,10 +240,15 @@ public class Crafting extends GameField {
 					return ItemList.GetItem(c.ID).getDisplayName().toLowerCase().contains(search.toLowerCase());
 				}).count()>0)return true;
 				return false;
-			}).forEach((r) -> recipes.put(r, new RecipeField(r)));
+			}).forEach((r) -> recipes.put(r, getSuitableItemField(r.mainProduct.ID, r.researched)));
 		}
 		placeFields();
 		createScrollSprite();
+	}
+	
+	private ItemField getSuitableItemField(int id, boolean knownRecipe) {
+		return (knownRecipe || plr.hasItemKnowledge(id)) ? new ItemField(ItemList.GetItem(id)) : new UnknownItemField();
+//		return new ItemField(ItemList.GetItem(id));
 	}
 	
 	public void render() {
@@ -255,7 +258,11 @@ public class Crafting extends GameField {
 			searchText.render();
 			editButton.render();
 		}else {
-			Game.sfont.render(x+field.width/2, y+fieldTop.height/2, "Crafting", 0, 0xff000000);
+			if(selectedCategory == null) {
+				Game.sfont.render(x+field.width/2, y+fieldTop.height/2, "Crafting", 0, 0xff000000);
+			}else {
+				Game.sfont.render(x+field.width/2, y+fieldTop.height/2, selectedCategory, 0, 0xff000000);
+			}
 			searchButton.render();
 		}
 		backButton.render();
@@ -265,30 +272,30 @@ public class Crafting extends GameField {
 				if(n>=0 && n<16)f.render();
 				n++;
 			}
-			if(mouseoverCategory != null)Game.ccFont.render(x+250, y+42, false, false, mouseoverCategory, 0, 0xff000000);
+			if(mouseoverCategory != null)Game.ccFont.render(this.ComponentsArea.x + 10, this.ComponentsArea.y + 10, false, false, mouseoverCategory, 0, 0xff000000);
 		}else{
-			int n = -scroll.getValue()*6;
+			int n = -scroll.getValue()*5;
 			for (Entry<Recipe, ItemField> entry : recipes.entrySet()) {
-				if(n>=0 && n<36) {
+				if(n>=0 && n<25) {
 					entry.getValue().render();
 					if(entry.getKey().equals(selectedRecipe))Screen.drawGUISprite(entry.getValue().getField().x, entry.getValue().getField().y, selection);;
 				}
 				n++;
 			}
 			if(selectedRecipe != null) {
-				Game.ccFont.render(x+323, y+50, true, true, "Ingredients:", 0, 0xff000000);
-				Game.ccFont.render(x+323, y+144, true, true, "Products:", 0, 0xff000000);
+				Game.ccFont.render(this.ComponentsArea.x + 10, y+53, false, true, "Ingredients:", 0, 0xff000000);
+				Game.ccFont.render(this.ComponentsArea.x + 10, y+149, false, true, "Products:", 0, 0xff000000);
 				educts.forEach((c,f)->f.render(c.n));
 				products.forEach((c,f)->f.render(c.n));
 				craftButton.render();
 				craftCount.render();
 			}
 		}
-		Screen.drawGUISprite(x+228, y+38+scroll.getSlider().y, scrollSprite);
+		Screen.drawGUISprite(scroll.getX(), scroll.getY()+scroll.getSlider().y, scrollSprite);
 	}
 	
 	private static class CategoryField extends ItemField{
-		protected static SpriteSheet categoryBack = new SpriteSheet("/Crafting/CategoryBack.png");
+		protected static final SpriteSheet categoryBack = new SpriteSheet("/Crafting/CategoryBack.png");
 		private SpriteSheet sprite;
 		
 		public CategoryField(String category) {
@@ -299,14 +306,6 @@ public class Crafting extends GameField {
 		public void render() {
 			Screen.drawGUISprite(field.x, field.y, categoryBack);
 			Screen.drawGUISprite(field.x+2, field.y+2, sprite);
-		}
-	}
-
-	private static class RecipeField extends ItemField{
-		
-		public RecipeField(Recipe recipe) {
-			super();
-			this.item = ItemList.GetItem(recipe.products.get(0).ID);
 		}
 	}
 }

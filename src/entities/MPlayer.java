@@ -27,6 +27,6 @@ public class MPlayer extends Mob {
 	
 	public void render() {
 		if(this.sheet == null)this.sheet = new SpriteSheet("/Mobs/sprite_sheet_player.png", 13*Screen.MAP_SCALE, 16*Screen.MAP_SCALE);
-		Screen.drawMapSprite((int)(x-xOffset), (int)(y-yOffset), sheet, anim, movingDir==1, false, color);
+		Screen.drawMapSprite(x-xOffset, y-yOffset, sheet, 0, movingDir==1, false, color);
 	}
 }

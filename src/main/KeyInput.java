@@ -49,10 +49,17 @@ public class KeyInput{
 		if(keyMapping.containsKey(keyCode)) {
 			keyMapping.get(keyCode).toggle(isPressed);
 		}
+		if(keyCode == 284)Game.pauseTick = isPressed;
 	}
 	
 	public static void setFocus(Focusable newFocus) {
+		if(currentFocus != null)currentFocus.setFocus(false);
 		currentFocus = newFocus;
+	}
+	
+	public static void resetFocus() {
+		if(currentFocus != null)currentFocus.setFocus(false);
+		currentFocus = null;
 	}
 	
 	public static interface Focusable{

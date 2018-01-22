@@ -4,18 +4,15 @@ import java.awt.Point;
 import java.util.ArrayList;
 import java.util.List;
 
-import dataUtils.conversion.ConvertData;
 import entities.Player;
-import entities.entityList.ItemEntity;
 import gfx.Mouse;
 import gfx.SpriteSheet;
-import item.ItemList;
+import item.Recipe;
+import item.RecipeList;
 import item.Tool;
 import main.MouseInput;
 import map.Map;
 import pixel.PixelList;
-import pixel.UDS;
-import pixel.interfaces.Heatable;
 
 public class MagnifyingLens extends Tool {
 	int layer = Map.LAYER_FRONT;
@@ -27,7 +24,7 @@ public class MagnifyingLens extends Tool {
 		displayName = "Magnifying Lens";
 		stack  = 1;
 		stackMax  = 1;
-		gfx = new SpriteSheet("/Items/Lighter.png");
+		gfx = new SpriteSheet("/Items/MagnifyingLens.png");
 		size = 1;
 		type = 0;
 		range = 10;
@@ -51,21 +48,17 @@ public class MagnifyingLens extends Tool {
 //				else if(layer == Map.LAYER_BACK) layer = Map.LAYER_LIQUID;
 //				else if(layer == Map.LAYER_LIQUID) layer = Map.LAYER_FRONT;
 		}
-		if(MouseInput.mouser.isPressed()) {
+/*		if(MouseInput.mouser.isPressed()) {
 			ItemEntity e = map.spawnItemEntity(ItemList.NewItem("Stone"), (int)x, (int)y);
 			e.setSpeed((x-MouseInput.mouse.getMapX())/10, (y-MouseInput.mouse.getMapY())/10);
 //				UDS uds = map.getUDS(MouseInput.mouse.getMapX(), MouseInput.mouse.getMapY(), layer);
 //				if(uds instanceof Heatable.DataStorage) {
 //					((Heatable.DataStorage) uds).heat = 10000;
 //				}
-		}
+		}*/
 	}
-
-	public void save(ArrayList<Byte> file) {
-		ConvertData.I2B(file, ID);
-	}
-
-	public void load(ArrayList<Byte> file) {
-
+	
+	public void addRecipes(RecipeList recipeList) {
+		recipeList.addRecipe(new Recipe().addP(331, 1).addE(35, 10).addE(33, 2), RecipeList.C_TOOLS);
 	}
 }

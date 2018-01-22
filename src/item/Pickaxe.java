@@ -44,7 +44,7 @@ public abstract class Pickaxe extends Tool implements MiningTool{
 					int X = MouseInput.mouse.getMapX()+x, Y = MouseInput.mouse.getMapY()+y;
 					if(x*x+y*y < r && ((plr.x-X)*(plr.x-X)+(plr.y-Y)*(plr.y-Y) <= range*range)){
 						m = PixelList.GetMat(map.getID(X,Y,l));
-						if(m.canBeMinedBy(this)) {
+						if(m.canBeMinedBy(plr, this)) {
 							couldMine = true;
 							if(m.getMiningResistance()<=powerLeft){
 								r = x*x+y*y;

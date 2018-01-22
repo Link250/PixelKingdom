@@ -20,6 +20,12 @@ import java.nio.IntBuffer;
 
 import org.lwjgl.BufferUtils;
 
+import gfx.RessourceManager.OpenGLRessource;
+import main.SinglePlayer;
+
+import static main.Game.logInfo;
+
+
 public class LineModel {
 	private int drawCount;
 	
@@ -73,8 +79,13 @@ public class LineModel {
 	}
 
 	protected void finalize() throws Throwable {
-		glDeleteBuffers(vertexObject);
-		glDeleteBuffers(indexObject);
+		RessourceManager.addRessource(new OpenGLRessource(){
+			public void freeRessources() {
+				if(SinglePlayer.debuginfo)logInfo("LineModel.finalize().new OpenGLRessource() {...}.freeRessources()");
+				glDeleteBuffers(vertexObject);
+				glDeleteBuffers(indexObject);
+			}
+		});
 		super.finalize();
 	}
 	

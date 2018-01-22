@@ -1,15 +1,16 @@
 package gfx;
 
-import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
-import static org.lwjgl.opengl.GL11.glBindTexture;
-import static org.lwjgl.opengl.GL13.GL_TEXTURE0;
-import static org.lwjgl.opengl.GL13.glActiveTexture;
+import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL13.*;
+import static org.lwjgl.opengl.EXTFramebufferObject.*;
 
 import java.util.List;
 
 import org.joml.Matrix4f;
 import org.joml.Vector2d;
 import org.joml.Vector3f;
+
+import main.Game;
 import map.Map;
 
 public class Screen {
@@ -29,22 +30,31 @@ public class Screen {
 	private static Shader default_shader;
 	private static Shader colored_shader;
 	private static Shader map_shader;
+	private static Shader shadow_shader;
 	private static Shader line_shader;
+	private static Shader screen_shader;
 	
+	private static Matrix4f mapProjection;
 	private static Matrix4f projection;
 	private static Model tileModel;
 	private static Model shadowModel;
 	private static LineModel lineModel;
 	
+	private static FrameBufferObject mapFrameBuffer;
+	private static FrameBufferObject mainFrameBuffer;
+	
 	public static void initialize(int width, int height) {
 		Screen.width = width;
 		Screen.height = height;
+		mapProjection = new Matrix4f().setOrtho2D(-width, width, -height, height);
 		projection = new Matrix4f().setOrtho2D(-width, width, -height, height);
 //		projection.rotate((float)Math.PI/32,0f,0f,1f);
 		default_shader = new Shader("default_shader");
 		colored_shader = new Shader("colored_shader");
 		map_shader = new Shader("map_shader");
+		shadow_shader = new Shader("shadow_shader");
 		line_shader = new Shader("line_shader");
+		screen_shader = new Shader("screen_shader");
 		tileModel = new Model();
 		lineModel = new LineModel();
 		
@@ -67,6 +77,8 @@ public class Screen {
 				2,3,0
 		};
 		shadowModel = new Model(vertices, tex_coords, indices);
+		mapFrameBuffer = new FrameBufferObject(width, height);
+		mainFrameBuffer = new FrameBufferObject(width, height);
 	}
 	
 	/**
@@ -165,7 +177,7 @@ public class Screen {
 		
 		glActiveTexture(GL_TEXTURE0 + 0);
 		glBindTexture(GL_TEXTURE_2D, sheet.getID(tile));
-		Matrix4f target = projection.mul(new Matrix4f().translate(new Vector3f((float)(xPos*2-width), (float)(yPos*2-height), 0)), new Matrix4f());
+		Matrix4f target = mapProjection.mul(new Matrix4f().translate(new Vector3f((float)(xPos*2-width), (float)(yPos*2-height), 0)), new Matrix4f());
 		
 		float ratio = (((float)sheet.getHeight())/((float)sheet.getWidth()));
 		target.mul(new Matrix4f().ortho2D(ratio*(mirrorX ? 1.0f : -1.0f), ratio*(mirrorX ? -1.0f : 1.0f), (mirrorY ? 1.0f : -1.0f), (mirrorY ? -1.0f : 1.0f)));
@@ -197,7 +209,7 @@ public class Screen {
 		yStart = height - yStart;
 		yEnd = height - yEnd;
 //		System.out.format("%f %f %f %f\n", xStart, yStart, xEnd, yEnd);
-		Matrix4f target = projection.mul(new Matrix4f().translate(new Vector3f((float)(-width), (float)(-height), 0)), new Matrix4f());
+		Matrix4f target = mapProjection.mul(new Matrix4f().translate(new Vector3f((float)(-width), (float)(-height), 0)), new Matrix4f());
 		
 		target.scale((float) (2));
 		line_shader.bind();
@@ -228,7 +240,7 @@ public class Screen {
 			positions[i*2+1] = (float) p.y;
 		}
 		
-		Matrix4f target = projection.mul(new Matrix4f().translate(new Vector3f((float)(-width), (float)(-height), 0)), new Matrix4f());
+		Matrix4f target = mapProjection.mul(new Matrix4f().translate(new Vector3f((float)(-width), (float)(-height), 0)), new Matrix4f());
 		
 		target.scale((float) (2));
 		line_shader.bind();
@@ -246,9 +258,21 @@ public class Screen {
 		int textures[] = new int[3];
 		Matrix4f target = null;
 		float X, Y;
+		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, mapFrameBuffer.framebufferID);
+		glViewport (0, 0, width, height);
+		
+		for (int x = 0; x < Screen.width; x+= Game.back.getWidth()) {
+			for (int y = 0; y < Screen.height; y+= Game.back.getHeight()) {
+				Screen.drawGUISprite(x, y, Game.back);
+			}
+		}
+		
 		map_shader.bind();
 		map_shader.setUniform("sampler", 0);
-		glActiveTexture(GL_TEXTURE0 + 0);
+//		map_shader.setUniform("back", 0);
+//		map_shader.setUniform("mid", 1);
+//		map_shader.setUniform("front", 2);
+		glActiveTexture(GL_TEXTURE0);
 
 		for (float x = -RENDER_CHUNK_SIZE/2; x < width/2/MAP_ZOOM+RENDER_CHUNK_SIZE; x+=RENDER_CHUNK_SIZE) {
 			for (float y = -RENDER_CHUNK_SIZE/2; y < height/2/MAP_ZOOM+RENDER_CHUNK_SIZE; y+=RENDER_CHUNK_SIZE) {
@@ -264,10 +288,16 @@ public class Screen {
 				X*=MAP_SCALE*MAP_ZOOM;
 				Y*=MAP_SCALE*MAP_ZOOM;
 				Y = height - Y;
-				target = projection.mul(new Matrix4f().translate(new Vector3f(X*2-width, Y*2-height, 0)), new Matrix4f());
+				target = mapProjection.mul(new Matrix4f().translate(new Vector3f(X*2-width, Y*2-height, 0)), new Matrix4f());
 				target.scale(RENDER_CHUNK_SIZE*MAP_SCALE*MAP_ZOOM);
 				
 				map_shader.setUniform("projection", target);
+//				glActiveTexture(GL_TEXTURE0);
+//				glBindTexture(GL_TEXTURE_2D, textures[Map.LAYER_BACK]);
+//				glActiveTexture(GL_TEXTURE1);
+//				glBindTexture(GL_TEXTURE_2D, textures[Map.LAYER_LIQUID]);
+//				glActiveTexture(GL_TEXTURE2);
+//				glBindTexture(GL_TEXTURE_2D, textures[Map.LAYER_FRONT]);
 				for (int l : Map.LAYER_ALL_PIXEL) {
 					if(textures[l] == 0)continue;
 					map_shader.setUniform("layer", l);
@@ -279,8 +309,16 @@ public class Screen {
 		
 		map.renderSprites();
 		
-		map_shader.bind();
-		map_shader.setUniform("sampler", 0);
+		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, mainFrameBuffer.framebufferID);
+		shadow_shader.bind();
+		shadow_shader.setUniform("sampler", 0);
+		shadow_shader.setUniform("back", 1);
+		shadow_shader.setUniform("width", width);
+		shadow_shader.setUniform("height", height);
+		shadow_shader.setUniform("blocksize", (float)(RENDER_CHUNK_SIZE+2)*MAP_SCALE*MAP_ZOOM);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, mapFrameBuffer.colorTextureID);
+		glActiveTexture(GL_TEXTURE0);
 		for (float x = -RENDER_CHUNK_SIZE/2; x < width/2/MAP_ZOOM+RENDER_CHUNK_SIZE; x+=RENDER_CHUNK_SIZE) {
 			for (float y = -RENDER_CHUNK_SIZE/2; y < height/2/MAP_ZOOM+RENDER_CHUNK_SIZE; y+=RENDER_CHUNK_SIZE) {
 				int tex = map.getRenderChunk((int)(x+xOffset), (int)(y+yOffset), Map.LAYER_LIGHT);
@@ -294,14 +332,29 @@ public class Screen {
 				X*=MAP_SCALE*MAP_ZOOM;
 				Y*=MAP_SCALE*MAP_ZOOM;
 				Y = height - Y;
-				target = projection.mul(new Matrix4f().translate(new Vector3f(X*2-width, Y*2-height, 0)), new Matrix4f());
+				shadow_shader.setUniform("posx", X);
+				shadow_shader.setUniform("posy", Y);
+				target = mapProjection.mul(new Matrix4f().translate(new Vector3f(X*2-width, Y*2-height, 0)), new Matrix4f());
 				target.scale((RENDER_CHUNK_SIZE)*MAP_SCALE*MAP_ZOOM);
 				
-				map_shader.setUniform("projection", target);
-				map_shader.setUniform("layer", Map.LAYER_LIGHT);
+				shadow_shader.setUniform("projection", target);
 				glBindTexture(GL_TEXTURE_2D, tex);
 				shadowModel.render();
 			}
 		}
+		glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
+		glViewport (0, 0, width, height);
+		screen_shader.bind();
+		screen_shader.setUniform("sampler", 0);
+		target = projection.mul(new Matrix4f().translate(new Vector3f(0, 0, 0)), new Matrix4f());
+		float ratio = (((float)height)/((float)width));
+		target.mul(new Matrix4f().ortho2D(-ratio, ratio, 1, -1));
+		target.scale(height);
+		screen_shader.setUniform("projection", target);
+		screen_shader.setUniform("time", (int)(System.nanoTime()%1000000000));
+		screen_shader.setUniform("width", width);
+		screen_shader.setUniform("height", height);
+		glBindTexture(GL_TEXTURE_2D, mainFrameBuffer.colorTextureID);
+		tileModel.render();
 	}
 }

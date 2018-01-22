@@ -1,6 +1,12 @@
 package map.biomesList;
 
+import java.awt.Point;
+
+import com.sun.javafx.geom.Rectangle;
+
+import dataUtils.OpenSimplexNoise;
 import map.Biome;
+import map.Chunk;
 import map.MapGenerator;
 
 public class Underground extends Biome {
@@ -10,7 +16,7 @@ public class Underground extends Biome {
 		ID = 51;
 	}
 
-	public short[][][] generate() {
+	public short[][][] generate(int chunkX, int chunkY, long seed) {
 		int width = 1024, height = 1024;
 		short[][][] newMap = new short[3][width][height];
 		for(int x = 0; x < width; x++){
@@ -20,7 +26,7 @@ public class Underground extends Biome {
 			}
 		}
 
-		MapGenerator.genCavesArea(0,0,1024,1024,newMap);
+		MapGenerator.genCavesArea(new Rectangle(0,0,1024,1024),newMap, new OpenSimplexNoise(seed), new Point(chunkX*Chunk.width, chunkY*Chunk.height));
 
 		for(int i = 0; i < 50; i++){
 			MapGenerator.genOreCluster((int)(Math.random()*1024), (int)(Math.random()*1024), 2, 1, 50, newMap[0]);

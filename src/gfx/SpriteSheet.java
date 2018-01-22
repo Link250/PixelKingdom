@@ -1,12 +1,16 @@
 package gfx;
 
 import static org.lwjgl.opengl.GL11.*;
-
 import java.awt.image.BufferedImage;
 import java.nio.ByteBuffer;
 import javax.imageio.ImageIO;
 
 import org.lwjgl.BufferUtils;
+
+import gfx.RessourceManager.OpenGLRessource;
+import static main.Game.logInfo;
+import main.Game;
+import main.SinglePlayer;
 
 public class SpriteSheet {
 
@@ -14,11 +18,13 @@ public class SpriteSheet {
 	private int tileHeight;
 	private int width, height;
 	
-	private int textureIDs[];
+	private int[] textureIDs;
 	private int[][] pixels;
 	
 	private String pathBuffer;
 	private int[] pixelBuffer;
+	
+	private boolean textureReload = false;
 	
 	public SpriteSheet(String path){
 		this.tileWidth = -1;
@@ -54,8 +60,7 @@ public class SpriteSheet {
 		try {
 			image = ImageIO.read(SpriteSheet.class.getResourceAsStream(pathBuffer));
 		} catch (Exception e) {
-			System.err.println(pathBuffer);
-			e.printStackTrace();
+			Game.logWarning("Texture missing at " + pathBuffer);
 		}
 		if(image == null){ return;}
 		
@@ -64,29 +69,42 @@ public class SpriteSheet {
 		if(this.tileWidth<0)this.tileWidth = width;
 		if(this.tileHeight<0)this.tileHeight = height;
 		
-		genTextures(image.getRGB(0, 0, width, height, null, 0, width), width, height);
+		setPixels(image.getRGB(0, 0, width, height, null, 0, width), width, height, this.tileWidth, this.tileHeight);
 	}
 	
 	public void setPixels(int[] pixels, int width, int height, int tileWidth, int tileHeight) {
 		this.tileWidth = tileWidth;
 		this.tileHeight = tileHeight;
-		genTextures(pixels, width, height);
+		this.width = width;
+		this.height = height;
+		
+		this.pixels = new int[(width/tileWidth)*(height/tileHeight)][tileWidth*tileHeight];
+		for (int tileY = 0; tileY < height/tileHeight; tileY++) {
+			for (int tileX = 0; tileX < width/tileWidth; tileX++) {
+				for (int y = 0; y < tileHeight; y++) {
+					for (int x = 0; x < tileWidth; x++) {
+						this.pixels[tileX+tileY*(width/tileWidth)][x+y*tileWidth] = pixels[(y+tileY*tileHeight)*width + x+tileX*tileWidth];
+					}
+				}
+			}
+		}
+		textureReload = true;
 	}
 	
-	private void genTextures(int[] pixels, int width, int height){
-		if(this.textureIDs!=null && this.textureIDs.length>0) {
+	private void genTextures(){
+		if(this.textureIDs!=null) {
 			glDeleteTextures(textureIDs);
+		}else {
+			load();
 		}
-		this.textureIDs = new int[(width/tileWidth)*(height/tileHeight)];
-		this.pixels = new int[this.textureIDs.length][tileWidth*tileHeight];
+		this.textureIDs = new int[this.pixels.length];
 		int texIndex = 0;
 		for (int tileY = 0; tileY < height/tileHeight; tileY++) {
 			for (int tileX = 0; tileX < width/tileWidth; tileX++) {
 				ByteBuffer pixelBuffer = BufferUtils.createByteBuffer(tileWidth * tileHeight * 4);
 				for (int y = 0; y < tileHeight; y++) {
 					for (int x = 0; x < tileWidth; x++) {
-						int pixel = pixels[(y+tileY*tileHeight)*width + x+tileX*tileWidth];
-						this.pixels[tileX+tileY*(width/tileWidth)][x+y*tileWidth] = pixel;
+						int pixel = pixels[tileX+tileY*(width/tileWidth)][x+y*tileWidth];
 						pixelBuffer.put((byte)((pixel >> 16) & 0xFF)); //RED
 						pixelBuffer.put((byte)((pixel >> 8) & 0xFF));  //GREEN
 						pixelBuffer.put((byte)(pixel & 0xFF));		  //BLUE
@@ -100,13 +118,14 @@ public class SpriteSheet {
 				
 				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 				glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 				
 				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tileWidth, tileHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixelBuffer);
 				texIndex++;
 			}
 		}
+		textureReload = false;
 	}
 	
 	public int[] getPixels(int tile) {
@@ -115,7 +134,7 @@ public class SpriteSheet {
 	}
 	
 	public int getID(int tile) {
-		if(this.textureIDs==null)load();
+		if(this.textureIDs==null || textureReload)genTextures();
 		return textureIDs[tile];
 	}
 	
@@ -131,7 +150,12 @@ public class SpriteSheet {
 	
 	protected void finalize() throws Throwable {
 		if(this.textureIDs!=null && this.textureIDs.length>0) {
-			glDeleteTextures(textureIDs);
+			RessourceManager.addRessource(new OpenGLRessource(){
+				public void freeRessources() {
+					if(SinglePlayer.debuginfo)logInfo("SpriteSheet.finalize().new OpenGLRessource() {...}.freeRessources()");
+					glDeleteTextures(textureIDs);
+				}
+			});
 		}
 		super.finalize();
 	}

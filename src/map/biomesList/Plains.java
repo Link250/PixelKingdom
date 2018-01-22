@@ -12,7 +12,7 @@ public class Plains extends Biome {
 		ID = 1;
 	}
 
-	public short[][][] generate() {
+	public short[][][] generate(int chunkX, int chunkY, long seed) {
 		double width = 1024, height = 1024;
 		short[][][] newMap = new short[3][(int)width][(int)height];
 		Random r = new Random(System.nanoTime());
@@ -91,7 +91,7 @@ public class Plains extends Biome {
 			}
 		}
 		
-		MapGenerator.genCavesArea(0,600,1024,400,newMap);
+//		MapGenerator.genCavesArea(0,600,1024,400,newMap);
 
 		for(int y = 0; y < height/2; y ++){
 			for(int x = 32; x < width-32; x ++){

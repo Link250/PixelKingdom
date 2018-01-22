@@ -81,6 +81,12 @@ public class ItemList {
 		return NewItem(GetItem(ID), startStack);
 	}
 	
+	public static void addRecipesToList(RecipeList list) {
+		for(Item i : itemlist){
+			i.addRecipes(list);
+		}
+	}
+	
 	public static class UnknownItemException extends Exception{
 		private static final long serialVersionUID = -1455881875691855085L;
 		

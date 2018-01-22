@@ -11,8 +11,8 @@ public class Leaf extends Material<UDS> implements Burnable{
 		ID = 5;
 		name = "Leaf";
 		displayName = "Leaf";
-		frontLightReduction = 6;
-		backLightReduction = 200;
+		frontLightReduction = new int[] {-6, -2, -6};
+		backLightReduction = new int[] {-200, -100, -200};
 		requiredType = MINING_TYPE_PICKAXE;
 		requiredTier = 1;
 		miningResistance = 0.5;

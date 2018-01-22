@@ -5,7 +5,7 @@ import java.util.List;
 
 import dataUtils.conversion.ConvertData;
 import entities.Player;
-import gameFields.BagInv;
+import gameFields.ItemField;
 import map.Map;
 
 public abstract class Bag<ItemType extends Item> extends Item {
@@ -109,7 +109,7 @@ public abstract class Bag<ItemType extends Item> extends Item {
 	}
 	
 	public boolean canContain(Item item) {
-		return clazz.isInstance(item);
+		return item == null || clazz.isInstance(item);
 	}
 	
 	/**
@@ -181,9 +181,11 @@ public abstract class Bag<ItemType extends Item> extends Item {
 		return this.itemPriority;
 	}
 	
-	public void createFields(List<BagInv.BagItemField> fields) {
+	public void createFields(List<ItemField> fields) {
 		for(int i = 0; i < inventory.size(); i++) {
-			fields.add(new BagInv.BagItemField().linkToBag(this, i));
+			int index = i;
+			fields.add(new ItemField());
+			fields.get(index).setGetterAndSetter( () -> getItem(index), (item) -> setItem(index, item));
 		}
 	}
 	

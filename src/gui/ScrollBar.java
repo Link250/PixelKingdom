@@ -77,6 +77,15 @@ public class ScrollBar {
 		return main.height;
 	}
 	
+	
+	public int getX() {
+		return main.x;
+	}
+
+	public int getY() {
+		return main.y;
+	}
+	
 	public PArea getSlider() {
 		return slider;
 	}

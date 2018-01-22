@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import dataUtils.conversion.ConvertData;
 import entities.Player;
 import gfx.SpriteSheet;
+import item.Recipe;
+import item.RecipeList;
 import item.Tool;
 import main.MouseInput;
 import map.Map;
@@ -49,5 +51,9 @@ public class Lighter extends Tool{
 
 	public void load(ArrayList<Byte> file) {
 		stack = ConvertData.B2I(file);
+	}
+	
+	public void addRecipes(RecipeList recipeList) {
+		recipeList.addRecipe(new Recipe().addP(400, 5).addE(16, 1).addE(6, 3), RecipeList.C_TOOLS);
 	}
 }

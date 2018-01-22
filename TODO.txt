@@ -76,12 +76,12 @@
 	- Glatteisbiom (Biom aus lichtdurchlaessigen eisbloecken und eisspitzen) (ersetzt tundra)
 	- Vulkan (ersetzt berg)
 	- death valley (ersetzt canyon)
-	- Schneeber (ersetzt schneeplains)
+	- Schneeberg (ersetzt schneeplains)
 	- Buntwald (viele verschieden Baeume, ersetzt wald)
 	- Kueste + meer (ersetzt see)
 	- industrial (ersetzt mine)
 	- steampunk (ersetzt mine)
-	- superrare biome ideen:
+- superrare biome ideen:
 	- Korallenwald (ersetzt sumpf, seeehr selten)
 	- fairy Biom (ersetzt korrupte/boese biome, seeehr friggin selten)
 	- Ampere/Volt ruinensteppe (ersetz ruinensteppe) (elektrisch geladene alien fragmente und gegner)
@@ -100,6 +100,20 @@
 -nebula
 -dark matter / anti matter
 
+----- GAME PROGRESS ------
+
+start-game
+- flint aus gravel (mit der hand abbauen)
+- stöcke aus büschen (mit der hand abbauen)
+- erstes flint-werkzeug, danach holz/stein
+
+early-game
+-bessere metalle sammeln
+-mit kohle betriebene verarbeitung (zB ofen)
+
+mid-game
+-dampfmaschinen
+
 ---------- NPCS ----------
 
 - Tingle adden = NPC mit überteuerten Preisen, verkauft Schatzkarten, aus den Funden kann man HalfLife 3 machen, pinke farbe für Häuser
@@ -108,12 +122,14 @@
 
 ---------- CONFIGS ----------
 
-# brightness constant, sodass zB 245->255 erhellt wird (siehe Chunk.java TODO)
+# brightness constant, sodass zB 245->255 erhellt wird (siehe Chunk.java TODO) //SCRAPPED
 # framecap
 # max light iterations
 - character creation
 
 ---------- FEATURES/MECHANICS ----------
+
+- multithreaded physics-/light- engine
 
 - Loader class auch für andere Ladevorgänge verwenden
 	->Materials, Recipes, etc
@@ -123,8 +139,10 @@
 
 - maximaler Chunk bereich von 3*3 mit offsets für weniger ram und gleich bleibende performance
 
+- "RenderEventListener" um zB GUI elemente von überall aus zeichnen zu können.
+
 - Multiplayer
-	-> kollektive updates (eine ID mit mehreren koordinaten, zb bei groﾟen wasser/feuer mengen)
+	-> kollektive updates (eine ID mit mehreren koordinaten, zb bei großen wasser/feuer mengen)
 	
 - Day evening night, ein jahreszeiten basierendes tag nacht system.
 - je nach jahreszeit aendernde baumfarben usw.
@@ -162,11 +180,11 @@
 - Leitungen:
 	-liquid/energy/item/signal etc.
 	-keine pixel, sondern rein visuelle linien
-	-kabel können nicht ewig lang sein und brauchen zB "lautungskästen" zwischendurch
+	-kabel können nicht ewig lang sein und brauchen zB "leitungskästen" zwischendurch
 
 - Dynamische Lichtquelle (beim tragen einer Torch)
 
--!!! CUDA Berechnung /*-vielleicht*/
+-!!! CUDA Berechnung /*-vielleicht*/ /*eventuel für Licht*/
 ### Multiblock ADs
 ### pixel bekommen gesagt mit welchem tool sie abgebaut wurden
 
@@ -179,3 +197,20 @@
 	  element alle 2 sekunden aendern, waffen die 10% mehr damage haben aber auch eine 2% chance einen gegner komplett zu heilen, waffen die keinen
 	  passenden sound beim schlag/schuss/zaubern zu machen sondern evtl. "shaun" schreien.
 	  Natuerlich ein Ziel das man erst vielleicht machen sollte wenn alles andere abgeklappert ist.
+
+ 
+### Issues & ideas
+	- Licht-Engine Performance
+	- Lava/molten Materials kein Licht
+	- Collision (Friction) (wasser physik, verlangsamung, imunitäten etc etc)
+	- Worldgen
+	- Multiplayer
+	- biome dynamisch laden
+	- item/player saves dynamisch & backward compatible halten
+	- research daten speichern
+	- pickaxe algorithm + breaking blocks list in map
+	- better animation data
+	- vertex mesh for individual pixel rendering
+	- Making it possible to drop Item stacks by holding them and using a button and by closing the inventory
+	- solidity force-through
+	- multipixel bitmap with force-through and individual solidity

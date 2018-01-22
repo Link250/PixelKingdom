@@ -9,6 +9,7 @@ import entities.Collision;
 import entities.Entity;
 import entities.Hitbox;
 import item.Item;
+import main.SinglePlayer;
 import map.Map;
 
 public class ItemEntity extends Entity {
@@ -68,8 +69,8 @@ public class ItemEntity extends Entity {
 	}
 	
 	public void render() {
-		item.renderOnMap(x, y, false, false, true);
-		hitbox.render(x, y);
+		item.renderOnMap(x, y);
+		if(SinglePlayer.debuginfo)hitbox.render(x, y);
 	}
 
 }

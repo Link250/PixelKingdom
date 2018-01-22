@@ -11,6 +11,11 @@ import java.nio.FloatBuffer;
 import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
 
+import gfx.RessourceManager.OpenGLRessource;
+import main.SinglePlayer;
+
+import static main.Game.logInfo;
+
 public class Shader {
 	private int programObject;
 	private int vertexShaderObject;
@@ -54,11 +59,16 @@ public class Shader {
 	}
 
 	protected void finalize() throws Throwable {
-		glDetachShader(programObject, vertexShaderObject);
-		glDetachShader(programObject, fragmentShaderObject);
-		glDeleteShader(vertexShaderObject);
-		glDeleteShader(fragmentShaderObject);
-		glDeleteProgram(programObject);
+		RessourceManager.addRessource(new OpenGLRessource(){
+			public void freeRessources() {
+				if(SinglePlayer.debuginfo)logInfo("Shader.finalize().new OpenGLRessource() {...}.freeRessources()");
+				glDetachShader(programObject, vertexShaderObject);
+				glDetachShader(programObject, fragmentShaderObject);
+				glDeleteShader(vertexShaderObject);
+				glDeleteShader(fragmentShaderObject);
+				glDeleteProgram(programObject);
+			}
+		});
 		super.finalize();
 	}
 	
@@ -66,6 +76,12 @@ public class Shader {
 		int location = glGetUniformLocation(programObject, uniformName);
 		if(location != -1)
 			glUniform1i(location, value);
+	}
+	
+	public void setUniform(String uniformName, float value) {
+		int location = glGetUniformLocation(programObject, uniformName);
+		if(location != -1)
+			glUniform1f(location, value);
 	}
 	
 	public void setUniform(String uniformName, float a, float r, float g, float b) {

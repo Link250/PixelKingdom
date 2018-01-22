@@ -2,11 +2,7 @@ package map;
 
 import java.util.ArrayList;
 
-import map.biomesList.Caves;
-import map.biomesList.Forest;
-import map.biomesList.Plains;
-import map.biomesList.Space;
-import map.biomesList.Underground;
+import map.biomesList.*;
 
 public class BiomeList {
 
@@ -18,6 +14,7 @@ public class BiomeList {
 		biomelist.add(new Space());
 		biomelist.add(new Underground());
 		biomelist.add(new Caves());
+		biomelist.add(new Hills());
 	}
 	
 	public static Biome GetBiome(int ID){

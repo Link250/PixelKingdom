@@ -4,6 +4,8 @@ import entities.Player;
 import gfx.Mouse;
 import gfx.SpriteSheet;
 import item.Item;
+import item.Recipe;
+import item.RecipeList;
 import main.MouseInput;
 import map.Map;
 import pixel.MultiPixel;
@@ -33,5 +35,9 @@ public class ChairItem extends Item {
 		}
 		Mouse.mouseType = Mouse.MouseType.MULTIPIXEL;
 		Mouse.multiPixel = place;
+	}
+	
+	public void addRecipes(RecipeList recipeList) {
+		recipeList.addRecipe(new Recipe().addP(500, 1).addE(6, 20), RecipeList.C_FURNITURE);
 	}
 }

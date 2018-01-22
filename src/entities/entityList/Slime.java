@@ -17,8 +17,9 @@ public class Slime extends Mob {
 		yOffset=4;
 	}
 
+	@SuppressWarnings("deprecation")
 	public void tick(int numTick) {
-		int n;
+/*		int n;
 		if(speedY < 0){
 			for(n = 0; n >= speedY; n--){
 				if(!Collision.canMove(map, col, (int)x, (int)y, 0, n)) speedY = n+1;
@@ -28,7 +29,7 @@ public class Slime extends Mob {
 				if(!Collision.canMove(map, col, (int)x, (int)y, 0, n)) speedY = n-1;
 			}
 		}
-		y += speedY;
+		y += speedY;*/
 	}
 
 	public void render() {

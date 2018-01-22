@@ -117,6 +117,7 @@ public class SinglePlayer {
 		player.create();
 		Game.logInfo("Player Created");
 	}
+	
 	public void save(){
 		ArrayList<Byte> savedata = new ArrayList<Byte>();
 		player.save(savedata);
@@ -131,6 +132,7 @@ public class SinglePlayer {
 			fos.close();
 		} catch (IOException e) {e.printStackTrace();}
 	}
+	
 	public void load(){
 		byte[] temp = new byte[(int)plr.length()];
 		try {

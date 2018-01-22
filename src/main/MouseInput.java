@@ -55,6 +55,7 @@ public class MouseInput{
 			}
 			break;
 		}
+		if(action == 1)KeyInput.resetFocus();
 	}
 	
 	public void invokeScroll(long window, double xoffset, double yoffset) {

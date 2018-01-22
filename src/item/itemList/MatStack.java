@@ -8,6 +8,7 @@ import gfx.Mouse;
 import gfx.SpriteSheet;
 import gfx.Mouse.MouseType;
 import item.Item;
+import item.RecipeList;
 import main.MouseInput;
 import map.Map;
 import pixel.PixelList;
@@ -72,5 +73,24 @@ public class MatStack extends Item{
 
 	public void load(ArrayList<Byte> file) {
 		stack = ConvertData.B2I(file);
+	}
+	
+/*	private SpriteSheet loadTexture() {
+		SpriteSheet sprite = new SpriteSheet("/Items/Material.png");
+		int[] pixels = sprite.getPixels(0);
+		int w = sprite.getWidth(), h = sprite.getHeight();
+		for (int x = 0; x < w; x++) {
+			for (int y = 0; y < h; y++) {
+				if((pixels[x + y * w] & 0xffffff) == 0xff00ff) {
+					pixels[x + y * w] = PixelList.GetMat(ID).getColor(x, y);
+				}
+			}
+		}
+		sprite.setPixels(pixels, w, h, w, h);
+		return sprite;
+	}*/
+	
+	public void addRecipes(RecipeList recipeList) {
+		PixelList.GetMat(ID).addRecipes(recipeList);
 	}
 }

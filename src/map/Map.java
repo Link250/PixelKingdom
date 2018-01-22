@@ -1,5 +1,6 @@
 package map;
 
+import gfx.Light;
 import gfx.Screen;
 import item.Item;
 import item.MiningTool;
@@ -26,12 +27,21 @@ public class Map {
 
 	public static final byte LAYER_BACK=0, LAYER_LIQUID = 1, LAYER_FRONT = 2, LAYER_LIGHT = 3,
 			GT_SP=0,GT_CLIENT=1,GT_SERVER=2;
-	public static final short MAX_LIGHT = 255;
+	/** The maximum value of a single Light Value like Red, Green or Blue */
+	public static final int LIGHT_MAX_VALUE = 0xff;
+	/** The Value of the Brightest White Color */
+	public static final int LIGHT_WHITE = 0xffffff;
+	
 	public static final byte[] LAYER_ALL = {LAYER_BACK,LAYER_LIQUID,LAYER_FRONT,LAYER_LIGHT},
 			LAYER_ALL_PIXEL = {LAYER_BACK,LAYER_LIQUID,LAYER_FRONT},
 			LAYER_ALL_MATERIAL = {LAYER_BACK,LAYER_FRONT};
-	public static final int SOLID_NONE = 0b0, SOLID_TOP = 0b0001, SOLID_BOTTOM = 0b0010, SOLID_RIGHT = 0b0100, SOLID_LEFT = 0b1000, SOLID_ALL = 0b1111;
+	
+	public static final int SOLID_NONE = 0b0,
+			SOLID_TOP = 0b0001, SOLID_BOTTOM = 0b0010, SOLID_RIGHT = 0b0100, SOLID_LEFT = 0b1000,
+			SOLID_Y_AXIS = SOLID_TOP | SOLID_BOTTOM, SOLID_X_AXIS = SOLID_LEFT | SOLID_RIGHT, SOLID_ALL = SOLID_X_AXIS | SOLID_Y_AXIS;
+	
 	public static final int widthh = 1024, heighth = 1024;
+	
 	public String path;
 	protected UpdateManager updatesPixel = new UpdateManager();
 	public int updateCountPixel = 0;
@@ -45,7 +55,10 @@ public class Map {
 	private ArrayList<Entity> entityList = new ArrayList<>();
 	private ArrayList<ItemEntity> itemEntityList = new ArrayList<>();
 	private ArrayList<MultiPixelData> multiPixelSprites = new ArrayList<>();
+	private ArrayList<Chunk> chunkList = new ArrayList<>();
 	private Chunk[][] chunks = new Chunk[1024][1024];
+	
+	private int lastChunkIndex = 0;
 	
 	private int regularUpdateX = -Screen.width/2-Screen.RENDER_CHUNK_SIZE;
 	private int regularUpdateY = -Screen.height/2-Screen.RENDER_CHUNK_SIZE;
@@ -198,22 +211,50 @@ public class Map {
 	}
 	
 	public void updateLight(int x, int y){
-		short light,tempL,c;
 		if(getID(x,y,LAYER_BACK)==0){
-			light = MAX_LIGHT;
+			setlight(x, y, LIGHT_WHITE);
 		}else{
-			light=(short) (MAX_LIGHT-PixelList.GetMat(x, y, this, LAYER_BACK).backLightReduction());
+			int[] light,tempL, c, c1, c2;
+			int sideL;
+			light = PixelList.GetMat(x, y, this, LAYER_BACK).backLightReduction().clone();
+			light[0] += LIGHT_MAX_VALUE; light[1] += LIGHT_MAX_VALUE; light[2] += LIGHT_MAX_VALUE;
+			
 			for (int L= 0; L < LAYER_ALL_PIXEL.length; L++) {
 				tempL = PixelList.GetPixel(getID(x, y, L),L).tickLight(x, y, L, this);
-				if(tempL>light)light = tempL;
+				if(tempL[0] > light[0])light[0] = tempL[0];
+				if(tempL[1] > light[1])light[1] = tempL[1];
+				if(tempL[2] > light[2])light[2] = tempL[2];
 			}
-			if((tempL = getlight(x+1,y))-(c=PixelList.GetMat(x, y, this, LAYER_FRONT).frontLightReduction())>light)light = (short) (tempL-c);
-			if((tempL = getlight(x-1,y))-(c=PixelList.GetMat(x, y, this, LAYER_FRONT).frontLightReduction())>light)light = (short) (tempL-c);
-			if((tempL = getlight(x,y+1))-(c=PixelList.GetMat(x, y, this, LAYER_FRONT).frontLightReduction())>light)light = (short) (tempL-c);
-			if((tempL = getlight(x,y-1))-(c=PixelList.GetMat(x, y, this, LAYER_FRONT).frontLightReduction())>light)light = (short) (tempL-c);
-			if(light<0)light = 0;
+			c1=PixelList.GetMat(x, y, this, LAYER_FRONT).frontLightReduction();
+			c2=PixelList.GetMat(x, y, this, LAYER_LIQUID).frontLightReduction();
+			c = new int[]{(c1[0] < c2[0]) ? c1[0] : c2[0], (c1[1] < c2[1]) ? c1[1] : c2[1], (c1[2] < c2[2]) ? c1[2] : c2[2]};
+			
+			sideL = getlight(x+1,y);
+			tempL = new int[]{((sideL>>16)&0xff) + c[0], ((sideL>>8)&0xff) + c[1], ((sideL)&0xff) + c[2]};
+			if(light[0] < tempL[0])light[0] = tempL[0];
+			if(light[1] < tempL[1])light[1] = tempL[1];
+			if(light[2] < tempL[2])light[2] = tempL[2];
+			
+			sideL = getlight(x-1,y);
+			tempL = new int[]{((sideL>>16)&0xff) + c[0], ((sideL>>8)&0xff) + c[1], ((sideL)&0xff) + c[2]};
+			if(light[0] < tempL[0])light[0] = tempL[0];
+			if(light[1] < tempL[1])light[1] = tempL[1];
+			if(light[2] < tempL[2])light[2] = tempL[2];
+			
+			sideL = getlight(x,y+1);
+			tempL = new int[]{((sideL>>16)&0xff) + c[0], ((sideL>>8)&0xff) + c[1], ((sideL)&0xff) + c[2]};
+			if(light[0] < tempL[0])light[0] = tempL[0];
+			if(light[1] < tempL[1])light[1] = tempL[1];
+			if(light[2] < tempL[2])light[2] = tempL[2];
+			
+			sideL = getlight(x,y-1);
+			tempL = new int[]{((sideL>>16)&0xff) + c[0], ((sideL>>8)&0xff) + c[1], ((sideL)&0xff) + c[2]};
+			if(light[0] < tempL[0])light[0] = tempL[0];
+			if(light[1] < tempL[1])light[1] = tempL[1];
+			if(light[2] < tempL[2])light[2] = tempL[2];
+			
+			setlight(x, y, Light.getColorAsInt(light[0], light[1], light[2]));
 		}
-		setlight(x,y,(byte) light);
 	}
 	
 	public void render(){
@@ -271,6 +312,10 @@ public class Map {
 		this.itemEntityList.remove(e);
 	}
 	
+	public List<Mob> getMobs() {
+		return this.mobEntityList;
+	}
+	
 	public List<Mob> getMobs(Predicate<Mob> area) {
 		List<Mob> list = new LinkedList<>();
 		this.mobEntityList.stream().filter(area).forEach(e->list.add(e));
@@ -287,6 +332,18 @@ public class Map {
 	
 	public boolean hasLoadedChunk(int cx, int cy) {
 		return this.chunks[cx][cy]!=null && this.chunks[cx][cy].finishedLoading();
+	}
+	
+	public int getChunkIndex(int x, int y) {
+		int cx = x/1024,cy = y/1024;
+		if(chunkList.get(lastChunkIndex).isOnPosition(cx, cy)) {
+			return lastChunkIndex;
+		}else {
+			for (int i = 0; i < chunkList.size(); i++) {
+				if(chunkList.get(i).isOnPosition(cx, cy))return i;
+			}
+		}
+		return -1;
 	}
 	
 	public int getID(int x, int y, int layer){
@@ -412,17 +469,17 @@ public class Map {
 		}
 	}
 
-	public short getlight(int x, int y){
+	public int getlight(int x, int y){
 		int cx = x/1024,cy = y/1024;
 		if(chunks[cx][cy]!=null){
 			x %= 1024;y %= 1024;
-			short temp = chunks[cx][cy].light[x+y*1024];
-			return (short) (temp<0 ? temp+256 : temp);
+			return chunks[cx][cy].light[x+y*1024];
 		}else{
 			return 0;
 		}
 	}
-	public void setlight(int x, int y, byte b){
+	
+	public void setlight(int x, int y, int b){
 		int cx = x/1024,cy = y/1024;
 		if(chunks[cx][cy]!=null){
 			x %= 1024;y %= 1024;
@@ -436,17 +493,10 @@ public class Map {
 	public void setlighter(int x, int y, short b) {
 		if(getlight(x,y)<b)setlight(x, y, (byte)b);
 	}
-
-	public boolean isSolid(int x, int y){
-		return getID(x, y, Map.LAYER_FRONT)!=0 && PixelList.GetMat(getID(x, y, Map.LAYER_FRONT)).getSolidity() == SOLID_ALL;
-	}
 	
-	public int getSolidity(double x, double y){
-		return PixelList.GetMat(getID((int)x, (int)y, Map.LAYER_FRONT)).getSolidity();
-	}
-	
-	public int getSolidity(int x, int y){
-		return PixelList.GetMat(getID(x, y, Map.LAYER_FRONT)).getSolidity();
+	public int getSolidity(double x, double y){ 
+//		return getChunkIndex((int)x, (int)y) >= 0 ? PixelList.GetMat(getID((int)x, (int)y, Map.LAYER_FRONT)).getSolidity() : Map.SOLID_ALL;
+		return chunks[(int)(x/1024)][(int)(y/1024)]!=null ? PixelList.GetMat(getID((int)x, (int)y, Map.LAYER_FRONT)).getSolidity() : Map.SOLID_ALL;
 	}
 	
 	public int getRenderChunk(int x, int y, int l) {

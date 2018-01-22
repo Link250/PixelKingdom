@@ -12,8 +12,8 @@ public class Water extends Liquid<UDS>{
 		name = "Water";
 		displayName = "Water";
 		viscosity = 1000;
-		frontLightReduction = 2;
-		backLightReduction = 100;
+		frontLightReduction = new int[] {-4, -4, -4};
+		backLightReduction = new int[] {-100, -100, -100};
 		loadTexture();
 	}
 	

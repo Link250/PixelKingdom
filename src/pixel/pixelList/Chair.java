@@ -10,8 +10,8 @@ public class Chair extends MultiPixel<MultiPixel.DataStorage> {
 		itemID = 500;
 		name = "Chair";
 		displayName = "Chair";
-		frontLightReduction = 1;
-		backLightReduction = 0;
+		frontLightReduction = new int[] {-1, -1, -1};
+		backLightReduction = new int[] {0, 0, 0};
 		requiredType = MINING_TYPE_PICKAXE;
 		requiredTier = 1;
 		miningResistance = 1;

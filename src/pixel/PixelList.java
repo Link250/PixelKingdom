@@ -27,6 +27,7 @@ public class PixelList {
 					}
 				}
 			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e){
+				System.out.println(item.getName());
 				e.printStackTrace();
 			}
 		}

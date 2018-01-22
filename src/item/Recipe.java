@@ -6,21 +6,20 @@ import java.util.List;
 
 public class Recipe implements Comparable<Recipe>{
 
-	public boolean researched = false;
+	public boolean researched = true;
 	public List<Component> products = new ArrayList<Component>();
 	public List<Component> educts = new ArrayList<Component>();
-	
-	public Recipe(){
-		
-	}
+	public Component mainProduct, mainEduct;
 	
 	public Recipe addP(int ID, int n){
 		products.add(new Component(ID,n));
+		if(products.size()==1)mainProduct = products.get(0);
 		sortComponents(products);
 		return this;
 	}
 	public Recipe addE(int ID, int n){
 		educts.add(new Component(ID,n));
+		if(educts.size()==1)mainEduct = educts.get(0);
 		sortComponents(educts);
 		return this;
 	}
@@ -34,6 +33,7 @@ public class Recipe implements Comparable<Recipe>{
 	}
 	
 	public int compareTo(Recipe r) {
+		if(r.researched != researched)return researched ? -1 : 1;
 		if(r.products.size() == this.products.size()) {
 			for (int i = 0; i < this.products.size(); i++) {
 				if(!r.products.get(i).equals(this.products.get(i)))return this.products.get(i).compareTo(r.products.get(i));
@@ -62,6 +62,21 @@ public class Recipe implements Comparable<Recipe>{
 			}else return false;
 		}else return false;
 		return true;
+	}
+	
+	public String toString() {
+		String string = "";
+		boolean first = true;
+		for (Component c : educts) {
+			string += (first ? "" : " + ") + c.n + "x " + ItemList.GetItem(c.ID).name;
+			first = false;
+		}
+		first = true;
+		for (Component c : products) {
+			string += (first ? " => " : " + ") + c.n + "x " + ItemList.GetItem(c.ID).name;
+			first = false;
+		}
+		return string;
 	}
 	
 	public static class Component implements Comparable<Component>{

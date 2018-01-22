@@ -52,6 +52,7 @@ public class PArea {
 			}
 		}
 		back = new SpriteSheet(pixels, width, height, width, height);
+		this.resized = false;
 	}
 	
 	public void showArea(){

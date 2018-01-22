@@ -13,8 +13,7 @@ public class Lava extends Liquid<Lava.LavaAD>{
 		name = "Lava";
 		displayName = "Lava";
 		viscosity = 10;
-		frontLightReduction = 0;
-		backLightReduction = 0;
+		light = new int[] {152, 152, 152};
 		loadTexture();
 	}
 	
@@ -24,10 +23,6 @@ public class Lava extends Liquid<Lava.LavaAD>{
 			map.setID(x, y, Map.LAYER_FRONT, PixelList.getPixelID("Stone"));
 		}
 		return Liquid.flow(x, y, l, viscosity, map, numTick);
-	}
-	
-	public short tickLight(int x, int y, int l, Map map) {
-		return (short) (Map.MAX_LIGHT*0.6);
 	}
 	
 	public void setMat(int x, int y, int l, int ID, Map map){

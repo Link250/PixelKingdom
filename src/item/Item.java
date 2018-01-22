@@ -136,8 +136,12 @@ public abstract class Item {
 		Screen.drawGUISprite(x, y, gfx, 0, false, false, col);
 	}
 
+	public void renderOnMap(double x, double y){
+		Screen.drawMapSprite(x, y, gfxs != null ? gfxs : gfx, 0, false, false, col, true);
+	}
+	
 	public void renderOnMap(double x, double y, boolean mirrorX, boolean mirrorY){
-		Screen.drawMapSprite(x, y, gfxs != null ? gfxs : gfx, 0, mirrorX, mirrorY, col);
+		Screen.drawMapSprite(x, y, gfxs != null ? gfxs : gfx, 0, mirrorX, mirrorY, col, true);
 	}
 	
 	public void renderOnMap(double x, double y, boolean mirrorX, boolean mirrorY, boolean centered){
@@ -152,6 +156,10 @@ public abstract class Item {
 
 	public void setMouse() {
 		Mouse.mouseType=MouseType.DEFAULT;
+	}
+	
+	public void addRecipes(RecipeList recipeList) {
+		return;
 	}
 	
 	public void save(ArrayList<Byte> file) {

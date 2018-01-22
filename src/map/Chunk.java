@@ -38,9 +38,9 @@ public class Chunk{
 	private short[] front;
 	private short[] liquid;
 	private short[] back;
-	public byte[] light;
-	private HashMap<Integer,UDS> UDS = new HashMap<>();
-	private boolean[][][] updating = new boolean[width][height][Map.LAYER_ALL.length];
+	public int[] light;
+	private HashMap<Integer,UDS> UDS;
+	private boolean[][][] updating;
 	private Map map;
 	
 	private int[][][] textureChunks;
@@ -55,6 +55,8 @@ public class Chunk{
 		this.map = map;
 		this.textureChunks = new int[width/Screen.RENDER_CHUNK_SIZE][height/Screen.RENDER_CHUNK_SIZE][Map.LAYER_ALL.length];
 		this.textureUpdates = new boolean[width/Screen.RENDER_CHUNK_SIZE][height/Screen.RENDER_CHUNK_SIZE][Map.LAYER_ALL.length];
+		this.updating = new boolean[width][height][Map.LAYER_ALL.length];
+		this.UDS = new HashMap<>();
 	}
 	
 	public int getID(int x, int y, int layer){
@@ -118,6 +120,10 @@ public class Chunk{
 	public void setUDS(int xy, int l, UDS uds){
 		this.UDS.put(l*length+xy, uds);
 	}
+	
+	public boolean isOnPosition(int x, int y) {
+		return this.x == x && this.y == y;
+	}
 		
 	public void refreshUpdates(){
 		Material<?> m;
@@ -157,7 +163,7 @@ public class Chunk{
 		front = new short[length];
 		liquid = new short[length];
 		back = new short[length];
-		light = new byte[length];
+		light = new int[length];
 		UDS = new HashMap<>();
 		
 		if(rawfile==null) {
@@ -255,15 +261,8 @@ public class Chunk{
 	}
 	
 	public void create(){
-		short[][][] newMap;
-		if(y==512){
-			if(x%2==0)newMap = MapGenerator.Generate((byte)1);
-			else newMap = MapGenerator.Generate((byte)2);
-		}
-		else{
-			if(y<512)newMap = MapGenerator.Generate((byte)0);
-			else newMap = MapGenerator.Generate((byte)51);
-		}
+		byte biomeID = (byte) (y==512 ? 3 : (y<512 ? 0 : 51));
+		short[][][] newMap = MapGenerator.Generate(biomeID, x, y, 0);
 		File f = new File(path + File.separator + "c-"+x+"-"+y+".pmap");
 		try {
 			f.createNewFile();
@@ -277,6 +276,7 @@ public class Chunk{
 				back[y*width+x] = newMap[2][x][y];
 			}
 		}
+		save();
 		Game.logInfo("New Chunk created at X:"+x+" Y:"+y);
 		this.finishedLoading = true;
 	}
@@ -381,24 +381,20 @@ public class Chunk{
 
 	private void genShadowTexture(int xPos, int yPos){
 		int X,Y;
-		short lightP;
+		int lightP;
 		ByteBuffer pixelBuffer = BufferUtils.createByteBuffer((Screen.RENDER_CHUNK_SIZE+2) * (Screen.RENDER_CHUNK_SIZE+2) * 4);
 		for (int y = 0; y < Screen.RENDER_CHUNK_SIZE+2; y++) {
 			for (int x = 0; x < Screen.RENDER_CHUNK_SIZE+2; x++) {
 				X=x+xPos*Screen.RENDER_CHUNK_SIZE-1;Y=y+yPos*Screen.RENDER_CHUNK_SIZE-1;
 				if(X<0 || Y<0 || X>=width || Y>=height) {
 					lightP = map.getlight(this.x*width+X, this.y*height+Y);
-					pixelBuffer.put((byte)0); //RED
-					pixelBuffer.put((byte)0);  //GREEN
-					pixelBuffer.put((byte)0);		  //BLUE
-					pixelBuffer.put((byte)(Map.MAX_LIGHT-(map.getID(X, Y, Map.LAYER_BACK) == Map.MAX_LIGHT ? 0 : lightP))); //ALPHA
 				}else {
-					lightP = (light[X+Y*width]); //TODO +brightness constant, sodass zB 245->255 erhellt wird
-					pixelBuffer.put((byte)0); //RED
-					pixelBuffer.put((byte)0);  //GREEN
-					pixelBuffer.put((byte)0);		  //BLUE
-					pixelBuffer.put((byte)(Map.MAX_LIGHT-(getID(X, Y, Map.LAYER_BACK) == Map.MAX_LIGHT ? 0 : lightP))); //ALPHA
+					lightP = (light[X+Y*width]);
 				}
+				pixelBuffer.put((byte)((lightP>>16)&0xff));//RED
+				pixelBuffer.put((byte)((lightP>> 8)&0xff));//GREEN
+				pixelBuffer.put((byte)((lightP    )&0xff));//BLUE
+				pixelBuffer.put((byte)255); //ALPHA
 			}
 		}
 		pixelBuffer.flip();

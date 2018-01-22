@@ -24,20 +24,25 @@ public class Mouse {
 	private static PArea textField;
 	
 	public static void setText(List<String> list) {
-		if(!list.equals(textField)) {
-			textField = new PArea(0, 0, 1, 1);
-			textList = list;
-			textList.forEach((s) -> {
-				if(Game.sfont.renderLength(s, 0) > textField.width) textField.width = Game.sfont.renderLength(s, 0);
-			});
-			textField.setSize(textField.width+6, 26*textList.size() + 8);
+		if(list != null) {
+			if(!list.equals(textList)) {
+				textField = new PArea(0, 0, 1, 1);
+				textList = list;
+				textList.forEach((s) -> {
+					if(Game.sfont.renderLength(s, 0) > textField.width) textField.width = Game.sfont.renderLength(s, 0);
+				});
+				textField.setSize(textField.width+6, 26*textList.size() + 8);
+			}
+			textActive = true;
+		}else {
+			resetText();
 		}
-		textActive = true;
 	}
 	
 	public static void resetText() {
 		textList = new ArrayList<>();
 		textField = new PArea(0,0,1,1);
+		textActive = false;
 	}
 	
 	public static void render(){

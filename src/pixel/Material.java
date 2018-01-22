@@ -6,9 +6,12 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import entities.Entity;
+import entities.Player;
 import item.Item;
 import item.ItemList;
 import item.MiningTool;
+import item.RecipeList;
 import main.Game;
 import main.MouseInput.Mouse;
 import map.Map;
@@ -22,7 +25,10 @@ public abstract class Material<UDSType extends UDS> {
 	
 	public int ID = 0;
 	protected int itemID = 0;
+	
+	/**the internally used name for this Material*/
 	protected String name = "unnamed";
+	/**the internally used name for this Material*/
 	protected String displayName = "unnamed";
 	protected int requiredType = MINING_TYPE_NONE;
 	protected double requiredTier = 1;
@@ -31,16 +37,20 @@ public abstract class Material<UDSType extends UDS> {
 	protected int friction = 1;
 	
 	/**this UDS is HOLY !!! it is used to create new UDS Objects for this Material <b>SO NEVER EVER DELETE IT</b>*/
-	private UDSType udsType = null;
+	private final UDSType udsType;
 	
 	protected UDSType uds = null;
 	
 	protected int[] texture = null;
-	protected int textureWidth;
-	protected int textureHeight;
+	protected int textureWidth = 1;
+	protected int textureHeight = 1;
 	
-	protected short frontLightReduction = 8;
-	protected short backLightReduction = 255;
+	/** an array of length 3 which contains values from 0 to -255 for the front light reduction of Red, Green and Blue */
+	protected int[] frontLightReduction = new int[] {-8, -8, -8};
+	/** an array of length 3 which contains values from 0 to -255 for the back light reduction of Red, Green and Blue */
+	protected int[] backLightReduction = new int[] {-255, -255, -255};
+	/** an array of length 3 which contains values from 0 to 255 for the front light reduction of Red, Green and Blue */
+	protected int[] light = new int[] {0, 0, 0};
 	
 	public Material(UDSType uds){
 		this.udsType = uds;
@@ -121,11 +131,11 @@ public abstract class Material<UDSType extends UDS> {
 		return image.getRGB(0, 0, size.x, size.y, null, 0, size.x);
 	}
 	
-	public short tickLight(int x, int y, int l, Map map) {return 0;}
+	public int[] tickLight(int x, int y, int l, Map map) {return this.light;}
 	
-	public short frontLightReduction(){return this.frontLightReduction;}
+	public int[] frontLightReduction(){return this.frontLightReduction;}
 	
-	public short backLightReduction(){return this.backLightReduction;}
+	public int[] backLightReduction(){return this.backLightReduction;}
 	
 	public boolean tick(int x, int y, int l, Map map, int numTick){return false;}
 	
@@ -157,11 +167,27 @@ public abstract class Material<UDSType extends UDS> {
 		return requiredType;
 	}
 	
-	public boolean canBeMinedBy(MiningTool tool) {
+	public boolean canBeMinedBy(Player plr, MiningTool tool) {
 		return (this.requiredTier<=tool.getMiningTier()) && ((tool.getMiningType() & this.requiredType) > 0);
+	}
+	
+	public boolean mine(Player plr, MiningTool tool) {
+		return false;
 	}
 	
 	public int getFriction() {
 		return this.friction;
+	}
+	
+	public void collideWith(Entity entity) {
+		return;
+	}
+	
+	public void passThroughWith(Entity entity) {
+		return;
+	}
+	
+	public void addRecipes(RecipeList recipeList) {
+		return;
 	}
 }

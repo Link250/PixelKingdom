@@ -2,6 +2,8 @@ package pixel.pixelList;
 
 import pixel.UDS;
 import pixel.interfaces.Burnable;
+import item.Recipe;
+import item.RecipeList;
 import pixel.Material;
 
 public class Planks extends Material<UDS> implements Burnable{
@@ -19,4 +21,7 @@ public class Planks extends Material<UDS> implements Burnable{
 	
 	public byte getBurnStrength() {return 15;}
 	
+	public void addRecipes(RecipeList recipeList) {
+		recipeList.addRecipe(new Recipe().addP(6, 30).addE(4, 10), RecipeList.C_PIXEL);
+	}
 }

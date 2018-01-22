@@ -1,6 +1,7 @@
 package main;
 
 import gfx.PxlFont;
+import gfx.RessourceManager;
 import gfx.Mouse;
 import gfx.Screen;
 import gfx.SpriteSheet;
@@ -13,8 +14,6 @@ import map.BiomeList;
 import multiplayer.client.Client;
 import multiplayer.server.Server;
 import pixel.PixelList;
-import sun.font.TrueTypeFont;
-
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 
@@ -46,6 +45,7 @@ public class Game implements Runnable{
 	public static boolean reset = false;
 	public static int tickCount = 0;
 	public static boolean devmode;
+	public static boolean pauseTick;
 	public static GameMode gamemode;
 	public static GameMenu menu;
 	
@@ -64,8 +64,6 @@ public class Game implements Runnable{
 	public static Server server;
 	
 	public static SpriteSheet back;
-	
-	public TrueTypeFont font2;
 	
 	public void init(){
 		int width, height;
@@ -90,8 +88,7 @@ public class Game implements Runnable{
 			width = MainConfig.resX;
 			height = MainConfig.resY;
 		}
-		
-		window = new Window(width, height, MainConfig.fullscreen, "Pixel Kingdom");
+		window = new Window(width, height, MainConfig.fullscreen, "Pixel Kingdom", "/WindowIcon");
 		
 		window.init();
 		
@@ -105,14 +102,14 @@ public class Game implements Runnable{
 		
 		menu = new MainMenu();
 		mfont = new PxlFont(new SpriteSheet("/StackFont.png", 12, 15), "1234567890", 12, 15, -2);
-		sfont = new PxlFont(new SpriteSheet("/8x8Font.png", 24, 24), " !\"# %&'()* ,-./0123456789:; = ? ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{ }~",24,24, 1);
-		font = new PxlFont(new SpriteSheet("/Font.png", 45, 60), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 1234567890!\",;%&/()=?'+-.",45,60, 2);
+		sfont = new PxlFont(new SpriteSheet("/8x8Font.png", 24, 24), " !\"# %&'()* ,-./0123456789:;|= ? ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{ }~",24,24, 1);
+		font = new PxlFont(new SpriteSheet("/Font.png", 45, 60), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz 1234567890!\",;%&/()=?|+-.",45,60, 2);
 		ccFont = new PxlFont(new SpriteSheet("/Font/coders_crux.png", 12, 20), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890^´+#<,.-°!\"§$%&/()=?`*'>;:_²³{[]}\\~| ",12, 20, 2);
 		
 		back = new SpriteSheet("/Menu/NormalBack.png");
 		
 		gamemode = GameMode.Menu;
-		//TODO		TESTING AREA
+		//TODO TESTING AREA
 	}
 	
 	public static void resizeWindow(int width, int height) {
@@ -142,36 +139,39 @@ public class Game implements Runnable{
 	public static synchronized void stop() {
 		running = false;
 	}
-
+	
+	private long temp, messure, renderTime = 0, tickTime = 0, sleepTime = 0, sum;
+	
 	public void run() {
 		long lastTime = System.nanoTime();
 				
 		long lastTimer = System.currentTimeMillis();
 		double delta = 0;
 		init();
-//		try {
-//			WindowIcon.setIcon(window.getHeight(), "WindowIcon.png");
-//		} catch (Exception e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		glClearColor(0.6f, 0.6f, 0.9f, 1.0f);		
+		
+		glClearColor(0f, 0f, 0f, 0f);
 		while(running && !window.shouldClose()){
 			long now = System.nanoTime();
 			delta += (now - lastTime) / nsPerTick;
 			lastTime = now;
 			
+			messure = System.currentTimeMillis();
 			while(delta >= 1){
 				ticks ++;
-				tick();
+				if(!pauseTick)tick();
 				window.update();
 				delta -= 1;
 			}
+			temp = System.currentTimeMillis();
+			tickTime += messure-temp;
 			
+			messure = System.currentTimeMillis();
 			if(true){
 				frames ++;
 				render();
 			}
+			temp = System.currentTimeMillis();
+			renderTime += messure-temp;
 			
 			if(System.currentTimeMillis() - lastTimer >= 1000){
 				lastTimer += 1000;
@@ -179,6 +179,12 @@ public class Game implements Runnable{
 				fps = frames;
 				frames = 0;
 				ticks = 0;
+				
+				if(SinglePlayer.debuginfo) {
+					sum = renderTime + tickTime + sleepTime;
+					Game.logInfo("sleep: " + ((int)(100*sleepTime/sum)) + "% tick: " + ((int)(100*tickTime/sum)) + "% render: " + ((int)(100*renderTime/sum)) + " %");
+					renderTime = 0; tickTime = 0; sleepTime = 0;
+				}
 			}
 		}
 		if(gamemode == GameMode.SinglePlayer)singlePlayer.map.save();
@@ -209,15 +215,15 @@ public class Game implements Runnable{
 	}
 	
 	public void render(){
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		for (int x = 0; x < Screen.width; x+= back.getWidth()) {
-			for (int y = 0; y < Screen.height; y+= back.getHeight()) {
-				Screen.drawGUISprite(x, y, back);
-			}
-		}
 		switch (gamemode){
 		case Menu :
+			for (int x = 0; x < Screen.width; x+= back.getWidth()) {
+				for (int y = 0; y < Screen.height; y+= back.getHeight()) {
+					Screen.drawGUISprite(x, y, back);
+				}
+			}
 			menu.render();
 			break;
 		case SinglePlayer :
@@ -232,19 +238,21 @@ public class Game implements Runnable{
 		Mouse.render();
 		
 		window.swapBuffers();
+		
+		RessourceManager.freeRessources();
 	}
 	
 	public static void logError(Object text) {
-		log(text,1);
+		log(text, "Error", true);
 	}
 	public static void logWarning(Object text) {
-		log(text,2);
+		log(text, "Warning", false);
 	}
 	public static void logInfo(Object text) {
-		log(text,3);
+		log(text, "Info", false);
 	}
 	
-	private static void log(Object text, int type) {
+	public static void log(Object text, String tag, boolean isError) {
 		Calendar time = Calendar.getInstance();
 		int h=time.get(Calendar.HOUR_OF_DAY),
 			m=time.get(Calendar.MINUTE),
@@ -256,12 +264,8 @@ public class Game implements Runnable{
 		header+=m+":";
 		if(s<10)header+="0";
 		header+=s+"]"+"["+Thread.currentThread().getName()+"]";
-		switch(type) {
-		case 1:header+="[ERROR]";break;
-		case 2:header+="[WARNING]";break;
-		case 3:header+="[INFO]";break;
-		}
-		if(type==1){
+		header+="["+tag+"]";
+		if(isError){
 			System.err.println(header+": "+text);
 		}else{
 			System.out.println(header+": "+text);

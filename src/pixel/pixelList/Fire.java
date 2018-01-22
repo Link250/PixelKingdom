@@ -1,5 +1,6 @@
 package pixel.pixelList;
 
+import static main.Game.logWarning;
 import map.Map;
 import pixel.UDS;
 import pixel.interfaces.Burnable;
@@ -15,8 +16,6 @@ public class Fire extends Material<Fire.FireUDS>{
 		name = "Fire";
 		displayName = "Fire";
 		solidity = Map.SOLID_NONE;
-		frontLightReduction = 0;
-		backLightReduction = 0;
 	}
 	
 	public boolean tick(int x, int y, int l, Map map, int numTick) {
@@ -25,9 +24,9 @@ public class Fire extends Material<Fire.FireUDS>{
 			for (int Y = -1; Y <= 1; Y++) {
 				if(map.getID(x+X, y+Y, Map.LAYER_LIQUID)==1) {map.setID(x, y, l, 0);return true;}
 				if((tempPixel = PixelList.GetMat(map.getID(x+X, y+Y, Map.LAYER_BACK))) instanceof Heatable)
-					{((Heatable)tempPixel).heatUp(x+X, y+Y, Map.LAYER_BACK, 1700, 2, map);}
+					{((Heatable)tempPixel).heatUp(x+X, y+Y, Map.LAYER_BACK, 1750, 2, map);}
 				if((tempPixel = PixelList.GetMat(map.getID(x+X, y+Y, Map.LAYER_FRONT))) instanceof Heatable)
-					{((Heatable)tempPixel).heatUp(x+X, y+Y, Map.LAYER_FRONT, 1700, 2, map);}
+					{((Heatable)tempPixel).heatUp(x+X, y+Y, Map.LAYER_FRONT, 1750, 2, map);}
 			}
 		}
 		uds = map.getUDS(x, y, l);
@@ -45,8 +44,9 @@ public class Fire extends Material<Fire.FireUDS>{
 		return true;
 	}
 	
-	public short tickLight(int x, int y, int l, Map map) {
-		return (byte) (map.<FireUDS>getUDS(x, y, l).burntime*Map.MAX_LIGHT/100);
+	public int[] tickLight(int x, int y, int l, Map map) {
+		float strength = map.<FireUDS>getUDS(x, y, l).burntime/((float)Burnable.MAX_BURNTIME);
+		return new int[] {(int) (strength*255), (int) (strength*150), (int) (strength*100)};
 	}
 	
 	public int render(int x, int y, int l, Map map) {
@@ -54,7 +54,7 @@ public class Fire extends Material<Fire.FireUDS>{
 			return 0xffff0000;
 //			return( 0xffff0000 | (((byte)(map.<FireAD>getAD(x, y, l).burntime*2+Math.random()*55))<<8));
 		}catch(NullPointerException e) {
-			System.out.println("Fire.render()");
+			logWarning("Fire AD was mising @ " + x + ", " + y);
 			//can happen if the AD is changed while this pixel is being rendered
 		}
 		return 0xffff0000;

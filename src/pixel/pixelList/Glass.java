@@ -8,9 +8,9 @@ public class Glass extends Material<Heatable.DataStorage> implements Heatable{
 
 	public Glass() {
 		super(new DataStorage());
-		this.backLightReduction = 4;
+		this.backLightReduction = new int[] {-4, -4, -4};
+		this.frontLightReduction = new int[] {-4, -4, -4};
 		this.displayName = "Glass";
-		this.frontLightReduction = 4;
 		this.ID = 35;
 		this.name = "Glass";
 		this.requiredType = MINING_TYPE_PICKAXE;

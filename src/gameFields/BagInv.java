@@ -6,9 +6,7 @@ import entities.Player;
 import gfx.Mouse;
 import gfx.SpriteSheet;
 import gfx.Mouse.MouseType;
-import gfx.Screen;
 import item.Bag;
-import item.Item;
 import main.Game;
 import main.MouseInput;
 
@@ -17,7 +15,7 @@ public class BagInv extends GameField {
 	protected static SpriteSheet Background = new SpriteSheet("/Items/field.png");
 	private int width;
 	private String title;
-	private ArrayList<BagItemField> itemFields;
+	private ArrayList<ItemField> itemFields;
 	
 	public Bag<?> bag;
 	
@@ -69,42 +67,6 @@ public class BagInv extends GameField {
 		}
 		for (ItemField itemField : itemFields) {
 			itemField.render();
-		}
-	}
-	
-	public static class BagItemField extends ItemField{
-		protected int index;
-		protected Bag<?> bag;
-		
-		public BagItemField linkToBag(Bag<?> bag, int index) {
-			this.bag = bag;
-			this.index = index;
-			return this;
-		}
-		
-		public Item getItem() {
-			return bag.getItem(index);
-		}
-
-		public boolean setItem(Item item) {
-			return bag.setItem(index, item);
-		}
-		
-		public void mouseOver() {
-			if(getItem()!=null)Mouse.setText(getItem().getTooltip());
-		}
-		
-		public void mouseClick() {
-			if(bag.canContain(Mouse.item) || Mouse.item == null) {
-				Item temp = bag.removeItem(index);
-				if(Mouse.item!=null)bag.setItem(index, Mouse.item);
-				Mouse.item = temp;
-			}
-		}
-
-		public void render() {
-			Screen.drawGUISprite(field.x, field.y, back);
-			if(bag.getItem(index)!=null) bag.getItem(index).render(field.x+2, field.y+2, true);
 		}
 	}
 }

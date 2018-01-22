@@ -12,9 +12,9 @@ public class Forest extends Biome {
 		ID = 2;
 	}
 
-	public short[][][] generate() {
+	public short[][][] generate(int chunkX, int chunkY, long seed) {
 		double width = 1024, height = 1024;
-		short[][][] newMap = new Plains().generate();
+		short[][][] newMap = new Plains().generate(chunkX, chunkY, seed);
 		Random r = new Random(System.nanoTime());
 		
 //		MapGenerator.genCavesArea(0,600,1024,400,newMap); //too much Caves

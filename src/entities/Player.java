@@ -2,19 +2,21 @@ package entities;
 
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.EnumMap;
 import java.util.List;
 
 import org.joml.Vector2d;
-import org.joml.Vector2f;
 
 import dataUtils.conversion.ConvertData;
+import entities.entityList.ItemEntity;
 import gfx.Screen;
 import gfx.SpriteSheet;
 import item.*;
 import item.Recipe.Component;
 import main.MainConfig.GameFields;
 import main.MouseInput;
+import main.SinglePlayer;
 import main.Game;
 import main.Keys;
 import main.MainConfig;
@@ -46,8 +48,9 @@ public class Player extends Mob {
 	// visual and Hitboxes
 	private int anim;
 	private int color;
-	private Hitbox col = new Hitbox(-1, 2, -6, 8); // walking
-	private Hitbox cols = new Hitbox(-1, 2, -1, 8);// sneaking
+	private Hitbox hitbox_main = new Hitbox(-1, 2, -6, 8); // walking
+	private Hitbox hitbox_sneak = new Hitbox(-1, 2, -1, 8);// sneaking
+	private Hitbox hitbox_used = null;// currently used Hitbox
 
 	// internal values for physics
 	private double jumpspeed = 2;
@@ -67,7 +70,8 @@ public class Player extends Mob {
 	// Player stuff, equipment, hotbar, etc
 	public Equipment equipment;
 	public Crafting crafting;
-	public RecipeList recipelist = new RecipeList();
+	public RecipeList recipeList = new RecipeList();
+	private BitSet itemKnowledge = new BitSet();
 	private Point hotBar = new Point(0, 0);
 	private boolean openInv = false;
 	private boolean openEquip = false;
@@ -79,6 +83,7 @@ public class Player extends Mob {
 
 	public Player(Map map) {
 		super(map, "Player", 0, 0, new SpriteSheet("/Mobs/sprite_sheet_player.png", 13 * Screen.MAP_SCALE, 16 * Screen.MAP_SCALE));
+		ItemList.addRecipesToList(recipeList);
 		this.bags = new EnumMap<>(BAG.class);
 		this.bagInvs = new EnumMap<>(BAG.class);
 		equipment = new Equipment(this, bags);
@@ -115,19 +120,23 @@ public class Player extends Mob {
 	}
 
 	public boolean equipItem(BAG bag_enum, Item item) {
-		if (bag_enum.bagClass.isInstance(item) && !this.bags.containsKey(bag_enum)) {
-			this.bags.put(bag_enum, (Bag<?>) item);
-			this.bagInvs.put(bag_enum, new BagInv((Bag<?>) item, bag_enum));
-			return true;
+		return equipItem(bag_enum, item, false);
+	}
+	
+	public boolean equipItem(BAG bag_enum, Item item, boolean canOverride) {
+		if(item != null) {
+			if (bag_enum.bagClass.isInstance(item) && (canOverride || !this.bags.containsKey(bag_enum))) {
+				this.bags.put(bag_enum, (Bag<?>) item);
+				this.bagInvs.put(bag_enum, new BagInv((Bag<?>) item, bag_enum));
+				return true;
+			}
+			return false;
+		}else {
+			this.bagInvs.remove(bag_enum);
+			return this.bags.remove(bag_enum) != null;
 		}
-		return false;
 	}
-
-	public Item unequipItem(BAG bag_enum) {
-		this.bagInvs.remove(bag_enum);
-		return this.bags.remove(bag_enum);
-	}
-
+	
 	public void delItem(Item item) {
 		for (Bag<?> bag : this.bags.values()) {
 			if (bag.canContain(item) && bag.removeItem(item))
@@ -182,6 +191,7 @@ public class Player extends Mob {
 	 * @return true if there was enough space for the whole Item Stack
 	 */
 	public boolean pickUp(Item item) {
+		addItemKnowledge(item.getID());
 		while (item.getStack() > 0) {
 			Bag<?> pBag = null;
 			int cIndex, pIndex = 0;
@@ -235,11 +245,22 @@ public class Player extends Mob {
 				}
 			}
 		}
+		Item product;
 		for (Component c : r.products) {
-			pickUp(ItemList.NewItem(c.ID, c.n));
+			if(!pickUp(product = ItemList.NewItem(c.ID, c.n))) {
+				map.addItemEntity(new ItemEntity(product, map, (int)x, (int)y));
+			}
 		}
 		// System.out.println("craftable");
 		return true;
+	}
+	
+	public void addItemKnowledge(int id) {
+		itemKnowledge.set(id);
+	}
+	
+	public boolean hasItemKnowledge(int id) {
+		return itemKnowledge.get(id);
 	}
 	
 	public List<Vector2d> temp;
@@ -275,8 +296,8 @@ public class Player extends Mob {
 			if (Keys.RIGHT.isPressed() && (speedX < walkspeed || (!iscrouching && speedX < walkspeed / 2))) {
 				speedX += speedX < 0 ? (onGround ? slowdownGround : slowdownAir) : (onGround ? accelerationGround : accelerationAir);
 				if (iscrouching) {
-					if (speedX > walkspeed)
-						speedX = walkspeed;
+					if (speedX > walkspeed / 2)
+						speedX = walkspeed / 2;
 				} else {
 					if (speedX > walkspeed)
 						speedX = walkspeed;
@@ -305,10 +326,21 @@ public class Player extends Mob {
 			canJump = true;
 
 		/* COLLISION */
-		Hitbox tempHitBox = iscrouching ? cols : col;
+		hitbox_used = iscrouching ? hitbox_sneak : hitbox_main;
 		
-		Collision c;
-		if ((c = Collision.canMoveTo(map, tempHitBox, x, y, new Vector2d(speedX, speedY))) != null) {
+		Collision c = Collision.canMoveTo(map, hitbox_used, x, y, new Vector2d(speedX, speedY), true);
+		
+		onGround = (c.collisionFlags & Collision.Y_COLLISION) != 0 && speedY > 0;
+		
+		if((c.collisionFlags & Collision.X_COLLISION) != 0) {
+			speedX = 0;
+		}
+		if((c.collisionFlags & Collision.Y_COLLISION) != 0) {
+			speedY = 0;
+		}
+		y = c.entityPos.y;
+		x = c.entityPos.x;
+/*		if (() != null) {
 //			for (Vector2d vec : c.collisionPos) {
 //				System.out.printf("pX:%f pY:%f\n", vec.x, vec.y);
 //			}
@@ -329,14 +361,14 @@ public class Player extends Mob {
 //			speedY=0;
 			
 			temp = c.collisionPos;
-//			System.out.printf("eX:%f eY:%f sX:%f sY:%f\n", c.entityPos.x, c.entityPos.y, speedX, speedY);
+//			System.out.printf("eX:%f eY:%f sX:%f sY:%f cf:%s\n", x, y, speedX, speedY, Integer.toBinaryString(c.collisionFlags));
 		}else {
 			x+=speedX;
 			y+=speedY;
-		}
+		}*/
 //		if(speedX!=0 || speedY!=0)System.out.printf(" X:%f  Y:%f sX:%f sY:%f\n", x, y, speedX, speedY);
 		
-		onGround = Collision.onGround(map, tempHitBox, (int) x, (int) y);
+		//onGround = Collision.onGround(map, hitbox_used, (int) x, (int) y);
 		
 		/* COLLECT ITEMS */
 		map.getItemEntities(e -> Point.distanceSq(x, y, e.x, e.y) <= 100).forEach(i -> i.collectWith(this::pickUp));
@@ -489,9 +521,11 @@ public class Player extends Mob {
 				}
 			}
 		}
-		Screen.drawLine(x, y, x+speedX, y+speedY, 0xffff0000, true);
-		col.render(x, y);
-		if(temp!=null)Screen.drawLines(temp, 0xffff0000, true);
+		if(SinglePlayer.debuginfo) {
+			Screen.drawLine(x, y, x+speedX, y+speedY, 0xffff0000, true);
+			if(hitbox_used != null)hitbox_used.render(x, y);
+			if(temp!=null)Screen.drawLines(temp, 0xffff0000, true);
+		}
 	}
 
 	public void save(ArrayList<Byte> file) {
@@ -553,6 +587,9 @@ public class Player extends Mob {
 			newitem.addStack(999);
 			this.pickUp(newitem);
 			this.pickUp(ItemList.NewItem(332));
+			
+			this.equipItem(BAG.ITEM_2, ItemList.NewItem("NormalItemBag"));
+			this.equipItem(BAG.MAT_2, ItemList.NewItem("NormalMaterialBag"));
 		}
 	}
 }

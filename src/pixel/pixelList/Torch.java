@@ -1,5 +1,7 @@
 package pixel.pixelList;
 
+import item.Recipe;
+import item.RecipeList;
 import map.Map;
 import pixel.UDS;
 import pixel.Material;
@@ -12,15 +14,16 @@ public class Torch extends Material<UDS>{
 		name = "Torch";
 		displayName = "Torch";
 		solidity = Map.SOLID_NONE;
-		frontLightReduction = 0;
-		backLightReduction = 0;
+		frontLightReduction = new int[] {-1, -1, -1};
+		backLightReduction = new int[] {0, 0, 0};
+		light = new int[] {255, 150, 100};
 		requiredType = MINING_TYPE_PICKAXE;
 		requiredTier = 1;
 		miningResistance = 1;
 		loadTexture();
 	}
-
-	public short tickLight(int x, int y, int l, Map map) {
-		return (short) (Map.MAX_LIGHT*0.6);
+	
+	public void addRecipes(RecipeList recipeList) {
+		recipeList.addRecipe(new Recipe().addP(48, 5).addE(16, 5).addE(6, 10), RecipeList.C_PIXEL);
 	}
 }

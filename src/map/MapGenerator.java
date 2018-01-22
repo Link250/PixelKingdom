@@ -2,10 +2,14 @@ package map;
 
 import java.awt.Point;
 
+import com.sun.javafx.geom.Rectangle;
+
+import dataUtils.OpenSimplexNoise;
+
 public class MapGenerator {
 	
-	public static short[][][] Generate(byte biome){
-		return BiomeList.GetBiome(biome).generate();
+	public static short[][][] Generate(byte biome, int x, int y, long seed){
+		return BiomeList.GetBiome(biome).generate(x, y, seed);
 	}
 	
 	public static void newTree(int x, int y, short[][][] mapData){
@@ -111,6 +115,14 @@ public class MapGenerator {
 		}
 	}
 	
+	public static void DrawPixelCircle(double cx, double cy, double r, short[][] Map, byte ID, boolean replace){
+		for(double dy = -r; dy <= r; dy++){
+			for(double dx = -r; dx <= r; dx++){
+				if((Map[(int) (cx+dx)][(int) (cy+dy)]==0 | replace) && dx*dx+dy*dy<=r*r)Map[(int) (cx+dx)][(int) (cy+dy)]=ID;
+			}
+		}
+	}
+	
 	public static void genOreCluster(int x, int y, int ID, int replace, int size, short[][] newMap){
 		for(int n = size; n > 0; n--){
 			for(int X = -10; X < 10; X++){
@@ -130,7 +142,15 @@ public class MapGenerator {
 		}
 	}
 	
-	public static void genCavesArea(int offX, int offY, int width ,int height, short[][][] map){
+	public static void genCavesArea(Rectangle area, short[][][] map, OpenSimplexNoise noise, Point nOff){
+		for(int x = area.x; x < area.width+area.x; x++){
+			for(int y = area.y; y < area.height+area.y; y++){
+				map[0][x][y]= (short) ((noise.eval((x+nOff.x)/50.0, (y+nOff.y)/50.0, 1)+1)*noise.eval((x+nOff.x)/100.0, (y+nOff.y)/100.0) > 0.2 ? 0 : 1);
+			}
+		}
+	}
+	
+	public static void genCavesArea_old(int offX, int offY, int width ,int height, short[][][] map){
 		for(int i = 0; i < width*height/10000; i++){
 			int x = (int) (Math.random()*(width-40)+offX+20),
 				y = (int) (Math.random()*(height-40)+offY+20);
@@ -139,6 +159,18 @@ public class MapGenerator {
 				r+=Math.random()*Math.PI-Math.PI/2;
 				MapGenerator.DrawPixelLine(x, y, x+=(int)(Math.sin(r)*Math.random()*10), y+=(int)(Math.cos(r)*Math.random()*10), map[0], (byte) 0, (int)(Math.random()*15+5), true);
 			}
+		}
+	}
+	
+	public static void smoothOutBy(int[] data, int gradient) {
+		int[] bkp = data.clone();
+		for (int i = 0; i < data.length; i++) {
+			int sum = 0;
+			int localGradient = (i-gradient < 0) ? i : ((i+gradient >=  data.length) ? (data.length - 1 - i) : gradient) ;
+			for (int n = -localGradient; n <= localGradient; n++) {
+				sum += bkp[i+n];
+			}
+			data[i] = sum / (localGradient*2+1);
 		}
 	}
 }
