@@ -55,10 +55,10 @@ Screen::Screen(int width, int height){
 
 	matTexture = make_unique<MaterialTexture>();
 
-	baseShader = make_unique<Shader>("Simple", vector<string>({"mainTex", "resolution", "translation", "size", "spriteRotation", "screenRotation"}));
-	spriteShader = make_unique<Shader>("SpriteSheet", vector<string>({"mainTex", "resolution", "translation", "size", "spriteRotation", "screenRotation", "spriteResolution", "spriteOffset"}));
-	guiShader = make_unique<Shader>("GUI", vector<string>({"mainTex", "resolution", "translation", "size", "spriteRotation", "spriteResolution", "spriteOffset"}));
-	terrainShader = make_unique<Shader>("Terrain", vector<string>({"materialID", "textures", "resolution", "translation", "size", "spriteRotation", "screenRotation"}));
+	baseShader = make_unique<Shader>("simple", vector<string>({"mainTex", "resolution", "translation", "size", "spriteRotation", "screenRotation"}));
+	spriteShader = make_unique<Shader>("sprite_sheet", vector<string>({"mainTex", "resolution", "translation", "size", "spriteRotation", "screenRotation", "spriteResolution", "spriteOffset"}));
+	guiShader = make_unique<Shader>("simple_gui", vector<string>({"mainTex", "resolution", "translation", "size", "spriteRotation", "spriteResolution", "spriteOffset"}));
+	terrainShader = make_unique<Shader>("terrain", vector<string>({"materialID", "textures", "resolution", "translation", "size", "spriteRotation", "screenRotation"}));
 }
 
 Screen::~Screen(){
