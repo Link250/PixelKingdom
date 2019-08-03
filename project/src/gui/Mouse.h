@@ -2,19 +2,20 @@
 #define GUI_MOUSE_H_
 
 #include "../gfx/Screen.h"
+#include "../item/Item.h"
 
 namespace Pixelverse {
 
 class Mouse{
 public:
+	const static std::shared_ptr<Mouse> instance;
+
 	Mouse();
 	virtual ~Mouse();
-	void update();
-	void render();
-	vec2 screenPos;
-	vec2 mapPos;
+	virtual void render(vec2 position);
+	void render(vec2 position, std::shared_ptr<Item> item);
 private:
-	shared_ptr<Texture> texture;
+	static shared_ptr<Texture> texture;
 };
 
 } /* namespace Pixelverse */

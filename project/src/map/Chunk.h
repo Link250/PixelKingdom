@@ -22,10 +22,13 @@ public:
 private:
 	const coordinate position;
 	materialID_t front[SIZE], back[SIZE];
-//	int light[SIZE];
+	int light[SIZE];
+	float temperature[SIZE], pressure[SIZE];
 	std::bitset<SIZE*3> updates;
 	GLuint textureBack, textureFront, textureOverlay;
+	bool loading, regenTextureFront, regenTextureBack;
 	void genTexture(bool layer);
+	void regenTexture(bool layer);
 	void load();
 };
 

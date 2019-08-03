@@ -20,7 +20,7 @@ void Font::render(std::string message, vec2 position, int color, int limit, bool
 			offset.y += sprites->spriteHeight + 2;
 			offset.x = 0;
 		}else{
-			Game::screen->drawGUISprite(sprites, charlist[c], position + offset);
+			Screen::renderGUISprite(sprites, charlist[c], position + offset);
 			offset.x += sprites->spriteWidth;
 		}
 	}

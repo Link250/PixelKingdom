@@ -13,4 +13,12 @@ void Entity::applyGravity(){
 	velocity += temp;
 }
 
+void Entity::load(){
+	//TODO load position, velocity, rotation
+}
+
+void Entity::save(){
+	//TODO save position, velocity, rotation
+}
+
 } /* namespace Game */

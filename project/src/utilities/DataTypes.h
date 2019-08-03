@@ -8,10 +8,13 @@ typedef unsigned short biomeID_t;
 typedef unsigned short entityID_t;
 typedef unsigned int itemID_t;
 
-static const int MAP_SCALE = 2;
+constexpr int MAP_SCALE = 2;
+constexpr double PI = 3.1415926535897932384626433832795;
 
 struct vec2{
 	double x, y;
+	constexpr vec2(): x(0), y(0){};
+	constexpr vec2(double x, double y): x(x), y(y){};
 	inline vec2 operator+(vec2 v){
 		return vec2{x + v.x, y + v.y};
 	}
@@ -66,6 +69,8 @@ struct vec2{
 
 struct int2{
 	int x, y;
+	constexpr int2(int x, int y): x(x), y(y){}
+	constexpr int2(vec2 vec): x(int(vec.x)), y(int(vec.y)){}
 	inline int2 operator+(int2 i){
 		return int2{x + i.x, y + i.y};
 	}
@@ -108,6 +113,12 @@ struct int2{
 
 struct pixel_area{
 	int x, y, w, h;
+	int2 position(){
+		return {x, y};
+	}
+	int2 size(){
+		return {w, h};
+	}
 	void setPosition(int x, int y){
 		this->x = x;
 		this->y = y;

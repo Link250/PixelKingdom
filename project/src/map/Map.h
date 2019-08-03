@@ -23,11 +23,11 @@ public:
 	materialID_t getMaterialID(coordinate pixelPos, bool layer);
 	void setMaterialID(coordinate pixelPos, bool layer, materialID_t id);
 	vec2 getGravity(coordinate pixelPos);
-	std::shared_ptr<Player> player;
+	ChunkManager chunkManager;
 private:
-
 	std::shared_ptr<Planet> planet;
 	std::vector<std::shared_ptr<Entity>> entities;
+	friend class Game;
 };
 
 } /* namespace Pixelverse */

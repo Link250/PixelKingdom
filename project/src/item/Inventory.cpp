@@ -1,29 +1,27 @@
-#include "Inventory.h"
-
 #include <iostream>
 
 namespace Pixelverse {
+/*
+template <typename item_t>
+Inventory<item_t>::Inventory(size_t size, std::function<bool(std::shared_ptr<item_t>)> restrictor):
+		size(size), items(size), canContain(restrictor){}
 
-Inventory::Inventory(size_t size, std::function<bool(std::shared_ptr<Item>)> restrictor): size(size), items(size), canContain(restrictor){
-	std::cout << items.size() << std::endl;
-}
-
-Inventory::~Inventory(){}
-
-std::shared_ptr<Item> Inventory::getItem(size_t index){
+template <typename item_t>
+std::shared_ptr<item_t> Inventory<item_t>::getItem(size_t index){
 	if(indexInBounds(index)){
 		return items[index];
 	}
 	return nullptr;
 }
 
-int Inventory::collectItem(std::shared_ptr<Item> item){
-	if(canContain){
+template <typename item_t>
+int Inventory<item_t>::collectItem(std::shared_ptr<item_t> item){
+	if(canContain(item)){
 		int taken = 0;
 		for (size_t i = 0; i < size; i++) {
 			if(items[i] == nullptr){
-				items[i] = item;
-				return taken + item->getStackSize();
+				items[i].swap(item);
+				return taken + items[i]->getStackSize();
 			}else{
 				taken += items[i]->takeFrom(item);
 			}
@@ -33,23 +31,33 @@ int Inventory::collectItem(std::shared_ptr<Item> item){
 	return 0;
 }
 
-int Inventory::insertItem(size_t index, std::shared_ptr<Item> item, int amount){
+template <typename item_t>
+int Inventory<item_t>::insertItem(size_t index, std::shared_ptr<item_t> item, int amount){
 	if(indexInBounds(index) && canContain(item)){
 		return items[index]->takeFrom(item, amount);
 	}
 	return 0;
 }
 
-bool Inventory::swapItem(size_t index, std::shared_ptr<Item> item){
-	if(indexInBounds(index) && canContain(item)){
-		this->items[index].swap(item);
+template <typename item_t>
+bool Inventory<item_t>::swapItem(size_t index, std::shared_ptr<item_t> *itemPointer){
+	if(indexInBounds(index) && canContain(*itemPointer)){
+		this->items[index].swap(*itemPointer);
 		return true;
 	}
 	return false;
 }
 
-bool Inventory::indexInBounds(size_t index){
+template <typename item_t>
+bool Inventory<item_t>::indexInBounds(size_t index){
 	return index >= 0 && index < size;
 }
 
+template <typename item_t>
+const std::shared_ptr<item_t>* Inventory<item_t>::getConstItemPointer(size_t index){
+	if(indexInBounds(index))
+		return &(items[index]);
+	return nullptr;
+}
+*/
 } /* namespace Pixelverse */

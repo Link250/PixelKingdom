@@ -36,6 +36,32 @@ Texture::Texture(std::string path){
 	}
 }
 
+Texture::Texture(int2 size, unsigned int topBarHeight){
+	textureID = 0;
+	width = size.x;
+	height = size.y;
+
+	std::vector<unsigned int> image(width * height);
+	for (size_t y = 0; y < height; y++)
+	for (size_t x = 0; x < width; x++){
+		image[width * y + x] = y < (topBarHeight)?
+				((x < 2 || y < 2 || x >= width-2 || y >= topBarHeight-2)? 0x404040ff : 0x808080ff):
+				((x < 2 || y < 2 || x >= width-2 || y >= height-2)? 0x40404080 : 0x80808040);
+	}
+
+	glGenTextures(1, &textureID);
+
+	glBindTexture(GL_TEXTURE_2D, textureID);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_INT_8_8_8_8, &image[0]);
+	glGenerateMipmap(GL_TEXTURE_2D);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+}
+
 Texture::~Texture(){
 	if(textureID != 0){
 		glDeleteTextures(1, &textureID);

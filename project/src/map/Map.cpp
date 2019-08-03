@@ -3,13 +3,8 @@
 
 namespace Pixelverse {
 
-Map::Map(){
+Map::Map(): chunkManager(""){
 	planet = make_shared<Planet>();
-	int heightOffset = Planet::mainNoise.GetValue(0, 1)*Planet::surfaceVariation;
-	printf("Player Height Offset: %i\n", heightOffset);
-	player = make_shared<Player>(vec2({0.0, double((heightOffset + Planet::surfaceHeight) * MAP_SCALE)}));
-	entities.push_back(player);
-	//entities.push_back(make_shared<Player>(vec2({0.0, 0.0})));
 }
 
 Map::~Map(){}
@@ -22,7 +17,7 @@ void Map::update(){
 }
 
 void Map::render(){
-	Game::screen->drawPlanet(planet);
+	Screen::renderPlanet(planet);
 
 	for ( auto &e : entities ) {
 		e->render();

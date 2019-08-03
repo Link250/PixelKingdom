@@ -9,6 +9,7 @@ class KeyConfig{
 public:
 	static const int CLOSE = GLFW_KEY_ESCAPE;
 	static int UP, LEFT, DOWN, RIGHT, JUMP;
+	static int INVENTORY, EQUIPMENT, CRAFTING;
 	static int INFO;
 };
 

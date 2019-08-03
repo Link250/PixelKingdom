@@ -179,3 +179,11 @@
 	  element alle 2 sekunden aendern, waffen die 10% mehr damage haben aber auch eine 2% chance einen gegner komplett zu heilen, waffen die keinen
 	  passenden sound beim schlag/schuss/zaubern zu machen sondern evtl. "shaun" schreien.
 	  Natuerlich ein Ziel das man erst vielleicht machen sollte wenn alles andere abgeklappert ist.
+
+- New Game + : Features müssen unlocked werden durch zB upgrades/tools aber können dann bereits von anfang an enabled werden
+
+- Werkzeug kann durch gems/upgrade slots verbessert werden oder extra effekte bekommen, bessere tools haben mehr/bessere slots
+
+- Taschen müssen leer sein um sie abzulegen
+
+- verbrennungen erzeugen asche/holzkohle/carbon, evtl. je nachdem wie viel sauerstoff vorhanden ist

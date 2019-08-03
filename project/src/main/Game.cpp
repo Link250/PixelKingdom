@@ -1,7 +1,4 @@
 #include "Game.h"
-#include <iostream>
-#include <fstream>
-#include <sstream>
 #include "../config/KeyConfig.h"
 #include "../input/InputHandler.h"
 #include "../gfx/Screen.h"
@@ -13,14 +10,18 @@
 #include "../map/Biome.h"
 #include "../item/Item.h"
 
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <algorithm>
+
 namespace Pixelverse {
 
-std::unique_ptr<Screen> Game::screen;
 std::unique_ptr<Map> Game::map;
-std::unique_ptr<Mouse> Game::mouse;
+std::vector<std::function<void()>> Game::loaders;
+std::vector<shared_ptr<GameField>> Game::gameFields;
 long Game::updateCount;
 int Game::currentFPS;
-std::vector<std::function<void()>> Game::loaders;
 
 void Game::errorCallback(int error, const char *description){
 	cerr << "GLFW error " << error << ": " << description << endl;
@@ -36,20 +37,24 @@ void Game::initialize(){
 
 	Material::loadList();
 	Biome::loadList();
-
-	screen = make_unique<Screen>(width, height);
-
+	Screen::initialize(width, height);
 	Item::loadList();
+	Item::loadAllRessources();
 
-	mouse = make_unique<Mouse>();
-
-	glfwSetKeyCallback(screen->window, InputHandler::keyCallback);
-	glfwSetCharCallback(screen->window, InputHandler::charCallback);
-	glfwSetMouseButtonCallback(screen->window, InputHandler::mouseButtonCallback);
-	glfwSetScrollCallback(screen->window, InputHandler::mouseScrollCallback);
-	glfwSetCursorPosCallback(screen->window, InputHandler::mousePositionCallback);
+	glfwSetKeyCallback(Screen::window, InputHandler::keyCallback);
+	glfwSetCharCallback(Screen::window, InputHandler::charCallback);
+	glfwSetMouseButtonCallback(Screen::window, InputHandler::mouseButtonCallback);
+	glfwSetScrollCallback(Screen::window, InputHandler::mouseScrollCallback);
+	glfwSetCursorPosCallback(Screen::window, InputHandler::mousePositionCallback);
 
 	map = make_unique<Map>();
+	int heightOffset = Planet::mainNoise.GetValue(0, 1)*Planet::surfaceVariation;
+	printf("Player Height Offset: %i\n", heightOffset);
+	std::shared_ptr<Player> player = make_shared<Player>(vec2({0.0, double((heightOffset + Planet::surfaceHeight + 20) * MAP_SCALE)}));
+	player->load();
+	map->entities.push_back(player);
+	InputHandler::playerController = std::make_unique<PlayerController>(player);
+
 
 	std::cout << "loading queued ressources" << std::endl;
 	for(std::function<void()> loader : loaders){
@@ -62,7 +67,7 @@ void Game::mainLoop(){
 	double lastTime = 0;
 	updateCount = 0;
 
-	while (!glfwWindowShouldClose(screen->window)) {
+	while (!glfwWindowShouldClose(Screen::window)) {
 
 		update();
 		updateCount++;
@@ -78,33 +83,41 @@ void Game::mainLoop(){
 		}
 	}
 
+	Screen::unload();
 	exit(EXIT_SUCCESS);
 }
 
 void Game::update(){
 	glfwPollEvents();
 
-	map->update();
-
-	if(InputHandler::scrollY != 0.0){
-		if(InputHandler::scrollY > 0){
-			if(screen->zoom_target < 8)
-				screen->zoom_target *= 2;
+	//TODO std::rotate
+	for(auto itt = gameFields.begin(); itt != gameFields.end(); itt++){
+		if((*itt)->active){
+			(*itt)->update();
 		}else{
-			if(screen->zoom_target > 0.125)
-				screen->zoom_target /= 2;
+			gameFields.erase(itt--);
 		}
-		InputHandler::scrollY = 0;
 	}
 
-	screen->update();
+	if(InputHandler::isMouseInputAvailable()){
+		auto itt = gameFields.begin();
+		for(; itt != gameFields.end(); itt++){
+			if((*itt)->getArea().contains(int2(InputHandler::getMousePos()))){
+				InputHandler::setMouseInputUser(std::static_pointer_cast<MouseInputUser>(*itt));
+				break;
+			}
+		}
+		if(itt != gameFields.end())
+			std::rotate(gameFields.begin(), itt, itt+1);
+	}
 
-	mouse->update();
+	map->update();
 
-/*	if(InputHandler::buttonINFO){
-		shared_ptr<Material> m = map->getMaterial(coordinate(mouse->mapPos), true);
-		std::cout << m->name << std::endl;
-	}*/
+	InputHandler::playerController->update();
+
+	InputHandler::useMouseInput();
+
+	Screen::update();
 }
 
 void Game::render(){
@@ -113,21 +126,32 @@ void Game::render(){
 	map->render();
 
 	if(InputHandler::keyPressed(KeyConfig::INFO)){
-		coordinate playerCoords(map->player->position);
+		const std::shared_ptr<Player> player = InputHandler::playerController->getPlayer();
+		coordinate playerCoords(player->position);
 		std::string infoText =
 				"FPS:" + std::to_string(currentFPS) + "\n\n" +
-				"x:" + std::to_string(map->player->position.x) + "\n" +
+				"x:" + std::to_string(player->position.x) + "\n" +
 				"x_r:" + std::to_string(playerCoords.r_x) + " x_c:" + std::to_string(playerCoords.c_x) + " x_p:" + std::to_string(playerCoords.p_x) + "\n" +
-				"y:" + std::to_string(map->player->position.y) + "\n" +
+				"y:" + std::to_string(player->position.y) + "\n" +
 				"y_r:" + std::to_string(playerCoords.r_y) + " y_c:" + std::to_string(playerCoords.c_y) + " y_p:" + std::to_string(playerCoords.p_y) + "\n\n" +
-				"m_f_name:" + map->getMaterial(coordinate(mouse->mapPos), true)->name + "\n"
-				"m_b_name:" + map->getMaterial(coordinate(mouse->mapPos), false)->name;
-		screen->mainFont->render(infoText, vec2{10, 10});
+				"m_f_name:" + map->getMaterial(coordinate(InputHandler::getMouseMapPos()), true)->name + "\n"
+				"m_b_name:" + map->getMaterial(coordinate(InputHandler::getMouseMapPos()), false)->name;
+		Screen::mainFont->render(infoText, vec2{10, 10});
 	}
 
-	mouse->render();
+	for(auto itt = gameFields.rbegin(); itt != gameFields.rend(); itt++){
+		(*itt)->render();
+	}
 
-	glfwSwapBuffers(screen->window);
+	InputHandler::renderMouse();
+
+	glfwSwapBuffers(Screen::window);
+}
+
+void Game::addGameField(shared_ptr<GameField> field){
+	field->active = true;
+	field->focus = true;
+	gameFields.push_back(field);
 }
 
 } /* namespace Game */

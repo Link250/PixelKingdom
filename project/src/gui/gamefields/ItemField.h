@@ -11,15 +11,14 @@ namespace Pixelverse {
 
 class ItemField{
 public:
-	ItemField(int2 position = {0, 0}, std::shared_ptr<Item> item = nullptr);
+	ItemField(const std::shared_ptr<Item> *itemPointer, int2 position = {0, 0});
 	virtual ~ItemField();
-	void render();
+	void render(int2 offset = {0, 0});
 
 	static constexpr int2 size = {36, 36};
 	int2 position;
-
-	std::shared_ptr<Item> item;
 private:
+	const std::shared_ptr<Item> *itemPointer;
 	static std::shared_ptr<Texture> background;
 };
 

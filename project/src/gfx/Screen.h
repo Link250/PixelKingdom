@@ -14,27 +14,30 @@ namespace Pixelverse {
 
 class Screen{
 public:
-	GLFWwindow* window;
-	Screen(int width, int height);
+	Screen();
 	virtual ~Screen();
-	void setCenter(vec2 center);
-	void drawGameTexture(shared_ptr<Texture> texture, vec2 position, vec2 scale = {1, 1}, float rotation = 0.0f, bool centered = true);
-	void drawGameSprite(shared_ptr<SpriteSheet> spriteSheet, int tile, vec2 position, vec2 scale = {1, 1}, float rotation = 0.0f, bool centered = true);
-	void drawGUITexture(shared_ptr<Texture> texture, vec2 position, vec2 scale = {1, 1}, float rotation = 0.0f, bool centered = true);
-	void drawGUISprite(shared_ptr<SpriteSheet> spriteSheet, int tile, vec2 position, vec2 scale = {1, 1}, float rotation = 0.0f, bool centered = true);
-	void drawPlanet(shared_ptr<Planet> planet);
-	void update();
-	double zoom;
-	double zoom_target;
-	double rotation;
-	double rotation_target;
-	vec2 center;
-	int width, height;
-	std::unique_ptr<Font> mainFont;
+	static void initialize(int width, int height);
+	static void unload();
+	static void setCenter(vec2 center);
+	static void renderGameTexture(shared_ptr<Texture> texture, vec2 position, vec2 scale = {1, 1}, float rotation = 0.0f, bool centered = true);
+	static void renderGameSprite(shared_ptr<SpriteSheet> spriteSheet, int tile, vec2 position, vec2 scale = {1, 1}, float rotation = 0.0f, bool centered = true);
+	static void renderGUITexture(shared_ptr<Texture> texture, vec2 position, vec2 scale = {1, 1}, float rotation = 0.0f, bool centered = true);
+	static void renderGUISprite(shared_ptr<SpriteSheet> spriteSheet, int tile, vec2 position, vec2 scale = {1, 1}, float rotation = 0.0f, bool centered = true);
+	static void renderPlanet(shared_ptr<Planet> planet);
+	static void update();
+	static GLFWwindow* window;
+	static double zoom;
+	static double zoom_target;
+	static double rotation;
+	static double rotation_target;
+	static vec2 center;
+	static int width, height;
+	static std::unique_ptr<Font> mainFont;
+	static std::unique_ptr<Font> stackFont;
 private:
-	std::unique_ptr<Shader> baseShader, spriteShader, guiShader, terrainShader;
-	std::unique_ptr<Model> spriteModel;
-	std::unique_ptr<MaterialTexture> matTexture;
+	static std::unique_ptr<Shader> baseShader, spriteShader, guiShader, terrainShader;
+	static std::unique_ptr<Model> spriteModel;
+	static std::unique_ptr<MaterialTexture> matTexture;
 	static void framebufferSizeCallback(GLFWwindow* window, int width, int height);
 };
 

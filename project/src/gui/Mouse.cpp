@@ -5,19 +5,21 @@
 
 namespace Pixelverse {
 
-Mouse::Mouse(){
-	texture = make_shared<Texture>("Mouse");
-}
+const std::shared_ptr<Mouse> Mouse::instance = std::make_shared<Mouse>();
+shared_ptr<Texture> Mouse::texture = Game::queueRessourceLoader<std::shared_ptr<Texture>>([](){
+	texture = make_shared<Texture>("gui/mouse");
+});
+
+Mouse::Mouse(){}
 
 Mouse::~Mouse(){}
 
-void Mouse::update(){
-	screenPos = InputHandler::mousePos;
-	mapPos = (screenPos - vec2{double(Game::screen->width), double(Game::screen->height)}/2).rotate(-Game::screen->rotation)/Game::screen->zoom + Game::screen->center;
+void Mouse::render(vec2 position){
+	Screen::renderGUITexture(texture, position, {1.0, 1.0}, 0, false);
 }
 
-void Mouse::render(){
-	Game::screen->drawGUITexture(texture, screenPos, {1.0, 1.0}, 0, false);
+void Mouse::render(vec2 position, std::shared_ptr<Item> item){
+	item->render(position, true, true);
 }
 
 } /* namespace Pixelverse */

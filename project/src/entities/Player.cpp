@@ -4,15 +4,12 @@
 #include "../input/InputHandler.h"
 #include "../config/KeyConfig.h"
 
-#define _USE_MATH_DEFINES
-#include <cmath>
-
 #include <iostream>
 #include <algorithm>
 
 namespace Pixelverse {
 
-Player::Player(vec2 position) : Mob(position, {0, 0}, 100, 100){
+Player::Player(vec2 position) : Mob(position, {0, 0}, 100, 100), beltBag(1), itemBags(2){
 	sprites = make_shared<SpriteSheet>("entities/player_sheet", 26, 28);
 }
 
@@ -34,7 +31,7 @@ void Player::update(){
 		jumpCooldown = jumpCooldownLength;
 		jumpLength = 0;
 	}
-	vec2 walkLeft = gravity.normalize().rotate(M_PI/2);
+	vec2 walkLeft = gravity.normalize().rotate(PI/2);
 	double currentWalkLeft = velocity.dot(walkLeft);
 	//printf("v = %f, %f; w = %f, %f; d = %f\n", velocity.x, velocity.y, (walkLeft*walkspeed).x, (walkLeft*walkspeed).y, velocity.dot(walkLeft*walkspeed)); fflush(stdout);
 	//printf("%f\n", currentWalkLeft); fflush(stdout);
@@ -70,20 +67,38 @@ void Player::update(){
 
 	position = collision->entityPos;
 
-	Game::screen->setCenter(position);
-	Game::screen->rotation_target = rotation;
+	Screen::setCenter(position);
+	Screen::rotation_target = rotation;
 	//if(Game::updateCount%60 == 0)std::cout << rotation << std::endl;
 }
 
 void Player::render(){
-	Game::screen->drawGameSprite(sprites, 0, position, {1, 1}, rotation);
-	Game::screen->mainFont->render(text, {100, 100});
+	Screen::renderGameSprite(sprites, 0, position, {1, 1}, rotation);
 }
 
 void Player::applyGravity(){
 	vec2 temp = Game::map->getGravity(coordinate(position));
 	rotation = temp.angle();
 	velocity += temp;
+}
+
+void Player::load(){
+	Mob::load();
+	//TODO load beltBag, itemBags
+	beltBag.collectItem(Item::createNew<BeltBag>("small_belt_bag"));
+	itemBags.collectItem(Item::createNew<Bag>("small_item_pouch"));
+	itemBags.collectItem(Item::createNew<Bag>("small_item_pouch"));
+	beltBag->inventory->collectItem(Item::createNew("stone", 12345));
+	beltBag->inventory->collectItem(Item::createNew("dirt", 67890));
+	beltBag->inventory->collectItem(Item::createNew("grass", 300));
+	beltBag->inventory->collectItem(Item::createNew("small_item_pouch"));
+	beltBag->inventory->collectItem(Item::createNew("small_belt_bag"));
+	beltBag->inventory->collectItem(Item::createNew("fabric", 10));
+}
+
+void Player::save(){
+	Mob::save();
+	//TODO save beltBag, itemBags
 }
 
 } /* namespace Pixelverse */

@@ -10,7 +10,7 @@ public:
 	SpriteSheet(std::string path, int spriteWidth, int spriteHeight);
 	virtual ~SpriteSheet();
 
-	Texture texture;
+	const Texture texture;
 	const int spriteWidth, spriteHeight;
 	const int sheetWidth, sheetHeight;
 private:

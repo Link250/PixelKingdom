@@ -18,8 +18,10 @@ class ChunkManager{
 public:
 	ChunkManager(std::string path);
 	virtual ~ChunkManager();
-	void loadChunk(coordinate position, std::shared_ptr<std::shared_ptr<Chunk>> chunk);
+	void loadChunk(coordinate position, std::shared_ptr<Chunk> *chunk);
 	void unloadChunk(coordinate position);
+
+	void loaderFunction(coordinate position, std::shared_ptr<Chunk> *chunk);
 private:
 	std::string path;
 	std::vector<ChunkLoader> chunks;

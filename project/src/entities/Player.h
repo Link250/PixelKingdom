@@ -5,8 +5,10 @@
 #include "Collision.h"
 #include "../gfx/SpriteSheet.h"
 #include "../utilities/PhysicConstants.h"
-
 #include "../gui/gamefields/ItemField.h"
+#include "../gui/gamefields/BagField.h"
+#include "../item/BeltBag.h"
+#include "../item/Bag.h"
 
 namespace Pixelverse {
 
@@ -17,10 +19,13 @@ public:
 	virtual void update();
 	virtual void render();
 	void applyGravity();
-private:
-	std::string text;
-	std::shared_ptr<SpriteSheet> sprites;
+	virtual void load();
+	virtual void save();
 	Hitbox hitbox = {-3, 3, -14, 14};
+private:
+	std::shared_ptr<SpriteSheet> sprites;
+	Inventory<BeltBag> beltBag;
+	Inventory<Bag> itemBags;
 	bool canJump = true, onGround = true;
 	int jumpLength = 0, jumpCooldown = 0, jumpCooldownLength = 10;
 	double jumpspeed = 2;
@@ -30,8 +35,7 @@ private:
 	double slowdownGround = 1.2 * meter / second;
 	double accelerationAir = 0.2 * meter / second;
 	double slowdownAir = 0.8 * meter / second;
-
-	std::vector<std::shared_ptr<ItemField>> itemFields;
+	friend class PlayerController;
 };
 
 } /* namespace Pixelverse */

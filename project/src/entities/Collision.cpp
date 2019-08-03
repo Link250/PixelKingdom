@@ -8,12 +8,13 @@ Collision::Collision() : collide_x(false), collide_y(false), collisionStrength(0
 
 Collision::~Collision(){}
 
+//TODO slip is broken in one axis
 std::unique_ptr<Collision> Collision::canMoveTo(Hitbox hitbox, vec2 position, vec2 movement, double rotation = 0, bool canSlip = false){
 	std::unique_ptr<Collision> collision = std::make_unique<Collision>();
 
 	double l = movement.length();
-	rotation = fmod(rotation, M_PI*2);
-	bool sideways = (rotation > M_PI/4 && rotation < M_PI/4*3) || (rotation < -M_PI/4 && rotation > -M_PI/4*3);
+	rotation = fmod(rotation, PI*2);
+	bool sideways = (rotation > PI/4 && rotation < PI/4*3) || (rotation < -PI/4 && rotation > -PI/4*3);
 	if(sideways) hitbox = {hitbox.ymin, hitbox.ymax, hitbox.xmin, hitbox.xmax};
 	vec2 newPos(position), lastPos(position);
 	MainCheck:

@@ -5,12 +5,15 @@
 
 #include <iostream>
 #include <cmath>
+#include <thread>
 
 namespace Pixelverse {
 
-Chunk::Chunk(coordinate position) : position(position.chunkCoordinate()), textureBack(0), textureFront(0){
-	printf("chunk loaded at x = %i_%i_%i, y = %i_%i_%i\n", position.r_x, position.c_x, position.p_x, position.r_y, position.c_y, position.p_y);
-	load();
+Chunk::Chunk(coordinate position) : position(position.chunkCoordinate()),
+		textureBack(0), textureFront(0), textureOverlay(0),
+		loading(true), regenTextureFront(false), regenTextureBack(false){
+	std::thread loader(&Chunk::load, this);
+	loader.detach();
 }
 
 Chunk::~Chunk(){
@@ -25,16 +28,27 @@ materialID_t Chunk::getMaterialID(coordinate pixelPos, bool layer){
 void Chunk::setMaterialID(coordinate pixelPos, bool layer, materialID_t id){
 	if(layer) front[pixelPos.p_x + pixelPos.p_y*WIDTH] = id;
 	else back[pixelPos.p_x + pixelPos.p_y*WIDTH] = id;
+	(layer ? regenTextureFront : regenTextureBack) = true;
 }
 
 coordinate Chunk::getPosition(){
 	return position;
 }
 
+//#define WATCH_LOADING_CHUNKS
+#ifdef WATCH_LOADING_CHUNKS
 void Chunk::bindTexture(bool layer){
 	if((layer ? textureFront : textureBack) == 0)genTexture(layer);
+	if((layer ? regenTextureFront : regenTextureBack) || loading)regenTexture(layer);
 	glBindTexture(GL_TEXTURE_2D, (layer ? textureFront : textureBack));
 }
+#else
+void Chunk::bindTexture(bool layer){
+	if(!loading)genTexture(layer);
+	if(layer ? regenTextureFront : regenTextureBack)regenTexture(layer);
+	glBindTexture(GL_TEXTURE_2D, (layer ? textureFront : textureBack));
+}
+#endif
 
 void Chunk::bindOverlay(){
 	if(textureOverlay == 0){
@@ -202,7 +216,7 @@ void Chunk::bindOverlay(){
 }
 
 void Chunk::genTexture(bool layer){
-	glGenTextures(1, layer ? &textureFront : &textureBack);
+	if((layer ? textureFront : textureBack) == 0)glGenTextures(1, layer ? &textureFront : &textureBack);
 
 	glBindTexture(GL_TEXTURE_2D, layer ? textureFront : textureBack);
 
@@ -214,8 +228,19 @@ void Chunk::genTexture(bool layer){
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 }
 
+void Chunk::regenTexture(bool layer){
+	glBindTexture(GL_TEXTURE_2D, layer ? textureFront : textureBack);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_R16UI, WIDTH, WIDTH, 0, GL_RED_INTEGER, GL_UNSIGNED_SHORT, layer ? &front[0] : &back[0]);
+	(layer ? regenTextureFront : regenTextureBack) = false;
+}
+
 void Chunk::load(){
+	printf("chunk loading started at x = %i_%i_%i, y = %i_%i_%i\n", position.r_x, position.c_x, position.p_x, position.r_y, position.c_y, position.p_y);
 	Biome::get("forest")->generate(position, front, back);
+	printf("chunk loaded at x = %i_%i_%i, y = %i_%i_%i\n", position.r_x, position.c_x, position.p_x, position.r_y, position.c_y, position.p_y);
+	loading = false;
+	regenTextureFront = true;
+	regenTextureBack = true;
 }
 
 } /* namespace Pixelverse */
