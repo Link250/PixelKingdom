@@ -37,7 +37,7 @@ void Item::loadRessources(){
 void Item::getRecipes(){}
 
 //called while this item is being held
-std::shared_ptr<Mouse> Item::holdItem(const std::shared_ptr<mouse_input> input){
+std::shared_ptr<Mouse> Item::holdItem(const std::shared_ptr<mouse_input> input, std::shared_ptr<Player> player){
 //	if(input->clicking && input->changed)
 //		std::cout << "item <" << name << "> used" << std::endl;
 	return nullptr;
@@ -70,8 +70,8 @@ int Item::takeFrom(std::shared_ptr<Item> other, int amount){
 	return 0;
 }
 
-//every 30 ticks ? every half second
-bool Item::update(){return false;}
+//needs to be every tick (for example to clear inventories)
+void Item::update(){}
 
 void Item::render(vec2 position, bool showAmount, bool centered){
 	Screen::renderGUISprite(spriteSheet, 0, position, {1, 1}, 0, centered);

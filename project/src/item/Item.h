@@ -16,6 +16,7 @@ namespace Pixelverse {
 
 class Mouse;
 class Item;
+class Player;
 struct itemInitializer{
 	std::shared_ptr<Item> item;
 	itemID_t *id;
@@ -49,7 +50,7 @@ public:
 	virtual void loadRessources();
 	virtual void getRecipes();//TODO
 
-	virtual std::shared_ptr<Mouse> holdItem(const std::shared_ptr<mouse_input> input);//called while this item is being held
+	virtual std::shared_ptr<Mouse> holdItem(const std::shared_ptr<mouse_input> input, std::shared_ptr<Player> player);//called while this item is being held
 	virtual bool collectItem(); //called when collected
 	virtual bool dropItem(); //called when dropped
 
@@ -59,7 +60,7 @@ public:
 	virtual int takeFrom(std::shared_ptr<Item> other, int amount = INT_MAX);
 
 
-	virtual bool update();//every 30 ticks ? every half second
+	virtual void update();//needs to be every tick (for example to clear inventories)
 
 	virtual void render(vec2 position, bool showAmount = true, bool centered = false);
 
@@ -110,7 +111,7 @@ class MaterialItem: public Item{
 public:
 	MaterialItem(materialID_t id);
 //	MaterialItem(const MaterialItem &original, int stackSize);
-	virtual std::shared_ptr<Mouse> holdItem(const std::shared_ptr<mouse_input> input);
+	virtual std::shared_ptr<Mouse> holdItem(const std::shared_ptr<mouse_input> input, std::shared_ptr<Player> player);
 	itemID_t getID();
 protected:
 	std::shared_ptr<Item> newInstance();

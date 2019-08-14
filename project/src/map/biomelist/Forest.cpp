@@ -7,7 +7,7 @@ namespace Pixelverse {
 Forest::Forest(materialID_t id) : Biome(id, "forest", "Forest"){}
 
 void Forest::generate(/*const Planet &planet, */coordinate position,
-		materialID_t (&front)[Chunk::SIZE], materialID_t (&back)[Chunk::SIZE]){
+		materialID_t (&data)[Chunk::SIZE*2]){
 	coordinate pixelPos;
 	for (pixelPos.y = position.y; pixelPos.c_y == position.c_y; pixelPos.y++)
 	for (pixelPos.x = position.x; pixelPos.c_x == position.c_x; pixelPos.x++){
@@ -36,19 +36,19 @@ void Forest::generate(/*const Planet &planet, */coordinate position,
 		bool stone = (Planet::mainNoise.GetCellular(cellPos.x, cellPos.y)+1.0) / 2 < double(dirtHeight-cellHeight)/Planet::dirtLayerHeight;
 		if(height <= dirtHeight){
 			if(height == dirtHeight){
-				front[Chunk::WIDTH * pixelPos.p_y + pixelPos.p_x] =  Material::getID("grass");
+				data[Chunk::WIDTH * pixelPos.p_y + pixelPos.p_x] =  Material::getID("grass");
 			}else{
 				if(stone){
-					front[Chunk::WIDTH * pixelPos.p_y + pixelPos.p_x] =  Material::getID("stone");
+					data[Chunk::WIDTH * pixelPos.p_y + pixelPos.p_x] =  Material::getID("stone");
 				}else{
-					front[Chunk::WIDTH * pixelPos.p_y + pixelPos.p_x] =  Material::getID("dirt");
+					data[Chunk::WIDTH * pixelPos.p_y + pixelPos.p_x] =  Material::getID("dirt");
 				}
 			}
 		}else{
-			front[Chunk::WIDTH * pixelPos.p_y + pixelPos.p_x] =  Material::getID("air");
+			data[Chunk::WIDTH * pixelPos.p_y + pixelPos.p_x] =  Material::getID("air");
 		}
-		if(height < Planet::surfaceHeight && front[Chunk::WIDTH * pixelPos.p_y + pixelPos.p_x] == Material::getID("air")){
-			front[Chunk::WIDTH * pixelPos.p_y + pixelPos.p_x] =  Material::getID("water");
+		if(height < Planet::surfaceHeight && data[Chunk::WIDTH * pixelPos.p_y + pixelPos.p_x] == Material::getID("air")){
+			data[Chunk::WIDTH * pixelPos.p_y + pixelPos.p_x] =  Material::getID("water");
 		}
 		if(cellHeight < dirtHeight){
 			double idStep = 1.0/Planet::mainNoise.GetFrequency();
@@ -79,10 +79,10 @@ void Forest::generate(/*const Planet &planet, */coordinate position,
 				id = Material::getID("sand");
 			}
 			if(largest > 0.993){
-				front[Chunk::WIDTH * pixelPos.p_y + pixelPos.p_x] = id;
+				data[Chunk::WIDTH * pixelPos.p_y + pixelPos.p_x] = id;
 			}
 		}
-		back[Chunk::WIDTH * pixelPos.p_y + pixelPos.p_x] = front[Chunk::WIDTH * pixelPos.p_y + pixelPos.p_x];
+		data[Chunk::WIDTH * pixelPos.p_y + pixelPos.p_x + Chunk::SIZE] = data[Chunk::WIDTH * pixelPos.p_y + pixelPos.p_x];
 	}
 }
 

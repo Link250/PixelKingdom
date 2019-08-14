@@ -16,9 +16,20 @@ class Player: public Mob{
 public:
 	Player(vec2 position = {0, 0});
 	virtual ~Player();
+
 	virtual void update();
 	virtual void render();
 	void applyGravity();
+
+	int collectItem(std::shared_ptr<Item> item);
+
+	size_t getSelectedSlot();
+	void changeSelectedSlot(size_t slotChange);
+	void setSelectedSlot(size_t slot);
+	int getBuildSize();
+	void changeBuildSize(int sizeChange);
+	void setBuildSize(int size);
+
 	virtual void load();
 	virtual void save();
 	Hitbox hitbox = {-3, 3, -14, 14};
@@ -26,6 +37,11 @@ private:
 	std::shared_ptr<SpriteSheet> sprites;
 	Inventory<BeltBag> beltBag;
 	Inventory<Bag> itemBags;
+
+	size_t selectedSlot;
+	int buildSize;
+	#define MAX_BUILD_SIZE 100
+
 	bool canJump = true, onGround = true;
 	int jumpLength = 0, jumpCooldown = 0, jumpCooldownLength = 10;
 	double jumpspeed = 2;
@@ -35,6 +51,7 @@ private:
 	double slowdownGround = 1.2 * meter / second;
 	double accelerationAir = 0.2 * meter / second;
 	double slowdownAir = 0.8 * meter / second;
+
 	friend class PlayerController;
 };
 

@@ -187,3 +187,7 @@
 - Taschen müssen leer sein um sie abzulegen
 
 - verbrennungen erzeugen asche/holzkohle/carbon, evtl. je nachdem wie viel sauerstoff vorhanden ist
+
+- Chunks & regions in quad-trees + "dummy-chunks" ?
+
+- CUDA bzw openGL code parallel zu den normalen updates ausführen -> ausnutzen der zeit, die nur auf die graka gewartet wird

@@ -8,20 +8,34 @@ std::map<std::string, std::shared_ptr<Material>> Material::list;
 Material::Material(
 		materialID_t id,
 		std::string name, std::string displayName, std::string tooltip,
-		bool solid, double friction,
-		int miningType, double miningTier, double miningResistance,
+		MiningType miningType, float miningTier, float miningResistance,
+		bool solid, float friction,
 		light lightReductionBack, light lightReductionFront, light lightEmission):
 			id(id),
 			name(name), displayName(displayName), tooltip(tooltip),
-			solid(solid), friction(friction),
 			miningType(miningType), miningTier(miningTier), miningResistance(miningResistance),
+			solid(solid), friction(friction),
 			lightReductionBack(lightReductionBack), lightReductionFront(lightReductionFront), lightEmission(lightEmission){}
 
 Material::~Material(){}
 
-bool Material::update(){return false;}
-bool Material::timedUpdate(){return false;}
-bool Material::randomUpdate(){return false;}
+bool Material::update(Chunk *chunk, coordinate position, bool layer){return false;}
+bool Material::timedUpdate(Chunk *chunk, coordinate position, bool layer){return false;}
+bool Material::randomUpdate(Chunk *chunk, coordinate position, bool layer){return false;}
+
+bool Material::canPlaceAt(Chunk *chunk, coordinate position, bool layer, std::shared_ptr<Player> player){return true;}
+void Material::placeAt(Chunk *chunk, coordinate position, bool layer, std::shared_ptr<Player> player){}
+
+bool Material::canBreakAt(Chunk *chunk, coordinate position, bool layer, std::shared_ptr<Player> player, const MiningTool *miningTool){
+	return miningType & miningTool->getMiningType();
+}
+
+void Material::breakAt(Chunk *chunk, coordinate position, bool layer, std::shared_ptr<Player> player, const MiningTool *miningTool){
+	if(player != nullptr){
+		player->collectItem(Item::createNew(name));
+	}
+	//TODO spawn ItemEntity
+}
 
 std::shared_ptr<Material> Material::get(std::string name){
 	return list[name];

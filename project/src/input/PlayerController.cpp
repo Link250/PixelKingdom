@@ -14,7 +14,7 @@ public:
 };
 
 
-PlayerController::PlayerController(std::shared_ptr<Player> player): player(player), inventoryOpen(false), selectedSlot(0), buildSize(5){
+PlayerController::PlayerController(std::shared_ptr<Player> player): player(player), inventoryOpen(false){
 	if(player->beltBag[0] != nullptr)
 		inventoryFields.push_back(make_shared<BagField>(player->beltBag->inventory, 8, player->beltBag->displayName));
 	if(player->itemBags[0] != nullptr)
@@ -39,7 +39,7 @@ void PlayerController::update(){
 shared_ptr<Mouse> PlayerController::useMouseInput(const std::shared_ptr<mouse_input> input){
 	if(input->scroll.y != 0.0){
 		if(input->scrollmods == 0){
-			changeSelectedSlot(int(input->scroll.y));
+			player->changeSelectedSlot(int(input->scroll.y));
 		}else if(input->scrollmods == GLFW_MOD_CONTROL){//TODO change to key config "zoom scroll button"
 			if(input->scroll.y > 0){
 				if(Screen::zoom_target < 8)
@@ -50,42 +50,12 @@ shared_ptr<Mouse> PlayerController::useMouseInput(const std::shared_ptr<mouse_in
 			}
 		}
 	}
-	if(player->beltBag->inventory->getItem(selectedSlot) != nullptr){
-		player->beltBag->inventory->getItem(selectedSlot)->holdItem(input);
+	if(player->beltBag->inventory->getItem(player->selectedSlot) != nullptr){
+		return player->beltBag->inventory->getItem(player->selectedSlot)->holdItem(input, player);
 	}
 	return nullptr;
 }
 
 const std::shared_ptr<Player> PlayerController::getPlayer(){return player;}
-
-size_t PlayerController::getSelectedSlot(){return selectedSlot;}
-
-void PlayerController::changeSelectedSlot(size_t slotChange){
-	if(player->beltBag[0] != nullptr){
-		selectedSlot = (selectedSlot+slotChange)%player->beltBag->inventory->size;
-		if(selectedSlot < 0) selectedSlot += player->beltBag->inventory->size;
-	}
-}
-
-void PlayerController::setSelectedSlot(size_t slot){
-	if(player->beltBag[0] != nullptr){
-		selectedSlot = slot%player->beltBag->inventory->size;
-		if(selectedSlot < 0) selectedSlot += player->beltBag->inventory->size;
-	}
-}
-
-int PlayerController::getBuildSize(){return buildSize;}
-
-void PlayerController::changeBuildSize(int sizeChange){
-	buildSize += sizeChange;
-	if(buildSize > MAX_BUILD_SIZE) buildSize = MAX_BUILD_SIZE;
-	if(buildSize < 1) buildSize = 1;
-}
-
-void PlayerController::setBuildSize(int size){
-	buildSize = size;
-	if(buildSize > MAX_BUILD_SIZE) buildSize = MAX_BUILD_SIZE;
-	if(buildSize < 1) buildSize = 1;
-}
 
 } /* namespace Pixelverse */

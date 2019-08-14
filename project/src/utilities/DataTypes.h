@@ -15,6 +15,9 @@ struct vec2{
 	double x, y;
 	constexpr vec2(): x(0), y(0){};
 	constexpr vec2(double x, double y): x(x), y(y){};
+	inline vec2 operator+(double d){
+		return vec2{x + d, y + d};
+	}
 	inline vec2 operator+(vec2 v){
 		return vec2{x + v.x, y + v.y};
 	}
@@ -22,6 +25,9 @@ struct vec2{
 		x += v.x;
 		y += v.y;
 		return *this;
+	}
+	inline vec2 operator-(double d){
+		return vec2{x - d, y - d};
 	}
 	inline vec2 operator-(vec2 v){
 		return vec2{x - v.x, y - v.y};
@@ -39,12 +45,28 @@ struct vec2{
 		y *= f;
 		return *this;
 	}
+	inline vec2 operator*(vec2 v){
+		return vec2{x * v.x, y * v.y};
+	}
+	inline vec2& operator*=(vec2 v){
+		x *= v.x;
+		y *= v.y;
+		return *this;
+	}
 	inline vec2 operator/(double f){
 		return vec2{x / f, y / f};
 	}
 	inline vec2& operator/=(double f){
 		x /= f;
 		y /= f;
+		return *this;
+	}
+	inline vec2 operator/(vec2 v){
+		return vec2{x / v.x, y / v.y};
+	}
+	inline vec2& operator/=(vec2 v){
+		x /= v.x;
+		y /= v.y;
 		return *this;
 	}
 	inline vec2 normalize(){
@@ -108,6 +130,12 @@ struct int2{
 	}
 	bool inside(int2 pos, int2 size){
 		return this->x >= pos.x && this->x < pos.x + size.x && this->y >= pos.y && this->y < pos.y + size.y;
+	}
+	inline int2 rotatedClockwise(){
+		return int2(-y, x);
+	}
+	inline int2 rotatedCounterClockwise(){
+		return int2(y, -x);
 	}
 };
 
@@ -188,6 +216,22 @@ union coordinate{
 	inline coordinate& operator-=(coordinate &c){
 		x -= c.x;
 		y -= c.y;
+		return *this;
+	}
+	inline coordinate operator+(int2 i){
+		return coordinate{x + i.x, y + i.y};
+	}
+	inline coordinate& operator+=(int2 &i){
+		x += i.x;
+		y += i.y;
+		return *this;
+	}
+	inline coordinate operator-(int2 i){
+		return coordinate{x - i.x, y - i.y};
+	}
+	inline coordinate& operator-=(int2 &i){
+		x -= i.x;
+		y -= i.y;
 		return *this;
 	}
 	inline int rc_x(){ return x>>8; }

@@ -6,6 +6,20 @@
 
 namespace Pixelverse {
 
+void Texture::loadTexture(std::vector<unsigned char> *image){
+	glGenTextures(1, &textureID);
+
+	glBindTexture(GL_TEXTURE_2D, textureID);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, &(*image)[0]);
+	glGenerateMipmap(GL_TEXTURE_2D);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+}
+
 Texture::Texture(std::string path){
 	textureID = 0;
 
@@ -62,11 +76,39 @@ Texture::Texture(int2 size, unsigned int topBarHeight){
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
 }
 
+Texture::Texture(int2 size, color c, std::function<bool(int2 size, int2 pos)> restrictor){
+	textureID = 0;
+	width = size.x;
+	height = size.y;
+
+	std::vector<unsigned char> image(width * height * 4);
+	for (size_t y = 0; y < height; y++)
+	for (size_t x = 0; x < width; x++){
+		if(restrictor(size, int2(x, y))){
+			image[4 * width * y + 4 * x + 0] = c.r;
+			image[4 * width * y + 4 * x + 1] = c.g;
+			image[4 * width * y + 4 * x + 2] = c.b;
+			image[4 * width * y + 4 * x + 3] = c.a;
+		}else{
+			image[4 * width * y + 4 * x + 0] = 0;
+			image[4 * width * y + 4 * x + 1] = 0;
+			image[4 * width * y + 4 * x + 2] = 0;
+			image[4 * width * y + 4 * x + 3] = 0;
+		}
+	}
+
+	loadTexture(&image);
+}
+
 Texture::~Texture(){
 	if(textureID != 0){
 		glDeleteTextures(1, &textureID);
 	}
 }
+
+GLuint Texture::getTextureID() const{return textureID;}
+unsigned int Texture::getWidth() const{return width;}
+unsigned int Texture::getHeight() const{return height;}
 
 } /* namespace Pixelverse */
 

@@ -7,15 +7,11 @@
 
 namespace Pixelverse {
 
-#define MAX_BUILD_SIZE 20
-
 class PlayerController: public MouseInputUser{
 private:
 	std::shared_ptr<Player> player;
 	std::vector<std::shared_ptr<GameField>> inventoryFields;
 	bool inventoryOpen;
-	size_t selectedSlot;
-	int buildSize;
 public:
 	std::shared_ptr<Item> mouseItem;
 
@@ -26,12 +22,6 @@ public:
 	shared_ptr<Mouse> useMouseInput(const std::shared_ptr<mouse_input> input);
 
 	const std::shared_ptr<Player> getPlayer();
-	size_t getSelectedSlot();
-	void changeSelectedSlot(size_t slotChange);
-	void setSelectedSlot(size_t slot);
-	int getBuildSize();
-	void changeBuildSize(int sizeChange);
-	void setBuildSize(int size);
 };
 
 } /* namespace Pixelverse */

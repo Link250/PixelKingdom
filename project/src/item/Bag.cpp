@@ -12,4 +12,8 @@ Bag::Bag(std::string name, std::string displayName, std::string tooltip,
 
 }*/
 
+void Bag::update(){
+	inventory->update();
+}
+
 } /* namespace Pixelverse */

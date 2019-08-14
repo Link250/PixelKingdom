@@ -2,14 +2,13 @@
 #include "../config/KeyConfig.h"
 #include "../input/InputHandler.h"
 #include "../gfx/Screen.h"
-#include <cmath>
-#include "../utilities/FastNoise.h"
-#include <vector>
 #include "../utilities/DataTypes.h"
 #include "../materials/Material.h"
 #include "../map/Biome.h"
 #include "../item/Item.h"
 
+#include <cmath>
+#include <vector>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -21,6 +20,7 @@ std::unique_ptr<Map> Game::map;
 std::vector<std::function<void()>> Game::loaders;
 std::vector<shared_ptr<GameField>> Game::gameFields;
 long Game::updateCount;
+int Game::randTickNumber;
 int Game::currentFPS;
 
 void Game::errorCallback(int error, const char *description){
@@ -69,6 +69,7 @@ void Game::mainLoop(){
 
 	while (!glfwWindowShouldClose(Screen::window)) {
 
+		randTickNumber = rand();
 		update();
 		updateCount++;
 

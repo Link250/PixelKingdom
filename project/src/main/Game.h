@@ -19,6 +19,7 @@ public:
 	static std::unique_ptr<Screen> screen;
 	static std::unique_ptr<Map> map;
 	static long updateCount;
+	static int randTickNumber;
 	static int currentFPS;
 	static void initialize();
 	static void mainLoop();

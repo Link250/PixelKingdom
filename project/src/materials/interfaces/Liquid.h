@@ -5,7 +5,7 @@
 
 namespace Pixelverse {
 
-class Liquid{
+class Liquid{//TODO probably obsolete
 public:
 	Liquid(int viscosity);
 

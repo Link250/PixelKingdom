@@ -28,7 +28,7 @@ public:
 
 //	bool update();
 	virtual void generate(/*const Planet &planet, */coordinate position,
-			materialID_t (&front)[Chunk::SIZE], materialID_t (&back)[Chunk::SIZE]) = 0;
+			materialID_t (&data)[Chunk::SIZE*2]) = 0;
 
 	static std::shared_ptr<Biome> get(std::string name);
 	static std::shared_ptr<Biome> get(biomeID_t id);
@@ -44,7 +44,7 @@ private:
 
 class Forest: public Biome{public: Forest(biomeID_t id);
 	void generate(/*const Planet &planet, */coordinate position,
-			materialID_t (&front)[Chunk::SIZE], materialID_t (&back)[Chunk::SIZE]);
+			materialID_t (&data)[Chunk::SIZE*2]);
 };
 
 } /* namespace Pixelverse */

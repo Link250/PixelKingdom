@@ -13,6 +13,8 @@ public:
 				[](std::shared_ptr<Item>) { return true; });
 //	Bag(const Bag &original);
 	std::shared_ptr<Inventory<Item>> inventory;
+
+	virtual void update();
 };
 
 } /* namespace Pixelverse */

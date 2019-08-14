@@ -2,6 +2,6 @@
 
 namespace Pixelverse {
 
-Stone::Stone(materialID_t id) : Material(id, "stone", "Stone"){}
+Stone::Stone(materialID_t id) : Material(id, "stone", "Stone", "tooltip", MiningType::Pickaxe){}
 
 } /* namespace Pixelverse */

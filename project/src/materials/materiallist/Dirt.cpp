@@ -2,6 +2,6 @@
 
 namespace Pixelverse {
 
-Dirt::Dirt(materialID_t id) : Material(id, "dirt", "Dirt"){}
+Dirt::Dirt(materialID_t id) : Material(id, "dirt", "Dirt", "tooltip", MiningType::Pickaxe){}
 
 } /* namespace Pixelverse */

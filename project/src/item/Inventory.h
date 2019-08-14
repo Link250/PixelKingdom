@@ -44,15 +44,16 @@ public:
 
 	std::shared_ptr<item_t> takeItem(size_t index);
 
-	int collectItem(std::shared_ptr<item_t> item){
-		if(canContain(item)){
+	int collectItem(std::shared_ptr<item_t> *item){
+		if((*item) != nullptr && canContain(*item)){
 			int taken = 0;
 			for (size_t i = 0; i < size; i++) {
+				if((*item)->getStackSize() <= 0) break;
 				if(items[i] == nullptr){
-					items[i].swap(item);
+					items[i].swap(*item);
 					return taken + items[i]->getStackSize();
 				}else{
-					taken += items[i]->takeFrom(item);
+					taken += items[i]->takeFrom(*item);
 				}
 			}
 			return taken;
@@ -83,6 +84,17 @@ public:
 		if(indexInBounds(index))
 			return &(items[index]);
 		return nullptr;
+	}
+
+	void update(){
+		for(size_t i = 0; i < size; i++){
+			if(items[i] != nullptr){
+				items[i]->update();
+				if(items[i]->getStackSize() <= 0){
+					items[i] = nullptr;
+				}
+			}
+		}
 	}
 
 private:

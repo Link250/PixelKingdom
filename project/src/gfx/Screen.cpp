@@ -103,16 +103,16 @@ void Screen::setCenter(vec2 center){
 void Screen::renderGameTexture(shared_ptr<Texture> texture, vec2 position, vec2 scale, float rotation, bool centered){
 	baseShader->bind();
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture->textureID);
+	glBindTexture(GL_TEXTURE_2D, texture->getTextureID());
 	glUniform1i(baseShader->uniforms["mainTex"], 0);
 	glUniform2f(baseShader->uniforms["resolution"], width/zoom, height/zoom);
 	glUniform1f(baseShader->uniforms["screenRotation"], Screen::rotation);
 	if(centered){
 		glUniform2f(baseShader->uniforms["translation"], position.x - center.x, position.y - center.y);
 	}else{
-		glUniform2f(baseShader->uniforms["translation"], position.x + texture->width/2.0f - center.x, position.y + texture->height/2.0f - center.y);
+		glUniform2f(baseShader->uniforms["translation"], position.x + texture->getWidth()/2.0f - center.x, position.y + texture->getHeight()/2.0f - center.y);
 	}
-	glUniform2f(baseShader->uniforms["size"], texture->width * scale.x, texture->height * scale.y);
+	glUniform2f(baseShader->uniforms["size"], texture->getWidth() * scale.x, texture->getHeight() * scale.y);
 	glUniform1f(baseShader->uniforms["spriteRotation"], -rotation);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, spriteModel->indexBuffer);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*) 0);
@@ -121,7 +121,7 @@ void Screen::renderGameTexture(shared_ptr<Texture> texture, vec2 position, vec2 
 void Screen::renderGameSprite(shared_ptr<SpriteSheet> spriteSheet, int tile, vec2 position, vec2 scale, float rotation, bool centered){
 	spriteShader->bind();
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, spriteSheet->texture.textureID);
+	glBindTexture(GL_TEXTURE_2D, spriteSheet->texture.getTextureID());
 	glUniform1i(spriteShader->uniforms["mainTex"], 0);
 	glUniform2f(spriteShader->uniforms["resolution"], width/zoom, height/zoom);
 	glUniform1f(spriteShader->uniforms["screenRotation"], Screen::rotation);
@@ -133,7 +133,7 @@ void Screen::renderGameSprite(shared_ptr<SpriteSheet> spriteSheet, int tile, vec
 	glUniform2f(spriteShader->uniforms["size"], spriteSheet->spriteWidth * scale.x, spriteSheet->spriteHeight * scale.y);
 	glUniform1f(spriteShader->uniforms["spriteRotation"], -rotation);
 
-	glUniform2f(spriteShader->uniforms["spriteResolution"], spriteSheet->spriteWidth / (double)spriteSheet->texture.width, spriteSheet->spriteHeight / (double)spriteSheet->texture.height);
+	glUniform2f(spriteShader->uniforms["spriteResolution"], spriteSheet->spriteWidth / (double)spriteSheet->texture.getWidth(), spriteSheet->spriteHeight / (double)spriteSheet->texture.getHeight());
 	glUniform2f(spriteShader->uniforms["spriteOffset"], tile%spriteSheet->sheetWidth, tile/spriteSheet->sheetWidth);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, spriteModel->indexBuffer);
@@ -143,15 +143,15 @@ void Screen::renderGameSprite(shared_ptr<SpriteSheet> spriteSheet, int tile, vec
 void Screen::renderGUITexture(shared_ptr<Texture> texture, vec2 position, vec2 scale, float rotation, bool centered){
 	guiShader->bind();
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture->textureID);
+	glBindTexture(GL_TEXTURE_2D, texture->getTextureID());
 	glUniform1i(guiShader->uniforms["mainTex"], 0);
 	glUniform2f(guiShader->uniforms["resolution"], width, height);
 	if(centered){
 		glUniform2f(guiShader->uniforms["translation"], position.x, position.y);
 	}else{
-		glUniform2f(guiShader->uniforms["translation"], position.x + texture->width/2.0f, position.y + texture->height/2.0f);
+		glUniform2f(guiShader->uniforms["translation"], position.x + texture->getWidth()/2.0f, position.y + texture->getHeight()/2.0f);
 	}
-	glUniform2f(guiShader->uniforms["size"], texture->width * scale.x, texture->height * scale.y);
+	glUniform2f(guiShader->uniforms["size"], texture->getWidth() * scale.x, texture->getHeight() * scale.y);
 	glUniform1f(guiShader->uniforms["spriteRotation"], -rotation);
 
 	glUniform2f(guiShader->uniforms["spriteResolution"], 1.0f, 1.0f);
@@ -164,7 +164,7 @@ void Screen::renderGUITexture(shared_ptr<Texture> texture, vec2 position, vec2 s
 void Screen::renderGUISprite(shared_ptr<SpriteSheet> spriteSheet, int tile, vec2 position, vec2 scale, float rotation, bool centered){
 	guiShader->bind();
 	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, spriteSheet->texture.textureID);
+	glBindTexture(GL_TEXTURE_2D, spriteSheet->texture.getTextureID());
 	glUniform1i(guiShader->uniforms["mainTex"], 0);
 	glUniform2f(guiShader->uniforms["resolution"], width, height);
 	if(centered){
@@ -175,7 +175,7 @@ void Screen::renderGUISprite(shared_ptr<SpriteSheet> spriteSheet, int tile, vec2
 	glUniform2f(guiShader->uniforms["size"], spriteSheet->spriteWidth * scale.x, spriteSheet->spriteHeight * scale.y);
 	glUniform1f(guiShader->uniforms["spriteRotation"], -rotation);
 
-	glUniform2f(guiShader->uniforms["spriteResolution"], spriteSheet->spriteWidth / (double)spriteSheet->texture.width, spriteSheet->spriteHeight / (double)spriteSheet->texture.height);
+	glUniform2f(guiShader->uniforms["spriteResolution"], spriteSheet->spriteWidth / (double)spriteSheet->texture.getWidth(), spriteSheet->spriteHeight / (double)spriteSheet->texture.getHeight());
 	glUniform2f(guiShader->uniforms["spriteOffset"], tile%spriteSheet->sheetWidth, tile/spriteSheet->sheetWidth);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, spriteModel->indexBuffer);
@@ -208,7 +208,7 @@ void Screen::renderPlanet(shared_ptr<Planet> planet){
 	//printf("pos= %i, %i, %i, %i\n", minPos.x, minPos.y, maxPos.x, maxPos.y);
 	//printf("cpos= %i, %i, %i, %i\n", minPos.rc_x(), minPos.rc_y(), maxPos.rc_x(), maxPos.rc_y());
 	//TODO optimieren (nur sichtbare anzeigen)
-	int chunksDrawn;
+	//int chunksDrawn = 0;
 	for(chunkPos.y = minPos.y; chunkPos.rc_y() <= maxPos.rc_y(); chunkPos.y += Chunk::WIDTH){
 		for(chunkPos.x = minPos.x; chunkPos.rc_x() <= maxPos.rc_x(); chunkPos.x += Chunk::WIDTH){
 			shared_ptr<Chunk> chunk = planet->getChunk(chunkPos);
@@ -219,9 +219,11 @@ void Screen::renderPlanet(shared_ptr<Planet> planet){
 			chunk->bindTexture(false);
 			glUniform2f(terrainShader->uniforms["translation"], chunk->getPosition().x*MAP_SCALE + Chunk::WIDTH/2*MAP_SCALE - center.x, chunk->getPosition().y*MAP_SCALE + Chunk::WIDTH/2*MAP_SCALE - center.y);
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*) 0);
-			chunksDrawn++;
+			//chunksDrawn++;
 		}
 	}
+
+	//TODO render entities here
 
 	glUniform1i(terrainShader->uniforms["layer"], true);
 	for(chunkPos.y = minPos.y; chunkPos.rc_y() <= maxPos.rc_y(); chunkPos.y += Chunk::WIDTH){
@@ -230,12 +232,14 @@ void Screen::renderPlanet(shared_ptr<Planet> planet){
 			chunk->bindTexture(true);
 			glUniform2f(terrainShader->uniforms["translation"], chunk->getPosition().x*MAP_SCALE + Chunk::WIDTH/2*MAP_SCALE - center.x, chunk->getPosition().y*MAP_SCALE + Chunk::WIDTH/2*MAP_SCALE - center.y);
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*) 0);
-			chunksDrawn++;
+			//chunksDrawn++;
 		}
 	}
 
+	//TODO render light
+
 	if(InputHandler::keyPressed(KeyConfig::INFO)){
-		baseShader->bind();
+		/*baseShader->bind();
 		glUniform1i(baseShader->uniforms["mainTex"], 0);
 		glUniform2f(baseShader->uniforms["resolution"], width/zoom, height/zoom);
 		glUniform1f(baseShader->uniforms["screenRotation"], Screen::rotation);
@@ -250,8 +254,9 @@ void Screen::renderPlanet(shared_ptr<Planet> planet){
 				glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (void*) 0);
 				chunksDrawn++;
 			}
-		}
+		}*/
 		//printf("chunksDrawn: %i\n", chunksDrawn);
+		//fflush(stdout);
 	}
 }
 
