@@ -135,7 +135,7 @@ vec2 InputHandler::getMousePos(){
 }
 
 vec2 InputHandler::getMouseMapPos(){
-	return (mousePos - vec2{double(Screen::width), double(Screen::height)}/2).rotate(-Screen::rotation)/Screen::zoom + Screen::center;
+	return (mousePos - vec2{double(Screen::width), double(Screen::height)}/2).rotate(-Screen::getRotation())/Screen::getZoom() + Screen::getCenter();
 }
 
 } /* namespace Game */

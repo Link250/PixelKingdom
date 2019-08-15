@@ -41,13 +41,7 @@ shared_ptr<Mouse> PlayerController::useMouseInput(const std::shared_ptr<mouse_in
 		if(input->scrollmods == 0){
 			player->changeSelectedSlot(int(input->scroll.y));
 		}else if(input->scrollmods == GLFW_MOD_CONTROL){//TODO change to key config "zoom scroll button"
-			if(input->scroll.y > 0){
-				if(Screen::zoom_target < 8)
-					Screen::zoom_target *= 2;
-			}else{
-				if(Screen::zoom_target > 0.125)
-					Screen::zoom_target /= 2;
-			}
+			Screen::changeTargetZoom(input->scroll.y > 0 ? 2 : 0.5);
 		}
 	}
 	if(player->beltBag->inventory->getItem(player->selectedSlot) != nullptr){

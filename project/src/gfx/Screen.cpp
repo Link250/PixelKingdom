@@ -3,6 +3,8 @@
 #include "../input/InputHandler.h"
 #include "../config/KeyConfig.h"
 
+#include <iostream>
+
 namespace Pixelverse {
 
 GLFWwindow* Screen::window;
@@ -86,8 +88,43 @@ void Screen::unload(){
 }
 
 void Screen::update(){
-	zoom += (zoom_target-zoom)*0.25;
-	rotation += (rotation_target-rotation)*0.2;
+	double zoom_diff = zoom_target - zoom;
+	if(abs(zoom_diff) < 0.01){//avoid endless approaching
+		zoom = zoom_target;
+	}else{
+		zoom += zoom_diff*0.25;
+	}
+
+	double rotation_diff = rotation_target-rotation;
+	if(abs(rotation_diff) > PI){//get shortest path
+		rotation_diff += 2*PI*((rotation_diff < 0) - (0 < rotation_diff));
+	}
+	if(abs(rotation_diff) < 0.01){//avoid endless approaching
+		rotation = rotation_target;
+	}else{
+		rotation = std::fmod(std::fmod(rotation+rotation_diff*0.2, 2.0*PI) + 2.0*PI, 2.0*PI);
+	}
+}
+
+void Screen::changeTargetZoom(double factor){
+	zoom_target *= factor;
+	zoom_target = clamp(zoom_target, 0.125, 8.0);
+}
+
+void Screen::setTargetRotation(double rotation){
+	rotation_target = std::fmod(std::fmod(rotation, 2.0*PI) + 2.0*PI, 2.0*PI);
+}
+
+vec2 Screen::getCenter(){
+	return center;
+}
+
+double Screen::getZoom(){
+	return zoom;
+}
+
+double Screen::getRotation(){
+	return rotation;
 }
 
 void Screen::framebufferSizeCallback(GLFWwindow* window, int width, int height){
@@ -257,6 +294,7 @@ void Screen::renderPlanet(shared_ptr<Planet> planet){
 		}*/
 		//printf("chunksDrawn: %i\n", chunksDrawn);
 		//fflush(stdout);
+		//std::cout << "rot:" << rotation << " -> " << rotation_target << std::endl;
 	}
 }
 

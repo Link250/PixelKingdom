@@ -68,7 +68,7 @@ void Player::update(){
 	position = collision->entityPos;
 
 	Screen::setCenter(position);
-	Screen::rotation_target = rotation;
+	Screen::setTargetRotation(rotation);
 	//if(Game::updateCount%60 == 0)std::cout << rotation << std::endl;
 
 	beltBag.update();
